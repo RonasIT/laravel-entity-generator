@@ -1,0 +1,3 @@
+/*truncates*/
+/*inserts*/
+SELECT pg_catalog.setval('entities_id_seq', 1, true);
