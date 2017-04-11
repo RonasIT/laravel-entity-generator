@@ -26,7 +26,10 @@
   "autoload": {
     "psr-4": {
       "RonasIT\\Support\\": "src/"
-    }
+    },
+    "files": [
+      "src/helpers.php"
+    ]
   },
   "minimum-stability": "stable"
 }
