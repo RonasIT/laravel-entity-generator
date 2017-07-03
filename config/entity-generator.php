@@ -19,28 +19,18 @@ return [
         'factory' => 'database/factories/ModelFactory.php'
      ],
     'stubs' => [
-        'model' => stubs_path('model.stub'),
-        'relation' => stubs_path('relation.stub'),
-        'repository' => stubs_path('repository.stub'),
-        'service' => stubs_path('service.stub'),
-        'service_with_trait' => stubs_path('service_with_trait.stub'),
-        'controller' => stubs_path('controller.stub'),
-        'request' => stubs_path('request.stub'),
-        'validation_parameter' => stubs_path('validation_parameter.stub'),
-        'routes' => stubs_path('routes.stub'),
-        'use_routes' => stubs_path('use_routes.stub'),
-        'migrations' => [
-            'create' => stubs_path('migrations/create.stub'),
-            'foreign_key' => stubs_path('migrations/foreign_key.stub'),
-            'add_field' => stubs_path('migrations/add_field.stub'),
-            'field' => stubs_path('migrations/field.stub')
-        ],
-        'tests' => [
-            'test' => stubs_path('tests/test.stub'),
-            'dump' => stubs_path('tests/dump.stub'),
-            'factory' => stubs_path('tests/factory.stub'),
-            'wrong_parameter_test' => stubs_path('tests/wrong_parameter_test.stub'),
-            'insert' => stubs_path('tests/insert.stub'),
-        ],
+        'model' => 'entity-generator::model',
+        'relation' => 'entity-generator::relation',
+        'repository' => 'entity-generator::repository',
+        'service' => 'entity-generator::service',
+        'service_with_trait' => 'entity-generator::service_with_trait',
+        'controller' => 'entity-generator::controller',
+        'request' => 'entity-generator::request',
+        'routes' => 'entity-generator::routes',
+        'use_routes' => 'entity-generator::use_routes',
+        'factory' => 'entity-generator::factory',
+        'migration' => 'entity-generator::migration',
+        'dump' => 'entity-generator::dump_pgsql',
+        'test' => 'entity-generator::test'
     ]
 ];

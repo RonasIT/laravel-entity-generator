@@ -15,23 +15,10 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ModelGenerator extends EntityGenerator
 {
-    protected $name;
-    protected $fields;
-    protected $relations;
-
-    /** @return $this */
-    public function setName($name) {
-        $this->name = $name;
-        return $this;
-    }
-
-    /** @return $this */
-    public function setFields($fields) {
-        $this->fields = $fields;
-        return $this;
-    }
-
-    /** @return $this */
+    /**
+     * @param array $relations
+     * @return $this
+     */
     public function setRelations($relations) {
         $this->relations = $relations;
 
@@ -44,56 +31,28 @@ class ModelGenerator extends EntityGenerator
 
     public function generate()
     {
-        if ($this->classExists('models', $this->name)) {
+        if ($this->classExists('models', $this->model)) {
             $this->throwFailureException(
                 ClassAlreadyExistsException::class,
-                "Cannot create {$this->name} Model cause {$this->name} Model already exists.",
-                "Remove {$this->name} Model or run your command with options:'—without-model'."
+                "Cannot create {$this->model} Model cause {$this->model} Model already exists.",
+                "Remove {$this->model} Model or run your command with options:'—without-model'."
             );
         }
 
         $this->prepareRelatedModels();
         $modelContent = $this->getNewModelContent();
-        $modelName = $this->name;
-        $createMessage = "Created a new Model: {$modelName}";
 
-        $this->saveClass('models', $modelName, $modelContent);
+        $this->saveClass('models', $this->model, $modelContent);
 
-        event(new SuccessCreateMessage($createMessage));
+        event(new SuccessCreateMessage("Created a new Model: {$this->model}"));
     }
 
     protected function getNewModelContent() {
         return $this->getStub('model', [
-            'DummyClass' => $this->name,
-            '/*fillable*/' => $this->getFillableContent(),
-            '/*relations*/' => $this->getRelationsContent()
+            'entity' => $this->model,
+            'fields' => array_collapse($this->fields),
+            'relations' => $this->prepareRelations()
         ]);
-    }
-
-    protected function getFillableContent() {
-        $fields = implode("', '", $this->fields);
-        
-        if (empty($fields)) {
-            return false;
-        }
-
-        return "'{$fields}'";
-    }
-
-    protected function getRelationsContent() {
-        $content = '';
-
-        foreach ($this->relations as $type => $entities) {
-            foreach ($entities as $entity) {
-                $content .= $this->getStub('relation', [
-                    'relationName' => strtolower($entity),
-                    'relationType' => $type,
-                    'EntityClass' => $entity
-                ]);
-            }
-        }
-
-        return trim($content);
     }
 
     public function prepareRelatedModels() {
@@ -112,12 +71,12 @@ class ModelGenerator extends EntityGenerator
             $content = $this->getModelContent($relation);
 
             $newRelation = $this->getStub('relation', [
-                'relationName' => Str::lower($this->name),
-                'relationType' => 'belongsTo',
-                'EntityClass' => $this->name
+                'name' => Str::lower($this->model),
+                'type' => 'belongsTo',
+                'entity' => $this->model
             ]);
 
-            $fixedContent = preg_replace('/\}$/', "{$newRelation}\n}", $content);
+            $fixedContent = preg_replace('/\}$/', "\n\n    {$newRelation}\n}", $content);
 
             $this->saveClass('models', $relation, $fixedContent);
         }
@@ -127,5 +86,23 @@ class ModelGenerator extends EntityGenerator
         $modelPath = base_path($this->paths['models']."/{$model}.php");
 
         return file_get_contents($modelPath);
+    }
+
+    public function prepareRelations() {
+        $result = [];
+
+        foreach ($this->relations as $type => $relations) {
+            foreach ($relations as $relation) {
+                if (!empty($relation)) {
+                    $result[] = [
+                        'name' => Str::lower($relation),
+                        'type' => $type,
+                        'entity' => $relation
+                    ];
+                }
+            }
+        }
+
+        return $result;
     }
 }

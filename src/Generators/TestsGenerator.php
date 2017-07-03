@@ -18,9 +18,6 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class TestsGenerator extends EntityGenerator
 {
-    protected $model;
-    protected $fields;
-    protected $relations;
     protected $fieldsValues;
     protected $annotationReader;
     protected $fakerMethods = [];
@@ -30,56 +27,15 @@ class TestsGenerator extends EntityGenerator
     protected $createFields = [];
     protected $updateFields = [];
 
-    public function setModel($model) {
-        $this->model = $model;
-        return $this;
-    }
-
-    public function setFields($fields) {
-        $this->fields = $fields;
-        return $this;
-    }
-
-    /** @return $this*/
-    public function setRelations($relations) {
-        $this->relations = $relations;
-
-        foreach ($this->relations['belongsTo'] as $relation) {
-            $this->fields['integer-require'][] = Str::lower($relation).'_id';
-        }
-
-        return $this;
-    }
-
     public function generate() {
-        $this->createFactory();
         $this->createDump();
         $this->createTests();
     }
 
-    protected function createFactory() {
-        if (!$this->checkExistModelFactory()) {
-            $content = $this->getStub('tests.factory', [
-                'Entity' => $this->model,
-                '/*fields*/' => $this->getFactoryFieldsContent()
-            ]);
-            $createMessage = "Created a new Test factory for {$this->model} model in '{$this->paths['factory']}'";
-
-            file_put_contents($this->paths['factory'], $content, FILE_APPEND);
-        } else {
-            $createMessage = "Factory for {$this->model} model has already created, so new factory not necessary create.";
-        }
-
-        event(new SuccessCreateMessage($createMessage));
-    }
-
     protected function createDump() {
-        $this->checkExistRelatedModelsFactories();
-        $this->prepareRelatedFactories();
-        $content = $this->getStub('tests.dump', [
-            '/*truncates*/' => $this->getTruncatesContent(),
-            '/*inserts*/' => $this->getInsertsContent(),
-            'entities' => $this->getTableName($this->model)
+        $content = $this->getStub('dump', [
+            'truncates' => $this->getTruncates(),
+            'inserts' => $this->getInserts()
         ]);
         $createMessage = "Created a new Test dump on path: {$this->paths['tests']}/fixtures/{$this->getTestClassName()}/dump.sql";
 
@@ -96,38 +52,6 @@ class TestsGenerator extends EntityGenerator
         $this->generateTest();
     }
 
-    protected function getFactoryFieldsContent() {
-        $fields = $this->prepareFactoryFields();
-        /** @var Faker $faker*/
-        $faker = app(Faker::class);
-
-        $fieldLines = array_map(function ($field, $type) use ($faker) {
-            $fakerMethods = [
-                'integer' => 'randomNumber()',
-                'boolean' => 'boolean',
-                'string' => 'word',
-                'float' => 'randomFloat()',
-                'timestamp' => 'dateTime'
-            ];
-
-            if (preg_match('/_id$/', $field) || ($field == 'id')) {
-                return "        '{$field}' => 1";
-            }
-
-            if (property_exists($faker, $field)) {
-                return "        '{$field}' => \$faker->{$field}";
-            }
-
-            if (method_exists($faker, $field)) {
-                return "        '{$field}'=> \$faker->{$field}()";
-            }
-
-            return "        '{$field}' => \$faker->{$fakerMethods[$type]}";
-        }, array_keys($fields), $fields);
-
-        return implode(",\n", $fieldLines);
-    }
-
     protected function prepareFactoryFields() {
         $result = [];
 
@@ -142,44 +66,53 @@ class TestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getTruncatesContent() {
-        $models = $this->getAllModels([$this->model]);
-
-        return array_concat($models, function ($model) {
-            return "truncate {$this->getTableName($model)} cascade;\n";
-        });
+    protected function getTruncates() {
+        return array_map(function ($model) {
+            return $this->getTableName($model);
+        }, $this->getAllModels(['User', $this->model]));
     }
 
-    protected function getInsertsContent() {
-        $models = $this->getAllModels([$this->model]);
-
-        return array_concat($models, function ($model) {
-            return $this->getStub('tests.insert', [
-                'entities' => $this->getTableName($model),
-                '/*fields*/' => $this->getFieldsListContent($model),
-                '/*values*/' => $this->getValuesListContent($model)
-            ]);
-        });
+    protected function getInserts() {
+        return array_map(function ($model) {
+            return [
+                'name' => $this->getTableName($model),
+                'items' => [
+                    [
+                        'fields' => $this->getModelFields($model),
+                        'values' => $this->getValuesList($model)
+                    ]
+                ]
+            ];
+        }, $this->getAllModels(['User', $this->model]));
     }
 
-    protected function getFieldsListContent($model) {
-        $fields = $this->getModelFields($model);
+    protected function getValuesList($model) {
+        $values = $this->getValues($model);
 
-        return implode(', ', $fields);
-    }
-
-    protected function getValuesListContent($model) {
-        $this->fieldsValues = $this->getValues($model);
-
-        foreach ($this->fieldsValues as $key => $value) {
+        $values = array_associate($values, function ($value, $key) {
             if (in_array($key, $this->fields['timestamp']) || in_array($key, $this->fields['timestamp-required'])) {
-                $this->getFields[$key] = "'" . $value->format('Y-m-d h:i:s') . "'";
-            } else {
-                $this->getFields[$key] = var_export($value, true);
+                return [
+                    'key' => $key,
+                    'value' => "'{$value->format('Y-m-d h:i:s')}'"
+                ];
             }
-        }
 
-        return implode(', ', $this->getFields);
+            if (in_array($key, $this->fields['boolean']) || in_array($key, $this->fields['boolean-required'])) {
+                return [
+                    'key' => $key,
+                    'value' => $value ? 'true' : 'false'
+                ];
+            }
+
+            return [
+                'key' => $key,
+                'value' => is_string($value) ? "'{$value}'" : $value
+            ];
+        });
+
+        $this->getFields = $values;
+
+        return $values;
     }
 
     protected function getValues($model) {
@@ -256,7 +189,7 @@ class TestsGenerator extends EntityGenerator
 
     protected function generateExistedEntityFixture() {
         $entity = Str::lower($this->model);
-        $fields = $this->prepareFieldsContent($this->fieldsValues);
+        $fields = $this->prepareFieldsContent($this->getFields);
 
         $this->generateFixture(
             "{$entity}.json",
@@ -276,51 +209,17 @@ class TestsGenerator extends EntityGenerator
     }
 
     protected function generateTest() {
-        $content = $this->getStub('tests.test', [
-            'Entity' => $this->model,
-            'entities' => $this->getTableName($this->model),
-            'entity' => Str::lower($this->model),
-            '/*fields*/' => $this->getFieldsContent($this->createFields)
+        $content = $this->getStub('test', [
+            'entity' => $this->model,
+            'entities' => $this->getTableName($this->model)
         ]);
+
         $testName = $this->getTestClassName();
         $createMessage = "Created a new Test: {$testName}";
 
         $this->saveClass('tests', $testName, $content);
 
         event(new SuccessCreateMessage($createMessage));
-    }
-
-    protected function prepareRelatedFactories() {
-        $relations = array_merge(
-            $this->relations['hasOne'],
-            $this->relations['hasMany']
-        );
-
-        foreach ($relations as $relation) {
-            $modelFactoryContent = file_get_contents($this->paths['factory']);
-
-            if (!str_contains($modelFactoryContent, $this->getModelClass($relation))) {
-                $this->throwFailureException(
-                    ModelFactoryNotFound::class,
-                    "Model factory for mode {$relation} not found.",
-                    "Please create it and after thar you can run this command with flag '--only-tests'."
-                );
-            }
-
-            $matches = [];
-
-            preg_match($this->getFactoryPattern($relation), $modelFactoryContent, $matches);
-
-            foreach ($matches as $match) {
-                $field = Str::lower($this->model) . '_id';
-
-                $newField = "\n        \"{$field}\" => 1,";
-
-                $modelFactoryContent = str_replace($match, $match . $newField, $modelFactoryContent);
-            }
-
-            file_put_contents($this->paths['factory'], $modelFactoryContent);
-        }
     }
 
     protected function getFactoryPattern($model) {
@@ -374,31 +273,6 @@ class TestsGenerator extends EntityGenerator
         }
 
         return file_get_contents($path);
-    }
-
-    protected function checkExistRelatedModelsFactories() {
-        $modelFactoryContent = file_get_contents($this->paths['factory']);
-        $relatedModels = $this->getRelatedModels($this->model);
-
-        foreach ($relatedModels as $relatedModel) {
-            $relatedFactoryClass = "App\\Models\\$relatedModel::class";
-            $existModelFactory = strpos($modelFactoryContent, $relatedFactoryClass);
-
-            if (!$existModelFactory) {
-                $this->throwFailureException(
-                    ModelFactoryNotFoundedException::class,
-                    "Not found $relatedModel factory for $relatedModel model in '{$this->paths['factory']}",
-                    "Please declare a factory for $relatedModel model on '{$this->paths['factory']}' path and run your command with option '--only-tests'."
-                );
-            }
-        }
-    }
-
-    protected function checkExistModelFactory() {
-        $modelFactoryContent = file_get_contents($this->paths['factory']);
-        $factoryClass = "App\\Models\\$this->model::class";
-
-        return strpos($modelFactoryContent, $factoryClass);
     }
 
     protected function prepareFieldsContent($content) {

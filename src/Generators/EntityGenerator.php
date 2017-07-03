@@ -17,6 +17,45 @@ use Illuminate\Support\Str;
 abstract class EntityGenerator
 {
     protected $paths = [];
+    protected $model;
+    protected $fields;
+    protected $relations;
+
+    /**
+     * @param string $model
+     * @return $this
+     */
+    public function setModel($model) {
+        $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * @param array $fields
+     * @return $this
+     */
+    public function setFields($fields) {
+        $this->fields = $fields;
+
+        return $this;
+    }
+
+    /**
+     * @param array $relations
+     * @return $this
+     */
+    public function setRelations($relations) {
+        $this->relations = $relations;
+
+        foreach ($relations['belongsTo'] as $field) {
+            $name = Str::lower($field).'_id';
+
+            $this->fields['integer-require'][] = $name;
+        }
+
+        return $this;
+    }
 
     public function __construct()
     {
@@ -35,6 +74,7 @@ abstract class EntityGenerator
 
     protected function saveClass($path, $name, $content) {
         $entitiesPath = $this->paths[$path];
+        $content = "<?php\n\n{$content}";
 
         $classPath = base_path("{$entitiesPath}/{$name}.php");
 
@@ -45,15 +85,10 @@ abstract class EntityGenerator
         return file_put_contents($classPath, $content);
     }
 
-    protected function getStub($stub, $replaces = []) {
+    protected function getStub($stub, $data = []) {
         $stubPath = config("entity-generator.stubs.$stub");
 
-        $stub = file_get_contents($stubPath);
-        foreach ($replaces as $search => $replace) {
-            $stub = str_replace($search, $replace, $stub);
-        }
-
-        return $stub;
+        return view($stubPath)->with($data)->render();
     }
 
     protected function getTableName($entityName) {

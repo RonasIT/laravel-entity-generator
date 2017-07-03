@@ -13,90 +13,107 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class RequestsGenerator extends EntityGenerator
 {
-    protected $model;
-    protected $fields;
+    public function setRelations($relations)
+    {
+        parent::setRelations($relations);
 
-    public function setModel($model) {
-        $this->model = $model;
-        return $this;
-    }
+        $this->relations['belongsTo'] = array_map(function ($field) {
+            return Str::lower($field).'_id';
+        }, $this->relations['belongsTo']);
 
-    public function setFields($fields) {
-        $this->fields = $fields;
         return $this;
     }
 
     public function generate() {
-        $this->createRequest('Create', $this->getValidationParametersContent($this->fields, true));
         $this->createRequest('Get');
-        $this->createRequest('Update', $this->getValidationParametersContent($this->fields, false));
         $this->createRequest('Delete');
+
+        $this->createRequest(
+            'Create',
+            false,
+            $this->getValidationParameters($this->fields, true)
+        );
+
+        $this->createRequest(
+            'Update',
+            true,
+            $this->getValidationParameters($this->fields, false)
+        );
+
+        $this->createRequest(
+            'Search',
+            false,
+            $this->getSearchValidationParameters()
+        );
     }
 
-    protected function createRequest($method, $parametersContent = '') {
+    protected function createRequest($method, $needToValidate = true, $parameters = []) {
         $content = $this->getStub('request', [
-            'Method' => $method,
-            'Entity' => $this->model,
-            '/*parameters*/' => $parametersContent
+            'method' => $method,
+            'entity' => $this->model,
+            'parameters' => $parameters,
+            'needToValidate' => $needToValidate
         ]);
-        $requestName = "{$method}{$this->model}Request";
-        $createMessage = "Created a new Request: {$requestName}";
 
-        $this->saveClass('requests', $requestName, $content);
+        $this->saveClass('requests', "{$method}{$this->model}Request", $content);
 
-        event(new SuccessCreateMessage($createMessage));
+        event(new SuccessCreateMessage("Created a new Request: {$method}{$this->model}Request"));
     }
 
-    public function getValidationParametersContent($parameters, $requiredAvailable) {
-        $content = '';
+    protected function getSearchValidationParameters() {
+        $parameters = array_except($this->fields, ['timestamp', 'timestamp-required', 'string-required']);
+
+        $parameters['integer'] = array_merge($this->fields['integer'], [
+            'page', 'per_page', 'all',
+        ]);
+
+        $parameters['string'] = ['query'];
+
+        return $this->getValidationParameters($parameters, false);
+    }
+
+    public function getValidationParameters($parameters, $requiredAvailable) {
+        $result = [];
 
         foreach ($parameters as $type => $parameterNames) {
-            $explodedType = explode('-', $type);
-            $type = $explodedType[0];
-            $isRequired = array_has($explodedType, '1');
+            $isRequired = str_contains($type, 'required');
+            $type = head(explode('-', $type));
 
             foreach ($parameterNames as $name) {
-                if ($type == 'belongsTo') {
-                    $content .= $this->getRelationValidationContent($name, $requiredAvailable);
-                } else {
-                    $required = $isRequired && $requiredAvailable;
+                $required = $isRequired && $requiredAvailable;
 
-                    $content .= $this->getValidationContent($name, $type, $required);
-                }
+                $result[] = $this->getRules($name, $type, $required);
             }
         }
 
-        return $content;
+        return $result;
     }
 
-    protected function getRelationValidationContent($name, $required) {
-        $validation = "integer|exists:{$this->getTableName($name)},id";
-
-        $name = Str::lower($name).'_id';
-
-        return $this->getValidationContent($name, $validation, $required);
-    }
-
-    protected function getValidationContent($name, $validation, $required) {
+    protected function getRules($name, $type, $required) {
         $replaces = [
             'timestamp' => 'date',
             'float' => 'numeric',
         ];
 
-        foreach ($replaces as $key => $value)
-        {
-            if ($key == $validation) {
-                $validation = $value;
-            }
+        $rules = [
+            array_get($replaces, $type, $type)
+        ];
+
+        if (in_array($name, $this->relations['belongsTo'])) {
+            $tableName = str_replace('_id', '', $name);
+
+            $rules[] = "exists:{$this->getTableName($tableName)},id";
+
+            $required = true;
         }
 
         if ($required) {
-            $validation .= '|required';
+            $rules[] = 'required';
         }
 
-        return $this->getStub('validation_parameter', [
+        return [
             'name' => $name,
-            'validation' => $validation
-        ]);
+            'rules' => $rules
+        ];
     }
 }

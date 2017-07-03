@@ -15,13 +15,6 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ControllerGenerator extends EntityGenerator
 {
-    protected $model;
-
-    public function setModel($model) {
-        $this->model = $model;
-        return $this;
-    }
-
     public function generate() {
         if ($this->classExists('controllers', "{$this->model}Controller")) {
             $this->throwFailureException(
@@ -41,18 +34,17 @@ class ControllerGenerator extends EntityGenerator
         }
 
         $controllerContent = $this->getControllerContent($this->model);
-        $controllerName = "{$this->model}Controller";
-        $createMessage = "Created a new Controller: {$controllerName}";
 
-        $this->saveClass('controllers', $controllerName, $controllerContent);
+        $this->saveClass('controllers', "{$this->model}Controller", $controllerContent);
+
         $this->createRoutes();
 
-        event(new SuccessCreateMessage($createMessage));
+        event(new SuccessCreateMessage("Created a new Controller: {$this->model}Controller"));
     }
 
     protected function getControllerContent($model) {
         return $this->getStub('controller', [
-            'Entity' => $model
+            'entity' => $model
         ]);
     }
 
@@ -73,9 +65,10 @@ class ControllerGenerator extends EntityGenerator
 
     protected function addRoutes($routesPath) {
         $routesContent = $this->getStub('routes', [
-            'Entity' => $this->model,
+            'entity' => $this->model,
             'entities' => $this->getTableName($this->model)
         ]);
+
         $routes = explode("\n", $routesContent);
 
         foreach ($routes as $route) {
@@ -86,17 +79,17 @@ class ControllerGenerator extends EntityGenerator
             }
         }
 
-        return file_put_contents($routesPath, $routesContent, FILE_APPEND);
+        return file_put_contents($routesPath, "\n\n{$routesContent}", FILE_APPEND);
     }
 
     protected function addUseController($routesPath) {
         $routesFileContent = file_get_contents($routesPath);
 
         $stub = $this->getStub('use_routes', [
-            'Entity' => $this->model
+            'entity' => $this->model
         ]);
 
-        $routesFileContent = str_replace("<?php\n", $stub, $routesFileContent);
+        $routesFileContent = str_replace("<?php\n", "<?php\n\n{$stub}", $routesFileContent);
 
         file_put_contents($routesPath, $routesFileContent);
     }

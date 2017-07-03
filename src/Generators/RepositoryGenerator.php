@@ -8,20 +8,11 @@
 
 namespace RonasIT\Support\Generators;
 
-
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class RepositoryGenerator extends EntityGenerator
 {
-    protected $model;
-
-    /** @return $this */
-    public function setModel($model) {
-        $this->model = $model;
-        return $this;
-    }
-
     public function generate()
     {
         if (!$this->classExists('models', $this->model)) {
@@ -30,22 +21,24 @@ class RepositoryGenerator extends EntityGenerator
                 "Cannot create {$this->model} Model cause {$this->model} Model does not exists.",
                 "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'."
             );
-
         }
 
-        $repositoryContent = $this->getRepositoryContent();
-        $repositoryName = "{$this->model}Repository";
-        $createMessage = "Created a new Repository: {$repositoryName}";
+        $repositoryContent = $this->getStub('repository', [
+            'entity' => $this->model,
+            'fields' => $this->getFields()
+        ]);
 
-        $this->saveClass('repositories', $repositoryName, $repositoryContent);
+        $this->saveClass('repositories', "{$this->model}Repository", $repositoryContent);
 
-        event(new SuccessCreateMessage($createMessage));
+        event(new SuccessCreateMessage("Created a new Repository: {$this->model}Repository"));
     }
 
-    protected function getRepositoryContent() {
-        return $this->getStub('repository', [
-            'EntityRepository' => "{$this->model}Repository",
-            'EntityModel' => $this->model
-        ]);
+    protected function getFields() {
+        $simpleSearch = array_only($this->fields, ['integer', 'integer-required', 'boolean', 'boolean-required']);
+
+        return [
+            'simple_search' => array_collapse($simpleSearch),
+            'search_by_query' => array_merge($this->fields['string'], $this->fields['string-required'])
+        ];
     }
 }

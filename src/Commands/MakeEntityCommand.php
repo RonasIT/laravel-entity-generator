@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use RonasIT\Support\Generators\ControllerGenerator;
+use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Generators\MigrationsGenerator;
 use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Generators\RepositoryGenerator;
@@ -28,6 +29,7 @@ use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
  * @property RepositoryGenerator $repositoryGenerator
  * @property RequestsGenerator $requestsGenerator
  * @property ServiceGenerator $serviceGenerator
+ * @property FactoryGenerator $factoryGenerator
  * @property TestsGenerator $testGenerator
  * @property EventDispatcher $eventDispatcher
 */
@@ -45,11 +47,16 @@ class MakeEntityCommand extends Command
         {--without-controller : Set this flag if you don\'t want to create controller. Automatically requests will not create too.} 
         {--without-migrations : Set this flag if you already have table on db. This flag is a lower priority than --only-migrations}
         {--without-requests : Set this flag if you don\'t want to create requests to you controller}
+        {--without-factory : Set this flag if you don\'t want to create factory}
         {--without-tests : Set this flag if you don\'t want to create tests. This flag is a lower priority than --only-tests}
         
         {--only-model : Set this flag if you want to create only model. This flag is a higher priority than --without-model, --only-migrations, --only-tests and --only-repository} 
         {--only-repository : Set this flag if you want to create only repository. This flag is a higher priority than --without-repository, --only-tests and --only-migrations}
+        {--only-service : Set this flag if you want to create only service.}
+        {--only-controller : Set this flag if you want to create only controller.}
+        {--only-requests : Set this flag if you want to create only requests.}
         {--only-migrations : Set this flag if you want to create only repository. This flag is a higher priority than --without-migrations and --only-tests}
+        {--only-factory : Set this flag if you want to create only factory. This flag is a higher priority than --without-factory}
         {--only-tests : Set this flag if you want to create only tests. This flag is a higher priority than --without-tests}
         
         {--i|integer=* : Add integer field to entity}
@@ -81,14 +88,37 @@ class MakeEntityCommand extends Command
     protected $repositoryGenerator;
     protected $requestsGenerator;
     protected $serviceGenerator;
+    protected $factoryGenerator;
     protected $testGenerator;
     protected $eventDispatcher;
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
+    protected $rules = [
+        'only' => [
+            'only-model' => [ModelGenerator::class],
+            'only-repository' => [RepositoryGenerator::class],
+            'only-service' => [ServiceGenerator::class],
+            'only-controller' => [ControllerGenerator::class],
+            'only-requests' => [RequestsGenerator::class],
+            'only-migrations' => [MigrationsGenerator::class],
+            'only-factory' => [FactoryGenerator::class],
+            'only-tests' => [FactoryGenerator::class, TestsGenerator::class],
+        ],
+        'without' => [
+            'without-model' => [ModelGenerator::class],
+            'without-repository' => [RepositoryGenerator::class],
+            'without-service' => [ServiceGenerator::class],
+            'without-controller' => [ControllerGenerator::class, RequestsGenerator::class],
+            'without-migrations' => [MigrationsGenerator::class],
+            'without-requests' => [RequestsGenerator::class],
+            'without-factory' => [FactoryGenerator::class],
+            'without-tests' => [TestsGenerator::class]
+        ]
+    ];
+    public $generators = [
+        ModelGenerator::class, RepositoryGenerator::class, ServiceGenerator::class, RequestsGenerator::class,
+        ControllerGenerator::class, MigrationsGenerator::class, FactoryGenerator::class, TestsGenerator::class
+    ];
+
     public function __construct()
     {
         parent::__construct();
@@ -99,6 +129,7 @@ class MakeEntityCommand extends Command
         $this->repositoryGenerator = app(RepositoryGenerator::class);
         $this->requestsGenerator = app(RequestsGenerator::class);
         $this->serviceGenerator = app(ServiceGenerator::class);
+        $this->factoryGenerator = app(FactoryGenerator::class);
         $this->testGenerator = app(TestsGenerator::class);
         $this->eventDispatcher = app(EventDispatcher::class);
     }
@@ -120,130 +151,40 @@ class MakeEntityCommand extends Command
     }
 
     protected function generate() {
-        if ($this->option('only-model')) {
-            $this->generateModel();
+        foreach ($this->rules['only'] as $option => $generators) {
+            if ($this->option($option)) {
+                foreach ($generators as $generator) {
+                    $this->runGeneration($generator);
+                }
 
-            return;
-        }
-
-        if ($this->option('only-repository')) {
-            $this->generateRepository();
-
-            return;
-        }
-
-        if ($this->option('only-migrations')) {
-            $this->generateMigrations();
-
-            return;
-        }
-
-        if ($this->option('only-tests')) {
-            $this->generateTests();
-
-            return;
-        }
-
-        if (!$this->option('without-model')) {
-            $this->generateModel();
-        }
-
-        if (!$this->option('without-repository')) {
-            $this->generateRepository();
-        }
-
-        if (!$this->option('without-migrations')) {
-            $this->generateMigrations();
-        }
-
-        if (!$this->option('without-service')) {
-            $this->generateService();
-        }
-
-        if (!$this->option('without-controller')) {
-            if (!$this->option('without-requests')) {
-                $this->generateRequests();
+                return;
             }
-
-            $this->generateController();
         }
 
-        if (!$this->option('without-tests')) {
-            $this->generateTests();
+        $methods = $this->getMethods();
+
+        foreach ($methods as $option => $generator) {
+            $this->runGeneration($generator);
         }
     }
 
-    protected function generateModel() {
-        $fieldOptions = array_only($this->options(), [
-            'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
-            'boolean-required', 'boolean', 'timestamp-required', 'timestamp'
-        ]);
+    protected function getMethods() {
+        $options = array_filter($this->options(), function ($option) {
+            return $option === true;
+        });
 
-        $this->modelGenerator
-            ->setName($this->argument('name'))
-            ->setFields(array_collapse($fieldOptions))
-            ->setRelations($this->getRelations())
-            ->generate();
+        $optionsNames = array_keys($options);
+        $rules = array_only($this->rules['without'], $optionsNames);
+
+        $exceptGenerators = array_collapse($rules);
+
+        return array_subtraction($this->generators, $exceptGenerators);
     }
 
-    protected function generateRepository() {
-        $this->repositoryGenerator
+    protected function runGeneration($generator) {
+        app($generator)
             ->setModel($this->argument('name'))
-            ->generate();
-    }
-
-    protected function generateMigrations() {
-        $fields = array_only($this->options(), [
-            'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
-            'boolean-required', 'boolean', 'timestamp-required', 'timestamp'
-        ]);
-
-        $this->migrationsGenerator
-            ->setName($this->argument('name'))
-            ->setFields($fields)
-            ->setRelations($this->getRelations())
-            ->generate();
-    }
-
-    protected function generateService() {
-        $this->serviceGenerator
-            ->setModel($this->argument('name'))
-            ->generate();
-    }
-
-    protected function generateController() {
-        $this->controllerGenerator
-            ->setModel($this->argument('name'))
-            ->generate();
-    }
-
-    protected function generateRequests() {
-        $fields = array_only($this->options(), [
-            'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
-            'boolean-required', 'boolean', 'timestamp-required', 'timestamp'
-        ]);
-
-        $fieldsFromRelations = $this->option('belongs-to');
-
-        foreach ($fieldsFromRelations as $field) {
-            $fields['belongsTo'][] = $field;
-        }
-
-        $this->requestsGenerator
-            ->setModel($this->argument('name'))
-            ->setFields($fields)
-            ->generate();
-    }
-
-    protected function generateTests() {
-        $fields = array_only($this->options(), [
-            'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
-            'boolean-required', 'boolean', 'timestamp-required', 'timestamp'
-        ]);
-
-        $this->testGenerator
-            ->setModel($this->argument('name'))
-            ->setFields($fields)
+            ->setFields($this->getFields())
             ->setRelations($this->getRelations())
             ->generate();
     }
@@ -261,6 +202,13 @@ class MakeEntityCommand extends Command
         return function (SuccessCreateMessage $event) {
             $this->info($event->message);
         };
+    }
+
+    protected function getFields() {
+        return array_only($this->options(), [
+            'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
+            'boolean-required', 'boolean', 'timestamp-required', 'timestamp'
+        ]);
     }
 }
 
