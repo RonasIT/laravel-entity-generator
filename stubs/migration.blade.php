@@ -17,20 +17,7 @@ class Create{{$entity}}Table extends Migration
     {
         DB::beginTransaction();
 
-        Schema::create({{\Illuminate\Support\Str::plural(snake_case($entity))}}, function (Blueprint $table) {
-            $table->increments('id');
-            $table->timestamps();
-
-@foreach ($fields as $typeName => $fieldNames)
-@foreach($fieldNames as $fieldName)
-@if (empty(explode('-', $typeName)[1]))
-            $table->{{ explode('-', $typeName)[0] }}('{{$fieldName}}')->nullable();
-@else
-            $table->{{ explode('-', $typeName)[0] }}('{{$fieldName}}');
-@endif
-@endforeach
-@endforeach
-        });
+        $this->createTable();
 
 @foreach($relations['belongsToMany'] as $relation)
         $this->createBridgeTable('{{$entity}}', '{{$relation}}');
@@ -65,5 +52,22 @@ class Create{{$entity}}Table extends Migration
 @endforeach
 
         DB::commit();
+    }
+
+    public function createTable() {
+        Schema::create('{{\Illuminate\Support\Str::plural(snake_case($entity))}}', function (Blueprint $table) {
+            $table->increments('id');
+            $table->timestamps();
+
+@foreach ($fields as $typeName => $fieldNames)
+    @foreach($fieldNames as $fieldName)
+        @if (empty(explode('-', $typeName)[1]))
+            $table->{{ explode('-', $typeName)[0] }}('{{$fieldName}}')->nullable();
+        @else
+            $table->{{ explode('-', $typeName)[0] }}('{{$fieldName}}');
+        @endif
+    @endforeach
+@endforeach
+        });
     }
 }
