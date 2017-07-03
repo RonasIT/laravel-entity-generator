@@ -26,12 +26,10 @@ class {{$entity}}Test extends TestCase
 
         $response = $this->actingAs($this->user)->json('post', '/{{$entities}}', $data);
 
-        $responseData = array_except(
-            $response->json(),
-            ['id', 'updated_at', 'created_at']
-        );
+        $expect = array_except($data, ['id', 'updated_at', 'created_at']);
+        $actual = array_except($response->json(), ['id', 'updated_at', 'created_at']);
 
-        $this->assertEqualsFixture('new_{{strtolower($entity)}}.json', $responseData);
+        $this->assertEquals($expect, $actual);
     }
 
     public function testCreateNoAuth() {
@@ -95,7 +93,7 @@ class {{$entity}}Test extends TestCase
 
         $filteredResponse = array_except($response->json(), ['created_at', 'updated_at']);
 
-        $this->assertEqualsFixture('entity.json', $filteredResponse);
+        $this->assertEqualsFixture('{{strtolower($entity)}}.json', $filteredResponse);
     }
 
     public function testGetNotExists() {

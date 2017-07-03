@@ -48,7 +48,6 @@ class TestsGenerator extends EntityGenerator
 
     protected function createTests() {
         $this->generateExistedEntityFixture();
-        $this->generateNewEntityFixture();
         $this->generateTest();
     }
 
@@ -90,17 +89,17 @@ class TestsGenerator extends EntityGenerator
         $values = $this->getValues($model);
 
         $values = array_associate($values, function ($value, $key) {
-            if (in_array($key, $this->fields['timestamp']) || in_array($key, $this->fields['timestamp-required'])) {
+            if ($value instanceof \DateTime) {
                 return [
                     'key' => $key,
                     'value' => "'{$value->format('Y-m-d h:i:s')}'"
                 ];
             }
 
-            if (in_array($key, $this->fields['boolean']) || in_array($key, $this->fields['boolean-required'])) {
+            if (is_bool($value)) {
                 return [
                     'key' => $key,
-                    'value' => $value ? 'true' : 'false'
+                    'value' => (int)$value
                 ];
             }
 
@@ -174,17 +173,6 @@ class TestsGenerator extends EntityGenerator
         }, array_keys($fields), $fields);
 
         return implode(",\n            ", $lines);
-    }
-
-    protected function generateNewEntityFixture() {
-        $this->createFields = $this->getMockModel($this->model);
-        $fields = $this->prepareFieldsContent($this->createFields);
-        $entity = Str::lower($this->model);
-
-        $this->generateFixture(
-            "new_{$entity}.json",
-            $fields
-        );
     }
 
     protected function generateExistedEntityFixture() {

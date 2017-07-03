@@ -30,7 +30,7 @@ return [
         'use_routes' => 'entity-generator::use_routes',
         'factory' => 'entity-generator::factory',
         'migration' => 'entity-generator::migration',
-        'dump' => 'entity-generator::dump_pgsql',
+        'dump' => 'entity-generator::dumps.pgsql',
         'test' => 'entity-generator::test'
     ]
 ];

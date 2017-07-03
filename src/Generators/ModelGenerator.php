@@ -15,20 +15,6 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ModelGenerator extends EntityGenerator
 {
-    /**
-     * @param array $relations
-     * @return $this
-     */
-    public function setRelations($relations) {
-        $this->relations = $relations;
-
-        foreach ($relations['belongsTo'] as $relation) {
-            $this->fields[] = Str::lower($relation).'_id';
-        }
-
-        return $this;
-    }
-
     public function generate()
     {
         if ($this->classExists('models', $this->model)) {
