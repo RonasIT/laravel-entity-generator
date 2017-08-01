@@ -49,7 +49,7 @@ abstract class EntityGenerator
         $this->relations = $relations;
 
         foreach ($relations['belongsTo'] as $field) {
-            $name = Str::lower($field).'_id';
+            $name = snake_case($field).'_id';
 
             $this->fields['integer-require'][] = $name;
         }

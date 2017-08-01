@@ -14,7 +14,7 @@ class {{$entity}}Test extends TestCase
     }
 
     public function testCreate() {
-        $data = $this->getJsonFixture('{{strtolower($entity)}}.json');
+        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('post', '/{{$entities}}', $data);
 
@@ -22,7 +22,7 @@ class {{$entity}}Test extends TestCase
     }
 
     public function testCreateCheckResponse() {
-        $data = $this->getJsonFixture('{{strtolower($entity)}}.json');
+        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('post', '/{{$entities}}', $data);
 
@@ -33,7 +33,7 @@ class {{$entity}}Test extends TestCase
     }
 
     public function testCreateNoAuth() {
-        $data = $this->getJsonFixture('{{strtolower($entity)}}.json');
+        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
 
         $response = $this->json('post', '/{{$entities}}', $data);
 
@@ -41,7 +41,7 @@ class {{$entity}}Test extends TestCase
     }
 
     public function testUpdate() {
-        $data = $this->getJsonFixture('{{strtolower($entity)}}.json');
+        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/1', $data);
 
@@ -49,7 +49,7 @@ class {{$entity}}Test extends TestCase
     }
 
     public function testUpdateNotExists() {
-        $data = $this->getJsonFixture('{{strtolower($entity)}}.json');
+        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/0', $data);
 
@@ -57,7 +57,7 @@ class {{$entity}}Test extends TestCase
     }
 
     public function testUpdateNoAuth() {
-        $data = $this->getJsonFixture('{{strtolower($entity)}}.json');
+        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
 
         $response = $this->json('put', '/{{$entities}}/1', $data);
 
@@ -93,7 +93,7 @@ class {{$entity}}Test extends TestCase
 
         $filteredResponse = array_except($response->json(), ['created_at', 'updated_at']);
 
-        $this->assertEqualsFixture('{{strtolower($entity)}}.json', $filteredResponse);
+        $this->assertEqualsFixture('{{snake_case($entity)}}.json', $filteredResponse);
     }
 
     public function testGetNotExists() {

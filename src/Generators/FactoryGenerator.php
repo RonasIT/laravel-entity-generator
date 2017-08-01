@@ -83,7 +83,7 @@ class FactoryGenerator extends EntityGenerator
             preg_match($this->getFactoryPattern($relation), $modelFactoryContent, $matches);
 
             foreach ($matches as $match) {
-                $field = Str::lower($this->model) . '_id';
+                $field = snake_case($this->model) . '_id';
 
                 $newField = "\n        \"{$field}\" => 1,";
 

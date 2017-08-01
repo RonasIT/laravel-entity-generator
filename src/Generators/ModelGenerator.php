@@ -57,7 +57,7 @@ class ModelGenerator extends EntityGenerator
             $content = $this->getModelContent($relation);
 
             $newRelation = $this->getStub('relation', [
-                'name' => Str::lower($this->model),
+                'name' => snake_case($this->model),
                 'type' => 'belongsTo',
                 'entity' => $this->model
             ]);
@@ -81,7 +81,7 @@ class ModelGenerator extends EntityGenerator
             foreach ($relations as $relation) {
                 if (!empty($relation)) {
                     $result[] = [
-                        'name' => Str::lower($relation),
+                        'name' => snake_case($relation),
                         'type' => $type,
                         'entity' => $relation
                     ];

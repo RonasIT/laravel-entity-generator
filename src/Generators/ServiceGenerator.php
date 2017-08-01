@@ -16,7 +16,7 @@ class ServiceGenerator extends EntityGenerator
 {
     public function setRelations($relations) {
         foreach ($relations['belongsTo'] as $field) {
-            $name = Str::lower($field).'_id';
+            $name = snake_case($field).'_id';
 
             $this->fields['integer'][] = $name;
         }

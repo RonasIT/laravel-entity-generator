@@ -176,7 +176,7 @@ class TestsGenerator extends EntityGenerator
     }
 
     protected function generateExistedEntityFixture() {
-        $entity = Str::lower($this->model);
+        $entity = snake_case($this->model);
         $fields = $this->prepareFieldsContent($this->getFields);
 
         $this->generateFixture(

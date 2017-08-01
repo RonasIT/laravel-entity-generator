@@ -18,7 +18,7 @@ class RequestsGenerator extends EntityGenerator
         parent::setRelations($relations);
 
         $this->relations['belongsTo'] = array_map(function ($field) {
-            return Str::lower($field).'_id';
+            return snake_case($field).'_id';
         }, $this->relations['belongsTo']);
 
         return $this;
