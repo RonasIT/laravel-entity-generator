@@ -7,24 +7,20 @@ class {{$entity}}Test extends TestCase
 {
     protected $user;
 
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
 
         $this->user = User::find(1);
     }
 
-    public function testCreate() {
+    public function testCreate()
+    {
         $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('post', '/{{$entities}}', $data);
 
         $response->assertStatus(Response::HTTP_OK);
-    }
-
-    public function testCreateCheckResponse() {
-        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
-
-        $response = $this->actingAs($this->user)->json('post', '/{{$entities}}', $data);
 
         $expect = array_except($data, ['id', 'updated_at', 'created_at']);
         $actual = array_except($response->json(), ['id', 'updated_at', 'created_at']);
@@ -32,7 +28,8 @@ class {{$entity}}Test extends TestCase
         $this->assertEquals($expect, $actual);
     }
 
-    public function testCreateNoAuth() {
+    public function testCreateNoAuth()
+    {
         $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
 
         $response = $this->json('post', '/{{$entities}}', $data);
@@ -40,7 +37,8 @@ class {{$entity}}Test extends TestCase
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testUpdate() {
+    public function testUpdate()
+    {
         $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/1', $data);
@@ -48,7 +46,8 @@ class {{$entity}}Test extends TestCase
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
-    public function testUpdateNotExists() {
+    public function testUpdateNotExists()
+    {
         $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/0', $data);
@@ -56,7 +55,8 @@ class {{$entity}}Test extends TestCase
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
-    public function testUpdateNoAuth() {
+    public function testUpdateNoAuth()
+    {
         $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
 
         $response = $this->json('put', '/{{$entities}}/1', $data);
@@ -64,45 +64,45 @@ class {{$entity}}Test extends TestCase
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testDelete() {
+    public function testDelete()
+    {
         $response = $this->actingAs($this->user)->json('delete', '/{{$entities}}/1');
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
-    public function testDeleteNotExists() {
-        $response = $this->actingAs($this->user)->json('delete', '/{{$entities}}/2');
+    public function testDeleteNotExists()
+    {
+        $response = $this->actingAs($this->user)->json('delete', '/{{$entities}}/0');
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
-    public function testDeleteNoAuth() {
+    public function testDeleteNoAuth()
+    {
         $response = $this->json('delete', '/{{$entities}}/1');
 
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
-    public function testGet() {
+    public function testGet()
+    {
         $response = $this->actingAs($this->user)->json('get', '/{{$entities}}/1');
 
         $response->assertStatus(Response::HTTP_OK);
+
+        $this->assertEqualsFixture('{{snake_case($entity)}}.json', $response->json());
     }
 
-    public function testGetCheckResponse() {
-        $response = $this->actingAs($this->user)->json('get', '/{{$entities}}/1');
-
-        $filteredResponse = array_except($response->json(), ['created_at', 'updated_at']);
-
-        $this->assertEqualsFixture('{{snake_case($entity)}}.json', $filteredResponse);
-    }
-
-    public function testGetNotExists() {
-        $response = $this->actingAs($this->user)->json('get', '/{{$entities}}/2');
+    public function testGetNotExists()
+    {
+        $response = $this->actingAs($this->user)->json('get', '/{{$entities}}/0');
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
-    public function getSearchFilters() {
+    public function getSearchFilters()
+    {
         return [
             // TODO: Need to add search filters
         ];
@@ -114,7 +114,8 @@ class {{$entity}}Test extends TestCase
      * @param array $filter
      * @param string $fixture
      */
-    public function testSearch($filter, $fixture) {
+    public function testSearch($filter, $fixture)
+    {
         $response = $this->json('get', '/{{$entities}}', $filter);
 
         $response->assertStatus(Response::HTTP_OK);
