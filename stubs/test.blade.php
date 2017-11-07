@@ -91,9 +91,7 @@ class {{$entity}}Test extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $filteredResponse = array_except($response->json(), ['created_at', 'updated_at']);
-
-        $this->assertEqualsFixture('{{strtolower($entity)}}.json', $filteredResponse);
+        $this->assertEqualsFixture('{{strtolower($entity)}}.json', $response->json());
     }
 
     public function testGetNotExists()
