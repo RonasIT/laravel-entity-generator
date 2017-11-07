@@ -10,7 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class {{$entity}}Controller extends Controller
 {
-    public function create(Create{{$entity}}Request $request, {{$entity}}Service $service) {
+    public function create(Create{{$entity}}Request $request, {{$entity}}Service $service)
+    {
         $data = $request->all();
 
         $result = $service->create($data);
@@ -18,13 +19,15 @@ class {{$entity}}Controller extends Controller
         return response()->json($result);
     }
 
-    public function get(Get{{$entity}}Request $request, {{$entity}}Service $service, $id) {
+    public function get(Get{{$entity}}Request $request, {{$entity}}Service $service, $id)
+    {
         $result = $service->first(['id' => $id]);
 
         return response()->json($result);
     }
 
-    public function update(Update{{$entity}}Request $request, {{$entity}}Service $service, $id) {
+    public function update(Update{{$entity}}Request $request, {{$entity}}Service $service, $id)
+    {
         $service->update(
             ['id' => $id],
             $request->all()
@@ -33,13 +36,15 @@ class {{$entity}}Controller extends Controller
         return response('', Response::HTTP_NO_CONTENT);
     }
 
-    public function delete(Delete{{$entity}}Request $request, {{$entity}}Service $service, $id) {
+    public function delete(Delete{{$entity}}Request $request, {{$entity}}Service $service, $id)
+    {
         $service->delete(['id' => $id]);
 
         return response('', Response::HTTP_NO_CONTENT);
     }
 
-    public function search(Search{{$entity}}Request $request, {{$entity}}Service $service) {
+    public function search(Search{{$entity}}Request $request, {{$entity}}Service $service)
+    {
         $result = $service->search($request->all());
 
         return response($result);

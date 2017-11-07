@@ -1,3 +1,4 @@
-    public function {{$name}}() {
+    public function {{$name}}()
+    {
         return $this->{{$type}}({{$entity}}::class);
     }
