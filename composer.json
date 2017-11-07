@@ -1,6 +1,6 @@
 {
   "name": "ronasit/laravel-entity-generator",
-  "version" : "1.0.2",
+  "version" : "1.0.3",
   "description": "Provided console command for generating entities.",
   "keywords": ["laravel", "entity generator"],
   "license": "MIT",
