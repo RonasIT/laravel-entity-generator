@@ -25,7 +25,7 @@ class MigrationsGenerator extends EntityGenerator
             'relations' => $this->relations,
             'fields' => $this->fields
         ]);
-        $now = Carbon::now()->timestamp;
+        $now = Carbon::now()->format('Y_m_d_His');
 
         $this->saveClass('migrations', "{$now}_create_{$entities}_table", $content);
 
