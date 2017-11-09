@@ -46,7 +46,7 @@ class Create{{$entity}}Table extends Migration
     {
         DB::beginTransaction();
 
-        Schema::drop('entities');
+        Schema::drop('{{\Illuminate\Support\Str::plural(snake_case($entity))}}');
 @foreach($relations['belongsToMany'] as $relation)
         $this->dropBridgeTable('{{$entity}}', '{{$relation}}');
 @endforeach
