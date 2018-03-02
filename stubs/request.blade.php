@@ -43,7 +43,7 @@ class {{$method}}{{$entity}}Request extends Request
         $service = app({{$entity}}Service::class);
 
         if (!$service->exists(['id' => $this->route('id')])) {
-            throw new NotFoundHttpException('{{$entity}} does not exists');
+            throw new NotFoundHttpException('{{$entity}} does not exist');
         }
     }
 @endif
