@@ -34,7 +34,6 @@ class TestsGenerator extends EntityGenerator
 
     protected function createDump() {
         $content = $this->getStub('dump', [
-            'truncates' => $this->getTruncates(),
             'inserts' => $this->getInserts()
         ]);
         $createMessage = "Created a new Test dump on path: {$this->paths['tests']}/fixtures/{$this->getTestClassName()}/dump.sql";
@@ -63,12 +62,6 @@ class TestsGenerator extends EntityGenerator
         }
 
         return $result;
-    }
-
-    protected function getTruncates() {
-        return array_map(function ($model) {
-            return $this->getTableName($model);
-        }, $this->getAllModels(['User', $this->model]));
     }
 
     protected function getInserts() {
