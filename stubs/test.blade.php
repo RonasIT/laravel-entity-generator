@@ -39,7 +39,7 @@ class {{$entity}}Test extends TestCase
 
     public function testUpdate()
     {
-        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/1', $data);
 
@@ -48,7 +48,7 @@ class {{$entity}}Test extends TestCase
 
     public function testUpdateNotExists()
     {
-        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/0', $data);
 
@@ -57,7 +57,7 @@ class {{$entity}}Test extends TestCase
 
     public function testUpdateNoAuth()
     {
-        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
 
         $response = $this->json('put', '/{{$entities}}/1', $data);
 
@@ -94,7 +94,7 @@ class {{$entity}}Test extends TestCase
         $this->exportJson($response->getData(), 'get_{{snake_case($entity)}}.json');
 
         $this->assertEqualsFixture('get_{{snake_case($entity)}}.json', $response->json());
- }
+    }
 
     public function testGetNotExists()
     {
@@ -106,7 +106,18 @@ class {{$entity}}Test extends TestCase
     public function getSearchFilters()
     {
         return [
-            // TODO: Need to add search filters
+            [
+                'filter' => ['all' => 1],
+                'result' => 'search_by_all_{{snake_case($entity)}}.json'
+            ],
+            [
+                'filter' => ['page' => 1],
+                'result' => 'search_by_page_{{snake_case($entity)}}.json'
+            ],
+            [
+                'filter' => ['per_page' => 1],
+                'result' => 'search_by_per_page_{{snake_case($entity)}}.json'
+            ],
         ];
     }
 
@@ -119,6 +130,8 @@ class {{$entity}}Test extends TestCase
     public function testSearch($filter, $fixture)
     {
         $response = $this->json('get', '/{{$entities}}', $filter);
+
+        $this->exportJson($response->getOriginalContent(), $fixture);
 
         $response->assertStatus(Response::HTTP_OK);
 
