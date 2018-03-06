@@ -1,10 +1,3 @@
-SET FOREIGN_KEY_CHECKS = 0;
-@foreach($truncates as $entity)
-truncate table {{$entity}};
-@endforeach
-SET FOREIGN_KEY_CHECKS = 1;
-
-
 @foreach($inserts as $entities)
 @foreach($entities['items'] as $entity)
 INSERT INTO {{$entities['name']}}({!! implode(', ', $entity['fields']) !!}, created_at, updated_at)
