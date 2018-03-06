@@ -16,7 +16,7 @@ class {{$entity}}Test extends TestCase
 
     public function testCreate()
     {
-        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('post', '/{{$entities}}', $data);
 
@@ -30,7 +30,7 @@ class {{$entity}}Test extends TestCase
 
     public function testCreateNoAuth()
     {
-        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
 
         $response = $this->json('post', '/{{$entities}}', $data);
 
@@ -39,7 +39,7 @@ class {{$entity}}Test extends TestCase
 
     public function testUpdate()
     {
-        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/1', $data);
 
@@ -48,7 +48,7 @@ class {{$entity}}Test extends TestCase
 
     public function testUpdateNotExists()
     {
-        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
 
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/0', $data);
 
@@ -57,7 +57,7 @@ class {{$entity}}Test extends TestCase
 
     public function testUpdateNoAuth()
     {
-        $data = $this->getJsonFixture('{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
 
         $response = $this->json('put', '/{{$entities}}/1', $data);
 
@@ -91,8 +91,10 @@ class {{$entity}}Test extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->assertEqualsFixture('{{snake_case($entity)}}.json', $response->json());
-    }
+        $this->exportJson($response->getData(), 'get_{{snake_case($entity)}}.json');
+
+        $this->assertEqualsFixture('get_{{snake_case($entity)}}.json', $response->json());
+ }
 
     public function testGetNotExists()
     {
