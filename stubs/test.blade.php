@@ -91,7 +91,8 @@ class {{$entity}}Test extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $this->exportJson($response->getData(), 'get_{{snake_case($entity)}}.json');
+        // TODO: Need to remove after first successful start
+        $this->exportJson($response->json(), 'get_{{snake_case($entity)}}.json');
 
         $this->assertEqualsFixture('get_{{snake_case($entity)}}.json', $response->json());
     }
@@ -131,7 +132,8 @@ class {{$entity}}Test extends TestCase
     {
         $response = $this->json('get', '/{{$entities}}', $filter);
 
-        $this->exportJson($response->getOriginalContent(), $fixture);
+        // TODO: Need to remove after first successful start
+        $this->exportJson($response->json(), $fixture);
 
         $response->assertStatus(Response::HTTP_OK);
 
