@@ -61,7 +61,9 @@ class RequestsGenerator extends EntityGenerator
     }
 
     protected function getSearchValidationParameters() {
-        $parameters = array_except($this->fields, ['timestamp', 'timestamp-required', 'string-required']);
+        $parameters = array_except($this->fields, [
+            'timestamp', 'timestamp-required', 'string-required', 'integer-required'
+        ]);
 
         $parameters['integer'] = array_merge($this->fields['integer'], [
             'page', 'per_page', 'all',
