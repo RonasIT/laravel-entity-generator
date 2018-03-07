@@ -1,11 +1,12 @@
 namespace App\Http\Requests;
-@if($needToValidate)
 
+@if($needToValidate)
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Services\{{$entity}}Service;
 @endif
+use Illuminate\Foundation\Http\FormRequest;
 
-class {{$method}}{{$entity}}Request extends Request
+class {{$method}}{{$entity}}Request extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
