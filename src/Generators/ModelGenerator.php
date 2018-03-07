@@ -62,7 +62,7 @@ class ModelGenerator extends EntityGenerator
                 'entity' => $this->model
             ]);
 
-            $fixedContent = preg_replace('/\}$/', "\n\n    {$newRelation}\n}", $content);
+            $fixedContent = preg_replace('/\}$/', "\n    {$newRelation}\n}", $content);
 
             $this->saveClass('models', $relation, $fixedContent);
         }
