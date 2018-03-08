@@ -171,11 +171,14 @@ class TestsGenerator extends EntityGenerator
     protected function generateExistedEntityFixture() {
         $entity = snake_case($this->model);
         $fields = $this->prepareFieldsContent($this->getFields);
+        $fixtureTypes = ['create', 'update'];
 
-        $this->generateFixture(
-            "{$entity}.json",
-            $fields
-        );
+        foreach ($fixtureTypes as $type) {
+            $this->generateFixture(
+                "{$type}_{$entity}.json",
+                $fields
+            );
+        }
     }
 
     protected function generateFixture($fixtureName, $data) {
