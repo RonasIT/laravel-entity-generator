@@ -62,9 +62,15 @@ class Create{{$class}}Table extends Migration
         Schema::create('{{\Illuminate\Support\Str::plural(snake_case($entity))}}', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-    @foreach ($fields as $fieldName => $fieldType)
-        $table->{{ explode('-', $fieldType)[0] }}('{{$fieldName}}'){!! empty(explode('-', $fieldType)[1]) ? '->nullable()' : '' !!};
-    @endforeach
-    });
+@foreach ($fields as $typeName => $fieldNames)
+@foreach($fieldNames as $fieldName)
+@if (empty(explode('-', $typeName)[1]))
+            $table->{{ explode('-', $typeName)[0] }}('{{$fieldName}}')->nullable();
+@else
+            $table->{{ explode('-', $typeName)[0] }}('{{$fieldName}}');
+@endif
+@endforeach
+@endforeach
+        });
     }
 }

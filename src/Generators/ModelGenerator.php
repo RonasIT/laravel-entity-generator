@@ -42,7 +42,6 @@ class ModelGenerator extends EntityGenerator
     }
 
     public function prepareRelatedModels() {
-        $relations = $this->relations;
         $types = [
             'hasMany'       =>  'belongsTo',
             'hasOne'        =>  'belongsTo',
@@ -50,7 +49,7 @@ class ModelGenerator extends EntityGenerator
             'belongsToMany' =>  'belongsToMany',
         ];
 
-        foreach ($relations as $type => $relationsByType) {
+        foreach ($this->relations as $type => $relationsByType) {
             foreach ($relationsByType as $relation) {
                 if (!$this->classExists('models', $relation)) {
                     $this->throwFailureException(

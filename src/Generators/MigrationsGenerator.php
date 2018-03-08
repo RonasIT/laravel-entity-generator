@@ -18,19 +18,13 @@ class MigrationsGenerator extends EntityGenerator
 
     public function generate() {
         $entities = $this->getTableName($this->model);
-        $fields = $this->fields;
-
-        foreach ($fields as $typeName => $fieldNames) {
-            unset($fields[$typeName]);
-            empty($fieldNames) ?: $fields = array_merge($fields, array_fill_keys($fieldNames, $typeName));
-        }
 
         $content = $this->getStub('migration', [
             'class' => $this->getTableClassName($this->model),
             'entity' => $this->model,
             'entities' => $entities,
             'relations' => $this->relations,
-            'fields' => $fields
+            'fields' => $this->fields
         ]);
         $now = Carbon::now()->format('Y_m_d_His');
 
