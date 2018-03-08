@@ -26,12 +26,10 @@ class Create{{$class}}Table extends Migration
         $this->addForeignKey('{{$entity}}', '{{$relation}}');
 @endforeach
 @foreach($relations['hasOne'] as $relation)
-        $this->addField({{$entity}}, '{{$relation}}');
-        $this->addForeignKey('{{$relation}}', '{{$entity}}');
+        $this->addForeignKey('{{$relation}}', '{{$entity}}', true);
 @endforeach
 @foreach($relations['hasMany'] as $relation)
-        $this->addField({{$entity}}, '{{$relation}}');
-        $this->addForeignKey('{{$relation}}', '{{$entity}}');
+        $this->addForeignKey('{{$relation}}', '{{$entity}}', true);
 @endforeach
 
         DB::commit();
@@ -46,6 +44,12 @@ class Create{{$class}}Table extends Migration
     {
         DB::beginTransaction();
 
+@foreach($relations['hasOne'] as $relation)
+        $this->dropForeignKey('{{$relation}}', '{{$entity}}', true);
+@endforeach
+@foreach($relations['hasMany'] as $relation)
+        $this->dropForeignKey('{{$relation}}', '{{$entity}}', true);
+@endforeach
         Schema::drop('{{\Illuminate\Support\Str::plural(snake_case($entity))}}');
 @foreach($relations['belongsToMany'] as $relation)
         $this->dropBridgeTable('{{$entity}}', '{{$relation}}');
@@ -58,7 +62,6 @@ class Create{{$class}}Table extends Migration
         Schema::create('{{\Illuminate\Support\Str::plural(snake_case($entity))}}', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
-
     @foreach ($fields as $fieldName => $fieldType)
         $table->{{ explode('-', $fieldType)[0] }}('{{$fieldName}}'){!! empty(explode('-', $fieldType)[1]) ? '->nullable()' : '' !!};
     @endforeach
