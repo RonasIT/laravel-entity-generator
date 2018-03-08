@@ -50,10 +50,10 @@ class Create{{$class}}Table extends Migration
 @foreach($relations['hasMany'] as $relation)
         $this->dropForeignKey('{{$relation}}', '{{$entity}}', true);
 @endforeach
-        Schema::drop('{{\Illuminate\Support\Str::plural(snake_case($entity))}}');
 @foreach($relations['belongsToMany'] as $relation)
         $this->dropBridgeTable('{{$entity}}', '{{$relation}}');
 @endforeach
+        Schema::drop('{{\Illuminate\Support\Str::plural(snake_case($entity))}}');
 
         DB::commit();
     }
