@@ -28,8 +28,7 @@ class {{$method}}{{$entity}}Request extends FormRequest
 @if(!empty($parameters))
         return [
 @foreach($parameters as $parameter)
-            '{{$parameter['name']}}' => '{{implode('|', $parameter['rules'])}}{{
-            !in_array('required', $parameter['rules']) ? '|nullable' : ''}}',
+            '{{$parameter['name']}}' => '{{implode('|', $parameter['rules'])}}',
 @endforeach
         ];
 @else
