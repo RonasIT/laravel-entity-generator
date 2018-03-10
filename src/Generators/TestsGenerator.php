@@ -89,6 +89,13 @@ class TestsGenerator extends EntityGenerator
                 ];
             }
 
+            if (is_bool($value)) {
+                return [
+                    'key' => $key,
+                    'value' => $value ? 'true' : 'false'
+                ];
+            }
+
             return [
                 'key' => $key,
                 'value' => is_string($value) ? "'{$value}'" : $value
@@ -96,14 +103,6 @@ class TestsGenerator extends EntityGenerator
         });
 
         $this->getFields = $values;
-
-        $values = array_map(function ($value) {
-            if (is_bool($value)) {
-                $value =  $value ? 'true' : 'false';
-            }
-
-            return $value;
-        }, $values);
 
         return $values;
     }
@@ -262,21 +261,30 @@ class TestsGenerator extends EntityGenerator
 
     protected function prepareFieldsContent($content) {
         foreach ($content as $key => $value) {
-            $type = gettype($value);
-
             if ($this->checkDatetimeObject($value)) {
                 $content[$key] = $value->format('Y-m-d h:i:s');
 
                 continue;
             }
 
-            if (($type != 'boolean') && ($type != 'integer')) {
-                $content[$key] = trim($value, "'");
-            }
-
+            $content[$key] = $this->setFieldContent($value);
         }
 
         return $content;
+    }
+
+    protected function setFieldContent($value) {
+        $type = gettype($value);
+
+        if ($type != 'integer') {
+            $value = trim($value, "'");
+        }
+
+        if ($value == 'true' || $value == 'false') {
+            $value = (bool) $value;
+        }
+
+        return $value;
     }
 
     protected function checkDatetimeObject($content) {
