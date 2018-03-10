@@ -89,13 +89,6 @@ class TestsGenerator extends EntityGenerator
                 ];
             }
 
-            if (is_bool($value)) {
-                return [
-                    'key' => $key,
-                    'value' => (int)$value
-                ];
-            }
-
             return [
                 'key' => $key,
                 'value' => is_string($value) ? "'{$value}'" : $value
@@ -103,6 +96,14 @@ class TestsGenerator extends EntityGenerator
         });
 
         $this->getFields = $values;
+
+        $values = array_map(function ($value) {
+            if (is_bool($value)) {
+                $value =  $value ? 'true' : 'false';
+            }
+
+            return $value;
+        }, $values);
 
         return $values;
     }
@@ -269,9 +270,10 @@ class TestsGenerator extends EntityGenerator
                 continue;
             }
 
-            if (($type != 'bool') && ($type != 'int')) {
+            if (($type != 'boolean') && ($type != 'integer')) {
                 $content[$key] = trim($value, "'");
             }
+
         }
 
         return $content;
