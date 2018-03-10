@@ -76,8 +76,8 @@ abstract class EntityGenerator
         $entitiesPath = $this->paths[$path];
         $classPath = base_path("{$entitiesPath}/{$name}.php");
 
-        if(!is_file($classPath)) {
-            $content = "<?php\n\n{$content}";
+        if(!str_contains($content, $tag = "<?php\n\n")) {
+            $content = "{$tag}{$content}";
         }
 
         if (!file_exists($entitiesPath)) {
