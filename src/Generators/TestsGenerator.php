@@ -96,6 +96,10 @@ class TestsGenerator extends EntityGenerator
                 ];
             }
 
+            if (is_array($value)) {
+                $value = json_encode($value);
+            }
+
             return [
                 'key' => $key,
                 'value' => is_string($value) ? "'{$value}'" : $value
