@@ -75,8 +75,9 @@ abstract class EntityGenerator
     protected function saveClass($path, $name, $content) {
         $entitiesPath = $this->paths[$path];
         $classPath = base_path("{$entitiesPath}/{$name}.php");
+        $tag = "<?php\n\n";
 
-        if(!str_contains($content, $tag = "<?php\n\n")) {
+        if(!str_contains($content, $tag)) {
             $content = "{$tag}{$content}";
         }
 
