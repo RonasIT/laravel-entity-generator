@@ -42,29 +42,35 @@ class ModelGenerator extends EntityGenerator
     }
 
     public function prepareRelatedModels() {
-        $relations = array_only($this->relations, ['hasOne', 'hasMany']);
-        $relations = array_collapse($relations);
+        $types = [
+            'hasMany'       =>  'belongsTo',
+            'hasOne'        =>  'belongsTo',
+            'belongsTo'     =>  'hasOne',
+            'belongsToMany' =>  'belongsToMany',
+        ];
 
-        foreach ($relations as $relation) {
-            if (!$this->classExists('models', $relation)) {
-                $this->throwFailureException(
-                    ClassNotExistsException::class,
-                    "Cannot create {$relation} Model cause {$relation} Model does not exists.",
-                    "Create a {$relation} Model by himself or run command 'php artisan make:entity {$relation} --only-model'."
-                );
+        foreach ($this->relations as $type => $relationsByType) {
+            foreach ($relationsByType as $relation) {
+                if (!$this->classExists('models', $relation)) {
+                    $this->throwFailureException(
+                        ClassNotExistsException::class,
+                        "Cannot create {$relation} Model cause {$relation} Model does not exists.",
+                        "Create a {$relation} Model by himself or run command 'php artisan make:entity {$relation} --only-model'."
+                    );
+                }
+
+                $content = $this->getModelContent($relation);
+
+                $newRelation = $this->getStub('relation', [
+                    'name' => snake_case($this->model),
+                    'type' => $types[$type],
+                    'entity' => $this->model
+                ]);
+
+                $fixedContent = preg_replace('/\}$/', "\n    {$newRelation}\n}", $content);
+
+                $this->saveClass('models', $relation, $fixedContent);
             }
-
-            $content = $this->getModelContent($relation);
-
-            $newRelation = $this->getStub('relation', [
-                'name' => snake_case($this->model),
-                'type' => 'belongsTo',
-                'entity' => $this->model
-            ]);
-
-            $fixedContent = preg_replace('/\}$/', "\n\n    {$newRelation}\n}", $content);
-
-            $this->saveClass('models', $relation, $fixedContent);
         }
     }
 

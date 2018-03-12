@@ -12,9 +12,11 @@ class {{$entity}} extends Model
         '{{$field}}',
 @endforeach
     ];
-    protected $hidden = ['pivot'];
 
+    protected $hidden = ['pivot'];
 @foreach($relations as $relation)
+
     @include(config('entity-generator.stubs.relation'), $relation)
+
 @endforeach
 }

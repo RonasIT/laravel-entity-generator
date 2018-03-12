@@ -92,8 +92,12 @@ class TestsGenerator extends EntityGenerator
             if (is_bool($value)) {
                 return [
                     'key' => $key,
-                    'value' => (int)$value
+                    'value' => $value ? 'true' : 'false'
                 ];
+            }
+
+            if (is_array($value)) {
+                $value = json_encode($value);
             }
 
             return [
@@ -261,20 +265,30 @@ class TestsGenerator extends EntityGenerator
 
     protected function prepareFieldsContent($content) {
         foreach ($content as $key => $value) {
-            $type = gettype($value);
-
             if ($this->checkDatetimeObject($value)) {
                 $content[$key] = $value->format('Y-m-d h:i:s');
 
                 continue;
             }
 
-            if (($type != 'bool') && ($type != 'int')) {
-                $content[$key] = trim($value, "'");
-            }
+            $content[$key] = $this->setFieldContent($value);
         }
 
         return $content;
+    }
+
+    protected function setFieldContent($value) {
+        $type = gettype($value);
+
+        if ($type != 'integer') {
+            $value = trim($value, "'");
+        }
+
+        if ($value == 'true' || $value == 'false') {
+            $value = (bool) $value;
+        }
+
+        return $value;
     }
 
     protected function checkDatetimeObject($content) {

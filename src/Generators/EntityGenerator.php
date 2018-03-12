@@ -74,9 +74,12 @@ abstract class EntityGenerator
 
     protected function saveClass($path, $name, $content) {
         $entitiesPath = $this->paths[$path];
-        $content = "<?php\n\n{$content}";
-
         $classPath = base_path("{$entitiesPath}/{$name}.php");
+        $tag = "<?php\n\n";
+
+        if(!str_contains($content, $tag)) {
+            $content = "{$tag}{$content}";
+        }
 
         if (!file_exists($entitiesPath)) {
             mkdir_recursively(base_path($entitiesPath));
