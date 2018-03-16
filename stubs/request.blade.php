@@ -35,8 +35,8 @@ class {{$method}}{{$entity}}Request extends FormRequest
         return [];
 @endif
     }
-
 @if($needToValidate)
+
     public function validate()
     {
         parent::validate();
