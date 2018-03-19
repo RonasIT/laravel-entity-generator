@@ -35,12 +35,19 @@ class {{$method}}{{$entity}}Request extends FormRequest
         return [];
 @endif
     }
-@if($needToValidate)
 
+@if($needToValidate)
+@if(app()::VERSION < 5.6)
     public function validate()
     {
         parent::validate();
 
+@else
+    public function validateResolved()
+    {
+        parent::validateResolved();
+
+@endif
         $service = app({{$entity}}Service::class);
 
         if (!$service->exists(['id' => $this->route('id')])) {
