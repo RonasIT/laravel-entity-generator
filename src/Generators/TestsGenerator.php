@@ -65,6 +65,12 @@ class TestsGenerator extends EntityGenerator
     }
 
     protected function getInserts() {
+        $arrayModels = [$this->model];
+
+        if ($this->classExists('models', 'User')) {
+            array_unshift($arrayModels, 'User');
+        }
+
         return array_map(function ($model) {
             return [
                 'name' => $this->getTableName($model),
@@ -75,7 +81,7 @@ class TestsGenerator extends EntityGenerator
                     ]
                 ]
             ];
-        }, $this->getAllModels(['User', $this->model]));
+        }, $this->getAllModels($arrayModels));
     }
 
     protected function getValuesList($model) {
