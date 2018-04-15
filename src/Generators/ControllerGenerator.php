@@ -66,7 +66,8 @@ class ControllerGenerator extends EntityGenerator
     protected function addRoutes($routesPath) {
         $routesContent = $this->getStub('routes', [
             'entity' => $this->model,
-            'entities' => $this->getTableName($this->model)
+            'entities' => $this->getTableName($this->model),
+            'withAuth' => $this->classExists('models', 'User')
         ]);
 
         $routes = explode("\n", $routesContent);
