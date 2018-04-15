@@ -53,7 +53,7 @@ class RequestsGenerator extends EntityGenerator
             'entity' => $this->model,
             'parameters' => $parameters,
             'needToValidate' => $needToValidate,
-            'reuqestsFolder' => $this->getPluralName($this->model),
+            'requestsFolder' => $this->getPluralName($this->model),
         ]);
 
         $this->saveClass('requests', "{$method}{$this->model}Request",

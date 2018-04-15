@@ -1,4 +1,4 @@
-namespace App\Http\Requests\{{$reuqestsFolder}};
+namespace App\Http\Requests\{{$requestsFolder}};
 
 @if($needToValidate)
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
