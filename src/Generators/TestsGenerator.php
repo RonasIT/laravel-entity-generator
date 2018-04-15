@@ -27,6 +27,8 @@ class TestsGenerator extends EntityGenerator
     protected $createFields = [];
     protected $updateFields = [];
 
+    protected $withAuth = false;
+
     public function generate() {
         $this->createDump();
         $this->createTests();
@@ -65,6 +67,13 @@ class TestsGenerator extends EntityGenerator
     }
 
     protected function getInserts() {
+        $arrayModels = [$this->model];
+
+        if ($this->classExists('models', 'User')) {
+            array_unshift($arrayModels, 'User');
+            $this->withAuth = true;
+        }
+
         return array_map(function ($model) {
             return [
                 'name' => $this->getTableName($model),
@@ -75,7 +84,7 @@ class TestsGenerator extends EntityGenerator
                     ]
                 ]
             ];
-        }, $this->getAllModels(['User', $this->model]));
+        }, $this->getAllModels($arrayModels));
     }
 
     protected function getValuesList($model) {
@@ -199,7 +208,8 @@ class TestsGenerator extends EntityGenerator
     protected function generateTest() {
         $content = $this->getStub('test', [
             'entity' => $this->model,
-            'entities' => $this->getTableName($this->model)
+            'entities' => $this->getTableName($this->model),
+            'withAuth' => $this->withAuth
         ]);
 
         $testName = $this->getTestClassName();

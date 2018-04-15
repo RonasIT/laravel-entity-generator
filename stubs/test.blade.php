@@ -1,24 +1,34 @@
 namespace App\Tests;
 
 use Symfony\Component\HttpFoundation\Response;
+@if ($withAuth)
 use App\Models\User;
+@endif
 
 class {{$entity}}Test extends TestCase
 {
+@if ($withAuth)
     protected $user;
 
+@endif
     public function setUp()
     {
         parent::setUp();
+@if ($withAuth)
 
         $this->user = User::find(1);
+@endif
     }
 
     public function testCreate()
     {
         $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
 
+@if (!$withAuth)
+        $response = $this->json('post', '/{{$entities}}', $data);
+@else
         $response = $this->actingAs($this->user)->json('post', '/{{$entities}}', $data);
+@endif
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -28,6 +38,7 @@ class {{$entity}}Test extends TestCase
         $this->assertEquals($expect, $actual);
     }
 
+@if ($withAuth)
     public function testCreateNoAuth()
     {
         $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
@@ -37,11 +48,16 @@ class {{$entity}}Test extends TestCase
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
+@endif
     public function testUpdate()
     {
         $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
 
+@if (!$withAuth)
+        $response = $this->json('put', '/{{$entities}}/1', $data);
+@else
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/1', $data);
+@endif
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
@@ -50,11 +66,16 @@ class {{$entity}}Test extends TestCase
     {
         $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
 
+@if (!$withAuth)
+        $response = $this->json('put', '/{{$entities}}/0', $data);
+@else
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/0', $data);
+@endif
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
+@if ($withAuth)
     public function testUpdateNoAuth()
     {
         $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
@@ -64,20 +85,30 @@ class {{$entity}}Test extends TestCase
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
+@endif
     public function testDelete()
     {
+@if (!$withAuth)
+        $response = $this->json('delete', '/{{$entities}}/1');
+@else
         $response = $this->actingAs($this->user)->json('delete', '/{{$entities}}/1');
+@endif
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
     public function testDeleteNotExists()
     {
+@if (!$withAuth)
+        $response = $this->json('delete', '/{{$entities}}/0');
+@else
         $response = $this->actingAs($this->user)->json('delete', '/{{$entities}}/0');
+@endif
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
 
+@if ($withAuth)
     public function testDeleteNoAuth()
     {
         $response = $this->json('delete', '/{{$entities}}/1');
@@ -85,9 +116,14 @@ class {{$entity}}Test extends TestCase
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
     }
 
+@endif
     public function testGet()
     {
+@if (!$withAuth)
+        $response = $this->json('get', '/{{$entities}}/1');
+@else
         $response = $this->actingAs($this->user)->json('get', '/{{$entities}}/1');
+@endif
 
         $response->assertStatus(Response::HTTP_OK);
 
@@ -99,7 +135,11 @@ class {{$entity}}Test extends TestCase
 
     public function testGetNotExists()
     {
+@if (!$withAuth)
+        $response = $this->json('get', '/{{$entities}}/0');
+@else
         $response = $this->actingAs($this->user)->json('get', '/{{$entities}}/0');
+@endif
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
     }
