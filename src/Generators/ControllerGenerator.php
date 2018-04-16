@@ -44,7 +44,8 @@ class ControllerGenerator extends EntityGenerator
 
     protected function getControllerContent($model) {
         return $this->getStub('controller', [
-            'entity' => $model
+            'entity' => $model,
+            'requestsFolder' => $this->getPluralName($model)
         ]);
     }
 

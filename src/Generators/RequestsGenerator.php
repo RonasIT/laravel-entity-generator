@@ -48,14 +48,19 @@ class RequestsGenerator extends EntityGenerator
     }
 
     protected function createRequest($method, $needToValidate = true, $parameters = []) {
+        $requestsFolder = $this->getPluralName($this->model);
+
         $content = $this->getStub('request', [
             'method' => $method,
             'entity' => $this->model,
             'parameters' => $parameters,
-            'needToValidate' => $needToValidate
+            'needToValidate' => $needToValidate,
+            'requestsFolder' => $requestsFolder,
         ]);
 
-        $this->saveClass('requests', "{$method}{$this->model}Request", $content);
+        $this->saveClass('requests', "{$method}{$this->model}Request",
+            $content, $requestsFolder
+        );
 
         event(new SuccessCreateMessage("Created a new Request: {$method}{$this->model}Request"));
     }

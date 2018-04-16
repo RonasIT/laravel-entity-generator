@@ -72,8 +72,13 @@ abstract class EntityGenerator
         return file_exists($classPath);
     }
 
-    protected function saveClass($path, $name, $content) {
+    protected function saveClass($path, $name, $content, $additionalEntityFolder = false) {
         $entitiesPath = $this->paths[$path];
+
+        if ($additionalEntityFolder) {
+            $entitiesPath = $entitiesPath . "/{$additionalEntityFolder}";
+        }
+
         $classPath = base_path("{$entitiesPath}/{$name}.php");
         $tag = "<?php\n\n";
 
@@ -100,7 +105,7 @@ abstract class EntityGenerator
         return Str::plural($entityName);
     }
 
-    protected function getTableClassName($entityName) {
+    protected function getPluralName($entityName) {
         return Str::plural($entityName);
     }
 
