@@ -8,11 +8,6 @@ class Create{{$class}}Table extends Migration
 {
     use MigrationTrait;
 
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
         DB::beginTransaction();
@@ -35,11 +30,6 @@ class Create{{$class}}Table extends Migration
         DB::commit();
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
         DB::beginTransaction();
