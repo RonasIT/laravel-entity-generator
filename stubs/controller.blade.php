@@ -1,10 +1,10 @@
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Create{{$entity}}Request;
-use App\Http\Requests\Get{{$entity}}Request;
-use App\Http\Requests\Update{{$entity}}Request;
-use App\Http\Requests\Delete{{$entity}}Request;
-use App\Http\Requests\Search{{$entity}}Request;
+use App\Http\Requests\{{$requestsFolder}}\Create{{$entity}}Request;
+use App\Http\Requests\{{$requestsFolder}}\Get{{$entity}}Request;
+use App\Http\Requests\{{$requestsFolder}}\Update{{$entity}}Request;
+use App\Http\Requests\{{$requestsFolder}}\Delete{{$entity}}Request;
+use App\Http\Requests\{{$requestsFolder}}\Search{{$entity}}Request;
 use App\Services\{{$entity}}Service;
 use Symfony\Component\HttpFoundation\Response;
 

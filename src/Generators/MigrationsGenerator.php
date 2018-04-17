@@ -20,7 +20,7 @@ class MigrationsGenerator extends EntityGenerator
         $entities = $this->getTableName($this->model);
 
         $content = $this->getStub('migration', [
-            'class' => $this->getTableClassName($this->model),
+            'class' => $this->getPluralName($this->model),
             'entity' => $this->model,
             'entities' => $entities,
             'relations' => $this->relations,
