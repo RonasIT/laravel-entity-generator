@@ -149,15 +149,15 @@ class {{$entity}}Test extends TestCase
         return [
             [
                 'filter' => ['all' => 1],
-                'result' => 'search_by_all_{{snake_case($entity)}}.json'
+                'result' => 'search_all.json'
             ],
             [
                 'filter' => ['page' => 1],
-                'result' => 'search_by_page_{{snake_case($entity)}}.json'
+                'result' => 'search_by_page.json'
             ],
             [
                 'filter' => ['per_page' => 1],
-                'result' => 'search_by_per_page_{{snake_case($entity)}}.json'
+                'result' => 'search_per_page.json'
             ],
         ];
     }
