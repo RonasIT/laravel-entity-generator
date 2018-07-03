@@ -4,8 +4,8 @@ use RonasIT\Support\Traits\EntityControlTrait;
 use App\Models\{{$entity}};
 
 /**
-* @property {{$entity}} $model
-*/
+ * @property {{$entity}} $model
+ */
 class {{$entity}}Service
 {
     use EntityControlTrait;

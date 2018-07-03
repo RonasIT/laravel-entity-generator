@@ -4,8 +4,8 @@ use App\Repositories\{{$entity}}Repository;
 use RonasIT\Support\Services\EntityService;
 
 /**
-* @property {{$entity}}Repository $repository
-*/
+ * @property {{$entity}}Repository $repository
+ */
 class {{$entity}}Service extends EntityService
 {
     public function __construct()
