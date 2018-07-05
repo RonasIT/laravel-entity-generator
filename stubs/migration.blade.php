@@ -48,7 +48,8 @@ class Create{{$class}}Table extends Migration
         DB::commit();
     }
 
-    public function createTable() {
+    public function createTable()
+    {
         Schema::create('{{\Illuminate\Support\Str::plural(snake_case($entity))}}', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
