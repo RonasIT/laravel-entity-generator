@@ -54,13 +54,13 @@ class Create{{$class}}Table extends Migration
             $table->increments('id');
             $table->timestamps();
 @foreach ($fields as $typeName => $fieldNames)
-    @foreach($fieldNames as $fieldName)
-        @if (empty(explode('-', $typeName)[1]))
+@foreach($fieldNames as $fieldName)
+@if (empty(explode('-', $typeName)[1]))
             $table->{{ explode('-', $typeName)[0] }}('{{$fieldName}}')->nullable();
-        @else
+@else
             $table->{{ explode('-', $typeName)[0] }}('{{$fieldName}}');
-        @endif
-    @endforeach
+@endif
+@endforeach
 @endforeach
         });
     }
