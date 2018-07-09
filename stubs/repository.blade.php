@@ -22,6 +22,7 @@ class {{$entity}}Repository extends BaseRepository
 @if(!empty($fields['search_by_query']))
             ->filterByQuery(['{!! implode('\', \'', $fields['search_by_query']) !!}'])
 @endif
+            ->orderBy()
             ->getSearchResults();
     }
 }
