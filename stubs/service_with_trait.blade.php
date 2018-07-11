@@ -5,7 +5,7 @@ use App\Models\{{$entity}};
 
 /**
  * @property {{$entity}} $model
-*/
+ */
 class {{$entity}}Service
 {
     use EntityControlTrait;
