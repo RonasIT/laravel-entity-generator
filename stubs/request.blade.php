@@ -26,7 +26,12 @@ class {{$method}}{{$entity}}Request extends FormRequest
 @endif
         ];
 @else
-        return [];
+        return [
+@if($method == 'Search')
+            'order_by' => 'string',
+            'desc' => 'boolean'
+@endif
+        ];
 @endif
     }
 
