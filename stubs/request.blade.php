@@ -15,26 +15,22 @@ class {{$method}}{{$entity}}Request extends FormRequest
 
     public function rules()
     {
-@if(!empty($parameters))
-        return [
+@if($method == 'Search')
+<?php $searchDefault = "    'order_by' => 'string',
+            'desc' => 'boolean'
+        "; ?>
+@else
+<?php $searchDefault = ""; ?>
+@endif
+        return [@if(!empty($parameters))
+
 @foreach($parameters as $parameter)
             '{{$parameter['name']}}' => '{{implode('|', $parameter['rules'])}}',
 @endforeach
-@if($method == 'Search')
-            'order_by' => 'string',
-            'desc' => 'boolean'
-@endif
-        ];
+        <?= $searchDefault ?>
 @else
-@if($method == 'Search')
-        return [
-            'order_by' => 'string',
-            'desc' => 'boolean'
-        ];
-@else
-        return [];
-@endif
-@endif
+<?= $searchDefault ?>
+@endif];
     }
 
 @if($needToValidate)
