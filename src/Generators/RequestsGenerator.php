@@ -74,7 +74,9 @@ class RequestsGenerator extends EntityGenerator
             'page', 'per_page', 'all',
         ]);
 
-        $parameters['string'] = ['query'];
+        $parameters['string'] = ['query', 'order_by'];
+
+        $parameters['boolean'] = ['desc'];
 
         return $this->getValidationParameters($parameters, false);
     }

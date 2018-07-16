@@ -20,8 +20,6 @@ class {{$method}}{{$entity}}Request extends FormRequest
 @foreach($parameters as $parameter)
             '{{$parameter['name']}}' => '{{implode('|', $parameter['rules'])}}',
 @endforeach
-            'order_by' => 'string',
-            'desc' => 'boolean'
         ];
 @else
         return [];
