@@ -78,6 +78,8 @@ class RequestsGenerator extends EntityGenerator
 
         $parameters['boolean'] = ['desc'];
 
+        $parameters['array']  = ['with'];
+
         return $this->getValidationParameters($parameters, false);
     }
 

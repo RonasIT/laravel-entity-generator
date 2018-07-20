@@ -23,6 +23,7 @@ class {{$entity}}Repository extends BaseRepository
             ->filterByQuery(['{!! implode('\', \'', $fields['search_by_query']) !!}'])
 @endif
             ->orderBy()
+            ->with()
             ->getSearchResults();
     }
 }
