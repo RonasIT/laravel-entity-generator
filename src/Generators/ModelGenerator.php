@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 19.10.16
- * Time: 8:26
- */
 
 namespace RonasIT\Support\Generators;
 

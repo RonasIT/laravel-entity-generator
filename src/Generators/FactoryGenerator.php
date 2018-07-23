@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 19.10.16
- * Time: 12:28
- */
 
 namespace RonasIT\Support\Generators;
 
@@ -15,10 +9,24 @@ use RonasIT\Support\Exceptions\ModelFactoryNotFound;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ModelFactoryNotFoundedException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use Exception;
 
 class FactoryGenerator extends EntityGenerator
 {
-    public function generate() {
+    const FAKERS_METHODS = [
+        'integer' => 'randomNumber()',
+        'boolean' => 'boolean',
+        'string' => 'word',
+        'float' => 'randomFloat()',
+        'timestamp' => 'dateTime',
+    ];
+
+    const CUSTOM_METHODS = [
+        'json' => '[]'
+    ];
+
+    public function generate()
+    {
         if (!$this->checkExistModelFactory() && $this->checkExistRelatedModelsFactories()) {
             $stubPath = config("entity-generator.stubs.factory");
 
@@ -27,7 +35,7 @@ class FactoryGenerator extends EntityGenerator
                 'fields' => $this->prepareFields()
             ])->render();
 
-            $content = "\n\n".$content;
+            $content = "\n\n" . $content;
 
             $createMessage = "Created a new Test factory for {$this->model} model in '{$this->paths['factory']}'";
 
@@ -41,7 +49,8 @@ class FactoryGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function checkExistRelatedModelsFactories() {
+    protected function checkExistRelatedModelsFactories()
+    {
         $modelFactoryContent = file_get_contents($this->paths['factory']);
         $relatedModels = $this->getRelatedModels($this->model);
 
@@ -61,7 +70,27 @@ class FactoryGenerator extends EntityGenerator
         return true;
     }
 
-    protected function prepareRelatedFactories() {
+    protected static function getFakerMethod($field)
+    {
+        if (array_has(self::FAKERS_METHODS, $field['type'])) {
+            return "\$faker->{$fakerMethods[$field['type']]}";
+        }
+
+        return self::getCustomMethod($field);
+    }
+
+    protected static function getCustomMethod($field)
+    {
+        if (array_has(self::CUSTOM_METHODS, $field['type'])) {
+            return self::CUSTOM_METHODS[$field['type']];
+        }
+
+        dd(self::CUSTOM_METHODS);
+        throw new Exception("{$field['type']} not found in CUSTOM_METHODS variable");
+    }
+
+    protected function prepareRelatedFactories()
+    {
         $relations = array_merge(
             $this->relations['hasOne'],
             $this->relations['hasMany']
@@ -94,8 +123,9 @@ class FactoryGenerator extends EntityGenerator
         }
     }
 
-    public static function getFactoryFieldsContent($field) {
-        /** @var Faker $faker*/
+    public static function getFactoryFieldsContent($field)
+    {
+        /** @var Faker $faker */
         $faker = app(Faker::class);
 
         if (preg_match('/_id$/', $field['name']) || ($field['name'] == 'id')) {
@@ -113,26 +143,16 @@ class FactoryGenerator extends EntityGenerator
         return self::getFakerMethod($field);
     }
 
-    protected static function getFakerMethod($field) {
-        $fakerMethods = [
-            'integer' => 'randomNumber()',
-            'boolean' => 'boolean',
-            'string' => 'word',
-            'float' => 'randomFloat()',
-            'timestamp' => 'dateTime'
-        ];
-
-        return "\$faker->{$fakerMethods[$field['type']]}";
-    }
-
-    protected function checkExistModelFactory() {
+    protected function checkExistModelFactory()
+    {
         $modelFactoryContent = file_get_contents($this->paths['factory']);
         $factoryClass = "App\\Models\\$this->model::class";
 
         return strpos($modelFactoryContent, $factoryClass);
     }
 
-    protected function prepareFields() {
+    protected function prepareFields()
+    {
         $result = [];
 
         foreach ($this->fields as $type => $fields) {
@@ -149,18 +169,21 @@ class FactoryGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getFactoryPattern($model) {
+    protected function getFactoryPattern($model)
+    {
         $modelNamespace = "App\\\\Models\\\\" . $model;
         $return = "return \\[";
 
         return "/{$modelNamespace}.*{$return}/sU";
     }
 
-    protected function getModelClass($model) {
+    protected function getModelClass($model)
+    {
         return "App\\Models\\{$model}";
     }
 
-    protected function getRelatedModels($model) {
+    protected function getRelatedModels($model)
+    {
         $content = $this->getModelClassContent($model);
 
         preg_match_all('/(?<=belongsTo\().*(?=::class)/', $content, $matches);
@@ -168,7 +191,8 @@ class FactoryGenerator extends EntityGenerator
         return head($matches);
     }
 
-    protected function getModelClassContent($model) {
+    protected function getModelClassContent($model)
+    {
         $path = base_path("{$this->paths['models']}/{$model}.php");
 
         if (!$this->classExists('models', $model)) {
