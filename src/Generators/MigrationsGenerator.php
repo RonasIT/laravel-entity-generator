@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 19.10.16
- * Time: 8:36
- */
 
 namespace RonasIT\Support\Generators;
 
@@ -16,7 +10,8 @@ class MigrationsGenerator extends EntityGenerator
 {
     protected $migrations;
 
-    public function generate() {
+    public function generate()
+    {
         $entities = $this->getTableName($this->model);
 
         $content = $this->getStub('migration', [
