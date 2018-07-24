@@ -58,8 +58,8 @@ class FactoryGenerator extends EntityGenerator
         return true;
     }
 
-    protected static function getFakerMethod($field) {
-
+    protected static function getFakerMethod($field)
+    {
         $fakerMethods = [
             'integer' => 'randomNumber()',
             'boolean' => 'boolean',

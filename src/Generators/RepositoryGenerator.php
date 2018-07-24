@@ -27,7 +27,8 @@ class RepositoryGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Repository: {$this->model}Repository"));
     }
 
-    protected function getFields() {
+    protected function getFields()
+    {
         $simpleSearch = array_only($this->fields, ['integer', 'integer-required', 'boolean', 'boolean-required']);
 
         return [

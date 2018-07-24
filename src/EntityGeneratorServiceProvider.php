@@ -14,9 +14,9 @@ class EntityGeneratorServiceProvider extends ServiceProvider
         ]);
 
         $this->publishes([
-            __DIR__.'/../config/entity-generator.php' => config_path('entity-generator.php'),
+            __DIR__ . '/../config/entity-generator.php' => config_path('entity-generator.php'),
         ], 'config');
 
-        $this->loadViewsFrom(__DIR__.'/../stubs', 'entity-generator');
+        $this->loadViewsFrom(__DIR__ . '/../stubs', 'entity-generator');
     }
 }

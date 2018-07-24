@@ -8,9 +8,10 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ServiceGenerator extends EntityGenerator
 {
-    public function setRelations($relations) {
+    public function setRelations($relations)
+    {
         foreach ($relations['belongsTo'] as $field) {
-            $name = snake_case($field).'_id';
+            $name = snake_case($field) . '_id';
 
             $this->fields['integer'][] = $name;
         }
@@ -18,7 +19,8 @@ class ServiceGenerator extends EntityGenerator
         return $this;
     }
 
-    public function generate() {
+    public function generate()
+    {
         if ($this->classExists('repositories', "{$this->model}Repository")) {
             $stub = 'service';
         } else {
@@ -43,7 +45,8 @@ class ServiceGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Service: {$this->model}Service"));
     }
 
-    protected function getFields() {
+    protected function getFields()
+    {
         $simpleSearch = array_only($this->fields, ['integer', 'integer-required', 'boolean', 'boolean-required']);
 
         return [

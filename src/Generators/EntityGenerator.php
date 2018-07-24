@@ -19,7 +19,8 @@ abstract class EntityGenerator
      * @param string $model
      * @return $this
      */
-    public function setModel($model) {
+    public function setModel($model)
+    {
         $this->model = $model;
 
         return $this;
@@ -29,7 +30,8 @@ abstract class EntityGenerator
      * @param array $fields
      * @return $this
      */
-    public function setFields($fields) {
+    public function setFields($fields)
+    {
         $this->fields = $fields;
 
         return $this;
@@ -39,11 +41,12 @@ abstract class EntityGenerator
      * @param array $relations
      * @return $this
      */
-    public function setRelations($relations) {
+    public function setRelations($relations)
+    {
         $this->relations = $relations;
 
         foreach ($relations['belongsTo'] as $field) {
-            $name = snake_case($field).'_id';
+            $name = snake_case($field) . '_id';
 
             $this->fields['integer-required'][] = $name;
         }
@@ -58,7 +61,8 @@ abstract class EntityGenerator
 
     abstract public function generate();
 
-    protected function classExists($path, $name) {
+    protected function classExists($path, $name)
+    {
         $entitiesPath = $this->paths[$path];
 
         $classPath = base_path("{$entitiesPath}/{$name}.php");
@@ -66,7 +70,8 @@ abstract class EntityGenerator
         return file_exists($classPath);
     }
 
-    protected function saveClass($path, $name, $content, $additionalEntityFolder = false) {
+    protected function saveClass($path, $name, $content, $additionalEntityFolder = false)
+    {
         $entitiesPath = $this->paths[$path];
 
         if ($additionalEntityFolder) {
@@ -76,7 +81,7 @@ abstract class EntityGenerator
         $classPath = base_path("{$entitiesPath}/{$name}.php");
         $tag = "<?php\n\n";
 
-        if(!str_contains($content, $tag)) {
+        if (!str_contains($content, $tag)) {
             $content = "{$tag}{$content}";
         }
 
@@ -87,23 +92,27 @@ abstract class EntityGenerator
         return file_put_contents($classPath, $content);
     }
 
-    protected function getStub($stub, $data = []) {
+    protected function getStub($stub, $data = [])
+    {
         $stubPath = config("entity-generator.stubs.$stub");
 
         return view($stubPath)->with($data)->render();
     }
 
-    protected function getTableName($entityName) {
+    protected function getTableName($entityName)
+    {
         $entityName = snake_case($entityName);
 
         return Str::plural($entityName);
     }
 
-    protected function getPluralName($entityName) {
+    protected function getPluralName($entityName)
+    {
         return Str::plural($entityName);
     }
 
-    protected function throwFailureException($exceptionClass, $failureMessage, $recommendedMessage) {
+    protected function throwFailureException($exceptionClass, $failureMessage, $recommendedMessage)
+    {
         throw new $exceptionClass("{$failureMessage} {$recommendedMessage}");
     }
 }

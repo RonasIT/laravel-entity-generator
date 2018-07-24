@@ -10,7 +10,8 @@ class MigrationsGenerator extends EntityGenerator
 {
     protected $migrations;
 
-    public function generate() {
+    public function generate()
+    {
         $entities = $this->getTableName($this->model);
 
         $content = $this->getStub('migration', [

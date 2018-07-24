@@ -9,7 +9,8 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ControllerGenerator extends EntityGenerator
 {
-    public function generate() {
+    public function generate()
+    {
         if ($this->classExists('controllers', "{$this->model}Controller")) {
             $this->throwFailureException(
                 ClassAlreadyExistsException::class,
@@ -36,14 +37,16 @@ class ControllerGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Controller: {$this->model}Controller"));
     }
 
-    protected function getControllerContent($model) {
+    protected function getControllerContent($model)
+    {
         return $this->getStub('controller', [
             'entity' => $model,
             'requestsFolder' => $this->getPluralName($model)
         ]);
     }
 
-    protected function createRoutes() {
+    protected function createRoutes()
+    {
         $routesPath = base_path($this->paths['routes']);
 
         if (!file_exists($routesPath)) {
@@ -58,7 +61,8 @@ class ControllerGenerator extends EntityGenerator
         $this->addRoutes($routesPath);
     }
 
-    protected function addRoutes($routesPath) {
+    protected function addRoutes($routesPath)
+    {
         $routesContent = $this->getStub('routes', [
             'entity' => $this->model,
             'entities' => $this->getTableName($this->model),
@@ -78,7 +82,8 @@ class ControllerGenerator extends EntityGenerator
         return file_put_contents($routesPath, "\n\n{$routesContent}", FILE_APPEND);
     }
 
-    protected function addUseController($routesPath) {
+    protected function addUseController($routesPath)
+    {
         $routesFileContent = file_get_contents($routesPath);
 
         $stub = $this->getStub('use_routes', [

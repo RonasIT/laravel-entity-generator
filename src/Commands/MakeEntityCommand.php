@@ -15,6 +15,7 @@ use RonasIT\Support\Generators\RequestsGenerator;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Generators\TestsGenerator;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
+
 /**
  * @property ControllerGenerator $controllerGenerator
  * @property MigrationsGenerator $migrationsGenerator
@@ -145,7 +146,8 @@ class MakeEntityCommand extends Command
         }
     }
 
-    protected function generate() {
+    protected function generate()
+    {
         foreach ($this->rules['only'] as $option => $generators) {
             if ($this->option($option)) {
                 foreach ($generators as $generator) {
@@ -163,7 +165,8 @@ class MakeEntityCommand extends Command
         }
     }
 
-    protected function getMethods() {
+    protected function getMethods()
+    {
         $options = array_filter($this->options(), function ($option) {
             return $option === true;
         });
@@ -176,7 +179,8 @@ class MakeEntityCommand extends Command
         return array_subtraction($this->generators, $exceptGenerators);
     }
 
-    protected function runGeneration($generator) {
+    protected function runGeneration($generator)
+    {
         app($generator)
             ->setModel($this->argument('name'))
             ->setFields($this->getFields())
@@ -184,7 +188,8 @@ class MakeEntityCommand extends Command
             ->generate();
     }
 
-    protected function getRelations() {
+    protected function getRelations()
+    {
         return [
             'hasOne' => $this->option('has-one'),
             'hasMany' => $this->option('has-many'),
@@ -193,16 +198,18 @@ class MakeEntityCommand extends Command
         ];
     }
 
-    protected function getSuccessMessageCallback() {
+    protected function getSuccessMessageCallback()
+    {
         return function (SuccessCreateMessage $event) {
             $this->info($event->message);
         };
     }
 
-    protected function getFields() {
+    protected function getFields()
+    {
         return array_only($this->options(), [
             'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
-            'boolean-required', 'boolean', 'timestamp-required', 'timestamp',  'json-required', 'json'
+            'boolean-required', 'boolean', 'timestamp-required', 'timestamp', 'json-required', 'json'
         ]);
     }
 }
