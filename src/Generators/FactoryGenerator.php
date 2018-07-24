@@ -13,18 +13,6 @@ use Exception;
 
 class FactoryGenerator extends EntityGenerator
 {
-    const FAKERS_METHODS = [
-        'integer' => 'randomNumber()',
-        'boolean' => 'boolean',
-        'string' => 'word',
-        'float' => 'randomFloat()',
-        'timestamp' => 'dateTime',
-    ];
-
-    const CUSTOM_METHODS = [
-        'json' => '[]'
-    ];
-
     public function generate()
     {
         if (!$this->checkExistModelFactory() && $this->checkExistRelatedModelsFactories()) {
@@ -70,9 +58,17 @@ class FactoryGenerator extends EntityGenerator
         return true;
     }
 
-    protected static function getFakerMethod($field)
-    {
-        if (array_has(self::FAKERS_METHODS, $field['type'])) {
+    protected static function getFakerMethod($field) {
+
+        $fakerMethods = [
+            'integer' => 'randomNumber()',
+            'boolean' => 'boolean',
+            'string' => 'word',
+            'float' => 'randomFloat()',
+            'timestamp' => 'dateTime',
+        ];
+
+        if (array_has($fakerMethods, $field['type'])) {
             return "\$faker->{$fakerMethods[$field['type']]}";
         }
 
@@ -81,12 +77,15 @@ class FactoryGenerator extends EntityGenerator
 
     protected static function getCustomMethod($field)
     {
-        if (array_has(self::CUSTOM_METHODS, $field['type'])) {
-            return self::CUSTOM_METHODS[$field['type']];
+        $customMethods = [
+            'json' => '[]'
+        ];
+
+        if (array_has($customMethods, $field['type'])) {
+            return $customMethods[$field['type']];
         }
 
-        dd(self::CUSTOM_METHODS);
-        throw new Exception("{$field['type']} not found in CUSTOM_METHODS variable");
+        throw new Exception("{$field['type']} not found in customMethods variable customMethods = {{$customMethods}}");
     }
 
     protected function prepareRelatedFactories()

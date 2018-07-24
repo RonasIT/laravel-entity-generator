@@ -34,23 +34,23 @@ class MakeEntityCommand extends Command
      * @var string
      */
     protected $signature = 'make:entity {name : The name of the entity. This name will use as name of models class.}
-        {--without-model : Set this flag if you already have model for this entity. Command will find it. This flag is a lower priority than --only-model .} 
-        {--without-repository : Set if you don\'t want to use Data Access Level. Created Service will use special trait for controlling entity. This flag is a lower priority than --without-repository .} 
+        {--without-model : Set this flag if you already have model for this entity. Command will find it. This flag is a lower priority than --only-model.} 
+        {--without-repository : Set if you don\'t want to use Data Access Level. Created Service will use special trait for controlling entity. This flag is a lower priority than --without-repository.} 
         {--without-service : Set this flag if you don\'t want to create service.} 
         {--without-controller : Set this flag if you don\'t want to create controller. Automatically requests will not create too.} 
-        {--without-migrations : Set this flag if you already have table on db. This flag is a lower priority than --only-migrations .}
+        {--without-migrations : Set this flag if you already have table on db. This flag is a lower priority than --only-migrations.}
         {--without-requests : Set this flag if you don\'t want to create requests to you controller.}
         {--without-factory : Set this flag if you don\'t want to create factory.}
-        {--without-tests : Set this flag if you don\'t want to create tests. This flag is a lower priority than --only-tests .}
+        {--without-tests : Set this flag if you don\'t want to create tests. This flag is a lower priority than --only-tests.}
         
-        {--only-model : Set this flag if you want to create only model. This flag is a higher priority than --without-model, --only-migrations, --only-tests and --only-repository .} 
-        {--only-repository : Set this flag if you want to create only repository. This flag is a higher priority than --without-repository, --only-tests and --only-migrations .}
+        {--only-model : Set this flag if you want to create only model. This flag is a higher priority than --without-model, --only-migrations, --only-tests and --only-repository.} 
+        {--only-repository : Set this flag if you want to create only repository. This flag is a higher priority than --without-repository, --only-tests and --only-migrations.}
         {--only-service : Set this flag if you want to create only service.}
         {--only-controller : Set this flag if you want to create only controller.}
         {--only-requests : Set this flag if you want to create only requests.}
-        {--only-migrations : Set this flag if you want to create only repository. This flag is a higher priority than --without-migrations and --only-tests .}
-        {--only-factory : Set this flag if you want to create only factory. This flag is a higher priority than --without-factory .}
-        {--only-tests : Set this flag if you want to create only tests. This flag is a higher priority than --without-tests .}
+        {--only-migrations : Set this flag if you want to create only repository. This flag is a higher priority than --without-migrations and --only-tests.}
+        {--only-factory : Set this flag if you want to create only factory. This flag is a higher priority than --without-factory.}
+        {--only-tests : Set this flag if you want to create only tests. This flag is a higher priority than --without-tests.}
         
         {--i|integer=* : Add integer field to entity.}
         {--I|integer-required=* : Add required integer field to entity. If you want to specify default value you have to do it manually.}
