@@ -88,8 +88,7 @@ class FactoryGenerator extends EntityGenerator
         $message = $field['type'] . 'not found in CUSTOM_METHODS variable CUSTOM_METHODS = ' . self::CUSTOM_METHODS;
         throw new Exception($message);
     }
-
-
+    
     protected function prepareRelatedFactories()
     {
         $relations = array_merge(
