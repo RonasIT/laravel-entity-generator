@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 19.10.16
- * Time: 8:26
- */
 
 namespace RonasIT\Support\Generators;
 
@@ -33,7 +27,8 @@ class ModelGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Model: {$this->model}"));
     }
 
-    protected function getNewModelContent() {
+    protected function getNewModelContent()
+    {
         return $this->getStub('model', [
             'entity' => $this->model,
             'fields' => array_collapse($this->fields),
@@ -41,12 +36,13 @@ class ModelGenerator extends EntityGenerator
         ]);
     }
 
-    public function prepareRelatedModels() {
+    public function prepareRelatedModels()
+    {
         $types = [
-            'hasMany'       =>  'belongsTo',
-            'hasOne'        =>  'belongsTo',
-            'belongsTo'     =>  'hasOne',
-            'belongsToMany' =>  'belongsToMany',
+            'hasMany' => 'belongsTo',
+            'hasOne' => 'belongsTo',
+            'belongsTo' => 'hasOne',
+            'belongsToMany' => 'belongsToMany',
         ];
 
         foreach ($this->relations as $type => $relationsByType) {
@@ -74,13 +70,15 @@ class ModelGenerator extends EntityGenerator
         }
     }
 
-    public function getModelContent($model) {
-        $modelPath = base_path($this->paths['models']."/{$model}.php");
+    public function getModelContent($model)
+    {
+        $modelPath = base_path($this->paths['models'] . "/{$model}.php");
 
         return file_get_contents($modelPath);
     }
 
-    public function prepareRelations() {
+    public function prepareRelations()
+    {
         $result = [];
 
         foreach ($this->relations as $type => $relations) {

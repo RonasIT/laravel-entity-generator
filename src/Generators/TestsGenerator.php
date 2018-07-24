@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 19.10.16
- * Time: 12:28
- */
 
 namespace RonasIT\Support\Generators;
 
@@ -29,12 +23,14 @@ class TestsGenerator extends EntityGenerator
 
     protected $withAuth = false;
 
-    public function generate() {
+    public function generate()
+    {
         $this->createDump();
         $this->createTests();
     }
 
-    protected function createDump() {
+    protected function createDump()
+    {
         $content = $this->getStub('dump', [
             'inserts' => $this->getInserts()
         ]);
@@ -47,12 +43,14 @@ class TestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function createTests() {
+    protected function createTests()
+    {
         $this->generateExistedEntityFixture();
         $this->generateTest();
     }
 
-    protected function prepareFactoryFields() {
+    protected function prepareFactoryFields()
+    {
         $result = [];
 
         foreach ($this->fields as $type => $fields) {
@@ -66,7 +64,8 @@ class TestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getInserts() {
+    protected function getInserts()
+    {
         $arrayModels = [$this->model];
 
         if ($this->classExists('models', 'User')) {
@@ -87,7 +86,8 @@ class TestsGenerator extends EntityGenerator
         }, $this->getAllModels($arrayModels));
     }
 
-    protected function getValuesList($model) {
+    protected function getValuesList($model)
+    {
         $values = $this->getValues($model);
 
         $values = array_associate($values, function ($value, $key) {
@@ -120,7 +120,8 @@ class TestsGenerator extends EntityGenerator
         return $values;
     }
 
-    protected function getValues($model) {
+    protected function getValues($model)
+    {
         $modelFields = $this->getModelFields($model);
         $mockEntity = $this->getMockModel($model);
 
@@ -135,17 +136,20 @@ class TestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getModelClass($model) {
+    protected function getModelClass($model)
+    {
         return "App\\Models\\{$model}";
     }
 
-    protected function getModelFields($model) {
+    protected function getModelFields($model)
+    {
         $modelClass = $this->getModelClass($model);
 
         return $modelClass::getFields();
     }
 
-    protected function getMockModel($model) {
+    protected function getMockModel($model)
+    {
         $modelClass = $this->getModelClass($model);
 
         return factory($modelClass)
@@ -153,7 +157,8 @@ class TestsGenerator extends EntityGenerator
             ->toArray();
     }
 
-    public function getFixturesPath($fileName = null) {
+    public function getFixturesPath($fileName = null)
+    {
         $path = base_path("{$this->paths['tests']}/fixtures/{$this->getTestClassName()}");
 
         if (empty($fileName)) {
@@ -163,11 +168,13 @@ class TestsGenerator extends EntityGenerator
         return "{$path}/{$fileName}";
     }
 
-    public function getTestClassName() {
+    public function getTestClassName()
+    {
         return "{$this->model}Test";
     }
 
-    public function getFieldsContent($fields) {
+    public function getFieldsContent($fields)
+    {
         $lines = array_map(function ($key, $value) {
             if (in_array($key, $this->fields['timestamp']) || in_array($key, $this->fields['timestamp-required'])) {
                 $value = $value->format('\'Y-m-d h:i:s\'');
@@ -181,7 +188,8 @@ class TestsGenerator extends EntityGenerator
         return implode(",\n            ", $lines);
     }
 
-    protected function generateExistedEntityFixture() {
+    protected function generateExistedEntityFixture()
+    {
         $entity = snake_case($this->model);
         $fields = $this->prepareFieldsContent($this->getFields);
         $fixtureTypes = ['create', 'update'];
@@ -194,7 +202,8 @@ class TestsGenerator extends EntityGenerator
         }
     }
 
-    protected function generateFixture($fixtureName, $data) {
+    protected function generateFixture($fixtureName, $data)
+    {
         $fixturePath = $this->getFixturesPath($fixtureName);
         $content = json_encode($data, JSON_PRETTY_PRINT);
         $fixtureRelativePath = "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$fixtureName}";
@@ -205,7 +214,8 @@ class TestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function generateTest() {
+    protected function generateTest()
+    {
         $content = $this->getStub('test', [
             'entity' => $this->model,
             'entities' => $this->getTableName($this->model),
@@ -220,14 +230,16 @@ class TestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function getFactoryPattern($model) {
+    protected function getFactoryPattern($model)
+    {
         $modelNamespace = "App\\\\Models\\\\" . $model;
         $return = "return \\[";
 
         return "/{$modelNamespace}.*{$return}/sU";
     }
 
-    protected function getAllModels($models) {
+    protected function getAllModels($models)
+    {
         foreach ($models as $model) {
             $relations = $this->getRelatedModels($model);
 
@@ -251,7 +263,8 @@ class TestsGenerator extends EntityGenerator
         return array_unique($models);
     }
 
-    protected function getRelatedModels($model) {
+    protected function getRelatedModels($model)
+    {
         $content = $this->getModelClassContent($model);
 
         preg_match_all('/(?<=belongsTo\().*(?=::class)/', $content, $matches);
@@ -259,7 +272,8 @@ class TestsGenerator extends EntityGenerator
         return head($matches);
     }
 
-    protected function getModelClassContent($model) {
+    protected function getModelClassContent($model)
+    {
         $path = base_path("{$this->paths['models']}/{$model}.php");
 
         if (!$this->classExists('models', $model)) {
@@ -273,7 +287,8 @@ class TestsGenerator extends EntityGenerator
         return file_get_contents($path);
     }
 
-    protected function prepareFieldsContent($content) {
+    protected function prepareFieldsContent($content)
+    {
         foreach ($content as $key => $value) {
             if ($this->checkDatetimeObject($value)) {
                 $content[$key] = $value->format('Y-m-d h:i:s');
@@ -287,7 +302,8 @@ class TestsGenerator extends EntityGenerator
         return $content;
     }
 
-    protected function setFieldContent($value) {
+    protected function setFieldContent($value)
+    {
         $type = gettype($value);
 
         if ($type != 'integer') {
@@ -295,13 +311,14 @@ class TestsGenerator extends EntityGenerator
         }
 
         if ($value == 'true' || $value == 'false') {
-            $value = (bool) $value;
+            $value = (bool)$value;
         }
 
         return $value;
     }
 
-    protected function checkDatetimeObject($content) {
+    protected function checkDatetimeObject($content)
+    {
         if ((gettype($content) == 'object') && (get_class($content) == 'DateTime')) {
             return true;
         }

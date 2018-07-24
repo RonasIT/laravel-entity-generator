@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: roman
- * Date: 19.10.16
- * Time: 8:55
- */
 
 namespace RonasIT\Support\Generators;
 
@@ -18,13 +12,14 @@ class RequestsGenerator extends EntityGenerator
         parent::setRelations($relations);
 
         $this->relations['belongsTo'] = array_map(function ($field) {
-            return snake_case($field).'_id';
+            return snake_case($field) . '_id';
         }, $this->relations['belongsTo']);
 
         return $this;
     }
 
-    public function generate() {
+    public function generate()
+    {
         $this->createRequest('Get');
         $this->createRequest('Delete');
 
@@ -47,7 +42,8 @@ class RequestsGenerator extends EntityGenerator
         );
     }
 
-    protected function createRequest($method, $needToValidate = true, $parameters = []) {
+    protected function createRequest($method, $needToValidate = true, $parameters = [])
+    {
         $requestsFolder = $this->getPluralName($this->model);
 
         $content = $this->getStub('request', [
@@ -65,7 +61,8 @@ class RequestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Request: {$method}{$this->model}Request"));
     }
 
-    protected function getSearchValidationParameters() {
+    protected function getSearchValidationParameters()
+    {
         $parameters = array_except($this->fields, [
             'timestamp', 'timestamp-required', 'string-required', 'integer-required'
         ]);
@@ -74,12 +71,17 @@ class RequestsGenerator extends EntityGenerator
             'page', 'per_page', 'all',
         ]);
 
-        $parameters['string'] = ['query'];
+        $parameters['array'] = ['with'];
+
+        $parameters['string'] = ['query', 'order_by', 'with.*'];
+
+        $parameters['boolean'] = ['desc'];
 
         return $this->getValidationParameters($parameters, false);
     }
 
-    public function getValidationParameters($parameters, $requiredAvailable) {
+    public function getValidationParameters($parameters, $requiredAvailable)
+    {
         $result = [];
 
         foreach ($parameters as $type => $parameterNames) {
@@ -96,7 +98,8 @@ class RequestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getRules($name, $type, $required) {
+    protected function getRules($name, $type, $required)
+    {
         $replaces = [
             'timestamp' => 'date',
             'float' => 'numeric',
