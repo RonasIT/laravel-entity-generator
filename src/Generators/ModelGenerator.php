@@ -32,7 +32,8 @@ class ModelGenerator extends EntityGenerator
         return $this->getStub('model', [
             'entity' => $this->model,
             'fields' => array_collapse($this->fields),
-            'relations' => $this->prepareRelations()
+            'relations' => $this->prepareRelations(),
+            'casts' => $this->getCasts($this->fields)
         ]);
     }
 
@@ -94,5 +95,35 @@ class ModelGenerator extends EntityGenerator
         }
 
         return $result;
+    }
+
+    protected function getCasts($fields)
+    {
+        $replaces = [
+            'integer' => 'integer',
+            'integer-required' => 'integer',
+            'string-required' => 'string',
+            'string' => 'string',
+            'float-required' => 'float',
+            'float' => 'float',
+            'boolean-required' => 'boolean',
+            'boolean' => 'boolean',
+            'timestamp-required' => 'timestamp',
+            'timestamp' => 'timestamp',
+            'json-required' => 'array',
+            'json' => 'array'
+        ];
+
+        $castTypes = [];
+
+        foreach ($fields as $type => $fieldNames) {
+            foreach ($fieldNames as $fieldName) {
+                if ($fieldName) {
+                    $castTypes[$fieldName] = array_get($replaces, $type, $type);
+                }
+            }
+        }
+
+        return $castTypes;
     }
 }

@@ -14,9 +14,15 @@ class {{$entity}} extends Model
     ];
 
     protected $hidden = ['pivot'];
+
 @foreach($relations as $relation)
 
     @include(config('entity-generator.stubs.relation'), $relation)
 
 @endforeach
+    protected $casts = [
+@foreach($casts as $fieldName => $cast)
+   '{{$fieldName}}' => '{{$cast}}',
+@endforeach
+    ];
 }

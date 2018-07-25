@@ -10,6 +10,11 @@ use Illuminate\Support\Str;
  */
 abstract class EntityGenerator
 {
+    const AVAILABLE_FIELDS = [
+        'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
+        'boolean-required', 'boolean', 'timestamp-required', 'timestamp', 'json-required', 'json'
+    ];
+
     protected $paths = [];
     protected $model;
     protected $fields;
