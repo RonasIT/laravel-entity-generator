@@ -100,17 +100,7 @@ class ModelGenerator extends EntityGenerator
     protected function getCasts($fields)
     {
         $replaces = [
-            'integer' => 'integer',
-            'integer-required' => 'integer',
-            'string-required' => 'string',
-            'string' => 'string',
-            'float-required' => 'float',
-            'float' => 'float',
-            'boolean-required' => 'boolean',
             'boolean' => 'boolean',
-            'timestamp-required' => 'timestamp',
-            'timestamp' => 'timestamp',
-            'json-required' => 'array',
             'json' => 'array'
         ];
 
@@ -119,7 +109,7 @@ class ModelGenerator extends EntityGenerator
         foreach ($fields as $type => $fieldNames) {
             foreach ($fieldNames as $fieldName) {
                 if ($fieldName) {
-                    $castTypes[$fieldName] = array_get($replaces, $type, $type);
+                    $castTypes[$fieldName] = explode('-', array_get($replaces, $type, $type))[0];
                 }
             }
         }

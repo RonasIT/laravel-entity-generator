@@ -3,21 +3,16 @@
 namespace RonasIT\Support\Generators;
 
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Str;
+use function PHPSTORM_META\type;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class MigrationsGenerator extends EntityGenerator
 {
     protected $migrations;
 
-    const SPECIAL_BEHAVIOR_REQUIRED_FIELDS = ['json', 'json-required'];
-
-    const KNOWN_TYPES_OF_BEHAVIOR = [
-        'defaultNonRequiredKeys',
-        'defaultRequiredKeys',
-        'RequiredJson',
-        'NonRequiredJson',
-    ];
+    const JSON_FIELDS = ['json'];
 
     public function generate()
     {
@@ -38,117 +33,78 @@ class MigrationsGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Migration: create_{$entities}_table"));
     }
 
+    protected function isJson($typeName)
+    {
+        return in_array($typeName, self::JSON_FIELDS);
+    }
+
+    protected function isRequired($typeName)
+    {
+        if (empty(explode('-', $typeName)[1])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function isNonRequired($typeName)
+    {
+        if (!empty(explode('-', $typeName)[1])) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function getJsonLine($fieldName, $typeName)
+    {
+        if (env("DB_CONNECTION") == "mysql") {
+            return '$table->' . explode('-', $typeName)[0] . "({$fieldName})->nullable();";
+
+        }
+        return '$table->' . explode('-', $typeName)[0] . "({$fieldName})->default(\"{}\");";
+
+    }
+
+    protected function getRequiredLine($fieldName, $typeName)
+    {
+        return '$table->' . explode('-', $typeName)[0] . "({$fieldName});";
+    }
+
+    protected function getNonRequiredLine($fieldName, $typeName)
+    {
+        return '$table->' . explode('-', $typeName)[0] . "({$fieldName})->nullable();";
+    }
+
     protected function generateTable($fields)
     {
         $resultTable = [];
 
-        $handlers = $this->loadHandlers();
-
         foreach ($fields as $typeName => $fieldNames) {
             foreach ($fieldNames as $fieldName) {
-                array_push($resultTable, $handlers[$typeName]($fieldName, $typeName));
+                array_push($resultTable, $this->getTableRow($fieldName, $typeName));
             }
         }
 
         return $resultTable;
     }
 
-    protected function loadHandlers()
+    protected function getTableRow($fieldName, $typeName)
     {
-        $loadedHandlers = [];
-
-        $fieldTypes = $this->splitFieldTypesByBehavior();
-        $handlers = $this->getTableGenerationHandlers();
-
-        foreach (self::KNOWN_TYPES_OF_BEHAVIOR as $behaior) {
-            foreach ($fieldTypes[$behaior] as $fieldType) {
-                $loadedHandlers[$fieldType] = $handlers[$behaior];
-            }
-        }
-        return $loadedHandlers;
-    }
-
-
-    protected function getTableGenerationHandlers()
-    {
-        $handlers = [];
-
-        $handlers[self::KNOWN_TYPES_OF_BEHAVIOR[0]] = function ($fieldName, $typeName) {
-            return '$table->' . explode('-', $typeName)[0] . "({$fieldName})->nullable();";
-        };
-
-        $handlers[self::KNOWN_TYPES_OF_BEHAVIOR[1]] = function ($fieldName, $typeName) {
-            return '$table->' . explode('-', $typeName)[0] . "({$fieldName});";
-        };
-
-        $handlers[self::KNOWN_TYPES_OF_BEHAVIOR[2]] = function ($fieldName, $typeName) {
-            if (env("DB_CONNECTION") != "mysql") {
-                return
-                    '$table->' . explode('-', $typeName)[0] . "({$fieldName})->default(\"{}\")->nullable();";
-            }
-
-            return '$table->' . explode('-', $typeName)[0] . "({$fieldName})->nullable();";
-        };
-
-        $handlers[self::KNOWN_TYPES_OF_BEHAVIOR[3]] = function ($fieldName, $typeName) {
-            if (env("DB_CONNECTION") == "mysql") {
-                return '$table->' . explode('-', $typeName)[0] . "({$fieldName})->default(\"{}\");";
-            }
-
-            return '$table->' . explode('-', $typeName)[0] . "({$fieldName});";
-        };
-
-        return $handlers;
-    }
-
-    protected function splitFieldTypesByBehavior()
-    {
-        $splittedKeys = $this->splitRequireNonRequireFields();
-
-        $keys = [];
-
-        $keys[self::KNOWN_TYPES_OF_BEHAVIOR[0]] = [];
-        $keys[self::KNOWN_TYPES_OF_BEHAVIOR[1]] = [];
-        $keys[self::KNOWN_TYPES_OF_BEHAVIOR[2]] = [];
-        $keys[self::KNOWN_TYPES_OF_BEHAVIOR[3]] = [];
-
-        foreach ($splittedKeys['keysWithoutRequire'] as $key) {
-            if (!array_search($key, self::SPECIAL_BEHAVIOR_REQUIRED_FIELDS)) {
-                array_push($keys[self::KNOWN_TYPES_OF_BEHAVIOR[0]], $key);
-            } else {
-                array_push($keys[self::KNOWN_TYPES_OF_BEHAVIOR[1]], $key);
-            }
+        if ($this->isJson($typeName)) {
+            return $this->getJsonLine($fieldName, $typeName);
         }
 
-        foreach ($splittedKeys['keysWithRequire'] as $key) {
-            if (!array_search($key, self::SPECIAL_BEHAVIOR_REQUIRED_FIELDS)) {
-                array_push($keys[self::KNOWN_TYPES_OF_BEHAVIOR[2]], $key);
-            } else {
-                array_push($keys[self::KNOWN_TYPES_OF_BEHAVIOR[3]], $key);
-            }
+        if ($this->isRequired($typeName)) {
+            return $this->getRequiredLine($fieldName, $typeName);
         }
 
-        return $keys;
+        if ($this->isNonRequired($typeName)) {
+            return $this->getNonRequiredLine($fieldName, $typeName);
+        }
+
+        $message = 'Unknown fieldType in MigrationsGenerator';
+        throw new Exception($message);
     }
 
-    protected function splitRequireNonRequireFields()
-    {
-        $splittedKeys = [];
-
-        $requireFilter = function ($typeName) {
-            if (!empty(explode('-', $typeName)[1])) {
-                return $typeName;
-            }
-        };
-        $nonRequireFilter = function ($typeName) {
-            if (empty(explode('-', $typeName)[1])) {
-                return $typeName;
-            }
-        };
-
-        $splittedKeys['keysWithoutRequire'] = array_filter(self::AVAILABLE_FIELDS, $nonRequireFilter);
-        $splittedKeys['keysWithRequire'] = array_filter(self::AVAILABLE_FIELDS, $requireFilter);
-
-        return $splittedKeys;
-    }
 }

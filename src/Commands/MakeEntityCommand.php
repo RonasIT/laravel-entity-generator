@@ -64,7 +64,6 @@ class MakeEntityCommand extends Command
         {--B|boolean-required=* : Add boolean field to entity. If you want to specify default value you have to do it manually.}
         {--t|timestamp=* : Add boolean field to entity.}
         {--T|timestamp-required=* : Add boolean field to entity. If you want to specify default value you have to do it manually.}
-        {--J|json-required=* : Add json field to entity. If you want to specify default value you have to do it manually.}
         {--j|json=* : Add json field to entity.}
         
         {--a|has-one=* : Set hasOne relations between you entity and existed entity.}

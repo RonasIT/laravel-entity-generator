@@ -12,7 +12,7 @@ abstract class EntityGenerator
 {
     const AVAILABLE_FIELDS = [
         'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
-        'boolean-required', 'boolean', 'timestamp-required', 'timestamp', 'json-required', 'json'
+        'boolean-required', 'boolean', 'timestamp-required', 'timestamp', 'json'
     ];
 
     protected $paths = [];
