@@ -40,29 +40,21 @@ class MigrationsGenerator extends EntityGenerator
 
     protected function isRequired($typeName)
     {
-        if (empty(explode('-', $typeName)[1])) {
-            return false;
-        }
-
-        return true;
+        return empty(explode('-', $typeName)[1]);
     }
 
     protected function isNonRequired($typeName)
     {
-        if (!empty(explode('-', $typeName)[1])) {
-            return false;
-        }
-
-        return true;
+        return !empty(explode('-', $typeName)[1]);
     }
 
     protected function getJsonLine($fieldName, $typeName)
     {
         if (env("DB_CONNECTION") == "mysql") {
-            return '$table->' . explode('-', $typeName)[0] . "({$fieldName})->nullable();";
+            return '$table->' . $typeName . "({$fieldName})->nullable();";
 
         }
-        return '$table->' . explode('-', $typeName)[0] . "({$fieldName})->default(\"{}\");";
+        return '$table->' . $typeName . "({$fieldName})->default(\"{}\");";
 
     }
 
@@ -103,8 +95,7 @@ class MigrationsGenerator extends EntityGenerator
             return $this->getNonRequiredLine($fieldName, $typeName);
         }
 
-        $message = 'Unknown fieldType in MigrationsGenerator';
-        throw new Exception($message);
+        throw new Exception('Unknown fieldType in MigrationsGenerator');
     }
 
 }

@@ -22,7 +22,7 @@ class {{$entity}} extends Model
 @endforeach
     protected $casts = [
 @foreach($casts as $fieldName => $cast)
-   '{{$fieldName}}' => '{{$cast}}',
+        '{{$fieldName}}' => '{{$cast}}',
 @endforeach
     ];
 }
