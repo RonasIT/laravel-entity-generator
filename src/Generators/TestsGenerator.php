@@ -12,16 +12,11 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class TestsGenerator extends EntityGenerator
 {
-    protected $fieldsValues;
-    protected $annotationReader;
-    protected $fakerMethods = [];
     protected $fakerProperties = [];
-
     protected $getFields = [];
-    protected $createFields = [];
-    protected $updateFields = [];
-
     protected $withAuth = false;
+
+    const FIXTURE_TYPES = ['create', 'update'];
 
     public function generate()
     {
@@ -49,21 +44,6 @@ class TestsGenerator extends EntityGenerator
         $this->generateTest();
     }
 
-    protected function prepareFactoryFields()
-    {
-        $result = [];
-
-        foreach ($this->fields as $type => $fields) {
-            foreach ($fields as $field) {
-                $explodedType = explode('-', $type);
-
-                $result[$field] = head($explodedType);
-            }
-        }
-
-        return $result;
-    }
-
     protected function getInserts()
     {
         $arrayModels = [$this->model];
@@ -79,18 +59,18 @@ class TestsGenerator extends EntityGenerator
                 'items' => [
                     [
                         'fields' => $this->getModelFields($model),
-                        'values' => $this->getValuesList($model)
+                        'values' => $this->getDumpValuesList($model)
                     ]
                 ]
             ];
-        }, $this->getAllModels($arrayModels));
+        }, $this->buildRelationsTree($arrayModels));
     }
 
-    protected function getValuesList($model)
+    protected function getDumpValuesList($model)
     {
-        $values = $this->getValues($model);
+        $values = $this->buildEntityObject($model);
 
-        $values = array_associate($values, function ($value, $key) {
+        return array_associate($values, function ($value, $key) {
             if ($value instanceof \DateTime) {
                 return [
                     'key' => $key,
@@ -114,13 +94,28 @@ class TestsGenerator extends EntityGenerator
                 'value' => is_string($value) ? "'{$value}'" : $value
             ];
         });
-
-        $this->getFields = $values;
-
-        return $values;
     }
 
-    protected function getValues($model)
+    protected function getFixtureValuesList($model)
+    {
+        $values = $this->buildEntityObject($model);
+
+        return array_associate($values, function ($value, $key) {
+            if ($value instanceof \DateTime) {
+                return [
+                    'key' => $key,
+                    'value' => "'{$value->format('Y-m-d h:i:s')}'"
+                ];
+            }
+
+            return [
+                'key' => $key,
+                'value' => $value
+            ];
+        });
+    }
+
+    protected function buildEntityObject($model)
     {
         $modelFields = $this->getModelFields($model);
         $mockEntity = $this->getMockModel($model);
@@ -173,31 +168,15 @@ class TestsGenerator extends EntityGenerator
         return "{$this->model}Test";
     }
 
-    public function getFieldsContent($fields)
-    {
-        $lines = array_map(function ($key, $value) {
-            if (in_array($key, $this->fields['timestamp']) || in_array($key, $this->fields['timestamp-required'])) {
-                $value = $value->format('\'Y-m-d h:i:s\'');
-            } else {
-                $value = var_export($value, true);
-            }
-
-            return "'{$key}' => {$value}";
-        }, array_keys($fields), $fields);
-
-        return implode(",\n            ", $lines);
-    }
-
     protected function generateExistedEntityFixture()
     {
+        $object = $this->getFixtureValuesList($this->model);
         $entity = snake_case($this->model);
-        $fields = $this->prepareFieldsContent($this->getFields);
-        $fixtureTypes = ['create', 'update'];
 
-        foreach ($fixtureTypes as $type) {
+        foreach (self::FIXTURE_TYPES as $type) {
             $this->generateFixture(
                 "{$type}_{$entity}.json",
-                $fields
+                $object
             );
         }
     }
@@ -230,17 +209,9 @@ class TestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function getFactoryPattern($model)
+    protected function buildRelationsTree($models)
     {
-        $modelNamespace = "App\\\\Models\\\\" . $model;
-        $return = "return \\[";
-
-        return "/{$modelNamespace}.*{$return}/sU";
-    }
-
-    protected function getAllModels($models)
-    {
-        foreach ($models as $model) {
+        foreach ($models as $model => $rel) {
             $relations = $this->getRelatedModels($model);
 
             if (empty($relations)) {
@@ -255,7 +226,7 @@ class TestsGenerator extends EntityGenerator
                 );
             }
 
-            $relatedModels = $this->getAllModels($relations);
+            $relatedModels = $this->buildRelationsTree($relations);
 
             $models = array_merge($relatedModels, $models);
         }
@@ -285,44 +256,5 @@ class TestsGenerator extends EntityGenerator
         }
 
         return file_get_contents($path);
-    }
-
-    protected function prepareFieldsContent($content)
-    {
-        foreach ($content as $key => $value) {
-            if ($this->checkDatetimeObject($value)) {
-                $content[$key] = $value->format('Y-m-d h:i:s');
-
-                continue;
-            }
-
-            $content[$key] = $this->setFieldContent($value);
-        }
-
-        return $content;
-    }
-
-    protected function setFieldContent($value)
-    {
-        $type = gettype($value);
-
-        if ($type != 'integer') {
-            $value = trim($value, "'");
-        }
-
-        if ($value == 'true' || $value == 'false') {
-            $value = (bool)$value;
-        }
-
-        return $value;
-    }
-
-    protected function checkDatetimeObject($content)
-    {
-        if ((gettype($content) == 'object') && (get_class($content) == 'DateTime')) {
-            return true;
-        }
-
-        return false;
     }
 }

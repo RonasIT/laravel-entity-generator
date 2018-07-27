@@ -12,8 +12,6 @@ class MigrationsGenerator extends EntityGenerator
 {
     protected $migrations;
 
-    const JSON_FIELDS = ['json'];
-
     public function generate()
     {
         $entities = $this->getTableName($this->model);
@@ -35,7 +33,7 @@ class MigrationsGenerator extends EntityGenerator
 
     protected function isJson($typeName)
     {
-        return in_array($typeName, self::JSON_FIELDS);
+        return $typeName == 'json';
     }
 
     protected function isRequired($typeName)
@@ -48,24 +46,25 @@ class MigrationsGenerator extends EntityGenerator
         return !empty(explode('-', $typeName)[1]);
     }
 
-    protected function getJsonLine($fieldName, $typeName)
+    protected function getJsonLine($fieldName)
     {
         if (env("DB_CONNECTION") == "mysql") {
-            return '$table->' . $typeName . "({$fieldName})->nullable();";
-
+            return '$table->json' . "('{$fieldName}')->nullable();";
         }
-        return '$table->' . $typeName . "({$fieldName})->default(\"{}\");";
 
+        return '$table->jsonb' . "('{$fieldName}')->default(\"{}\");";
     }
 
     protected function getRequiredLine($fieldName, $typeName)
     {
-        return '$table->' . explode('-', $typeName)[0] . "({$fieldName});";
+        $type = explode('-', $typeName)[0];
+        return '$table->' . "{$type}('{$fieldName}');";
     }
 
     protected function getNonRequiredLine($fieldName, $typeName)
     {
-        return '$table->' . explode('-', $typeName)[0] . "({$fieldName})->nullable();";
+        $type = explode('-', $typeName)[0];
+        return '$table->' . "{$type}('{$fieldName}')->nullable();";
     }
 
     protected function generateTable($fields)
@@ -84,7 +83,7 @@ class MigrationsGenerator extends EntityGenerator
     protected function getTableRow($fieldName, $typeName)
     {
         if ($this->isJson($typeName)) {
-            return $this->getJsonLine($fieldName, $typeName);
+            return $this->getJsonLine($fieldName);
         }
 
         if ($this->isRequired($typeName)) {
@@ -97,5 +96,4 @@ class MigrationsGenerator extends EntityGenerator
 
         throw new Exception('Unknown fieldType in MigrationsGenerator');
     }
-
 }

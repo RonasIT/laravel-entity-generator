@@ -99,21 +99,24 @@ class ModelGenerator extends EntityGenerator
 
     protected function getCasts($fields)
     {
-        $replaces = [
+        $casts = [
+            'boolean-required' => 'boolean',
             'boolean' => 'boolean',
             'json' => 'array'
         ];
 
-        $castTypes = [];
+        $result = [];
 
-        foreach ($fields as $type => $fieldNames) {
-            foreach ($fieldNames as $fieldName) {
-                if ($fieldName) {
-                    $castTypes[$fieldName] = explode('-', array_get($replaces, $type, $type))[0];
-                }
+        foreach ($fields as $fieldType => $names) {
+            if (empty($casts[$fieldType])) {
+                continue;
+            }
+
+            foreach ($names as $name) {
+                $result[$name] = $casts[$fieldType];
             }
         }
 
-        return $castTypes;
+        return $result;
     }
 }
