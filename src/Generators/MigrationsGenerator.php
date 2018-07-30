@@ -38,12 +38,12 @@ class MigrationsGenerator extends EntityGenerator
 
     protected function isRequired($typeName)
     {
-        return empty(explode('-', $typeName)[1]);
+        return !empty(explode('-', $typeName)[1]);
     }
 
-    protected function isNonRequired($typeName)
+    protected function isNullable($typeName)
     {
-        return !empty(explode('-', $typeName)[1]);
+        return empty(explode('-', $typeName)[1]);
     }
 
     protected function getJsonLine($fieldName)
@@ -90,7 +90,7 @@ class MigrationsGenerator extends EntityGenerator
             return $this->getRequiredLine($fieldName, $typeName);
         }
 
-        if ($this->isNonRequired($typeName)) {
+        if ($this->isNullable($typeName)) {
             return $this->getNonRequiredLine($fieldName, $typeName);
         }
 

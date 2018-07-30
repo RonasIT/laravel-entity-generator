@@ -211,7 +211,7 @@ class TestsGenerator extends EntityGenerator
 
     protected function buildRelationsTree($models)
     {
-        foreach ($models as $model => $rel) {
+        foreach ($models as $model) {
             $relations = $this->getRelatedModels($model);
 
             if (empty($relations)) {
