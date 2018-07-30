@@ -5,7 +5,6 @@ namespace RonasIT\Support\Generators;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Str;
-use function PHPSTORM_META\type;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class MigrationsGenerator extends EntityGenerator
@@ -49,22 +48,24 @@ class MigrationsGenerator extends EntityGenerator
     protected function getJsonLine($fieldName)
     {
         if (env("DB_CONNECTION") == "mysql") {
-            return '$table->json' . "('{$fieldName}')->nullable();";
+            return "\$table->json('{$fieldName}')->nullable();";
         }
 
-        return '$table->jsonb' . "('{$fieldName}')->default(\"{}\");";
+        return "\$table->jsonb('{$fieldName}')->default(\"{}\");";
     }
 
     protected function getRequiredLine($fieldName, $typeName)
     {
         $type = explode('-', $typeName)[0];
-        return '$table->' . "{$type}('{$fieldName}');";
+
+        return "\$table->{$type}('{$fieldName}');";
     }
 
     protected function getNonRequiredLine($fieldName, $typeName)
     {
         $type = explode('-', $typeName)[0];
-        return '$table->' . "{$type}('{$fieldName}')->nullable();";
+
+        return "\$table->{$type}('{$fieldName}')->nullable();";
     }
 
     protected function generateTable($fields)
