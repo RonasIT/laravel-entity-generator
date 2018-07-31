@@ -30,35 +30,37 @@ Syntax: artisan make:entity [name] [flags]
 
 [flags] :
 
-    --i   : Add integer field to entity.
+    -i|--integer                : Add integer field to entity.
     
-    --I   : Add required integer field to entity. If you want to specify default value you have to do it manually.
+    -I|--integer-required       : Add required integer field to entity. If you want to specify default value you have to do it manually.
     
-    --f   : Add float field to entity.
+    -f|--float                  : Add float field to entity.
     
-    --F   : Add required float field to entity. If you want to specify default value you have to do it manually.
+    -F|--float-required         : Add required float field to entity. If you want to specify default value you have to do it manually.
     
-    --s   : Add string field to entity. Default type is VARCHAR(255) but you can change it manually in migration.
+    -s|--string                 : Add string field to entity. Default type is VARCHAR(255) but you can change it manually in migration.
     
-    --S   : Add required string field to entity. If you want to specify default value ir size you have to do it manually.
+    -S|--string-required        : Add required string field to entity. If you want to specify default value ir size you have to do it manually.
     
-    --b   : Add boolean field to entity.
+    -b|--boolean                : Add boolean field to entity.
     
-    --B   : Add boolean field to entity. If you want to specify default value you have to do it manually.
+    -B|--boolean-required       : Add boolean field to entity. If you want to specify default value you have to do it manually.
     
-    --t   : Add boolean field to entity.
+    -t|--timestamp              : Add boolean field to entity.
     
-    --T   : Add boolean field to entity. If you want to specify default value you have to do it manually.
+    -T|--timestamp-required     : Add boolean field to entity. If you want to specify default value you have to do it manually.
     
-    --j   : Add json field to entity.
+    -j|--json                   : Add json field to entity.
     
-    --a   : Set hasOne relations between you entity and existed entity.
     
-    --A   : Set hasMany relations between you entity and existed entity.
+    -a|--has-one          : Set hasOne relations between you entity and existed entity.
     
-    --e   : Set belongsTo relations between you entity and existed entity.
+    -A|--has-many         : Set hasMany relations between you entity and existed entity.
     
-    --E   : Set belongsToMany relations between you entity and existed entity.
+    -e|--belongs-to       : Set belongsTo relations between you entity and existed entity.
+    
+    -E|--belongs-to-many  : Set belongsToMany relations between you entity and existed entity.   
+    
     
     --without-model       : Set this flag if you already have model for this entity. Command will find it. This flag is a lower priority than --only-model.
      
