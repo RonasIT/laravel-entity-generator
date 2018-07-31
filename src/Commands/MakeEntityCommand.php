@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use RonasIT\Support\Generators\ControllerGenerator;
+use RonasIT\Support\Generators\EntityGenerator;
 use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Generators\MigrationsGenerator;
 use RonasIT\Support\Generators\ModelGenerator;
@@ -63,7 +64,6 @@ class MakeEntityCommand extends Command
         {--B|boolean-required=* : Add boolean field to entity. If you want to specify default value you have to do it manually.}
         {--t|timestamp=* : Add boolean field to entity.}
         {--T|timestamp-required=* : Add boolean field to entity. If you want to specify default value you have to do it manually.}
-        {--J|json-required=* : Add json field to entity. If you want to specify default value you have to do it manually.}
         {--j|json=* : Add json field to entity.}
         
         {--a|has-one=* : Set hasOne relations between you entity and existed entity.}
@@ -207,10 +207,7 @@ class MakeEntityCommand extends Command
 
     protected function getFields()
     {
-        return array_only($this->options(), [
-            'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
-            'boolean-required', 'boolean', 'timestamp-required', 'timestamp', 'json-required', 'json'
-        ]);
+        return array_only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
     }
 }
 

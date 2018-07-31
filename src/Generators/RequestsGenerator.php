@@ -103,6 +103,7 @@ class RequestsGenerator extends EntityGenerator
         $replaces = [
             'timestamp' => 'date',
             'float' => 'numeric',
+            'json' => 'array'
         ];
 
         $rules = [

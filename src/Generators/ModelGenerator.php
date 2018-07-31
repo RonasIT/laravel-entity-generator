@@ -32,7 +32,8 @@ class ModelGenerator extends EntityGenerator
         return $this->getStub('model', [
             'entity' => $this->model,
             'fields' => array_collapse($this->fields),
-            'relations' => $this->prepareRelations()
+            'relations' => $this->prepareRelations(),
+            'casts' => $this->getCasts($this->fields)
         ]);
     }
 
@@ -90,6 +91,29 @@ class ModelGenerator extends EntityGenerator
                         'entity' => $relation
                     ];
                 }
+            }
+        }
+
+        return $result;
+    }
+
+    protected function getCasts($fields)
+    {
+        $casts = [
+            'boolean-required' => 'boolean',
+            'boolean' => 'boolean',
+            'json' => 'array'
+        ];
+
+        $result = [];
+
+        foreach ($fields as $fieldType => $names) {
+            if (empty($casts[$fieldType])) {
+                continue;
+            }
+
+            foreach ($names as $name) {
+                $result[$name] = $casts[$fieldType];
             }
         }
 
