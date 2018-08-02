@@ -1,4 +1,4 @@
-#Laravel-Entity-Generator
+# Laravel-Entity-Generator
 
 Laravel-Entity-Generator - This generator is used to create a standard class stack for a new entity.
 
@@ -17,7 +17,12 @@ into 'providers' variable. And publish.
 
 ### Examples
 ```bash
-    php artisan make:entity EntityName -S entityName
+    php artisan make:entity EntityName \ 
+        -S required_string_field \
+        --integer=not_required_integer_field \
+        --boolean-required=required_boolean_field \
+        -j data \
+        -e AnotherEntityName
 ```
 
 ### Documentation 
