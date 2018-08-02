@@ -25,8 +25,8 @@ class {{$method}}{{$entity}}Request extends FormRequest
         return [];
 @endif
     }
-
 @if($needToValidate)
+
 @if(app()::VERSION < 5.6)
     public function validate()
     {

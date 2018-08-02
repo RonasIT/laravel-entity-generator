@@ -13,17 +13,20 @@ class Create{{$class}}Table extends Migration
         DB::beginTransaction();
 
         $this->createTable();
-
 @foreach($relations['belongsToMany'] as $relation)
+
         $this->createBridgeTable('{{$entity}}', '{{$relation}}');
 @endforeach
 @foreach($relations['belongsTo'] as $relation)
+
         $this->addForeignKey('{{$entity}}', '{{$relation}}');
 @endforeach
 @foreach($relations['hasOne'] as $relation)
+
         $this->addForeignKey('{{$relation}}', '{{$entity}}', true);
 @endforeach
 @foreach($relations['hasMany'] as $relation)
+
         $this->addForeignKey('{{$relation}}', '{{$entity}}', true);
 @endforeach
 

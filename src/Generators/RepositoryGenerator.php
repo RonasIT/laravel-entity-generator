@@ -33,7 +33,8 @@ class RepositoryGenerator extends EntityGenerator
 
         return [
             'simple_search' => array_collapse($simpleSearch),
-            'search_by_query' => array_merge($this->fields['string'], $this->fields['string-required'])
+            'search_by_query' => array_merge($this->fields['string'], $this->fields['string-required']),
+            'json' => $this->fields['json']
         ];
     }
 }

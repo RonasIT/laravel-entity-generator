@@ -26,4 +26,16 @@ class {{$entity}}Repository extends BaseRepository
             ->with()
             ->getSearchResults();
     }
+@if(!empty($fields['json']))
+
+    public function update($where, $data) {
+@foreach($fields['json'] as $field)
+        if (array_has($data, '{{$field}}')) {
+            $data['{{$field}}'] = json_encode($data['{{$field}}']);
+        }
+
+@endforeach
+        return parent::update($where, $data);
+    }
+@endif
 }
