@@ -22,20 +22,7 @@ class {{$entity}}Repository extends BaseRepository
 @if(!empty($fields['search_by_query']))
             ->filterByQuery(['{!! implode('\', \'', $fields['search_by_query']) !!}'])
 @endif
-            ->orderBy()
             ->with()
             ->getSearchResults();
     }
-@if(!empty($fields['json']))
-
-    public function update($where, $data) {
-@foreach($fields['json'] as $field)
-        if (array_has($data, '{{$field}}')) {
-            $data['{{$field}}'] = json_encode($data['{{$field}}']);
-        }
-
-@endforeach
-        return parent::update($where, $data);
-    }
-@endif
 }

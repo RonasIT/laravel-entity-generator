@@ -15,7 +15,7 @@
     "guzzlehttp/guzzle": "~6.0",
     "tymon/jwt-auth": "0.5.* || 1.0.*",
     "minime/annotations": "2.3.1",
-    "ronasit/laravel-helpers": "1.0.*"
+    "ronasit/laravel-helpers": "1.1.*"
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",
@@ -30,5 +30,5 @@
       "src/helpers.php"
     ]
   },
-  "minimum-stability": "stable"
+  "minimum-stability": "beta"
 }
