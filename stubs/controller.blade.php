@@ -21,7 +21,7 @@ class {{$entity}}Controller extends Controller
 
     public function get(Get{{$entity}}Request $request, {{$entity}}Service $service, $id)
     {
-        $service->withRelations($request->input('with', []))
+        $service->withRelations($request->input('with', []));
 
         $result = $service->find($id);
 
