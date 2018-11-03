@@ -45,7 +45,7 @@ class {{$entity}}Test extends TestCase
 
         $response = $this->json('post', '/{{$entities}}', $data);
 
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
 @endif
@@ -82,7 +82,7 @@ class {{$entity}}Test extends TestCase
 
         $response = $this->json('put', '/{{$entities}}/1', $data);
 
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
 @endif
@@ -113,7 +113,7 @@ class {{$entity}}Test extends TestCase
     {
         $response = $this->json('delete', '/{{$entities}}/1');
 
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertStatus(Response::HTTP_UNAUTHORIZED);
     }
 
 @endif
@@ -128,7 +128,7 @@ class {{$entity}}Test extends TestCase
         $response->assertStatus(Response::HTTP_OK);
 
         // TODO: Need to remove after first successful start
-        $this->exportJson($response->json(), 'get_{{snake_case($entity)}}.json');
+        $this->exportJson('get_{{snake_case($entity)}}.json', $response->json());
 
         $this->assertEqualsFixture('get_{{snake_case($entity)}}.json', $response->json());
     }
@@ -173,7 +173,7 @@ class {{$entity}}Test extends TestCase
         $response = $this->json('get', '/{{$entities}}', $filter);
 
         // TODO: Need to remove after first successful start
-        $this->exportJson($response->json(), $fixture);
+        $this->exportJson($fixture, $response->json());
 
         $response->assertStatus(Response::HTTP_OK);
 
