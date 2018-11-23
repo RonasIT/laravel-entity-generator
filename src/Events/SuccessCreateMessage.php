@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 
 class SuccessCreateMessage

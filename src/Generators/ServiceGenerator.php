@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 

@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class RequestsGenerator extends EntityGenerator
@@ -73,11 +72,13 @@ class RequestsGenerator extends EntityGenerator
 
         $parameters['array'] = ['with'];
 
-        $parameters['string'] = ['query', 'order_by', 'with.*'];
-
         $parameters['boolean'] = ['desc'];
 
-        return $this->getValidationParameters($parameters, false);
+        $parameters['string'] = ['query', 'order_by'];
+
+        $parameters['string-required'] = ['with.*'];
+
+        return $this->getValidationParameters($parameters, true);
     }
 
     public function getValidationParameters($parameters, $requiredAvailable)

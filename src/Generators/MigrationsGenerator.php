@@ -4,7 +4,6 @@ namespace RonasIT\Support\Generators;
 
 use Carbon\Carbon;
 use Exception;
-use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class MigrationsGenerator extends EntityGenerator
