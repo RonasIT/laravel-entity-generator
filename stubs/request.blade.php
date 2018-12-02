@@ -21,7 +21,7 @@ class {{$method}}{{$entity}}Request extends FormRequest
             '{{$parameter['name']}}' => '{{implode('|', $parameter['rules'])}}',
 @endforeach
 @if($method === 'Search')
-        ];//TODO after release add validation for with.* and order_by
+        ];//TODO after project release on prod add validation for with.* and order_by
 @else
         ];
 @endif
