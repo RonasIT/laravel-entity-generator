@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use RonasIT\Support\Generators\ControllerGenerator;
