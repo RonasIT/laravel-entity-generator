@@ -30,17 +30,14 @@ class {{$entity}}Controller extends Controller
 
     public function update(Update{{$entity}}Request $request, {{$entity}}Service $service, $id)
     {
-        $service->update(
-            ['id' => $id],
-            $request->all()
-        );
+        $service->update($id, $request->all());
 
         return response('', Response::HTTP_NO_CONTENT);
     }
 
     public function delete(Delete{{$entity}}Request $request, {{$entity}}Service $service, $id)
     {
-        $service->delete(['id' => $id]);
+        $service->delete($id);
 
         return response('', Response::HTTP_NO_CONTENT);
     }
