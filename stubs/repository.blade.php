@@ -2,10 +2,18 @@ namespace App\Repositories;
 
 use RonasIT\Support\Repositories\BaseRepository;
 use App\Models\{{$entity}};
-
+{{--
+    Laravel inserts two spaces between @property and type, so we are forced
+    to use hack here to preserve one space
+--}}
+@php
+echo <<<PHPDOC
 /**
- * @property {{$entity}} $model
-*/
+ * @property {$entity} \$model
+ */
+
+PHPDOC;
+@endphp
 class {{$entity}}Repository extends BaseRepository
 {
     public function __construct()

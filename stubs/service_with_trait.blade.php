@@ -2,10 +2,18 @@ namespace App\Services;
 
 use RonasIT\Support\Traits\EntityControlTrait;
 use App\Models\{{$entity}};
-
+{{--
+    Laravel inserts two spaces between @property and type, so we are forced
+    to use hack here to preserve one space
+--}}
+@php
+echo <<<PHPDOC
 /**
- * @property {{$entity}} $model
+ * @property {$entity} \$model
  */
+
+PHPDOC;
+@endphp
 class {{$entity}}Service
 {
     use EntityControlTrait;

@@ -161,13 +161,21 @@ class {{$entity}}Test extends TestCase
             ],
         ];
     }
-
+{{--
+    Laravel inserts two spaces between @param and type, so we are forced
+    to use hack here to preserve one space
+--}}
+@php
+echo <<<PHPDOC
     /**
      * @dataProvider getSearchFilters
      *
-     * @param array $filter
-     * @param string $fixture
+     * @param array \$filter
+     * @param string \$fixture
      */
+
+PHPDOC;
+@endphp
     public function testSearch($filter, $fixture)
     {
         $response = $this->json('get', '/{{$entities}}', $filter);
