@@ -57,6 +57,10 @@ class MigrationsGenerator extends EntityGenerator
     {
         $type = explode('-', $typeName)[0];
 
+        if ($type === 'timestamp' && env('DB_CONNECTION') === 'mysql') {
+            return "\$table->{$type}('{$fieldName}')->nullable();";
+        }
+
         return "\$table->{$type}('{$fieldName}');";
     }
 

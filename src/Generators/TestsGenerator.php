@@ -14,6 +14,10 @@ class TestsGenerator extends EntityGenerator
 
     const FIXTURE_TYPES = ['create', 'update'];
 
+    const EMPTY_GUARDED_FIELD = '*';
+    const UPDATED_AT = 'updated_at';
+    const CREATED_AT = 'created_at';
+
     public function generate()
     {
         $this->createDump();
@@ -100,7 +104,7 @@ class TestsGenerator extends EntityGenerator
             if ($value instanceof \DateTime) {
                 return [
                     'key' => $key,
-                    'value' => "'{$value->format('Y-m-d h:i:s')}'"
+                    'value' => "{$value->format('Y-m-d h:i:s')}"
                 ];
             }
 
@@ -136,7 +140,7 @@ class TestsGenerator extends EntityGenerator
     {
         $modelClass = $this->getModelClass($model);
 
-        return $modelClass::getFields();
+        return $this->filterBadModelField($modelClass::getFields());
     }
 
     protected function getMockModel($model)
@@ -252,5 +256,14 @@ class TestsGenerator extends EntityGenerator
         }
 
         return file_get_contents($path);
+    }
+
+    private function filterBadModelField($fields)
+    {
+        return array_diff($fields, [
+            self::EMPTY_GUARDED_FIELD,
+            self::CREATED_AT,
+            self::UPDATED_AT
+        ]);
     }
 }
