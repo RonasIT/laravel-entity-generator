@@ -6,6 +6,12 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class RequestsGenerator extends EntityGenerator
 {
+    const SEARCH_METHOD = 'Search';
+    const UPDATE_METHOD = 'Update';
+    const CREATE_METHOD = 'Create';
+    const DELETE_METHOD = 'Delete';
+    const GET_METHOD = 'Get';
+
     public function setRelations($relations)
     {
         parent::setRelations($relations);
@@ -19,23 +25,23 @@ class RequestsGenerator extends EntityGenerator
 
     public function generate()
     {
-        $this->createRequest('Get');
-        $this->createRequest('Delete');
+        $this->createRequest(self::GET_METHOD);
+        $this->createRequest(self::DELETE_METHOD);
 
         $this->createRequest(
-            'Create',
+            self::CREATE_METHOD,
             false,
             $this->getValidationParameters($this->fields, true)
         );
 
         $this->createRequest(
-            'Update',
+            self::UPDATE_METHOD,
             true,
             $this->getValidationParameters($this->fields, false)
         );
 
         $this->createRequest(
-            'Search',
+            self::SEARCH_METHOD,
             false,
             $this->getSearchValidationParameters()
         );
@@ -44,20 +50,21 @@ class RequestsGenerator extends EntityGenerator
     protected function createRequest($method, $needToValidate = true, $parameters = [])
     {
         $requestsFolder = $this->getPluralName($this->model);
+        $modelName = $this->getEntityName($method);
 
         $content = $this->getStub('request', [
             'method' => $method,
-            'entity' => $this->model,
+            'entity' => $modelName,
             'parameters' => $parameters,
             'needToValidate' => $needToValidate,
             'requestsFolder' => $requestsFolder,
         ]);
 
-        $this->saveClass('requests', "{$method}{$this->model}Request",
+        $this->saveClass('requests', "{$method}{$modelName}Request",
             $content, $requestsFolder
         );
 
-        event(new SuccessCreateMessage("Created a new Request: {$method}{$this->model}Request"));
+        event(new SuccessCreateMessage("Created a new Request: {$method}{$modelName}Request"));
     }
 
     protected function getSearchValidationParameters()
@@ -129,5 +136,13 @@ class RequestsGenerator extends EntityGenerator
             'name' => $name,
             'rules' => $rules
         ];
+    }
+
+    private function getEntityName($method) {
+        if ($method === self::SEARCH_METHOD) {
+            return str_plural($this->model);
+        }
+
+        return $this->model;
     }
 }

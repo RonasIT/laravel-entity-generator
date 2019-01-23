@@ -4,7 +4,7 @@ use App\Http\Requests\{{$requestsFolder}}\Create{{$entity}}Request;
 use App\Http\Requests\{{$requestsFolder}}\Get{{$entity}}Request;
 use App\Http\Requests\{{$requestsFolder}}\Update{{$entity}}Request;
 use App\Http\Requests\{{$requestsFolder}}\Delete{{$entity}}Request;
-use App\Http\Requests\{{$requestsFolder}}\Search{{$entity}}Request;
+use App\Http\Requests\{{$requestsFolder}}\Search{{str_plural($entity)}}Request;
 use App\Services\{{$entity}}Service;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -42,7 +42,7 @@ class {{$entity}}Controller extends Controller
         return response('', Response::HTTP_NO_CONTENT);
     }
 
-    public function search(Search{{$entity}}Request $request, {{$entity}}Service $service)
+    public function search(Search{{str_plural($entity)}}Request $request, {{$entity}}Service $service)
     {
         $result = $service->search($request->all());
 
