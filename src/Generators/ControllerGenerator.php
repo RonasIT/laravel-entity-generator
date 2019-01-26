@@ -90,7 +90,7 @@ class ControllerGenerator extends EntityGenerator
             'entity' => $this->model
         ]);
 
-        $routesFileContent = str_replace("<?php\n", "<?php\n\n{$stub}", $routesFileContent);
+        $routesFileContent = preg_replace('/\<\?php[^A-Za-z]*/', "<?php\n\n{$stub}", $routesFileContent);
 
         file_put_contents($routesPath, $routesFileContent);
     }
