@@ -63,7 +63,7 @@ class ModelGenerator extends EntityGenerator
                 $content = $this->getModelContent($relation);
 
                 $newRelation = $this->getStub('relation', [
-                    'name' => $this->getRelationName($relation, $type),
+                    'name' => $this->getRelationName($this->model, $type),
                     'type' => $types[$type],
                     'entity' => $this->model
                 ]);
