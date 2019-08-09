@@ -180,10 +180,10 @@ PHPDOC;
     {
         $response = $this->json('get', '/{{$entities}}', $filter);
 
+        $response->assertStatus(Response::HTTP_OK);
+
         // TODO: Need to remove after first successful start
         $this->exportJson($fixture, $response->json());
-
-        $response->assertStatus(Response::HTTP_OK);
 
         $this->assertEqualsFixture($fixture, $response->json());
     }
