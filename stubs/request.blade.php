@@ -44,7 +44,7 @@ class {{$method}}{{$entity}}Request extends FormRequest
 @endif
         $service = app({{$entity}}Service::class);
 
-        if (!$service->exists(['id' => $this->route('id')])) {
+        if (!$service->exists($this->route('id'))) {
             throw new NotFoundHttpException(__('validation.exceptions.not_found', ['entity' => '{{$entity}}']));
         }
     }
