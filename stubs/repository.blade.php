@@ -23,7 +23,8 @@ class {{$entity}}Repository extends BaseRepository
 
     public function search($filters)
     {
-        return $this->searchQuery($filters)
+        return $this
+            ->searchQuery($filters)
 @foreach($fields['simple_search'] as $field)
             ->filterBy('{{$field}}')
 @endforeach

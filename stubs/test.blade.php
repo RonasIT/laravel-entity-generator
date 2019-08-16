@@ -11,7 +11,7 @@ class {{$entity}}Test extends TestCase
     protected $user;
 
 @endif
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 @if ($withAuth)
@@ -60,6 +60,8 @@ class {{$entity}}Test extends TestCase
 @endif
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseHas('{{$entity}}', $data);
     }
 
     public function testUpdateNotExists()
@@ -95,6 +97,10 @@ class {{$entity}}Test extends TestCase
 @endif
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseMissing('{{$entity}}', [
+            'id' => 1
+        );
     }
 
     public function testDeleteNotExists()
@@ -106,6 +112,10 @@ class {{$entity}}Test extends TestCase
 @endif
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
+
+        $this->assertDatabaseMissing('{{$entity}}', [
+            'id' => 0
+        );
     }
 
 @if ($withAuth)
@@ -152,12 +162,11 @@ class {{$entity}}Test extends TestCase
                 'result' => 'search_all.json'
             ],
             [
-                'filter' => ['page' => 1],
+                'filter' => [
+                    'page' => 2,
+                    'per_page' => 2
+                ],
                 'result' => 'search_by_page.json'
-            ],
-            [
-                'filter' => ['per_page' => 1],
-                'result' => 'search_per_page.json'
             ],
         ];
     }
