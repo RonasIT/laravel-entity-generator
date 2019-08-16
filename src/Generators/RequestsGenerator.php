@@ -25,7 +25,12 @@ class RequestsGenerator extends EntityGenerator
 
     public function generate()
     {
-        $this->createRequest(self::GET_METHOD);
+        $this->createRequest(
+            self::GET_METHOD,
+            true,
+            $this->getGetValidationParameters()
+        );
+
         $this->createRequest(self::DELETE_METHOD);
 
         $this->createRequest(
@@ -65,6 +70,13 @@ class RequestsGenerator extends EntityGenerator
         );
 
         event(new SuccessCreateMessage("Created a new Request: {$method}{$modelName}Request"));
+    }
+
+    protected function getGetValidationParameters()
+    {
+        $parameters['array'] = ['with'];
+
+        return $this->getValidationParameters($parameters, true);
     }
 
     protected function getSearchValidationParameters()

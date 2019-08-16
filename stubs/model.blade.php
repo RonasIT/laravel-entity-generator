@@ -18,8 +18,8 @@ class {{$entity}} extends Model
 
     @include(config('entity-generator.stubs.relation'), $relation)
 @endforeach
-
 @if(!empty($casts))
+
     protected $casts = [
 @foreach($casts as $fieldName => $cast)
         '{{$fieldName}}' => '{{$cast}}',
