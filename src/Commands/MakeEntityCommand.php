@@ -14,6 +14,7 @@ use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Generators\RequestsGenerator;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Generators\TestsGenerator;
+use RonasIT\Support\Generators\TranslationsGenerator;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 
 /**
@@ -25,6 +26,7 @@ use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
  * @property ServiceGenerator $serviceGenerator
  * @property FactoryGenerator $factoryGenerator
  * @property TestsGenerator $testGenerator
+ * @property TranslationsGenerator $translationsGenerator
  * @property EventDispatcher $eventDispatcher
  */
 class MakeEntityCommand extends Command
@@ -85,6 +87,7 @@ class MakeEntityCommand extends Command
     protected $serviceGenerator;
     protected $factoryGenerator;
     protected $testGenerator;
+    protected $translationsGenerator;
     protected $eventDispatcher;
 
     protected $rules = [
@@ -111,7 +114,8 @@ class MakeEntityCommand extends Command
     ];
     public $generators = [
         ModelGenerator::class, RepositoryGenerator::class, ServiceGenerator::class, RequestsGenerator::class,
-        ControllerGenerator::class, MigrationsGenerator::class, FactoryGenerator::class, TestsGenerator::class
+        ControllerGenerator::class, MigrationsGenerator::class, FactoryGenerator::class, TestsGenerator::class,
+        TranslationsGenerator::class
     ];
 
     public function __construct()
@@ -126,6 +130,7 @@ class MakeEntityCommand extends Command
         $this->serviceGenerator = app(ServiceGenerator::class);
         $this->factoryGenerator = app(FactoryGenerator::class);
         $this->testGenerator = app(TestsGenerator::class);
+        $this->translationsGenerator = app(TranslationsGenerator::class);
         $this->eventDispatcher = app(EventDispatcher::class);
     }
 

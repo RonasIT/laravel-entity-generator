@@ -10,7 +10,9 @@ return [
         'repositories' => 'app/Repositories',
         'tests' => 'tests',
         'routes' => 'routes/api.php',
-        'factory' => 'database/factories/ModelFactory.php'
+        'factory' => 'database/factories/ModelFactory.php',
+        'translations' => 'resources/lang/en/validation.php',
+        'empty_factory' => 'dumps/emptyFactory.blade.php'
      ],
     'stubs' => [
         'model' => 'entity-generator::model',

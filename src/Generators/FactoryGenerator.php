@@ -25,6 +25,10 @@ class FactoryGenerator extends EntityGenerator
 
     public function generate()
     {
+        if (!file_exists($this->paths['factory'])) {
+            $this->prepareEmptyFactory();
+        }
+
         if (!$this->checkExistModelFactory() && $this->checkExistRelatedModelsFactories()) {
             $stubPath = config("entity-generator.stubs.factory");
 
@@ -45,6 +49,12 @@ class FactoryGenerator extends EntityGenerator
         }
 
         event(new SuccessCreateMessage($createMessage));
+    }
+
+    protected function prepareEmptyFactory()
+    {
+        $content = file_get_contents($this->paths['empty_factory']);
+        file_put_contents($this->paths['factory'], $content);
     }
 
     protected function checkExistRelatedModelsFactories()
