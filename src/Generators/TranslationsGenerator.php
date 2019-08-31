@@ -24,10 +24,15 @@ class TranslationsGenerator extends EntityGenerator
         if (!file_exists($this->translationPath)) {
             $this->createTranslate();
         }
-
-        if(__('validation.exceptions.not_found') !== 'validation.exceptions.not_found') {
+        
+        if($this->isTranslationMissed('validation.exceptions.not_found')) {
             $this->appendNotFoundException();
         }
+    }
+
+    protected function isTranslationMissed($translation) 
+    {
+        return __($translation) === 'validation.exceptions.not_found';
     }
 
     protected function createTranslate()
