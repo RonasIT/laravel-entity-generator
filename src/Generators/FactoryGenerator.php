@@ -53,7 +53,8 @@ class FactoryGenerator extends EntityGenerator
 
     protected function prepareEmptyFactory()
     {
-        $content = file_get_contents($this->paths['empty_factory']);
+        $stubPath = config('entity-generator.stubs.empty_factory');
+        $content = "<?php \n\n" . view($stubPath)->render();
         file_put_contents($this->paths['factory'], $content);
     }
 

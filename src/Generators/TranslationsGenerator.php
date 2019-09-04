@@ -1,22 +1,19 @@
 <?php
 
 namespace RonasIT\Support\Generators;
- 
+
+use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class TranslationsGenerator extends EntityGenerator
 {
     protected $translationPath;
-    protected $dumpPath;
-    protected $notFoundExceptionDumpPath;
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->translationPath = $this->paths['translations'];
-        $this->dumpPath = stubs_path("dumps/validation.blade.php");
-        $this->notFoundExceptionDumpPath = stubs_path("dumps/translation_not_found.blade.php");
+        $this->translationPath = Arr::get($this->paths, 'translations', 'resources/lang/en/validation.php');
     }
 
     public function generate()
@@ -25,7 +22,7 @@ class TranslationsGenerator extends EntityGenerator
             $this->createTranslate();
         }
         
-        if($this->isTranslationMissed('validation.exceptions.not_found')) {
+        if ($this->isTranslationMissed('validation.exceptions.not_found')) {
             $this->appendNotFoundException();
         }
     }
@@ -37,7 +34,11 @@ class TranslationsGenerator extends EntityGenerator
 
     protected function createTranslate()
     {
-        file_put_contents($this->translationPath, file_get_contents($this->dumpPath));
+        $stubPath = config('entity-generator.stubs.validation');
+
+        $content = "<?php \n\n" . view($stubPath)->render();
+
+        file_put_contents($this->translationPath, $content);
 
         $createMessage = "Created a new Translations dump on path: {$this->translationPath}";
         
@@ -48,9 +49,11 @@ class TranslationsGenerator extends EntityGenerator
     {
         $content = file_get_contents($this->translationPath);
         
-        $str = file_get_contents($this->notFoundExceptionDumpPath);
+        $stubPath = config('entity-generator.stubs.translation_not_found');
         
-        $fixedContent = preg_replace('/\]\;\s*$/', "\n    {$str}", $content);
+        $stubContent = view($stubPath)->render();
+
+        $fixedContent = preg_replace('/\]\;\s*$/', "\n\t{$stubContent}", $content);
         
         file_put_contents($this->translationPath, $fixedContent);
     }

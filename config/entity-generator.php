@@ -11,8 +11,7 @@ return [
         'tests' => 'tests',
         'routes' => 'routes/api.php',
         'factory' => 'database/factories/ModelFactory.php',
-        'translations' => 'resources/lang/en/validation.php',
-        'empty_factory' => 'dumps/emptyFactory.blade.php'
+        'translations' => 'resources/lang/en/validation.php'
      ],
     'stubs' => [
         'model' => 'entity-generator::model',
@@ -27,6 +26,9 @@ return [
         'factory' => 'entity-generator::factory',
         'migration' => 'entity-generator::migration',
         'dump' => 'entity-generator::dumps.pgsql',
-        'test' => 'entity-generator::test'
+        'test' => 'entity-generator::test',
+        'empty_factory' => 'entity-generator::empty_factory',
+        'translation_not_found' => 'entity-generator::translation_not_found',
+        'validation' => 'entity-generator::validation'
     ]
 ];
