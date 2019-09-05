@@ -12,7 +12,7 @@ class {{$entity}}Controller extends Controller
 {
     public function create(Create{{$entity}}Request $request, {{$entity}}Service $service)
     {
-        $data = $request->all();
+        $data = $request->onlyValidated();
 
         $result = $service->create($data);
 
@@ -30,7 +30,7 @@ class {{$entity}}Controller extends Controller
 
     public function update(Update{{$entity}}Request $request, {{$entity}}Service $service, $id)
     {
-        $service->update($id, $request->all());
+        $service->update($id, $request->onlyValidated());
 
         return response('', Response::HTTP_NO_CONTENT);
     }
@@ -44,7 +44,7 @@ class {{$entity}}Controller extends Controller
 
     public function search(Search{{str_plural($entity)}}Request $request, {{$entity}}Service $service)
     {
-        $result = $service->search($request->all());
+        $result = $service->search($request->onlyValidated());
 
         return response($result);
     }
