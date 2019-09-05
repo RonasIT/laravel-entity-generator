@@ -4,15 +4,10 @@ namespace App\Http\Requests\{{$requestsFolder}};
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Services\{{$entity}}Service;
 @endif
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class {{$method}}{{$entity}}Request extends FormRequest
+class {{$method}}{{$entity}}Request extends Request
 {
-    public function authorize()
-    {
-        return true;
-    }
-
     public function rules()
     {
 @if(!empty($parameters))
