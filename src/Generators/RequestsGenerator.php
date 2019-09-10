@@ -76,6 +76,8 @@ class RequestsGenerator extends EntityGenerator
     {
         $parameters['array'] = ['with'];
 
+        $parameters['string-required'] = ['with.*'];
+        
         return $this->getValidationParameters($parameters, true);
     }
 

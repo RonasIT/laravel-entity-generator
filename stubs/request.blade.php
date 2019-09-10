@@ -16,7 +16,7 @@ class {{$method}}{{$entity}}Request extends Request
             '{{$parameter['name']}}' => '{{implode('|', $parameter['rules'])}}',
 @endforeach
 @if($method === 'Search')
-        ];//TODO after project release on prod add validation for with.* and order_by
+        ];
 @else
         ];
 @endif

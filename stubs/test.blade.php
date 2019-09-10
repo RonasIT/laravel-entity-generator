@@ -36,6 +36,7 @@ class {{$entity}}Test extends TestCase
         $actual = array_except($response->json(), ['id', 'updated_at', 'created_at']);
 
         $this->assertEquals($expect, $actual);
+        $this->assertDatabaseHas('{{$entities}}', $expect);
     }
 
 @if ($withAuth)
@@ -61,7 +62,7 @@ class {{$entity}}Test extends TestCase
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 
-        $this->assertDatabaseHas('{{$entity}}', $data);
+        $this->assertDatabaseHas('{{$entities}}', $data);
     }
 
     public function testUpdateNotExists()
@@ -98,9 +99,9 @@ class {{$entity}}Test extends TestCase
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 
-        $this->assertDatabaseMissing('{{$entity}}', [
+        $this->assertDatabaseMissing('{{$entities}}', [
             'id' => 1
-        );
+        ]);
     }
 
     public function testDeleteNotExists()
@@ -113,9 +114,9 @@ class {{$entity}}Test extends TestCase
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
 
-        $this->assertDatabaseMissing('{{$entity}}', [
+        $this->assertDatabaseMissing('{{$entities}}', [
             'id' => 0
-        );
+        ]);
     }
 
 @if ($withAuth)
@@ -166,7 +167,7 @@ class {{$entity}}Test extends TestCase
                     'page' => 2,
                     'per_page' => 2
                 ],
-                'result' => 'search_by_page.json'
+                'result' => 'search_by_page_per_page.json'
             ],
         ];
     }
