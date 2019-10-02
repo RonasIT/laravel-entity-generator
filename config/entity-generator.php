@@ -7,10 +7,13 @@ return [
         'requests' => 'app/Http/Requests',
         'controllers' => 'app/Http/Controllers',
         'migrations' => 'database/migrations',
+        'seeds' => 'database/seeds',
+        'database_seeder' => 'database/seeds/DatabaseSeeder.php',
         'repositories' => 'app/Repositories',
         'tests' => 'tests',
         'routes' => 'routes/api.php',
-        'factory' => 'database/factories/ModelFactory.php'
+        'factory' => 'database/factories/ModelFactory.php',
+        'translations' => 'resources/lang/en/validation.php'
      ],
     'stubs' => [
         'model' => 'entity-generator::model',
@@ -25,6 +28,11 @@ return [
         'factory' => 'entity-generator::factory',
         'migration' => 'entity-generator::migration',
         'dump' => 'entity-generator::dumps.pgsql',
-        'test' => 'entity-generator::test'
+        'test' => 'entity-generator::test',
+        'empty_factory' => 'entity-generator::empty_factory',
+        'translation_not_found' => 'entity-generator::translation_not_found',
+        'validation' => 'entity-generator::validation',
+        'seeding' => 'entity-generator::seeding',
+        'database_empty_seeder' => 'entity-generator::database_seed_empty'
     ]
 ];

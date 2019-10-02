@@ -14,6 +14,8 @@ use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Generators\RequestsGenerator;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Generators\TestsGenerator;
+use RonasIT\Support\Generators\TranslationsGenerator;
+use RonasIT\Support\Generators\SeederGenerator;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 
 /**
@@ -25,6 +27,8 @@ use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
  * @property ServiceGenerator $serviceGenerator
  * @property FactoryGenerator $factoryGenerator
  * @property TestsGenerator $testGenerator
+ * @property TranslationsGenerator $translationsGenerator
+ * @property SeederGenerator $seederGenerator
  * @property EventDispatcher $eventDispatcher
  */
 class MakeEntityCommand extends Command
@@ -43,6 +47,7 @@ class MakeEntityCommand extends Command
         {--without-requests : Set this flag if you don\'t want to create requests to you controller.}
         {--without-factory : Set this flag if you don\'t want to create factory.}
         {--without-tests : Set this flag if you don\'t want to create tests. This flag is a lower priority than --only-tests.}
+        {--without-seeder : Set this flag if you don\'t want to create seeder.}
         
         {--only-model : Set this flag if you want to create only model. This flag is a higher priority than --without-model, --only-migrations, --only-tests and --only-repository.} 
         {--only-repository : Set this flag if you want to create only repository. This flag is a higher priority than --without-repository, --only-tests and --only-migrations.}
@@ -52,7 +57,8 @@ class MakeEntityCommand extends Command
         {--only-migrations : Set this flag if you want to create only repository. This flag is a higher priority than --without-migrations and --only-tests.}
         {--only-factory : Set this flag if you want to create only factory. This flag is a higher priority than --without-factory.}
         {--only-tests : Set this flag if you want to create only tests. This flag is a higher priority than --without-tests.}
-        
+        {--only-seeder : Set this flag if you want to create only seeder.}
+
         {--i|integer=* : Add integer field to entity.}
         {--I|integer-required=* : Add required integer field to entity. If you want to specify default value you have to do it manually.}
         {--f|float=* : Add float field to entity.}
@@ -85,6 +91,8 @@ class MakeEntityCommand extends Command
     protected $serviceGenerator;
     protected $factoryGenerator;
     protected $testGenerator;
+    protected $translationsGenerator;
+    protected $seederGenerator;
     protected $eventDispatcher;
 
     protected $rules = [
@@ -97,6 +105,7 @@ class MakeEntityCommand extends Command
             'only-migrations' => [MigrationsGenerator::class],
             'only-factory' => [FactoryGenerator::class],
             'only-tests' => [FactoryGenerator::class, TestsGenerator::class],
+            'only-seeder' => [SeederGenerator::class]
         ],
         'without' => [
             'without-model' => [ModelGenerator::class],
@@ -106,12 +115,14 @@ class MakeEntityCommand extends Command
             'without-migrations' => [MigrationsGenerator::class],
             'without-requests' => [RequestsGenerator::class],
             'without-factory' => [FactoryGenerator::class],
-            'without-tests' => [TestsGenerator::class]
+            'without-tests' => [TestsGenerator::class],
+            'without-seeder' => [SeederGenerator::class]
         ]
     ];
     public $generators = [
         ModelGenerator::class, RepositoryGenerator::class, ServiceGenerator::class, RequestsGenerator::class,
-        ControllerGenerator::class, MigrationsGenerator::class, FactoryGenerator::class, TestsGenerator::class
+        ControllerGenerator::class, MigrationsGenerator::class, FactoryGenerator::class, TestsGenerator::class,
+        TranslationsGenerator::class, SeederGenerator::class
     ];
 
     public function __construct()
@@ -126,6 +137,8 @@ class MakeEntityCommand extends Command
         $this->serviceGenerator = app(ServiceGenerator::class);
         $this->factoryGenerator = app(FactoryGenerator::class);
         $this->testGenerator = app(TestsGenerator::class);
+        $this->translationsGenerator = app(TranslationsGenerator::class);
+        $this->seederGenerator = app(SeederGenerator::class);
         $this->eventDispatcher = app(EventDispatcher::class);
     }
 
