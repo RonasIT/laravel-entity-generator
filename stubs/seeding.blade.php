@@ -12,19 +12,19 @@ class {{$entity}}Seeder extends Seeder
     {
         ${{strtolower($entity)}} = factory(App\Models\{{$entity}}::class)->create([
 @foreach($relations['belongsTo'] as $relation)
-            '{{strtolower($relation)}}_id' => factory(App\Models\{{$relation}}::class)->create()->id;
+            '{{strtolower($relation)}}_id' => factory(App\Models\{{$relation}}::class)->create()->id,
 @endforeach
         ]);
 
 @foreach($relations['hasOne'] as $relation)
         factory(App\Models\{{$relation}}::class)->create([
-            '{{strtolower($entity)}}_id' => ${{$entity}}->id
+            '{{strtolower($entity)}}_id' => ${{$entity}}->id,
         ]);
 @endforeach
 
 @foreach($relations['hasMany'] as $relation)
         factory(App\Models\{{$relation}}::class, 10)->create()->each([
-            '{{strtolower($entity)}}_id' => ${{$entity}}->id
+            '{{strtolower($entity)}}_id' => ${{$entity}}->id,
         ]);
 @endforeach
 

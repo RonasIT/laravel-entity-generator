@@ -71,7 +71,7 @@ class SeederGenerator extends EntityGenerator
         
         $insertContent = "\t\$this->call({$this->model}Seeder::class);";
 
-        $fixedContent = preg_replace('/\}\s*\}\s$/', "\n\t{$insertContent}\n\t}\n}", $content);
+        $fixedContent = preg_replace('/\}\s*\}\s*\z/', "\n\t{$insertContent}\n\t}\n}", $content);
         
         file_put_contents($this->databaseSeederPath, $fixedContent);
     }
