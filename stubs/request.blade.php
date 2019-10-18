@@ -4,15 +4,10 @@ namespace App\Http\Requests\{{$requestsFolder}};
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Services\{{$entity}}Service;
 @endif
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Request;
 
-class {{$method}}{{$entity}}Request extends FormRequest
+class {{$method}}{{$entity}}Request extends Request
 {
-    public function authorize()
-    {
-        return true;
-    }
-
     public function rules()
     {
 @if(!empty($parameters))
@@ -21,7 +16,7 @@ class {{$method}}{{$entity}}Request extends FormRequest
             '{{$parameter['name']}}' => '{{implode('|', $parameter['rules'])}}',
 @endforeach
 @if($method === 'Search')
-        ];//TODO after project release on prod add validation for with.* and order_by
+        ];
 @else
         ];
 @endif
@@ -44,7 +39,7 @@ class {{$method}}{{$entity}}Request extends FormRequest
 @endif
         $service = app({{$entity}}Service::class);
 
-        if (!$service->exists(['id' => $this->route('id')])) {
+        if (!$service->exists($this->route('id'))) {
             throw new NotFoundHttpException(__('validation.exceptions.not_found', ['entity' => '{{$entity}}']));
         }
     }

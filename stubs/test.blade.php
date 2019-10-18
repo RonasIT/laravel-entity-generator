@@ -11,7 +11,7 @@ class {{$entity}}Test extends TestCase
     protected $user;
 
 @endif
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 @if ($withAuth)
@@ -36,6 +36,7 @@ class {{$entity}}Test extends TestCase
         $actual = array_except($response->json(), ['id', 'updated_at', 'created_at']);
 
         $this->assertEquals($expect, $actual);
+        $this->assertDatabaseHas('{{$entities}}', $expect);
     }
 
 @if ($withAuth)
@@ -60,6 +61,8 @@ class {{$entity}}Test extends TestCase
 @endif
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseHas('{{$entities}}', $data);
     }
 
     public function testUpdateNotExists()
@@ -95,6 +98,10 @@ class {{$entity}}Test extends TestCase
 @endif
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseMissing('{{$entities}}', [
+            'id' => 1
+        ]);
     }
 
     public function testDeleteNotExists()
@@ -106,6 +113,10 @@ class {{$entity}}Test extends TestCase
 @endif
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
+
+        $this->assertDatabaseMissing('{{$entities}}', [
+            'id' => 0
+        ]);
     }
 
 @if ($withAuth)
@@ -152,12 +163,11 @@ class {{$entity}}Test extends TestCase
                 'result' => 'search_all.json'
             ],
             [
-                'filter' => ['page' => 1],
-                'result' => 'search_by_page.json'
-            ],
-            [
-                'filter' => ['per_page' => 1],
-                'result' => 'search_per_page.json'
+                'filter' => [
+                    'page' => 2,
+                    'per_page' => 2
+                ],
+                'result' => 'search_by_page_per_page.json'
             ],
         ];
     }
@@ -180,10 +190,10 @@ PHPDOC;
     {
         $response = $this->json('get', '/{{$entities}}', $filter);
 
+        $response->assertStatus(Response::HTTP_OK);
+
         // TODO: Need to remove after first successful start
         $this->exportJson($fixture, $response->json());
-
-        $response->assertStatus(Response::HTTP_OK);
 
         $this->assertEqualsFixture($fixture, $response->json());
     }
