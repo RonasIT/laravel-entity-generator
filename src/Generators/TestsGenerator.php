@@ -2,6 +2,8 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
@@ -123,7 +125,7 @@ class TestsGenerator extends EntityGenerator
         $result = [];
 
         foreach ($modelFields as $field) {
-            $value = array_get($mockEntity, $field, 1);
+            $value = Arr::get($mockEntity, $field, 1);
 
             $result[$field] = $value;
         }
@@ -171,7 +173,7 @@ class TestsGenerator extends EntityGenerator
     protected function generateExistedEntityFixture()
     {
         $object = $this->getFixtureValuesList($this->model);
-        $entity = snake_case($this->model);
+        $entity = Str::snake($this->model);
 
         foreach (self::FIXTURE_TYPES as $type) {
             $this->generateFixture(

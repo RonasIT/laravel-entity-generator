@@ -2,6 +2,8 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
@@ -35,7 +37,7 @@ class ModelGenerator extends EntityGenerator
     {
         return $this->getStub('model', [
             'entity' => $this->model,
-            'fields' => array_collapse($this->fields),
+            'fields' => Arr::collapse($this->fields),
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields)
         ]);
@@ -126,10 +128,10 @@ class ModelGenerator extends EntityGenerator
 
     private function getRelationName($relation, $type)
     {
-        $relationName = snake_case($relation);
+        $relationName = Str::snake($relation);
 
         if (in_array($type, self::PLURAL_NUMBER_REQUIRED)) {
-            $relationName = str_plural($relationName);
+            $relationName = Str::plural($relationName);
         }
 
         return $relationName;

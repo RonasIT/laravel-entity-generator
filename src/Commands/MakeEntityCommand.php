@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use RonasIT\Support\Generators\ControllerGenerator;
@@ -184,9 +185,9 @@ class MakeEntityCommand extends Command
         });
 
         $optionsNames = array_keys($options);
-        $rules = array_only($this->rules['without'], $optionsNames);
+        $rules = Arr::only($this->rules['without'], $optionsNames);
 
-        $exceptGenerators = array_collapse($rules);
+        $exceptGenerators = Arr::collapse($rules);
 
         return array_subtraction($this->generators, $exceptGenerators);
     }
@@ -219,7 +220,7 @@ class MakeEntityCommand extends Command
 
     protected function getFields()
     {
-        return array_only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
+        return Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
     }
 }
 

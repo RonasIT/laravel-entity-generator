@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class RequestsGenerator extends EntityGenerator
@@ -17,7 +18,7 @@ class RequestsGenerator extends EntityGenerator
         parent::setRelations($relations);
 
         $this->relations['belongsTo'] = array_map(function ($field) {
-            return snake_case($field) . '_id';
+            return Str::snake($field) . '_id';
         }, $this->relations['belongsTo']);
 
         return $this;
@@ -83,7 +84,7 @@ class RequestsGenerator extends EntityGenerator
 
     protected function getSearchValidationParameters()
     {
-        $parameters = array_except($this->fields, [
+        $parameters = Arr::except($this->fields, [
             'timestamp', 'timestamp-required', 'string-required', 'integer-required'
         ]);
 
@@ -129,7 +130,7 @@ class RequestsGenerator extends EntityGenerator
         ];
 
         $rules = [
-            array_get($replaces, $type, $type)
+            Arr::get($replaces, $type, $type)
         ];
 
         if (in_array($name, $this->relations['belongsTo'])) {

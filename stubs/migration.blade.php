@@ -46,14 +46,14 @@ class Create{{$class}}Table extends Migration
 @foreach($relations['belongsToMany'] as $relation)
         $this->dropBridgeTable('{{$entity}}', '{{$relation}}');
 @endforeach
-        Schema::drop('{{\Illuminate\Support\Str::plural(snake_case($entity))}}');
+        Schema::drop('{{\Illuminate\Support\Str::plural(\Illuminate\Support\Str::snake($entity))}}');
 
         DB::commit();
     }
 
     public function createTable()
     {
-        Schema::create('{{\Illuminate\Support\Str::plural(snake_case($entity))}}', function (Blueprint $table) {
+        Schema::create('{{\Illuminate\Support\Str::plural(\Illuminate\Support\Str::snake($entity))}}', function (Blueprint $table) {
             $table->increments('id');
             $table->timestamps();
 @foreach ($table as $row )

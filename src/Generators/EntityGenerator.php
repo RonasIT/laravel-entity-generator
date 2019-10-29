@@ -51,7 +51,7 @@ abstract class EntityGenerator
         $this->relations = $relations;
 
         foreach ($relations['belongsTo'] as $field) {
-            $name = snake_case($field) . '_id';
+            $name = Str::snake($field) . '_id';
 
             $this->fields['integer-required'][] = $name;
         }
@@ -106,7 +106,7 @@ abstract class EntityGenerator
 
     protected function getTableName($entityName)
     {
-        $entityName = snake_case($entityName);
+        $entityName = Str::snake($entityName);
 
         return Str::plural($entityName);
     }

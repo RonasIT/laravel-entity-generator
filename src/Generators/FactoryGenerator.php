@@ -3,6 +3,8 @@
 namespace RonasIT\Support\Generators;
 
 use Faker\Generator as Faker;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ModelFactoryNotFound;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ModelFactoryNotFoundedException;
@@ -81,7 +83,7 @@ class FactoryGenerator extends EntityGenerator
 
     protected static function getFakerMethod($field)
     {
-        if (array_has(self::FAKERS_METHODS, $field['type'])) {
+        if (Arr::has(self::FAKERS_METHODS, $field['type'])) {
             return "\$faker->" . self::FAKERS_METHODS[$field['type']];
         }
 
@@ -90,7 +92,7 @@ class FactoryGenerator extends EntityGenerator
 
     protected static function getCustomMethod($field)
     {
-        if (array_has(self::CUSTOM_METHODS, $field['type'])) {
+        if (Arr::has(self::CUSTOM_METHODS, $field['type'])) {
             return self::CUSTOM_METHODS[$field['type']];
         }
 
@@ -121,7 +123,7 @@ class FactoryGenerator extends EntityGenerator
             preg_match($this->getFactoryPattern($relation), $modelFactoryContent, $matches);
 
             foreach ($matches as $match) {
-                $field = snake_case($this->model) . '_id';
+                $field = Str::snake($this->model) . '_id';
 
                 $newField = "\n        \"{$field}\" => 1,";
 

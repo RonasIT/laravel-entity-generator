@@ -2,6 +2,8 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
@@ -10,7 +12,7 @@ class ServiceGenerator extends EntityGenerator
     public function setRelations($relations)
     {
         foreach ($relations['belongsTo'] as $field) {
-            $name = snake_case($field) . '_id';
+            $name = Str::snake($field) . '_id';
 
             $this->fields['integer'][] = $name;
         }
@@ -46,10 +48,10 @@ class ServiceGenerator extends EntityGenerator
 
     protected function getFields()
     {
-        $simpleSearch = array_only($this->fields, ['integer', 'integer-required', 'boolean', 'boolean-required']);
+        $simpleSearch = Arr::only($this->fields, ['integer', 'integer-required', 'boolean', 'boolean-required']);
 
         return [
-            'simple_search' => array_collapse($simpleSearch),
+            'simple_search' => Arr::collapse($simpleSearch),
             'search_by_query' => array_merge($this->fields['string'], $this->fields['string-required'])
         ];
     }

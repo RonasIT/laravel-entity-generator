@@ -1,5 +1,6 @@
 namespace App\Repositories;
 
+use Illuminate\Support\Arr;
 use RonasIT\Support\Repositories\BaseRepository;
 use App\Models\{{$entity}};
 {{--
@@ -38,7 +39,7 @@ class {{$entity}}Repository extends BaseRepository
 
     public function update($where, $data) {
 @foreach($fields['json'] as $field)
-        if (array_has($data, '{{$field}}')) {
+        if (Arr::has($data, '{{$field}}')) {
             $data['{{$field}}'] = json_encode($data['{{$field}}']);
         }
 

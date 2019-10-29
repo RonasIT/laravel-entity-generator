@@ -1,5 +1,6 @@
 namespace App\Tests;
 
+use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Response;
 @if ($withAuth)
 use App\Models\User;
@@ -22,7 +23,7 @@ class {{$entity}}Test extends TestCase
 
     public function testCreate()
     {
-        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}.json');
 
 @if (!$withAuth)
         $response = $this->json('post', '/{{$entities}}', $data);
@@ -32,8 +33,8 @@ class {{$entity}}Test extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $expect = array_except($data, ['id', 'updated_at', 'created_at']);
-        $actual = array_except($response->json(), ['id', 'updated_at', 'created_at']);
+        $expect = Arr::except($data, ['id', 'updated_at', 'created_at']);
+        $actual = Arr::except($response->json(), ['id', 'updated_at', 'created_at']);
 
         $this->assertEquals($expect, $actual);
         $this->assertDatabaseHas('{{$entities}}', $expect);
@@ -42,7 +43,7 @@ class {{$entity}}Test extends TestCase
 @if ($withAuth)
     public function testCreateNoAuth()
     {
-        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}.json');
 
         $response = $this->json('post', '/{{$entities}}', $data);
 
@@ -52,7 +53,7 @@ class {{$entity}}Test extends TestCase
 @endif
     public function testUpdate()
     {
-        $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}.json');
 
 @if (!$withAuth)
         $response = $this->json('put', '/{{$entities}}/1', $data);
@@ -67,7 +68,7 @@ class {{$entity}}Test extends TestCase
 
     public function testUpdateNotExists()
     {
-        $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}.json');
 
 @if (!$withAuth)
         $response = $this->json('put', '/{{$entities}}/0', $data);
@@ -81,7 +82,7 @@ class {{$entity}}Test extends TestCase
 @if ($withAuth)
     public function testUpdateNoAuth()
     {
-        $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}.json');
 
         $response = $this->json('put', '/{{$entities}}/1', $data);
 
@@ -139,9 +140,9 @@ class {{$entity}}Test extends TestCase
         $response->assertStatus(Response::HTTP_OK);
 
         // TODO: Need to remove after first successful start
-        $this->exportJson('get_{{snake_case($entity)}}.json', $response->json());
+        $this->exportJson('get_{{\Illuminate\Support\Str::snake($entity)}}.json', $response->json());
 
-        $this->assertEqualsFixture('get_{{snake_case($entity)}}.json', $response->json());
+        $this->assertEqualsFixture('get_{{\Illuminate\Support\Str::snake($entity)}}.json', $response->json());
     }
 
     public function testGetNotExists()
