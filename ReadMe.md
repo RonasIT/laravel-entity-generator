@@ -98,4 +98,25 @@ Syntax: artisan make:entity [name] [flags]
     --only-factory        : Set this flag if you want to create only factory. This flag is a higher priority than --without-factory.
     
     --only-tests          : Set this flag if you want to create only tests. This flag is a higher priority than --without-tests.
-          
+    
+## Release notes
+
+### 1.3
+Since 1.3 version you need to add to your config/entity-generator.php following data:
+
+```php
+    'paths' => [
+        ... // your old data
+        'seeds' => 'database/seeds',
+        'database_seeder' => 'database/seeds/DatabaseSeeder.php',
+        'translations' => 'resources/lang/en/validation.php'
+    ],
+    'stubs' => [
+        ... // your old data
+        'empty_factory' => 'entity-generator::empty_factory',
+        'translation_not_found' => 'entity-generator::translation_not_found',
+        'validation' => 'entity-generator::validation',
+        'seeding' => 'entity-generator::seeding',
+        'database_empty_seeder' => 'entity-generator::database_seed_empty'
+    ]
+``` 
