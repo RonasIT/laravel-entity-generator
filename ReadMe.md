@@ -120,7 +120,7 @@ Since 1.3 version you need to add to your config/entity-generator.php following 
         'empty_factory' => 'entity-generator::empty_factory',
         'translation_not_found' => 'entity-generator::translation_not_found',
         'validation' => 'entity-generator::validation',
-        'seeding' => 'entity-generator::seeding',
+        'seeder' => 'entity-generator::seeder',
         'database_empty_seeder' => 'entity-generator::database_seed_empty'
     ]
 ``` 

@@ -52,7 +52,7 @@ class SeederGenerator extends EntityGenerator
 
     protected function createEntitySeeder()
     {
-        $stubPath = config('entity-generator.stubs.seeding');
+        $stubPath = config('entity-generator.stubs.seeder');
 
         $content = "<?php \n\n" . view($stubPath)->with([
             'entity' => $this->model,
@@ -72,16 +72,16 @@ class SeederGenerator extends EntityGenerator
     {
         $content = file_get_contents($this->databaseSeederPath);
         
-        $insertContent = "\t\$this->call({$this->model}Seeder::class);";
+        $insertContent = "\n        \$this->call({$this->model}Seeder::class);\n    }\n}";
 
-        $fixedContent = preg_replace('/\}\s*\}\s*\z/', "\n\t{$insertContent}\n\t}\n}", $content);
+        $fixedContent = preg_replace('/\}\s*\}\s*\z/', $insertContent, $content);
         
         file_put_contents($this->databaseSeederPath, $fixedContent);
     }
 
     protected function checkConfigs()
     {
-        if (empty(config('entity-generator.stubs.seeding'))) {
+        if (empty(config('entity-generator.stubs.seeder'))) {
             throw new EntityCreateException('
                 Looks like you have deprecated configs.
                 Please follow instructions(https://github.com/RonasIT/laravel-entity-generator/blob/master/ReadMe.md#13)
