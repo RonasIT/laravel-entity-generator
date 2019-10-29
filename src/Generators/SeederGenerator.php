@@ -4,6 +4,7 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\EntityCreateException;
 
 class SeederGenerator extends EntityGenerator
 {
@@ -20,6 +21,8 @@ class SeederGenerator extends EntityGenerator
 
     public function generate()
     {
+        $this->checkConfigs();
+
         if (!file_exists($this->databaseSeederPath)) {
             
             if (!is_dir($this->seedsPath)){
@@ -34,7 +37,7 @@ class SeederGenerator extends EntityGenerator
         $this->appendSeederToList();
     }
 
-    private function createDatabaseSeeder()
+    protected function createDatabaseSeeder()
     {
         $stubPath = config('entity-generator.stubs.database_empty_seeder');
 
@@ -47,7 +50,7 @@ class SeederGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    private function createEntitySeeder()
+    protected function createEntitySeeder()
     {
         $stubPath = config('entity-generator.stubs.seeding');
 
@@ -65,7 +68,7 @@ class SeederGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    private function appendSeederToList()
+    protected function appendSeederToList()
     {
         $content = file_get_contents($this->databaseSeederPath);
         
@@ -74,5 +77,15 @@ class SeederGenerator extends EntityGenerator
         $fixedContent = preg_replace('/\}\s*\}\s*\z/', "\n\t{$insertContent}\n\t}\n}", $content);
         
         file_put_contents($this->databaseSeederPath, $fixedContent);
+    }
+
+    protected function checkConfigs()
+    {
+        if (empty(config('entity-generator.stubs.seeding'))) {
+            throw new EntityCreateException('
+                Looks like you have deprecated configs.
+                Please follow instructions(https://github.com/RonasIT/laravel-entity-generator/blob/master/ReadMe.md#13)
+            ');
+        }
     }
 }
