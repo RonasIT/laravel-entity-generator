@@ -82,6 +82,8 @@ Syntax: artisan make:entity [name] [flags]
     --without-factory     : Set this flag if you don't want to create factory.
     
     --without-tests       : Set this flag if you don't want to create tests. This flag is a lower priority than --only-tests.
+
+    --without-seeder      : Set this flag if you don't want to create seeder.
     
     --only-model          : Set this flag if you want to create only model. This flag is a higher priority than --without-model, --only-migrations, --only-tests and --only-repository.
      
@@ -99,3 +101,4 @@ Syntax: artisan make:entity [name] [flags]
     
     --only-tests          : Set this flag if you want to create only tests. This flag is a higher priority than --without-tests.
           
+    --only-seeder         : Set this flag if you want to create only seeder.
