@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class RequestsGenerator extends EntityGenerator
@@ -108,7 +109,7 @@ class RequestsGenerator extends EntityGenerator
         $result = [];
 
         foreach ($parameters as $type => $parameterNames) {
-            $isRequired = str_contains($type, 'required');
+            $isRequired = Str::contains($type, 'required');
             $type = head(explode('-', $type));
 
             foreach ($parameterNames as $name) {
@@ -155,7 +156,7 @@ class RequestsGenerator extends EntityGenerator
 
     private function getEntityName($method) {
         if ($method === self::SEARCH_METHOD) {
-            return str_plural($this->model);
+            return Str::plural($this->model);
         }
 
         return $this->model;

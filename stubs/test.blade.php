@@ -23,7 +23,7 @@ class {{$entity}}Test extends TestCase
 
     public function testCreate()
     {
-        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}.json');
+        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
 
 @if (!$withAuth)
         $response = $this->json('post', '/{{$entities}}', $data);
@@ -43,7 +43,7 @@ class {{$entity}}Test extends TestCase
 @if ($withAuth)
     public function testCreateNoAuth()
     {
-        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}.json');
+        $data = $this->getJsonFixture('create_{{snake_case($entity)}}.json');
 
         $response = $this->json('post', '/{{$entities}}', $data);
 
@@ -53,7 +53,7 @@ class {{$entity}}Test extends TestCase
 @endif
     public function testUpdate()
     {
-        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
 
 @if (!$withAuth)
         $response = $this->json('put', '/{{$entities}}/1', $data);
@@ -68,7 +68,7 @@ class {{$entity}}Test extends TestCase
 
     public function testUpdateNotExists()
     {
-        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
 
 @if (!$withAuth)
         $response = $this->json('put', '/{{$entities}}/0', $data);
@@ -82,7 +82,7 @@ class {{$entity}}Test extends TestCase
 @if ($withAuth)
     public function testUpdateNoAuth()
     {
-        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{snake_case($entity)}}.json');
 
         $response = $this->json('put', '/{{$entities}}/1', $data);
 
