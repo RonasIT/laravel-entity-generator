@@ -110,7 +110,7 @@ class FactoryGenerator extends EntityGenerator
         foreach ($relations as $relation) {
             $modelFactoryContent = file_get_contents($this->paths['factory']);
 
-            if (!str_contains($modelFactoryContent, $this->getModelClass($relation))) {
+            if (!Str::contains($modelFactoryContent, $this->getModelClass($relation))) {
                 $this->throwFailureException(
                     ModelFactoryNotFound::class,
                     "Model factory for mode {$relation} not found.",
