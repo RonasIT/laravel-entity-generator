@@ -86,7 +86,7 @@ abstract class EntityGenerator
         $classPath = base_path("{$entitiesPath}/{$name}.php");
         $tag = "<?php";
 
-        if (!str_contains($content, $tag)) {
+        if (!Str::contains($content, $tag)) {
             $content = "{$tag}\n\n{$content}";
         }
 
