@@ -21,20 +21,6 @@ class {{$entity}}Repository extends BaseRepository
     {
         $this->setModel({{$entity}}::class);
     }
-
-    public function search($filters)
-    {
-        return $this
-            ->searchQuery($filters)
-@foreach($fields['simple_search'] as $field)
-            ->filterBy('{{$field}}')
-@endforeach
-@if(!empty($fields['search_by_query']))
-            ->filterByQuery(['{!! implode('\', \'', $fields['search_by_query']) !!}'])
-@endif
-            ->with()
-            ->getSearchResults();
-    }
 @if(!empty($fields['json']))
 
     public function update($where, $data) {
