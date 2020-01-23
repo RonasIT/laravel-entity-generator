@@ -17,7 +17,7 @@ class FactoryGenerator extends EntityGenerator
         'integer' => 'randomNumber()',
         'boolean' => 'boolean',
         'string' => 'word',
-        'float' => 'randomFloat()',
+        'float' => 'randomFloat(2, 0, 10000)',
         'timestamp' => 'dateTime',
     ];
 
