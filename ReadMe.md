@@ -73,7 +73,7 @@ Syntax: artisan make:entity [name] [flags]
      
     --without-service     : Set this flag if you don't want to create service.
      
-    --without-controller  : Set this flag if you don't want to create controller. Automatically requests will not create too.
+    --without-controller  : Set this flag if you don't want to create controller. Automatically requests and tests will not create too.
      
     --without-migrations  : Set this flag if you already have table on db. This flag is a lower priority than --only-migrations.
     

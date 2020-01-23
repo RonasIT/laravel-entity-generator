@@ -43,7 +43,7 @@ class MakeEntityCommand extends Command
         {--without-model : Set this flag if you already have model for this entity. Command will find it. This flag is a lower priority than --only-model.} 
         {--without-repository : Set if you don\'t want to use Data Access Level. Created Service will use special trait for controlling entity. This flag is a lower priority than --without-repository.} 
         {--without-service : Set this flag if you don\'t want to create service.} 
-        {--without-controller : Set this flag if you don\'t want to create controller. Automatically requests will not create too.} 
+        {--without-controller : Set this flag if you don\'t want to create controller. Automatically requests and tests will not create too.} 
         {--without-migrations : Set this flag if you already have table on db. This flag is a lower priority than --only-migrations.}
         {--without-requests : Set this flag if you don\'t want to create requests to you controller.}
         {--without-factory : Set this flag if you don\'t want to create factory.}
@@ -112,7 +112,7 @@ class MakeEntityCommand extends Command
             'without-model' => [ModelGenerator::class],
             'without-repository' => [RepositoryGenerator::class],
             'without-service' => [ServiceGenerator::class],
-            'without-controller' => [ControllerGenerator::class, RequestsGenerator::class],
+            'without-controller' => [ControllerGenerator::class, RequestsGenerator::class, TestsGenerator::class],
             'without-migrations' => [MigrationsGenerator::class],
             'without-requests' => [RequestsGenerator::class],
             'without-factory' => [FactoryGenerator::class],
