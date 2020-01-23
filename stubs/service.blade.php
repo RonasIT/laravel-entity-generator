@@ -9,6 +9,7 @@ use RonasIT\Support\Services\EntityService;
 @php
 echo <<<PHPDOC
 /**
+ * @mixin {$entity}Repository
  * @property {$entity}Repository \$repository
  */
 
