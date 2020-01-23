@@ -51,9 +51,9 @@ Syntax: artisan make:entity [name] [flags]
     
     -B|--boolean-required       : Add boolean field to entity. If you want to specify default value you have to do it manually.
     
-    -t|--timestamp              : Add boolean field to entity.
+    -t|--timestamp              : Add timestamp field to entity.
     
-    -T|--timestamp-required     : Add boolean field to entity. If you want to specify default value you have to do it manually.
+    -T|--timestamp-required     : Add timestamp field to entity. If you want to specify default value you have to do it manually.
     
     -j|--json                   : Add json field to entity.
     
