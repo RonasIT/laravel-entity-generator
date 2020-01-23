@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Support\Arr;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
@@ -30,11 +29,7 @@ class RepositoryGenerator extends EntityGenerator
 
     protected function getFields()
     {
-        $simpleSearch = Arr::only($this->fields, ['integer', 'integer-required', 'boolean', 'boolean-required']);
-
         return [
-            'simple_search' => Arr::collapse($simpleSearch),
-            'search_by_query' => array_merge($this->fields['string'], $this->fields['string-required']),
             'json' => $this->fields['json']
         ];
     }
