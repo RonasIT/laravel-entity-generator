@@ -10,8 +10,6 @@ class Create{{$class}}Table extends Migration
 
     public function up()
     {
-        DB::beginTransaction();
-
         $this->createTable();
 @foreach($relations['belongsToMany'] as $relation)
 
@@ -29,26 +27,23 @@ class Create{{$class}}Table extends Migration
 
         $this->addForeignKey('{{$relation}}', '{{$entity}}', true);
 @endforeach
-
-        DB::commit();
     }
 
     public function down()
     {
-        DB::beginTransaction();
-
 @foreach($relations['hasOne'] as $relation)
         $this->dropForeignKey('{{$relation}}', '{{$entity}}', true);
+
 @endforeach
 @foreach($relations['hasMany'] as $relation)
         $this->dropForeignKey('{{$relation}}', '{{$entity}}', true);
+
 @endforeach
 @foreach($relations['belongsToMany'] as $relation)
         $this->dropBridgeTable('{{$entity}}', '{{$relation}}');
+
 @endforeach
         Schema::drop('{{\Illuminate\Support\Str::plural(\Illuminate\Support\Str::snake($entity))}}');
-
-        DB::commit();
     }
 
     public function createTable()

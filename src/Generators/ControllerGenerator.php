@@ -24,7 +24,7 @@ class ControllerGenerator extends EntityGenerator
             $this->throwFailureException(
                 ClassNotExistsException::class,
                 "Cannot create {$this->model}Service cause {$this->model}Service does not exists.",
-                "Create a {$this->model}Service by himself or run your command with options:'--without-controller --without-migrations --without-requests --without-tests'."
+                "Create a {$this->model}Service by himself or run your command with options:'--without-controller --without-migration --without-requests --without-tests'."
             );
         }
 
@@ -66,7 +66,6 @@ class ControllerGenerator extends EntityGenerator
         $routesContent = $this->getStub('routes', [
             'entity' => $this->model,
             'entities' => $this->getTableName($this->model, '-'),
-            'withAuth' => $this->classExists('models', 'User')
         ]);
 
         $routes = explode("\n", $routesContent);

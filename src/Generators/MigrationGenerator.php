@@ -6,10 +6,8 @@ use Carbon\Carbon;
 use Exception;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
-class MigrationsGenerator extends EntityGenerator
+class MigrationGenerator extends EntityGenerator
 {
-    protected $migrations;
-
     public function generate()
     {
         $entities = $this->getTableName($this->model);
@@ -98,6 +96,6 @@ class MigrationsGenerator extends EntityGenerator
             return $this->getNonRequiredLine($fieldName, $typeName);
         }
 
-        throw new Exception('Unknown fieldType in MigrationsGenerator');
+        throw new Exception('Unknown fieldType in MigrationGenerator');
     }
 }

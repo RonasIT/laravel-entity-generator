@@ -51,9 +51,9 @@ Syntax: artisan make:entity [name] [flags]
     
     -B|--boolean-required       : Add boolean field to entity. If you want to specify default value you have to do it manually.
     
-    -t|--timestamp              : Add boolean field to entity.
+    -t|--timestamp              : Add timestamp field to entity.
     
-    -T|--timestamp-required     : Add boolean field to entity. If you want to specify default value you have to do it manually.
+    -T|--timestamp-required     : Add timestamp field to entity. If you want to specify default value you have to do it manually.
     
     -j|--json                   : Add json field to entity.
     
@@ -73,9 +73,9 @@ Syntax: artisan make:entity [name] [flags]
      
     --without-service     : Set this flag if you don't want to create service.
      
-    --without-controller  : Set this flag if you don't want to create controller. Automatically requests will not create too.
+    --without-controller  : Set this flag if you don't want to create controller. Automatically requests and tests will not create too.
      
-    --without-migrations  : Set this flag if you already have table on db. This flag is a lower priority than --only-migrations.
+    --without-migration  : Set this flag if you already have table on db. This flag is a lower priority than --only-migration.
     
     --without-requests    : Set this flag if you don't want to create requests to you controller.
     
@@ -85,9 +85,9 @@ Syntax: artisan make:entity [name] [flags]
 
     --without-seeder      : Set this flag if you don't want to create seeder.
     
-    --only-model          : Set this flag if you want to create only model. This flag is a higher priority than --without-model, --only-migrations, --only-tests and --only-repository.
+    --only-model          : Set this flag if you want to create only model. This flag is a higher priority than --without-model, --only-migration, --only-tests and --only-repository.
      
-    --only-repository     : Set this flag if you want to create only repository. This flag is a higher priority than --without-repository, --only-tests and --only-migrations.
+    --only-repository     : Set this flag if you want to create only repository. This flag is a higher priority than --without-repository, --only-tests and --only-migration.
     
     --only-service        : Set this flag if you want to create only service.
     
@@ -95,7 +95,7 @@ Syntax: artisan make:entity [name] [flags]
     
     --only-requests       : Set this flag if you want to create only requests.
     
-    --only-migrations     : Set this flag if you want to create only repository. This flag is a higher priority than --without-migrations and --only-tests.
+    --only-migration     : Set this flag if you want to create only repository. This flag is a higher priority than --without-migration and --only-tests.
     
     --only-factory        : Set this flag if you want to create only factory. This flag is a higher priority than --without-factory.
     
