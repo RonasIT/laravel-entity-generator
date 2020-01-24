@@ -65,7 +65,7 @@ class ControllerGenerator extends EntityGenerator
     {
         $routesContent = $this->getStub('routes', [
             'entity' => $this->model,
-            'entities' => $this->getTableName($this->model),
+            'entities' => $this->getTableName($this->model, '-'),
         ]);
 
         $routes = explode("\n", $routesContent);

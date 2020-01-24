@@ -104,9 +104,9 @@ abstract class EntityGenerator
         return view($stubPath)->with($data)->render();
     }
 
-    protected function getTableName($entityName)
+    protected function getTableName($entityName, $delimiter = '_')
     {
-        $entityName = Str::snake($entityName);
+        $entityName = Str::snake($entityName, $delimiter);
 
         return Str::plural($entityName);
     }
