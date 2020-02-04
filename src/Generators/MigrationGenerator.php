@@ -22,9 +22,9 @@ class MigrationGenerator extends EntityGenerator
         ]);
         $now = Carbon::now()->format('Y_m_d_His');
 
-        $this->saveClass('migrations', "{$now}_create_{$entities}_table", $content);
+        $this->saveClass('migrations', "{$now}_{$entities}_create_table", $content);
 
-        event(new SuccessCreateMessage("Created a new Migration: create_{$entities}_table"));
+        event(new SuccessCreateMessage("Created a new Migration: {$entities}_create_table"));
     }
 
     protected function isJson($typeName)

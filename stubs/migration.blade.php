@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Support\Facades\DB;
 use RonasIT\Support\Traits\MigrationTrait;
 
-class Create{{$class}}Table extends Migration
+class {{$class}}CreateTable extends Migration
 {
     use MigrationTrait;
 
