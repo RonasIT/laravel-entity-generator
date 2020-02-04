@@ -199,7 +199,7 @@ class TestsGenerator extends EntityGenerator
     {
         $content = $this->getStub('test', [
             'entity' => $this->model,
-            'entities' => $this->getTableName($this->model),
+            'entities' => $this->getTableName($this->model, '-'),
             'withAuth' => $this->withAuth
         ]);
 
