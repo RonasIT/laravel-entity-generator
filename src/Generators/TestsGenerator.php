@@ -14,7 +14,10 @@ class TestsGenerator extends EntityGenerator
     protected $getFields = [];
     protected $withAuth = false;
 
-    const FIXTURE_TYPES = ['create', 'update'];
+    const FIXTURE_TYPES = [
+        'create' => ['request', 'response'],
+        'update' => ['request'],
+    ];
 
     const EMPTY_GUARDED_FIELD = '*';
     const UPDATED_AT = 'updated_at';
@@ -175,11 +178,14 @@ class TestsGenerator extends EntityGenerator
         $object = $this->getFixtureValuesList($this->model);
         $entity = Str::snake($this->model);
 
-        foreach (self::FIXTURE_TYPES as $type) {
-            $this->generateFixture(
-                "{$type}_{$entity}.json",
-                $object
-            );
+        foreach (self::FIXTURE_TYPES as $type => $modifications) {
+            foreach ($modifications as $modification) {
+                $excepts = [];
+                if ($modification === 'request') {
+                    $excepts = ['id'];
+                }
+                $this->generateFixture("{$type}_{$entity}_{$modification}.json", Arr::except($object, $excepts));
+            }
         }
     }
 
@@ -199,6 +205,7 @@ class TestsGenerator extends EntityGenerator
     {
         $content = $this->getStub('test', [
             'entity' => $this->model,
+            'databaseTableName' => $this->getTableName($this->model),
             'entities' => $this->getTableName($this->model, '-'),
             'withAuth' => $this->withAuth
         ]);
