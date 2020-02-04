@@ -23,7 +23,7 @@ class {{$entity}}Test extends TestCase
 
     public function testCreate()
     {
-        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}.json');
+        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
 
 @if (!$withAuth)
         $response = $this->json('post', '/{{$entities}}', $data);
@@ -33,17 +33,15 @@ class {{$entity}}Test extends TestCase
 
         $response->assertStatus(Response::HTTP_OK);
 
-        $expect = Arr::except($data, ['id', 'updated_at', 'created_at']);
-        $actual = Arr::except($response->json(), ['id', 'updated_at', 'created_at']);
+        $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json', $response->json());
 
-        $this->assertEquals($expect, $actual);
-        $this->assertDatabaseHas('{{$entities}}', $expect);
+        $this->assertDatabaseHas('{{$databaseTableName}}', $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json'));
     }
 
 @if ($withAuth)
     public function testCreateNoAuth()
     {
-        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}.json');
+        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
 
         $response = $this->json('post', '/{{$entities}}', $data);
 
@@ -53,7 +51,7 @@ class {{$entity}}Test extends TestCase
 @endif
     public function testUpdate()
     {
-        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
 
 @if (!$withAuth)
         $response = $this->json('put', '/{{$entities}}/1', $data);
@@ -63,12 +61,12 @@ class {{$entity}}Test extends TestCase
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 
-        $this->assertDatabaseHas('{{$entities}}', $data);
+        $this->assertDatabaseHas('{{$databaseTableName}}', $data);
     }
 
     public function testUpdateNotExists()
     {
-        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
 
 @if (!$withAuth)
         $response = $this->json('put', '/{{$entities}}/0', $data);
@@ -82,7 +80,7 @@ class {{$entity}}Test extends TestCase
 @if ($withAuth)
     public function testUpdateNoAuth()
     {
-        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}.json');
+        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
 
         $response = $this->json('put', '/{{$entities}}/1', $data);
 
@@ -100,7 +98,7 @@ class {{$entity}}Test extends TestCase
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 
-        $this->assertDatabaseMissing('{{$entities}}', [
+        $this->assertDatabaseMissing('{{$databaseTableName}}', [
             'id' => 1
         ]);
     }
@@ -115,7 +113,7 @@ class {{$entity}}Test extends TestCase
 
         $response->assertStatus(Response::HTTP_NOT_FOUND);
 
-        $this->assertDatabaseMissing('{{$entities}}', [
+        $this->assertDatabaseMissing('{{$databaseTableName}}', [
             'id' => 0
         ]);
     }
