@@ -15,11 +15,7 @@ class {{$method}}{{$entity}}Request extends Request
 @foreach($parameters as $parameter)
             '{{$parameter['name']}}' => '{{implode('|', $parameter['rules'])}}',
 @endforeach
-@if($method === 'Search')
         ];
-@else
-        ];
-@endif
 @else
         return [];
 @endif
