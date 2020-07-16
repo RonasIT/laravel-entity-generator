@@ -1,7 +1,6 @@
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 use RonasIT\Support\Traits\MigrationTrait;
 
 class {{$class}}CreateTable extends Migration
@@ -10,7 +9,17 @@ class {{$class}}CreateTable extends Migration
 
     public function up()
     {
+@if(!empty($relations['belongsToMany']) || !empty($relations['belongsTo']) || !empty($relations['hasOne']) || !empty($relations['hasMany']))
         $this->createTable();
+@else
+        Schema::create('{{\Illuminate\Support\Str::plural(\Illuminate\Support\Str::snake($entity))}}', function (Blueprint $table) {
+            $table->increments('id');
+@foreach ($table as $row )
+            {!!$row!!}
+@endforeach
+            $table->timestamps();
+        });
+@endif
 @foreach($relations['belongsToMany'] as $relation)
 
         $this->createBridgeTable('{{$entity}}', '{{$relation}}');
@@ -43,17 +52,19 @@ class {{$class}}CreateTable extends Migration
         $this->dropBridgeTable('{{$entity}}', '{{$relation}}');
 
 @endforeach
-        Schema::drop('{{\Illuminate\Support\Str::plural(\Illuminate\Support\Str::snake($entity))}}');
+        Schema::dropIfExists('{{\Illuminate\Support\Str::plural(\Illuminate\Support\Str::snake($entity))}}');
     }
+@if(!empty($relations['belongsToMany']) || !empty($relations['belongsTo']) || !empty($relations['hasOne']) || !empty($relations['hasMany']))
 
     public function createTable()
     {
         Schema::create('{{\Illuminate\Support\Str::plural(\Illuminate\Support\Str::snake($entity))}}', function (Blueprint $table) {
             $table->increments('id');
-            $table->timestamps();
 @foreach ($table as $row )
             {!!$row!!}
 @endforeach
+            $table->timestamps();
         });
     }
+@endif
 }
