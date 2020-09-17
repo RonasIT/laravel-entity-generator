@@ -46,6 +46,6 @@ class {{$entity}}Controller extends Controller
     {
         $result = $service->search($request->onlyValidated());
 
-        return response($result);
+        return response()->json($result);
     }
 }

@@ -144,8 +144,6 @@ class RequestsGenerator extends EntityGenerator
 
         if ($required) {
             $rules[] = 'required';
-        } else {
-            $rules[] = 'nullable';
         }
 
         return [
