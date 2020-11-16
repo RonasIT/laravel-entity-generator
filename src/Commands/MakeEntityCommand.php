@@ -50,6 +50,8 @@ class MakeEntityCommand extends Command
         {--without-tests : Set this flag if you don\'t want to create tests. This flag is a lower priority than --only-tests.}
         {--without-seeder : Set this flag if you don\'t want to create seeder.}
         
+        {--only-api : Set this flag if you want to create controller, route, requests, tests.}
+        {--only-entity : Set this flag if you want to create migration, model, repository, service, factory, seeder.}
         {--only-model : Set this flag if you want to create only model. This flag is a higher priority than --without-model, --only-migration, --only-tests and --only-repository.} 
         {--only-repository : Set this flag if you want to create only repository. This flag is a higher priority than --without-repository, --only-tests and --only-migration.}
         {--only-service : Set this flag if you want to create only service.}
@@ -98,6 +100,8 @@ class MakeEntityCommand extends Command
 
     protected $rules = [
         'only' => [
+            'only-api' => [ControllerGenerator::class, RequestsGenerator::class, TestsGenerator::class],
+            'only-entity' => [MigrationGenerator::class, ModelGenerator::class, ServiceGenerator::class, RepositoryGenerator::class, FactoryGenerator::class, SeederGenerator::class],
             'only-model' => [ModelGenerator::class],
             'only-repository' => [RepositoryGenerator::class],
             'only-service' => [ServiceGenerator::class],
