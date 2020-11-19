@@ -22,7 +22,9 @@ class ControllerGenerator extends EntityGenerator
 
         if (!$this->classExists('services', "{$this->model}Service")) {
             $this->throwFailureException(
-                ClassNotExistsException::class, 'Cannot create API without entity.'
+                ClassNotExistsException::class,
+                "Cannot create {$this->model}Service cause {$this->model}Service does not exists.",
+                "Create a {$this->model}Service by himself or run your command with options:'--without-controller --without-migration --without-requests --without-tests'."
             );
         }
 

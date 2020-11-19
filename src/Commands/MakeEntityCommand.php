@@ -5,6 +5,7 @@ namespace RonasIT\Support\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use RonasIT\Support\Generators\ControllerGenerator;
 use RonasIT\Support\Generators\EntityGenerator;
@@ -163,9 +164,30 @@ class MakeEntityCommand extends Command
         }
     }
 
+    protected function classExists($path, $name)
+    {
+        $paths = config('entity-generator.paths');
+
+        $entitiesPath = $paths[$path];
+
+        $classPath = base_path("{$entitiesPath}/{$name}.php");
+
+        return file_exists($classPath);
+    }
+
     protected function generate()
     {
         foreach ($this->rules['only'] as $option => $generators) {
+
+            if ($this->option('only-api')) {
+                $modelName = $this->argument('name');
+
+                if (!$this->classExists('services', "{$modelName}Service")) {
+
+                    throw new ClassNotExistsException('Cannot create API without entity.');
+                }
+            }
+
             if ($this->option($option)) {
                 foreach ($generators as $generator) {
                     $this->runGeneration($generator);
