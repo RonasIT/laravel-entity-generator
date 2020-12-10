@@ -155,6 +155,7 @@ class MakeEntityCommand extends Command
      */
     public function handle()
     {
+        $this->validateInput();
         $this->eventDispatcher->listen(SuccessCreateMessage::class, $this->getSuccessMessageCallback());
 
         try {
@@ -175,19 +176,19 @@ class MakeEntityCommand extends Command
         return file_exists($classPath);
     }
 
+    protected function validateInput()
+    {
+        if ($this->option('only-api')) {
+            $modelName = $this->argument('name');
+            if (!$this->classExists('services', "{$modelName}Service")) {
+                throw new ClassNotExistsException('Cannot create API without entity.');
+            }
+        }
+    }
+
     protected function generate()
     {
         foreach ($this->rules['only'] as $option => $generators) {
-
-            if ($this->option('only-api')) {
-                $modelName = $this->argument('name');
-
-                if (!$this->classExists('services', "{$modelName}Service")) {
-
-                    throw new ClassNotExistsException('Cannot create API without entity.');
-                }
-            }
-
             if ($this->option($option)) {
                 foreach ($generators as $generator) {
                     $this->runGeneration($generator);
