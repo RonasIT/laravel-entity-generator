@@ -5,6 +5,7 @@ namespace RonasIT\Support\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use RonasIT\Support\Generators\ControllerGenerator;
 use RonasIT\Support\Generators\EntityGenerator;
@@ -50,6 +51,8 @@ class MakeEntityCommand extends Command
         {--without-tests : Set this flag if you don\'t want to create tests. This flag is a lower priority than --only-tests.}
         {--without-seeder : Set this flag if you don\'t want to create seeder.}
         
+        {--only-api : Set this flag if you want to create controller, route, requests, tests.}
+        {--only-entity : Set this flag if you want to create migration, model, repository, service, factory, seeder.}
         {--only-model : Set this flag if you want to create only model. This flag is a higher priority than --without-model, --only-migration, --only-tests and --only-repository.} 
         {--only-repository : Set this flag if you want to create only repository. This flag is a higher priority than --without-repository, --only-tests and --only-migration.}
         {--only-service : Set this flag if you want to create only service.}
@@ -98,6 +101,8 @@ class MakeEntityCommand extends Command
 
     protected $rules = [
         'only' => [
+            'only-api' => [ControllerGenerator::class, RequestsGenerator::class, TestsGenerator::class],
+            'only-entity' => [MigrationGenerator::class, ModelGenerator::class, ServiceGenerator::class, RepositoryGenerator::class, FactoryGenerator::class, SeederGenerator::class],
             'only-model' => [ModelGenerator::class],
             'only-repository' => [RepositoryGenerator::class],
             'only-service' => [ServiceGenerator::class],
@@ -150,12 +155,34 @@ class MakeEntityCommand extends Command
      */
     public function handle()
     {
+        $this->validateInput();
         $this->eventDispatcher->listen(SuccessCreateMessage::class, $this->getSuccessMessageCallback());
 
         try {
             $this->generate();
         } catch (EntityCreateException $e) {
             $this->error($e->getMessage());
+        }
+    }
+
+    protected function classExists($path, $name)
+    {
+        $paths = config('entity-generator.paths');
+
+        $entitiesPath = $paths[$path];
+
+        $classPath = base_path("{$entitiesPath}/{$name}.php");
+
+        return file_exists($classPath);
+    }
+
+    protected function validateInput()
+    {
+        if ($this->option('only-api')) {
+            $modelName = $this->argument('name');
+            if (!$this->classExists('services', "{$modelName}Service")) {
+                throw new ClassNotExistsException('Cannot create API without entity.');
+            }
         }
     }
 
