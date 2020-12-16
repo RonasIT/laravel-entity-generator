@@ -19,6 +19,18 @@ abstract class EntityGenerator
     protected $model;
     protected $fields;
     protected $relations;
+    protected $crudOptions;
+
+    /**
+     * @param array $crudOptions
+     * @return $this
+     */
+    public function setCrudOptions($crudOptions)
+    {
+        $this->crudOptions = str_split($crudOptions['options']);
+
+        return $this;
+    }
 
     /**
      * @param string $model
@@ -100,6 +112,8 @@ abstract class EntityGenerator
     protected function getStub($stub, $data = [])
     {
         $stubPath = config("entity-generator.stubs.$stub");
+
+        $data['options'] = $this->crudOptions;
 
         return view($stubPath)->with($data)->render();
     }

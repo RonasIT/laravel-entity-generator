@@ -225,7 +225,15 @@ class MakeEntityCommand extends Command
             ->setModel($this->argument('name'))
             ->setFields($this->getFields())
             ->setRelations($this->getRelations())
+            ->setCrudOptions($this->getCrudOptions())
             ->generate();
+    }
+
+    protected function getCrudOptions()
+    {
+        return [
+            'options' => $this->option('methods'),
+        ];
     }
 
     protected function getRelations()

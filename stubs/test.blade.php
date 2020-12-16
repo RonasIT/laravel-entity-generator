@@ -21,6 +21,7 @@ class {{$entity}}Test extends TestCase
 @endif
     }
 
+@if (in_array('C', $options))
     public function testCreate()
     {
         $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
@@ -49,6 +50,8 @@ class {{$entity}}Test extends TestCase
     }
 
 @endif
+@endif
+@if (in_array('U', $options))
     public function testUpdate()
     {
         $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
@@ -88,6 +91,8 @@ class {{$entity}}Test extends TestCase
     }
 
 @endif
+@endif
+@if (in_array('D', $options))
     public function testDelete()
     {
 @if (!$withAuth)
@@ -127,6 +132,8 @@ class {{$entity}}Test extends TestCase
     }
 
 @endif
+@endif
+@if (in_array('R', $options))
     public function testGet()
     {
 @if (!$withAuth)
@@ -196,4 +203,6 @@ PHPDOC;
 
         $this->assertEqualsFixture($fixture, $response->json());
     }
+
+@endif
 }
