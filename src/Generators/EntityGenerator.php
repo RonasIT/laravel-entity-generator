@@ -27,7 +27,7 @@ abstract class EntityGenerator
      */
     public function setCrudOptions($crudOptions)
     {
-        $this->crudOptions = str_split($crudOptions['options']);
+        $this->crudOptions = $crudOptions;
 
         return $this;
     }

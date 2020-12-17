@@ -233,9 +233,7 @@ class MakeEntityCommand extends Command
 
     protected function getCrudOptions()
     {
-        return [
-            'options' => $this->option('methods'),
-        ];
+        return $this->filterCrudOptions();
     }
 
     protected function getRelations()
@@ -259,5 +257,18 @@ class MakeEntityCommand extends Command
     {
         return Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
     }
-}
 
+    protected function filterCrudOptions()
+    {
+        $filteredOptions = [];
+        $crudOptions = str_split($this->option('methods'));
+
+        foreach ($crudOptions as $crudOption) {
+            if ($crudOption === 'C' || 'R' || 'U' || 'D') {
+                $filteredOptions[] = $crudOption;
+            }
+        }
+
+        return $filteredOptions;
+    }
+}
