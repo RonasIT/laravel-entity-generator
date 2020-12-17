@@ -33,6 +33,11 @@ class RequestsGenerator extends EntityGenerator
                 true,
                 $this->getGetValidationParameters()
             );
+            $this->createRequest(
+                self::SEARCH_METHOD,
+                false,
+                $this->getSearchValidationParameters()
+            );
         }
 
         if (in_array('D', $this->crudOptions)) {
@@ -52,14 +57,6 @@ class RequestsGenerator extends EntityGenerator
                 self::UPDATE_METHOD,
                 true,
                 $this->getValidationParameters($this->fields, false)
-            );
-        }
-
-        if (in_array('R', $this->crudOptions)) {
-            $this->createRequest(
-                self::SEARCH_METHOD,
-                false,
-                $this->getSearchValidationParameters()
             );
         }
     }

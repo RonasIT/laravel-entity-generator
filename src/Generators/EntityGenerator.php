@@ -15,6 +15,10 @@ abstract class EntityGenerator
         'boolean-required', 'boolean', 'timestamp-required', 'timestamp', 'json'
     ];
 
+    const CRUD_OPTIONS = [
+        'C', 'R', 'U', 'D'
+    ];
+
     protected $paths = [];
     protected $model;
     protected $fields;

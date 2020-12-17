@@ -9,7 +9,5 @@ Route::delete('/{{$entities}}/{id}', ['uses' => {{$entity}}Controller::class . '
 @endif
 @if (in_array('R', $options))
 Route::get('/{{$entities}}/{id}', ['uses' => {{$entity}}Controller::class . '@get']);
-@endif
-@if (in_array('R', $options))
 Route::get('/{{$entities}}', ['uses' => {{$entity}}Controller::class . '@search']);
 @endif

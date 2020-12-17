@@ -1,6 +1,5 @@
 namespace App\Tests;
 
-use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Response;
 @if ($withAuth)
 use App\Models\User;
