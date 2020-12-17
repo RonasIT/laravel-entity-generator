@@ -63,7 +63,7 @@ class MakeEntityCommand extends Command
         {--only-tests : Set this flag if you want to create only tests. This flag is a higher priority than --without-tests.}
         {--only-seeder : Set this flag if you want to create only seeder.}
 
-        {--methods=CRUD : Add create, read, update, delete routes, requests, controllers and tests.} 
+        {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
         {--i|integer=* : Add integer field to entity.}
         {--I|integer-required=* : Add required integer field to entity. If you want to specify default value you have to do it manually.}
