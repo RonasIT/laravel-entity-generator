@@ -27,31 +27,38 @@ class RequestsGenerator extends EntityGenerator
 
     public function generate()
     {
-        $this->createRequest(
-            self::GET_METHOD,
-            true,
-            $this->getGetValidationParameters()
-        );
+        if (in_array('R', $this->crudOptions)) {
+            $this->createRequest(
+                self::GET_METHOD,
+                true,
+                $this->getGetValidationParameters()
+            );
+            $this->createRequest(
+                self::SEARCH_METHOD,
+                false,
+                $this->getSearchValidationParameters()
+            );
+        }
 
-        $this->createRequest(self::DELETE_METHOD);
+        if (in_array('D', $this->crudOptions)) {
+            $this->createRequest(self::DELETE_METHOD);
+        }
 
-        $this->createRequest(
-            self::CREATE_METHOD,
-            false,
-            $this->getValidationParameters($this->fields, true)
-        );
+        if (in_array('C', $this->crudOptions)) {
+            $this->createRequest(
+                self::CREATE_METHOD,
+                false,
+                $this->getValidationParameters($this->fields, true)
+            );
+        }
 
-        $this->createRequest(
-            self::UPDATE_METHOD,
-            true,
-            $this->getValidationParameters($this->fields, false)
-        );
-
-        $this->createRequest(
-            self::SEARCH_METHOD,
-            false,
-            $this->getSearchValidationParameters()
-        );
+        if (in_array('U', $this->crudOptions)) {
+            $this->createRequest(
+                self::UPDATE_METHOD,
+                true,
+                $this->getValidationParameters($this->fields, false)
+            );
+        }
     }
 
     protected function createRequest($method, $needToValidate = true, $parameters = [])

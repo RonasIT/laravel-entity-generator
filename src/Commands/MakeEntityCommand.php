@@ -19,6 +19,7 @@ use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Generators\TranslationsGenerator;
 use RonasIT\Support\Generators\SeederGenerator;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
+use UnexpectedValueException;
 
 /**
  * @property ControllerGenerator $controllerGenerator
@@ -35,6 +36,10 @@ use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
  */
 class MakeEntityCommand extends Command
 {
+    const CRUD_OPTIONS = [
+        'C', 'R', 'U', 'D'
+    ];
+
     /**
      * The name and signature of the console command.
      *
@@ -62,6 +67,8 @@ class MakeEntityCommand extends Command
         {--only-factory : Set this flag if you want to create only factory. This flag is a higher priority than --without-factory.}
         {--only-tests : Set this flag if you want to create only tests. This flag is a higher priority than --without-tests.}
         {--only-seeder : Set this flag if you want to create only seeder.}
+
+        {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
         {--i|integer=* : Add integer field to entity.}
         {--I|integer-required=* : Add required integer field to entity. If you want to specify default value you have to do it manually.}
@@ -178,12 +185,8 @@ class MakeEntityCommand extends Command
 
     protected function validateInput()
     {
-        if ($this->option('only-api')) {
-            $modelName = $this->argument('name');
-            if (!$this->classExists('services', "{$modelName}Service")) {
-                throw new ClassNotExistsException('Cannot create API without entity.');
-            }
-        }
+        $this->validateOnlyApiOption();
+        $this->validateCrudOptions();
     }
 
     protected function generate()
@@ -225,7 +228,13 @@ class MakeEntityCommand extends Command
             ->setModel($this->argument('name'))
             ->setFields($this->getFields())
             ->setRelations($this->getRelations())
+            ->setCrudOptions($this->getCrudOptions())
             ->generate();
+    }
+
+    protected function getCrudOptions()
+    {
+        return str_split($this->option('methods'));
     }
 
     protected function getRelations()
@@ -249,5 +258,25 @@ class MakeEntityCommand extends Command
     {
         return Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
     }
-}
 
+    protected function validateCrudOptions()
+    {
+        $crudOptions = $this->getCrudOptions();
+
+        foreach ($crudOptions as $crudOption) {
+            if (!in_array($crudOption, MakeEntityCommand::CRUD_OPTIONS)) {
+                throw new UnexpectedValueException("Invalid method {$crudOption}.");
+            }
+        }
+    }
+
+    protected function validateOnlyApiOption()
+    {
+        if ($this->option('only-api')) {
+            $modelName = $this->argument('name');
+            if (!$this->classExists('services', "{$modelName}Service")) {
+                throw new ClassNotExistsException('Cannot create API without entity.');
+            }
+        }
+    }
+}
