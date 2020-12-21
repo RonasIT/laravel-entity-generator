@@ -193,7 +193,7 @@ class TestsGenerator extends EntityGenerator
 
     protected function isFixtureNeeded($type)
     {
-        $firstLetter = strtoupper(substr($type, 0, 1));
+        $firstLetter = strtoupper($type[0]);
 
         return in_array($firstLetter, $this->crudOptions);
     }

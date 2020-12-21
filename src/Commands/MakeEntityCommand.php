@@ -19,6 +19,7 @@ use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Generators\TranslationsGenerator;
 use RonasIT\Support\Generators\SeederGenerator;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
+use UnexpectedValueException;
 
 /**
  * @property ControllerGenerator $controllerGenerator
@@ -35,6 +36,10 @@ use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
  */
 class MakeEntityCommand extends Command
 {
+    const CRUD_OPTIONS = [
+        'C', 'R', 'U', 'D'
+    ];
+
     /**
      * The name and signature of the console command.
      *
@@ -180,12 +185,8 @@ class MakeEntityCommand extends Command
 
     protected function validateInput()
     {
-        if ($this->option('only-api')) {
-            $modelName = $this->argument('name');
-            if (!$this->classExists('services', "{$modelName}Service")) {
-                throw new ClassNotExistsException('Cannot create API without entity.');
-            }
-        }
+        $this->validateOnlyApiOption();
+        $this->validateCrudOptions();
     }
 
     protected function generate()
@@ -233,7 +234,7 @@ class MakeEntityCommand extends Command
 
     protected function getCrudOptions()
     {
-        return $this->validateCrudOptions();
+        return str_split($this->option('methods'));
     }
 
     protected function getRelations()
@@ -260,14 +261,22 @@ class MakeEntityCommand extends Command
 
     protected function validateCrudOptions()
     {
-        $crudOptions = str_split($this->option('methods'));
+        $crudOptions = $this->getCrudOptions();
 
         foreach ($crudOptions as $crudOption) {
-            if (!in_array($crudOption, EntityGenerator::CRUD_OPTIONS)) {
-                throw new \UnexpectedValueException("Invalid method {$crudOption}.");
+            if (!in_array($crudOption, MakeEntityCommand::CRUD_OPTIONS)) {
+                throw new UnexpectedValueException("Invalid method {$crudOption}.");
             }
         }
+    }
 
-        return $crudOptions;
+    protected function validateOnlyApiOption()
+    {
+        if ($this->option('only-api')) {
+            $modelName = $this->argument('name');
+            if (!$this->classExists('services', "{$modelName}Service")) {
+                throw new ClassNotExistsException('Cannot create API without entity.');
+            }
+        }
     }
 }
