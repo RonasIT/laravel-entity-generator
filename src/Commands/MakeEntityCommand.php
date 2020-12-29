@@ -163,6 +163,7 @@ class MakeEntityCommand extends Command
     public function handle()
     {
         $this->validateInput();
+        $this->checkConfigs();
         $this->eventDispatcher->listen(SuccessCreateMessage::class, $this->getSuccessMessageCallback());
 
         try {
@@ -170,6 +171,51 @@ class MakeEntityCommand extends Command
         } catch (EntityCreateException $e) {
             $this->error($e->getMessage());
         }
+    }
+
+    protected function checkConfigs()
+    {
+        $newConfig = [];
+
+        $packageConfigPath = __DIR__ . '/../../config/entity-generator.php';
+        $packageConfigs = require $packageConfigPath;
+
+        $projectConfigs = config('entity-generator');
+
+        $stubsToAdd = array_diff_key($packageConfigs['stubs'], $projectConfigs['stubs']);
+        $pathsToAdd = array_diff_key($packageConfigs['paths'], $projectConfigs['paths']);
+
+        foreach ($stubsToAdd as $keyStubToAdd => $stubToAdd) {
+            $this->info("Key {$keyStubToAdd} was missing in your config, we added it with the value {$stubToAdd}");
+        }
+
+        foreach ($pathsToAdd as $keyPathToAdd => $pathToAdd) {
+            $this->info("Key {$keyPathToAdd} was missing in your config, we added it with the value {$pathToAdd}");
+        }
+
+        $newConfig['stubs'] = array_merge($projectConfigs['stubs'], $stubsToAdd);
+        $newConfig['paths'] = array_merge($projectConfigs['paths'], $pathsToAdd);
+
+        Config::set('entity-generator', $newConfig);
+
+        file_put_contents(config_path('entity-generator.php'),"<?php\n\nreturn" . $this->customVarExport($newConfig) . ';');
+    }
+
+    protected function customVarExport($expression)
+    {
+        $defaultExpression = var_export($expression, true);
+
+        $patterns = [
+            '/array/' => '',
+            '/\(/' => '[',
+            '/\)/' => ']',
+            '/=> \\n/' => '=>',
+            '/^\s{4}/m' => "\t\t",
+            '/^ {2}/m' => "\t",
+            '/=>\s{3}/m' => "=> "
+        ];
+
+        return preg_replace(array_keys($patterns), array_values($patterns), $defaultExpression);
     }
 
     protected function classExists($path, $name)
