@@ -4,6 +4,7 @@ namespace RonasIT\Support\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
@@ -185,20 +186,26 @@ class MakeEntityCommand extends Command
         $stubsToAdd = array_diff_key($packageConfigs['stubs'], $projectConfigs['stubs']);
         $pathsToAdd = array_diff_key($packageConfigs['paths'], $projectConfigs['paths']);
 
-        foreach ($stubsToAdd as $keyStubToAdd => $stubToAdd) {
-            $this->info("Key {$keyStubToAdd} was missing in your config, we added it with the value {$stubToAdd}");
-        }
-
-        foreach ($pathsToAdd as $keyPathToAdd => $pathToAdd) {
-            $this->info("Key {$keyPathToAdd} was missing in your config, we added it with the value {$pathToAdd}");
-        }
+        $this->outputConfigsMessages($stubsToAdd, $pathsToAdd);
 
         $newConfig['stubs'] = array_merge($projectConfigs['stubs'], $stubsToAdd);
         $newConfig['paths'] = array_merge($projectConfigs['paths'], $pathsToAdd);
 
-        Config::set('entity-generator', $newConfig);
+        if (!empty($newConfig['stubs']) && !empty($newConfig['paths'])) {
+            Config::set('entity-generator', $newConfig);
+            file_put_contents(config_path('entity-generator.php'), "<?php\n\nreturn" . $this->customVarExport($newConfig) . ';');
+        }
+    }
 
-        file_put_contents(config_path('entity-generator.php'),"<?php\n\nreturn" . $this->customVarExport($newConfig) . ';');
+    protected function outputConfigsMessages($stubs, $paths)
+    {
+        foreach ($stubs as $keyStub => $stub) {
+            $this->info("Stub key {$keyStub} was missing in your config, we added it with the value {$stub}");
+        }
+
+        foreach ($paths as $keyPath => $path) {
+            $this->info("Path key {$keyPath} was missing in your config, we added it with the value {$path}");
+        }
     }
 
     protected function customVarExport($expression)
