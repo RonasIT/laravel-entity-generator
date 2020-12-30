@@ -176,36 +176,60 @@ class MakeEntityCommand extends Command
 
     protected function checkConfigs()
     {
-        $newConfig = [];
-
         $packageConfigPath = __DIR__ . '/../../config/entity-generator.php';
         $packageConfigs = require $packageConfigPath;
 
         $projectConfigs = config('entity-generator');
 
-        $stubsToAdd = array_diff_key($packageConfigs['stubs'], $projectConfigs['stubs']);
-        $pathsToAdd = array_diff_key($packageConfigs['paths'], $projectConfigs['paths']);
+        $newConfig = array_replace_recursive($packageConfigs, $projectConfigs);
 
-        $this->outputConfigsMessages($stubsToAdd, $pathsToAdd);
+        $this->outputConfigsMessages($packageConfigs, $projectConfigs);
 
-        $newConfig['stubs'] = array_merge($projectConfigs['stubs'], $stubsToAdd);
-        $newConfig['paths'] = array_merge($projectConfigs['paths'], $pathsToAdd);
+        Config::set('entity-generator', $newConfig);
 
-        if (!empty($newConfig['stubs']) && !empty($newConfig['paths'])) {
-            Config::set('entity-generator', $newConfig);
-            file_put_contents(config_path('entity-generator.php'), "<?php\n\nreturn" . $this->customVarExport($newConfig) . ';');
-        }
+        file_put_contents(config_path('entity-generator.php'), "<?php\n\nreturn" . $this->customVarExport($newConfig) . ';');
+        dd();
     }
 
-    protected function outputConfigsMessages($stubs, $paths)
+    protected function outputConfigsMessages($packageConfigs, $projectConfigs)
     {
-        foreach ($stubs as $keyStub => $stub) {
-            $this->info("Stub key {$keyStub} was missing in your config, we added it with the value {$stub}");
+        $packageFullDepth = [];
+        $projectFullDepth = [];
+        $packageSameKeys = [];
+        $projectSameKeys = [];
+
+        array_walk_recursive($packageConfigs, function ($value, $key) use (&$packageFullDepth, &$packageSameKeys) {
+            if ($this->sameKeyCheck($packageFullDepth, $packageSameKeys, $key, $value)) {
+                return;
+            }
+
+            $packageFullDepth[$key] = $value;
+        });
+
+        array_walk_recursive($projectConfigs, function ($value, $key) use (&$projectFullDepth, &$packageSameKeys) {
+            if ($this->sameKeyCheck($projectFullDepth, $projectSameKeys, $key, $value)) {
+                return;
+            }
+
+            $projectFullDepth[$key] = $value;
+        });
+
+        $differences = array_diff_key($packageFullDepth, $projectFullDepth);
+    }
+
+    protected function sameKeyCheck(&$mainArray, &$sameKeysArray, $key, $value)
+    {
+        if (array_key_exists($key, $mainArray)) {
+            $oldValue = $mainArray[$key];
+            unset($mainArray[$key]);
+
+            $sameKeysArray[$key][] = $oldValue;
+            $sameKeysArray[$key][] = $value;
+
+            return true;
         }
 
-        foreach ($paths as $keyPath => $path) {
-            $this->info("Path key {$keyPath} was missing in your config, we added it with the value {$path}");
-        }
+        return false;
     }
 
     protected function customVarExport($expression)
