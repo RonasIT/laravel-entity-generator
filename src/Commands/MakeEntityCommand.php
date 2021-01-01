@@ -183,53 +183,42 @@ class MakeEntityCommand extends Command
 
         $newConfig = array_replace_recursive($packageConfigs, $projectConfigs);
 
-        $this->outputConfigsMessages($packageConfigs, $projectConfigs);
+        $this->outputInfo($newConfig, $projectConfigs);
 
-        Config::set('entity-generator', $newConfig);
-
-        file_put_contents(config_path('entity-generator.php'), "<?php\n\nreturn" . $this->customVarExport($newConfig) . ';');
-        dd();
+        if ($newConfig !== $projectConfigs) {
+            $this->info("Config has been updated");
+            Config::set('entity-generator', $newConfig);
+            file_put_contents(config_path('entity-generator.php'), "<?php\n\nreturn" . $this->customVarExport($newConfig) . ';');
+        }
     }
 
-    protected function outputConfigsMessages($packageConfigs, $projectConfigs)
+    protected function outputInfo($newProjectConfigs, $oldProjectConfigs)
     {
-        $packageFullDepth = [];
-        $projectFullDepth = [];
-        $packageSameKeys = [];
-        $projectSameKeys = [];
+        $newProjectConfigsFullDepthValues = [];
+        $newProjectConfigsFullDepthKeys = [];
+        $oldProjectConfigsFullDepthValues = [];
+        $oldProjectConfigsFullDepthKeys = [];
 
-        array_walk_recursive($packageConfigs, function ($value, $key) use (&$packageFullDepth, &$packageSameKeys) {
-            if ($this->sameKeyCheck($packageFullDepth, $packageSameKeys, $key, $value)) {
-                return;
-            }
-
-            $packageFullDepth[$key] = $value;
+        array_walk_recursive($newProjectConfigs, function ($value, $key) use (&$newProjectConfigsFullDepthValues, &$newProjectConfigsFullDepthKeys) {
+            $newProjectConfigsFullDepthValues[] = $value;
+            $newProjectConfigsFullDepthKeys[] = $key;
         });
 
-        array_walk_recursive($projectConfigs, function ($value, $key) use (&$projectFullDepth, &$packageSameKeys) {
-            if ($this->sameKeyCheck($projectFullDepth, $projectSameKeys, $key, $value)) {
-                return;
-            }
-
-            $projectFullDepth[$key] = $value;
+        array_walk_recursive($oldProjectConfigs, function ($value, $key) use (&$oldProjectConfigsFullDepthValues, &$oldProjectConfigsFullDepthKeys) {
+            $oldProjectConfigsFullDepthValues[] = $value;
+            $oldProjectConfigsFullDepthKeys[] = $key;
         });
 
-        $differences = array_diff_key($packageFullDepth, $projectFullDepth);
-    }
+        $differentValues = array_diff($newProjectConfigsFullDepthValues, $oldProjectConfigsFullDepthValues);
+        $differentKeys = array_diff($newProjectConfigsFullDepthKeys, $oldProjectConfigsFullDepthKeys);
 
-    protected function sameKeyCheck(&$mainArray, &$sameKeysArray, $key, $value)
-    {
-        if (array_key_exists($key, $mainArray)) {
-            $oldValue = $mainArray[$key];
-            unset($mainArray[$key]);
-
-            $sameKeysArray[$key][] = $oldValue;
-            $sameKeysArray[$key][] = $value;
-
-            return true;
+        if (!empty($differentKeys)) {
+            $this->info("Added new keys : " . implode(", ", $differentKeys));
         }
 
-        return false;
+        if (!empty($differentValues)) {
+            $this->info("Added new values : " . implode(", ", $differentValues));
+        }
     }
 
     protected function customVarExport($expression)
@@ -241,9 +230,11 @@ class MakeEntityCommand extends Command
             '/\(/' => '[',
             '/\)/' => ']',
             '/=> \\n/' => '=>',
-            '/^\s{4}/m' => "\t\t",
+            '/=>.+\[/' => '=> [',
+            '/^ {8}/m' => "\t\t\t\t",
+            '/^ {6}/m' => "\t\t\t",
+            '/^ {4}/m' => "\t\t",
             '/^ {2}/m' => "\t",
-            '/=>\s{3}/m' => "=> "
         ];
 
         return preg_replace(array_keys($patterns), array_values($patterns), $defaultExpression);
