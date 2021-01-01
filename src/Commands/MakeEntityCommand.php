@@ -209,7 +209,7 @@ class MakeEntityCommand extends Command
 
         if (!empty($differences)) {
             foreach ($differences as $differenceKey => $differenceValue) {
-                $this->info("Key `{$differenceValue}` was missing in your config, we added it with the value `{$differenceKey}`");
+                $this->info("Key '{$differenceValue}' was missing in your config, we added it with the value '{$differenceKey}'");
             }
         }
     }
