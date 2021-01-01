@@ -194,30 +194,23 @@ class MakeEntityCommand extends Command
 
     protected function outputInfo($newProjectConfigs, $oldProjectConfigs)
     {
-        $newProjectConfigsFullDepthValues = [];
-        $newProjectConfigsFullDepthKeys = [];
-        $oldProjectConfigsFullDepthValues = [];
-        $oldProjectConfigsFullDepthKeys = [];
+        $newProjectConfigsFullDepth = [];
+        $oldProjectConfigsFullDepth = [];
 
-        array_walk_recursive($newProjectConfigs, function ($value, $key) use (&$newProjectConfigsFullDepthValues, &$newProjectConfigsFullDepthKeys) {
-            $newProjectConfigsFullDepthValues[] = $value;
-            $newProjectConfigsFullDepthKeys[] = $key;
+        array_walk_recursive($newProjectConfigs, function ($value, $key) use (&$newProjectConfigsFullDepth) {
+            $newProjectConfigsFullDepth[$value] = $key;
         });
 
-        array_walk_recursive($oldProjectConfigs, function ($value, $key) use (&$oldProjectConfigsFullDepthValues, &$oldProjectConfigsFullDepthKeys) {
-            $oldProjectConfigsFullDepthValues[] = $value;
-            $oldProjectConfigsFullDepthKeys[] = $key;
+        array_walk_recursive($oldProjectConfigs, function ($value, $key) use (&$oldProjectConfigsFullDepth) {
+            $oldProjectConfigsFullDepth[$value] = $key;
         });
 
-        $differentValues = array_diff($newProjectConfigsFullDepthValues, $oldProjectConfigsFullDepthValues);
-        $differentKeys = array_diff($newProjectConfigsFullDepthKeys, $oldProjectConfigsFullDepthKeys);
+        $differences = array_diff_key($newProjectConfigsFullDepth, $oldProjectConfigsFullDepth);
 
-        if (!empty($differentKeys)) {
-            $this->info("Added new keys : " . implode(", ", $differentKeys));
-        }
-
-        if (!empty($differentValues)) {
-            $this->info("Added new values : " . implode(", ", $differentValues));
+        if (!empty($differences)) {
+            foreach ($differences as $differenceKey => $differenceValue) {
+                $this->info("Key `{$differenceValue}` was missing in your config, we added it with the value `{$differenceKey}`");
+            }
         }
     }
 
