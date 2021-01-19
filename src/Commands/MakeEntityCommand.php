@@ -181,37 +181,29 @@ class MakeEntityCommand extends Command
 
         $projectConfigs = config('entity-generator');
 
-        $newConfig = array_replace_recursive($packageConfigs, $projectConfigs);
-
-        $this->outputInfo($newConfig, $projectConfigs);
+        $newConfig = $this->outputNewConfig($packageConfigs, $projectConfigs);
 
         if ($newConfig !== $projectConfigs) {
-            $this->info("Config has been updated");
+            $this->info('Config has been updated');
             Config::set('entity-generator', $newConfig);
             file_put_contents(config_path('entity-generator.php'), "<?php\n\nreturn" . $this->customVarExport($newConfig) . ';');
         }
     }
 
-    protected function outputInfo($newProjectConfigs, $oldProjectConfigs)
+    protected function outputNewConfig($packageConfigs, $projectConfigs)
     {
-        $newProjectConfigsFullDepth = [];
-        $oldProjectConfigsFullDepth = [];
+        $flattenedPackageConfigs = Arr::dot($packageConfigs);
+        $flattenedProjectConfigs = Arr::dot($projectConfigs);
 
-        array_walk_recursive($newProjectConfigs, function ($value, $key) use (&$newProjectConfigsFullDepth) {
-            $newProjectConfigsFullDepth[$value] = $key;
-        });
+        $newConfig = array_merge($flattenedPackageConfigs, $flattenedProjectConfigs);
 
-        array_walk_recursive($oldProjectConfigs, function ($value, $key) use (&$oldProjectConfigsFullDepth) {
-            $oldProjectConfigsFullDepth[$value] = $key;
-        });
+        $differences = array_diff_key($newConfig, $flattenedProjectConfigs);
 
-        $differences = array_diff_key($newProjectConfigsFullDepth, $oldProjectConfigsFullDepth);
-
-        if (!empty($differences)) {
-            foreach ($differences as $differenceKey => $differenceValue) {
-                $this->info("Key '{$differenceValue}' was missing in your config, we added it with the value '{$differenceKey}'");
-            }
+        foreach ($differences as $differenceKey => $differenceValue) {
+            $this->info("Key '{$differenceKey}' was missing in your config, we added it with the value '{$differenceValue}'");
         }
+
+        return array_undot($newConfig);
     }
 
     protected function customVarExport($expression)
