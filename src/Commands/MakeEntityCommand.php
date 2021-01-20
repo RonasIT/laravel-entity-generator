@@ -4,6 +4,7 @@ namespace RonasIT\Support\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
@@ -163,6 +164,7 @@ class MakeEntityCommand extends Command
     public function handle()
     {
         $this->validateInput();
+        $this->checkConfigs();
         $this->eventDispatcher->listen(SuccessCreateMessage::class, $this->getSuccessMessageCallback());
 
         try {
@@ -170,6 +172,57 @@ class MakeEntityCommand extends Command
         } catch (EntityCreateException $e) {
             $this->error($e->getMessage());
         }
+    }
+
+    protected function checkConfigs()
+    {
+        $packageConfigPath = __DIR__ . '/../../config/entity-generator.php';
+        $packageConfigs = require $packageConfigPath;
+
+        $projectConfigs = config('entity-generator');
+
+        $newConfig = $this->outputNewConfig($packageConfigs, $projectConfigs);
+
+        if ($newConfig !== $projectConfigs) {
+            $this->info('Config has been updated');
+            Config::set('entity-generator', $newConfig);
+            file_put_contents(config_path('entity-generator.php'), "<?php\n\nreturn" . $this->customVarExport($newConfig) . ';');
+        }
+    }
+
+    protected function outputNewConfig($packageConfigs, $projectConfigs)
+    {
+        $flattenedPackageConfigs = Arr::dot($packageConfigs);
+        $flattenedProjectConfigs = Arr::dot($projectConfigs);
+
+        $newConfig = array_merge($flattenedPackageConfigs, $flattenedProjectConfigs);
+
+        $differences = array_diff_key($newConfig, $flattenedProjectConfigs);
+
+        foreach ($differences as $differenceKey => $differenceValue) {
+            $this->info("Key '{$differenceKey}' was missing in your config, we added it with the value '{$differenceValue}'");
+        }
+
+        return array_undot($newConfig);
+    }
+
+    protected function customVarExport($expression)
+    {
+        $defaultExpression = var_export($expression, true);
+
+        $patterns = [
+            '/array/' => '',
+            '/\(/' => '[',
+            '/\)/' => ']',
+            '/=> \\n/' => '=>',
+            '/=>.+\[/' => '=> [',
+            '/^ {8}/m' => "\t\t\t\t",
+            '/^ {6}/m' => "\t\t\t",
+            '/^ {4}/m' => "\t\t",
+            '/^ {2}/m' => "\t",
+        ];
+
+        return preg_replace(array_keys($patterns), array_values($patterns), $defaultExpression);
     }
 
     protected function classExists($path, $name)
