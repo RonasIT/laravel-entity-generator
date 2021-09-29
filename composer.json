@@ -29,5 +29,12 @@
       "src/helpers.php"
     ]
   },
-  "minimum-stability": "beta"
+  "minimum-stability": "beta",
+  "extra": {
+    "laravel": {
+      "providers": [
+        "RonasIT\\Support\\EntityGeneratorServiceProvider"
+      ]
+    }
+  }
 }

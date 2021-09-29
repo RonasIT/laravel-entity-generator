@@ -4,7 +4,9 @@ namespace RonasIT\Support\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Config;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use RonasIT\Support\Generators\ControllerGenerator;
 use RonasIT\Support\Generators\EntityGenerator;
@@ -18,6 +20,7 @@ use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Generators\TranslationsGenerator;
 use RonasIT\Support\Generators\SeederGenerator;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
+use UnexpectedValueException;
 
 /**
  * @property ControllerGenerator $controllerGenerator
@@ -34,6 +37,10 @@ use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
  */
 class MakeEntityCommand extends Command
 {
+    const CRUD_OPTIONS = [
+        'C', 'R', 'U', 'D'
+    ];
+
     /**
      * The name and signature of the console command.
      *
@@ -50,6 +57,8 @@ class MakeEntityCommand extends Command
         {--without-tests : Set this flag if you don\'t want to create tests. This flag is a lower priority than --only-tests.}
         {--without-seeder : Set this flag if you don\'t want to create seeder.}
         
+        {--only-api : Set this flag if you want to create controller, route, requests, tests.}
+        {--only-entity : Set this flag if you want to create migration, model, repository, service, factory, seeder.}
         {--only-model : Set this flag if you want to create only model. This flag is a higher priority than --without-model, --only-migration, --only-tests and --only-repository.} 
         {--only-repository : Set this flag if you want to create only repository. This flag is a higher priority than --without-repository, --only-tests and --only-migration.}
         {--only-service : Set this flag if you want to create only service.}
@@ -59,6 +68,8 @@ class MakeEntityCommand extends Command
         {--only-factory : Set this flag if you want to create only factory. This flag is a higher priority than --without-factory.}
         {--only-tests : Set this flag if you want to create only tests. This flag is a higher priority than --without-tests.}
         {--only-seeder : Set this flag if you want to create only seeder.}
+
+        {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
         {--i|integer=* : Add integer field to entity.}
         {--I|integer-required=* : Add required integer field to entity. If you want to specify default value you have to do it manually.}
@@ -98,6 +109,8 @@ class MakeEntityCommand extends Command
 
     protected $rules = [
         'only' => [
+            'only-api' => [ControllerGenerator::class, RequestsGenerator::class, TestsGenerator::class],
+            'only-entity' => [MigrationGenerator::class, ModelGenerator::class, ServiceGenerator::class, RepositoryGenerator::class, FactoryGenerator::class, SeederGenerator::class],
             'only-model' => [ModelGenerator::class],
             'only-repository' => [RepositoryGenerator::class],
             'only-service' => [ServiceGenerator::class],
@@ -150,6 +163,8 @@ class MakeEntityCommand extends Command
      */
     public function handle()
     {
+        $this->validateInput();
+        $this->checkConfigs();
         $this->eventDispatcher->listen(SuccessCreateMessage::class, $this->getSuccessMessageCallback());
 
         try {
@@ -157,6 +172,74 @@ class MakeEntityCommand extends Command
         } catch (EntityCreateException $e) {
             $this->error($e->getMessage());
         }
+    }
+
+    protected function checkConfigs()
+    {
+        $packageConfigPath = __DIR__ . '/../../config/entity-generator.php';
+        $packageConfigs = require $packageConfigPath;
+
+        $projectConfigs = config('entity-generator');
+
+        $newConfig = $this->outputNewConfig($packageConfigs, $projectConfigs);
+
+        if ($newConfig !== $projectConfigs) {
+            $this->info('Config has been updated');
+            Config::set('entity-generator', $newConfig);
+            file_put_contents(config_path('entity-generator.php'), "<?php\n\nreturn" . $this->customVarExport($newConfig) . ';');
+        }
+    }
+
+    protected function outputNewConfig($packageConfigs, $projectConfigs)
+    {
+        $flattenedPackageConfigs = Arr::dot($packageConfigs);
+        $flattenedProjectConfigs = Arr::dot($projectConfigs);
+
+        $newConfig = array_merge($flattenedPackageConfigs, $flattenedProjectConfigs);
+
+        $differences = array_diff_key($newConfig, $flattenedProjectConfigs);
+
+        foreach ($differences as $differenceKey => $differenceValue) {
+            $this->info("Key '{$differenceKey}' was missing in your config, we added it with the value '{$differenceValue}'");
+        }
+
+        return array_undot($newConfig);
+    }
+
+    protected function customVarExport($expression)
+    {
+        $defaultExpression = var_export($expression, true);
+
+        $patterns = [
+            '/array/' => '',
+            '/\(/' => '[',
+            '/\)/' => ']',
+            '/=> \\n/' => '=>',
+            '/=>.+\[/' => '=> [',
+            '/^ {8}/m' => "\t\t\t\t",
+            '/^ {6}/m' => "\t\t\t",
+            '/^ {4}/m' => "\t\t",
+            '/^ {2}/m' => "\t",
+        ];
+
+        return preg_replace(array_keys($patterns), array_values($patterns), $defaultExpression);
+    }
+
+    protected function classExists($path, $name)
+    {
+        $paths = config('entity-generator.paths');
+
+        $entitiesPath = $paths[$path];
+
+        $classPath = base_path("{$entitiesPath}/{$name}.php");
+
+        return file_exists($classPath);
+    }
+
+    protected function validateInput()
+    {
+        $this->validateOnlyApiOption();
+        $this->validateCrudOptions();
     }
 
     protected function generate()
@@ -198,7 +281,13 @@ class MakeEntityCommand extends Command
             ->setModel($this->argument('name'))
             ->setFields($this->getFields())
             ->setRelations($this->getRelations())
+            ->setCrudOptions($this->getCrudOptions())
             ->generate();
+    }
+
+    protected function getCrudOptions()
+    {
+        return str_split($this->option('methods'));
     }
 
     protected function getRelations()
@@ -222,5 +311,25 @@ class MakeEntityCommand extends Command
     {
         return Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
     }
-}
 
+    protected function validateCrudOptions()
+    {
+        $crudOptions = $this->getCrudOptions();
+
+        foreach ($crudOptions as $crudOption) {
+            if (!in_array($crudOption, MakeEntityCommand::CRUD_OPTIONS)) {
+                throw new UnexpectedValueException("Invalid method {$crudOption}.");
+            }
+        }
+    }
+
+    protected function validateOnlyApiOption()
+    {
+        if ($this->option('only-api')) {
+            $modelName = $this->argument('name');
+            if (!$this->classExists('services', "{$modelName}Service")) {
+                throw new ClassNotExistsException('Cannot create API without entity.');
+            }
+        }
+    }
+}

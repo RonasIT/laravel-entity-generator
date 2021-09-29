@@ -179,14 +179,23 @@ class TestsGenerator extends EntityGenerator
         $entity = Str::snake($this->model);
 
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
-            foreach ($modifications as $modification) {
-                $excepts = [];
-                if ($modification === 'request') {
-                    $excepts = ['id'];
+            if ($this->isFixtureNeeded($type)) {
+                foreach ($modifications as $modification) {
+                    $excepts = [];
+                    if ($modification === 'request') {
+                        $excepts = ['id'];
+                    }
+                    $this->generateFixture("{$type}_{$entity}_{$modification}.json", Arr::except($object, $excepts));
                 }
-                $this->generateFixture("{$type}_{$entity}_{$modification}.json", Arr::except($object, $excepts));
             }
         }
+    }
+
+    protected function isFixtureNeeded($type)
+    {
+        $firstLetter = strtoupper($type[0]);
+
+        return in_array($firstLetter, $this->crudOptions);
     }
 
     protected function generateFixture($fixtureName, $data)
