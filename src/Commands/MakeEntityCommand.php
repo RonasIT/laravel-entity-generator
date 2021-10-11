@@ -216,10 +216,10 @@ class MakeEntityCommand extends Command
             '/\)/' => ']',
             '/=> \\n/' => '=>',
             '/=>.+\[/' => '=> [',
-            '/^ {8}/m' => "\t\t\t\t",
-            '/^ {6}/m' => "\t\t\t",
-            '/^ {4}/m' => "\t\t",
-            '/^ {2}/m' => "\t",
+            '/^ {8}/m' => str_repeat(' ', 10),
+            '/^ {6}/m' => str_repeat(' ', 8),
+            '/^ {4}/m' => str_repeat(' ', 6),
+            '/^ {2}/m' => str_repeat(' ', 4),
         ];
 
         return preg_replace(array_keys($patterns), array_values($patterns), $defaultExpression);
