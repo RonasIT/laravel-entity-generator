@@ -27,38 +27,31 @@ class RequestsGenerator extends EntityGenerator
 
     public function generate()
     {
-        if (in_array('R', $this->crudOptions)) {
-            $this->createRequest(
-                self::GET_METHOD,
-                true,
-                $this->getGetValidationParameters()
-            );
-            $this->createRequest(
-                self::SEARCH_METHOD,
-                false,
-                $this->getSearchValidationParameters()
-            );
-        }
+        $this->createRequest(
+            self::GET_METHOD,
+            true,
+            $this->getGetValidationParameters()
+        );
 
-        if (in_array('D', $this->crudOptions)) {
-            $this->createRequest(self::DELETE_METHOD);
-        }
+        $this->createRequest(self::DELETE_METHOD);
 
-        if (in_array('C', $this->crudOptions)) {
-            $this->createRequest(
-                self::CREATE_METHOD,
-                false,
-                $this->getValidationParameters($this->fields, true)
-            );
-        }
+        $this->createRequest(
+            self::CREATE_METHOD,
+            false,
+            $this->getValidationParameters($this->fields, true)
+        );
 
-        if (in_array('U', $this->crudOptions)) {
-            $this->createRequest(
-                self::UPDATE_METHOD,
-                true,
-                $this->getValidationParameters($this->fields, false)
-            );
-        }
+        $this->createRequest(
+            self::UPDATE_METHOD,
+            true,
+            $this->getValidationParameters($this->fields, false)
+        );
+
+        $this->createRequest(
+            self::SEARCH_METHOD,
+            false,
+            $this->getSearchValidationParameters()
+        );
     }
 
     protected function createRequest($method, $needToValidate = true, $parameters = [])
@@ -86,7 +79,7 @@ class RequestsGenerator extends EntityGenerator
         $parameters['array'] = ['with'];
 
         $parameters['string-required'] = ['with.*'];
-        
+
         return $this->getValidationParameters($parameters, true);
     }
 
@@ -104,7 +97,9 @@ class RequestsGenerator extends EntityGenerator
 
         $parameters['boolean'] = ['desc'];
 
-        $parameters['string'] = ['query', 'order_by'];
+        $parameters['string'] = ['order_by'];
+
+        $parameters['string-nullable'] = ['query'];
 
         $parameters['string-required'] = ['with.*'];
 
@@ -117,19 +112,21 @@ class RequestsGenerator extends EntityGenerator
 
         foreach ($parameters as $type => $parameterNames) {
             $isRequired = Str::contains($type, 'required');
+            $isNullable = Str::contains($type, 'nullable');
             $type = head(explode('-', $type));
 
             foreach ($parameterNames as $name) {
                 $required = $isRequired && $requiredAvailable;
+                $nullable = $isNullable;
 
-                $result[] = $this->getRules($name, $type, $required);
+                $result[] = $this->getRules($name, $type, $required, $nullable);
             }
         }
 
         return $result;
     }
 
-    protected function getRules($name, $type, $required)
+    protected function getRules($name, $type, $required, $nullable)
     {
         $replaces = [
             'timestamp' => 'date',
@@ -151,6 +148,10 @@ class RequestsGenerator extends EntityGenerator
 
         if ($required) {
             $rules[] = 'required';
+        }
+
+        if ($nullable) {
+            $rules[] = 'nullable';
         }
 
         return [
