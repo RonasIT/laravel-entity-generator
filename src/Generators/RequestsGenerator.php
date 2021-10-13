@@ -86,7 +86,7 @@ class RequestsGenerator extends EntityGenerator
         $parameters['array'] = ['with'];
 
         $parameters['string-required'] = ['with.*'];
-        
+
         return $this->getValidationParameters($parameters, true);
     }
 
@@ -104,7 +104,9 @@ class RequestsGenerator extends EntityGenerator
 
         $parameters['boolean'] = ['desc'];
 
-        $parameters['string'] = ['query', 'order_by'];
+        $parameters['string'] = ['order_by'];
+
+        $parameters['string-nullable'] = ['query'];
 
         $parameters['string-required'] = ['with.*'];
 
@@ -117,19 +119,21 @@ class RequestsGenerator extends EntityGenerator
 
         foreach ($parameters as $type => $parameterNames) {
             $isRequired = Str::contains($type, 'required');
+            $isNullable = Str::contains($type, 'nullable');
             $type = head(explode('-', $type));
 
             foreach ($parameterNames as $name) {
                 $required = $isRequired && $requiredAvailable;
+                $nullable = $isNullable;
 
-                $result[] = $this->getRules($name, $type, $required);
+                $result[] = $this->getRules($name, $type, $required, $nullable);
             }
         }
 
         return $result;
     }
 
-    protected function getRules($name, $type, $required)
+    protected function getRules($name, $type, $required, $nullable)
     {
         $replaces = [
             'timestamp' => 'date',
@@ -151,6 +155,10 @@ class RequestsGenerator extends EntityGenerator
 
         if ($required) {
             $rules[] = 'required';
+        }
+
+        if ($nullable) {
+            $rules[] = 'nullable';
         }
 
         return [
