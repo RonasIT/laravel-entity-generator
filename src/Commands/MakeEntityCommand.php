@@ -184,7 +184,7 @@ class MakeEntityCommand extends Command
         $newConfig = $this->outputNewConfig($packageConfigs, $projectConfigs);
 
         if ($newConfig !== $projectConfigs) {
-            $this->info('Config has been updated');
+            $this->comment('Config has been updated');
             Config::set('entity-generator', $newConfig);
             file_put_contents(config_path('entity-generator.php'), "<?php\n\nreturn" . $this->customVarExport($newConfig) . ';');
         }
@@ -200,7 +200,7 @@ class MakeEntityCommand extends Command
         $differences = array_diff_key($newConfig, $flattenedProjectConfigs);
 
         foreach ($differences as $differenceKey => $differenceValue) {
-            $this->info("Key '{$differenceKey}' was missing in your config, we added it with the value '{$differenceValue}'");
+            $this->comment("Key '{$differenceKey}' was missing in your config, we added it with the value '{$differenceValue}'");
         }
 
         return array_undot($newConfig);

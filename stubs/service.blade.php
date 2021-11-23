@@ -1,5 +1,6 @@
 namespace App\Services;
 
+use Illuminate\Support\Arr;
 use RonasIT\Support\Services\EntityService;
 use App\Repositories\{{$entity}}Repository;
 {{--
@@ -25,6 +26,8 @@ class {{$entity}}Service extends EntityService
     public function search($filters)
     {
         return $this->repository
+            ->with(Arr::get($filters, 'with', []))
+            ->withCount(Arr::get($filters, 'with_count', []))
             ->searchQuery($filters)
 @foreach($fields['simple_search'] as $field)
             ->filterBy('{{$field}}')
@@ -32,7 +35,6 @@ class {{$entity}}Service extends EntityService
 @if(!empty($fields['search_by_query']))
             ->filterByQuery(['{!! implode('\', \'', $fields['search_by_query']) !!}'])
 @endif
-            ->with()
             ->getSearchResults();
     }
 }
