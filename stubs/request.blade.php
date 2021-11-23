@@ -8,7 +8,7 @@ use App\Http\Requests\Request;
 
 class {{$method}}{{$entity}}Request extends Request
 {
-    public function rules()
+    public function rules(): array
     {
 @if(!empty($parameters))
         return [

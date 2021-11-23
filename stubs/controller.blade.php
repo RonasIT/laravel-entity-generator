@@ -35,7 +35,8 @@ class {{$entity}}Controller extends Controller
     public function get(Get{{$entity}}Request $request, {{$entity}}Service $service, $id)
     {
         $result = $service
-            ->withRelations($request->input('with', []))
+            ->with($request->input('with', []))
+            ->withCount($request->input('with_count', []))
             ->find($id);
 
         return response()->json($result);
