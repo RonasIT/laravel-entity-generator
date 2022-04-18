@@ -236,11 +236,11 @@ class TestsGenerator extends EntityGenerator
                 continue;
             }
 
-            if (in_array($this->model, $relations)) {
+            if (in_array($model, $relations)) {
                 $this->throwFailureException(
                     CircularRelationsFoundedException::class,
-                    "Circular relations founded.",
-                    "Please resolve you relations in models, factories and database."
+                    'Circular relations founded.',
+                    'Please resolve you relations in models, factories and database.'
                 );
             }
 
