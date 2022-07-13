@@ -47,26 +47,17 @@ class MakeEntityCommand extends Command
      * @var string
      */
     protected $signature = 'make:entity {name : The name of the entity. This name will use as name of models class.}
-        {--without-model : Set this flag if you already have model for this entity. Command will find it. This flag is a lower priority than --only-model.} 
-        {--without-repository : Set if you don\'t want to use Data Access Level. Created Service will use special trait for controlling entity. This flag is a lower priority than --without-repository.} 
-        {--without-service : Set this flag if you don\'t want to create service.} 
-        {--without-controller : Set this flag if you don\'t want to create controller. Automatically requests and tests will not create too.} 
-        {--without-migration : Set this flag if you already have table on db. This flag is a lower priority than --only-migration.}
-        {--without-requests : Set this flag if you don\'t want to create requests to you controller.}
-        {--without-factory : Set this flag if you don\'t want to create factory.}
-        {--without-tests : Set this flag if you don\'t want to create tests. This flag is a lower priority than --only-tests.}
-        {--without-seeder : Set this flag if you don\'t want to create seeder.}
         
         {--only-api : Set this flag if you want to create controller, route, requests, tests.}
         {--only-entity : Set this flag if you want to create migration, model, repository, service, factory, seeder.}
-        {--only-model : Set this flag if you want to create only model. This flag is a higher priority than --without-model, --only-migration, --only-tests and --only-repository.} 
-        {--only-repository : Set this flag if you want to create only repository. This flag is a higher priority than --without-repository, --only-tests and --only-migration.}
+        {--only-model : Set this flag if you want to create only model. This flag is a higher priority than --only-migration, --only-tests and --only-repository.} 
+        {--only-repository : Set this flag if you want to create only repository. This flag is a higher priority than --only-tests and --only-migration.}
         {--only-service : Set this flag if you want to create only service.}
         {--only-controller : Set this flag if you want to create only controller.}
         {--only-requests : Set this flag if you want to create only requests.}
-        {--only-migration : Set this flag if you want to create only repository. This flag is a higher priority than --without-migration and --only-tests.}
-        {--only-factory : Set this flag if you want to create only factory. This flag is a higher priority than --without-factory.}
-        {--only-tests : Set this flag if you want to create only tests. This flag is a higher priority than --without-tests.}
+        {--only-migration : Set this flag if you want to create only repository. This flag is a higher priority than --only-tests.}
+        {--only-factory : Set this flag if you want to create only factory.}
+        {--only-tests : Set this flag if you want to create only tests.}
         {--only-seeder : Set this flag if you want to create only seeder.}
 
         {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
@@ -120,17 +111,6 @@ class MakeEntityCommand extends Command
             'only-factory' => [FactoryGenerator::class],
             'only-tests' => [FactoryGenerator::class, TestsGenerator::class],
             'only-seeder' => [SeederGenerator::class]
-        ],
-        'without' => [
-            'without-model' => [ModelGenerator::class],
-            'without-repository' => [RepositoryGenerator::class],
-            'without-service' => [ServiceGenerator::class],
-            'without-controller' => [ControllerGenerator::class, RequestsGenerator::class, TestsGenerator::class],
-            'without-migration' => [MigrationGenerator::class],
-            'without-requests' => [RequestsGenerator::class],
-            'without-factory' => [FactoryGenerator::class],
-            'without-tests' => [TestsGenerator::class],
-            'without-seeder' => [SeederGenerator::class]
         ]
     ];
     public $generators = [
@@ -254,25 +234,9 @@ class MakeEntityCommand extends Command
             }
         }
 
-        $methods = $this->getMethods();
-
-        foreach ($methods as $option => $generator) {
+        foreach ($this->generators as $generator) {
             $this->runGeneration($generator);
         }
-    }
-
-    protected function getMethods()
-    {
-        $options = array_filter($this->options(), function ($option) {
-            return $option === true;
-        });
-
-        $optionsNames = array_keys($options);
-        $rules = Arr::only($this->rules['without'], $optionsNames);
-
-        $exceptGenerators = Arr::collapse($rules);
-
-        return array_subtraction($this->generators, $exceptGenerators);
     }
 
     protected function runGeneration($generator)

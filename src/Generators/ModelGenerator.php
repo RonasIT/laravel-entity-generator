@@ -21,7 +21,7 @@ class ModelGenerator extends EntityGenerator
             $this->throwFailureException(
                 ClassAlreadyExistsException::class,
                 "Cannot create {$this->model} Model cause {$this->model} Model already exists.",
-                "Remove {$this->model} Model or run your command with options:'—without-model'."
+                "Remove {$this->model} Model."
             );
         }
 

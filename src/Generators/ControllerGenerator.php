@@ -15,7 +15,7 @@ class ControllerGenerator extends EntityGenerator
             $this->throwFailureException(
                 ClassAlreadyExistsException::class,
                 "Cannot create {$this->model}Controller cause {$this->model}Controller already exists.",
-                "Remove {$this->model}Controller or run your command with options:'—without-controller'."
+                "Remove {$this->model}Controller."
             );
 
         }
@@ -24,7 +24,7 @@ class ControllerGenerator extends EntityGenerator
             $this->throwFailureException(
                 ClassNotExistsException::class,
                 "Cannot create {$this->model}Service cause {$this->model}Service does not exists.",
-                "Create a {$this->model}Service by himself or run your command with options:'--without-controller --without-migration --without-requests --without-tests'."
+                "Create a {$this->model}Service by himself."
             );
         }
 
