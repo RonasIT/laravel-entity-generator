@@ -87,7 +87,7 @@ class MakeEntityCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Make entity with Model, Repository, Service, Migration and Controller.';
+    protected $description = 'Make entity with Model, Repository, Service, Migration, Controller and Resource.';
 
     protected $controllerGenerator;
     protected $migrationGenerator;
