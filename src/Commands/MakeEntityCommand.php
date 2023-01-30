@@ -15,6 +15,7 @@ use RonasIT\Support\Generators\MigrationGenerator;
 use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Generators\RequestsGenerator;
+use RonasIT\Support\Generators\ResourceGenerator;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Generators\TranslationsGenerator;
@@ -33,6 +34,7 @@ use UnexpectedValueException;
  * @property TestsGenerator $testGenerator
  * @property TranslationsGenerator $translationsGenerator
  * @property SeederGenerator $seederGenerator
+ * @property ResourceGenerator $resourceGenerator
  * @property EventDispatcher $eventDispatcher
  */
 class MakeEntityCommand extends Command
@@ -59,6 +61,7 @@ class MakeEntityCommand extends Command
         {--only-factory : Set this flag if you want to create only factory.}
         {--only-tests : Set this flag if you want to create only tests.}
         {--only-seeder : Set this flag if you want to create only seeder.}
+        {--only-resource : Set this flag if you want to create only resource.}
 
         {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
@@ -96,6 +99,7 @@ class MakeEntityCommand extends Command
     protected $testGenerator;
     protected $translationsGenerator;
     protected $seederGenerator;
+    protected $resourceGenerator;
     protected $eventDispatcher;
 
     protected $rules = [
@@ -110,13 +114,14 @@ class MakeEntityCommand extends Command
             'only-migration' => [MigrationGenerator::class],
             'only-factory' => [FactoryGenerator::class],
             'only-tests' => [FactoryGenerator::class, TestsGenerator::class],
-            'only-seeder' => [SeederGenerator::class]
+            'only-seeder' => [SeederGenerator::class],
+            'only-resource' => [ResourceGenerator::class]
         ]
     ];
     public $generators = [
         ModelGenerator::class, RepositoryGenerator::class, ServiceGenerator::class, RequestsGenerator::class,
         ControllerGenerator::class, MigrationGenerator::class, FactoryGenerator::class, TestsGenerator::class,
-        TranslationsGenerator::class, SeederGenerator::class
+        TranslationsGenerator::class, SeederGenerator::class, ResourceGenerator::class
     ];
 
     public function __construct()
@@ -133,6 +138,7 @@ class MakeEntityCommand extends Command
         $this->testGenerator = app(TestsGenerator::class);
         $this->translationsGenerator = app(TranslationsGenerator::class);
         $this->seederGenerator = app(SeederGenerator::class);
+        $this->resourceGenerator = app(ResourceGenerator::class);
         $this->eventDispatcher = app(EventDispatcher::class);
     }
 
