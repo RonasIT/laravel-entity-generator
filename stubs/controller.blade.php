@@ -1,5 +1,6 @@
 namespace App\Http\Controllers;
 
+use App\Http\Resources\{{$entity}}Resource;
 @if (in_array('C', $options))
 use App\Http\Requests\{{$requestsFolder}}\Create{{$entity}}Request;
 @endif
@@ -27,7 +28,7 @@ class {{$entity}}Controller extends Controller
 
         $result = $service->create($data);
 
-        return response()->json($result);
+        return new {{$entity}}Resource($result);
     }
 
 @endif
@@ -39,14 +40,14 @@ class {{$entity}}Controller extends Controller
             ->withCount($request->input('with_count', []))
             ->find($id);
 
-        return response()->json($result);
+        return new {{$entity}}Resource($result);
     }
 
     public function search(Search{{\Illuminate\Support\Str::plural($entity)}}Request $request, {{$entity}}Service $service)
     {
         $result = $service->search($request->onlyValidated());
 
-        return response()->json($result);
+        return new {{$entity}}Resource($result);
     }
 
 @endif
@@ -66,6 +67,5 @@ class {{$entity}}Controller extends Controller
 
         return response('', Response::HTTP_NO_CONTENT);
     }
-
 @endif
 }
