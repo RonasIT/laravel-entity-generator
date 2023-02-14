@@ -40,7 +40,7 @@ class {{$entity}}Controller extends Controller
             ->withCount($request->input('with_count', []))
             ->find($id);
 
-        return new {{$entity}}Resource($result);
+        return {{$entity}}Resource::make($result);
     }
 
     public function search(Search{{\Illuminate\Support\Str::plural($entity)}}Request $request, {{$entity}}Service $service)
