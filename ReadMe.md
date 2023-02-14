@@ -93,6 +93,8 @@ Syntax: artisan make:entity [name] [flags]
     --only-tests          : Set this flag if you want to create only tests.
           
     --only-seeder         : Set this flag if you want to create only seeder.
+
+    --only-resource         : Set this flag if you want to create only resource.
     
 ## Release notes
 

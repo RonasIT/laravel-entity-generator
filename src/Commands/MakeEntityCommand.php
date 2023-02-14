@@ -15,6 +15,7 @@ use RonasIT\Support\Generators\MigrationGenerator;
 use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Generators\RequestsGenerator;
+use RonasIT\Support\Generators\ResourceGenerator;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Generators\TranslationsGenerator;
@@ -33,6 +34,7 @@ use UnexpectedValueException;
  * @property TestsGenerator $testGenerator
  * @property TranslationsGenerator $translationsGenerator
  * @property SeederGenerator $seederGenerator
+ * @property ResourceGenerator $resourceGenerator
  * @property EventDispatcher $eventDispatcher
  */
 class MakeEntityCommand extends Command
@@ -48,11 +50,12 @@ class MakeEntityCommand extends Command
      */
     protected $signature = 'make:entity {name : The name of the entity. This name will use as name of models class.}
         
-        {--only-api : Set this flag if you want to create controller, route, requests, tests.}
+        {--only-api : Set this flag if you want to create resource, controller, route, requests, tests.}
         {--only-entity : Set this flag if you want to create migration, model, repository, service, factory, seeder.}
         {--only-model : Set this flag if you want to create only model. This flag is a higher priority than --only-migration, --only-tests and --only-repository.} 
         {--only-repository : Set this flag if you want to create only repository. This flag is a higher priority than --only-tests and --only-migration.}
         {--only-service : Set this flag if you want to create only service.}
+        {--only-resource : Set this flag if you want to create only resource.}
         {--only-controller : Set this flag if you want to create only controller.}
         {--only-requests : Set this flag if you want to create only requests.}
         {--only-migration : Set this flag if you want to create only repository. This flag is a higher priority than --only-tests.}
@@ -84,7 +87,7 @@ class MakeEntityCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Make entity with Model, Repository, Service, Migration and Controller.';
+    protected $description = 'Make entity with Model, Repository, Service, Migration, Controller and Resource.';
 
     protected $controllerGenerator;
     protected $migrationGenerator;
@@ -96,15 +99,17 @@ class MakeEntityCommand extends Command
     protected $testGenerator;
     protected $translationsGenerator;
     protected $seederGenerator;
+    protected $resourceGenerator;
     protected $eventDispatcher;
 
     protected $rules = [
         'only' => [
-            'only-api' => [ControllerGenerator::class, RequestsGenerator::class, TestsGenerator::class],
+            'only-api' => [ResourceGenerator::class, ControllerGenerator::class, RequestsGenerator::class, TestsGenerator::class],
             'only-entity' => [MigrationGenerator::class, ModelGenerator::class, ServiceGenerator::class, RepositoryGenerator::class, FactoryGenerator::class, SeederGenerator::class],
             'only-model' => [ModelGenerator::class],
             'only-repository' => [RepositoryGenerator::class],
             'only-service' => [ServiceGenerator::class],
+            'only-resource' => [ResourceGenerator::class],
             'only-controller' => [ControllerGenerator::class],
             'only-requests' => [RequestsGenerator::class],
             'only-migration' => [MigrationGenerator::class],
@@ -115,8 +120,8 @@ class MakeEntityCommand extends Command
     ];
     public $generators = [
         ModelGenerator::class, RepositoryGenerator::class, ServiceGenerator::class, RequestsGenerator::class,
-        ControllerGenerator::class, MigrationGenerator::class, FactoryGenerator::class, TestsGenerator::class,
-        TranslationsGenerator::class, SeederGenerator::class
+        ResourceGenerator::class, ControllerGenerator::class, MigrationGenerator::class, FactoryGenerator::class,
+        TestsGenerator::class, TranslationsGenerator::class, SeederGenerator::class
     ];
 
     public function __construct()
@@ -133,6 +138,7 @@ class MakeEntityCommand extends Command
         $this->testGenerator = app(TestsGenerator::class);
         $this->translationsGenerator = app(TranslationsGenerator::class);
         $this->seederGenerator = app(SeederGenerator::class);
+        $this->resourceGenerator = app(ResourceGenerator::class);
         $this->eventDispatcher = app(EventDispatcher::class);
     }
 
