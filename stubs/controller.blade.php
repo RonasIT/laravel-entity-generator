@@ -28,7 +28,7 @@ class {{$entity}}Controller extends Controller
 
         $result = $service->create($data);
 
-        return new {{$entity}}Resource($result);
+        return {{$entity}}Resource::make($result);
     }
 
 @endif
