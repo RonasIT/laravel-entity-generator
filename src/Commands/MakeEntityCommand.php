@@ -183,6 +183,13 @@ class MakeEntityCommand extends Command
 
         $newConfig = array_merge($flattenedPackageConfigs, $flattenedProjectConfigs);
 
+        $translations = 'lang/en/validation.php';
+        $translations = (app()->version() >= 9) ? $translations : "resources/{$translations}";
+
+        if ($newConfig['paths.translations'] !== $translations) {
+            $newConfig['paths.translations'] = $translations;
+        }
+
         $differences = array_diff_key($newConfig, $flattenedProjectConfigs);
 
         foreach ($differences as $differenceKey => $differenceValue) {
