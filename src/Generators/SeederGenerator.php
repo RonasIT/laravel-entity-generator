@@ -15,8 +15,8 @@ class SeederGenerator extends EntityGenerator
     {
         parent::__construct();
 
-        $this->seedsPath = Arr::get($this->paths, 'seeds', 'database/seeds');
-        $this->databaseSeederPath = Arr::get($this->paths, 'database_seeder', 'database/seeds/DatabaseSeeder.php');
+        $this->seedsPath = Arr::get($this->paths, 'seeders', 'database/seeders');
+        $this->databaseSeederPath = Arr::get($this->paths, 'database_seeder', 'database/seeders/DatabaseSeeder.php');
     }
 
     public function generate()
@@ -24,7 +24,7 @@ class SeederGenerator extends EntityGenerator
         $this->checkConfigs();
 
         if (!file_exists($this->databaseSeederPath)) {
-            
+
             if (!is_dir($this->seedsPath)){
                 mkdir($this->seedsPath);
             }
@@ -46,7 +46,7 @@ class SeederGenerator extends EntityGenerator
         file_put_contents($this->databaseSeederPath, $content);
 
         $createMessage = "Created a new DatabaseSeeder.php on path: {$this->databaseSeederPath}";
-        
+
         event(new SuccessCreateMessage($createMessage));
     }
 
@@ -64,18 +64,18 @@ class SeederGenerator extends EntityGenerator
         file_put_contents($seederPath, $content);
 
         $createMessage = "Created a new Seeder on path: {$seederPath}";
-        
+
         event(new SuccessCreateMessage($createMessage));
     }
 
     protected function appendSeederToList()
     {
         $content = file_get_contents($this->databaseSeederPath);
-        
+
         $insertContent = "\n        \$this->call({$this->model}Seeder::class);\n    }\n}";
 
         $fixedContent = preg_replace('/\}\s*\}\s*\z/', $insertContent, $content);
-        
+
         file_put_contents($this->databaseSeederPath, $fixedContent);
     }
 

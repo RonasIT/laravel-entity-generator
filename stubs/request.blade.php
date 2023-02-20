@@ -8,6 +8,7 @@ use App\Http\Requests\Request;
 
 class {{$method}}{{$entity}}Request extends Request
 {
+@if($method !== 'Delete')
     public function rules(): array
     {
 @if(!empty($parameters))
@@ -20,6 +21,7 @@ class {{$method}}{{$entity}}Request extends Request
         return [];
 @endif
     }
+@endif
 @if($needToValidate)
 
 @if(app()::VERSION < 5.6)
