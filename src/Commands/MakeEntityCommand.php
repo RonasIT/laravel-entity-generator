@@ -190,6 +190,13 @@ class MakeEntityCommand extends Command
             $newConfig['paths.translations'] = $translations;
         }
 
+        $factories = 'database/factories';
+        $factories = (app()->version() >= 8) ? $factories : "{$factories}/ModelFactory.php";
+
+        if ($newConfig['paths.factory'] !== $factories) {
+            $newConfig['paths.factory'] = $factories;
+        }
+
         $differences = array_diff_key($newConfig, $flattenedProjectConfigs);
 
         foreach ($differences as $differenceKey => $differenceValue) {

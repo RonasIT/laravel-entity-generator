@@ -52,7 +52,9 @@ class SeederGenerator extends EntityGenerator
 
     protected function createEntitySeeder()
     {
-        $stubPath = config('entity-generator.stubs.seeder');
+        $seeder = (app()->version() >= 8) ? 'seeder_for_separate_factory' : 'seeder';
+
+        $stubPath = config("entity-generator.stubs.{$seeder}");
 
         $content = "<?php \n\n" . view($stubPath)->with([
             'entity' => $this->model,
