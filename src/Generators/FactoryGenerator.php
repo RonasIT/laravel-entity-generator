@@ -83,7 +83,7 @@ class FactoryGenerator extends EntityGenerator
 
     public function generate()
     {
-        if (app()->version() >= 8) {
+        if (floatval(app()->version()) >= 8) {
             $createMessage = $this->generateSeparateClass();
         } else {
             $createMessage = $this->generateToGenericClass();

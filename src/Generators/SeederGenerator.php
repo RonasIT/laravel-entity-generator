@@ -52,14 +52,14 @@ class SeederGenerator extends EntityGenerator
 
     protected function createEntitySeeder()
     {
-        $seeder = (app()->version() >= 8) ? 'seeder_for_separate_factory' : 'seeder';
+        $seeder = (floatval(app()->version()) >= 8) ? 'seeder_for_separate_factory' : 'seeder';
 
         $stubPath = config("entity-generator.stubs.{$seeder}");
 
         $content = "<?php \n\n" . view($stubPath)->with([
             'entity' => $this->model,
             'relations' => $this->relations
-        ])->render();
+       ])->render();
 
         $seederPath = base_path("{$this->seedsPath}/{$this->model}Seeder.php");
 
@@ -83,7 +83,7 @@ class SeederGenerator extends EntityGenerator
 
     protected function checkConfigs()
     {
-        if (empty(config('entity-generator.stubs.seeder'))) {
+        if (empty(config('entity-generator.stubs.seeder')) || empty(config('entity-generator.stubs.seeder_for_separate_factory'))) {
             throw new EntityCreateException('
                 Looks like you have deprecated configs.
                 Please follow instructions(https://github.com/RonasIT/laravel-entity-generator/blob/master/ReadMe.md#13)

@@ -152,7 +152,9 @@ class TestsGenerator extends EntityGenerator
     {
         $modelClass = $this->getModelClass($model);
 
-        return factory($modelClass)
+        $factory = (method_exists($modelClass, 'factory')) ? $modelClass::factory() : factory($modelClass);
+
+        return $factory
             ->make()
             ->toArray();
     }

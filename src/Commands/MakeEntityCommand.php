@@ -184,14 +184,14 @@ class MakeEntityCommand extends Command
         $newConfig = array_merge($flattenedPackageConfigs, $flattenedProjectConfigs);
 
         $translations = 'lang/en/validation.php';
-        $translations = (app()->version() >= 9) ? $translations : "resources/{$translations}";
+        $translations = (floatval(app()->version()) >= 9) ? $translations : "resources/{$translations}";
 
         if ($newConfig['paths.translations'] !== $translations) {
             $newConfig['paths.translations'] = $translations;
         }
 
         $factories = 'database/factories';
-        $factories = (app()->version() >= 8) ? $factories : "{$factories}/ModelFactory.php";
+        $factories = (floatval(app()->version()) >= 8) ? $factories : "{$factories}/ModelFactory.php";
 
         if ($newConfig['paths.factory'] !== $factories) {
             $newConfig['paths.factory'] = $factories;
