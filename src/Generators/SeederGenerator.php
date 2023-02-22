@@ -59,7 +59,7 @@ class SeederGenerator extends EntityGenerator
         $content = "<?php \n\n" . view($stubPath)->with([
             'entity' => $this->model,
             'relations' => $this->relations
-       ])->render();
+        ])->render();
 
         $seederPath = base_path("{$this->seedsPath}/{$this->model}Seeder.php");
 
