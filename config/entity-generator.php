@@ -39,6 +39,6 @@ return [
         'resource' => 'entity-generator::resource',
         'factory_separate_class' => 'entity-generator::factory_separate_class',
         'seeder_for_separate_factory' => 'entity-generator::seeder_for_separate_factory',
-        'nova_resource' => 'entity-generator::nova-resource'
+        'nova_resource' => 'entity-generator::nova_resource'
     ]
 ];
