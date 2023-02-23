@@ -35,6 +35,8 @@ return [
         'validation' => 'entity-generator::validation',
         'seeder' => 'entity-generator::seeder',
         'database_empty_seeder' => 'entity-generator::database_seed_empty',
-        'resource' => 'entity-generator::resource'
+        'resource' => 'entity-generator::resource',
+        'factory_separate_class' => 'entity-generator::factory_separate_class',
+        'seeder_for_separate_factory' => 'entity-generator::seeder_for_separate_factory'
     ]
 ];

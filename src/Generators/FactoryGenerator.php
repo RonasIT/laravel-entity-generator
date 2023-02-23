@@ -25,7 +25,35 @@ class FactoryGenerator extends EntityGenerator
         'json' => '[]'
     ];
 
-    public function generate()
+    protected function generateSeparateClass(): string
+    {
+        if (!$this->classExists('models', $this->model)) {
+            $this->throwFailureException(
+                ClassNotExistsException::class,
+                "Cannot create {$this->model}Factory cause {$this->model} Model does not exists.",
+                "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'."
+            );
+        }
+
+        if ($this->classExists('factory', "{$this->model}Factory")) {
+            $this->throwFailureException(
+                ClassAlreadyExistsException::class,
+                "Cannot create {$this->model}Factory cause {$this->model}Factory already exists.",
+                "Remove {$this->model}Factory."
+            );
+        }
+
+        $factoryContent = $this->getStub('factory_separate_class', [
+            'entity' => $this->model,
+            'fields' => $this->prepareFields()
+        ]);
+
+        $this->saveClass('factory', "{$this->model}Factory", $factoryContent);
+
+        return "Created a new Factory: {$this->model}Factory";
+    }
+
+    protected function generateToGenericClass(): string
     {
         if (!file_exists($this->paths['factory'])) {
             $this->prepareEmptyFactory();
@@ -48,6 +76,17 @@ class FactoryGenerator extends EntityGenerator
             $this->prepareRelatedFactories();
         } else {
             $createMessage = "Factory for {$this->model} model has already created, so new factory not necessary create.";
+        }
+
+        return $createMessage;
+    }
+
+    public function generate()
+    {
+        if (floatval(app()->version()) >= 8) {
+            $createMessage = $this->generateSeparateClass();
+        } else {
+            $createMessage = $this->generateToGenericClass();
         }
 
         event(new SuccessCreateMessage($createMessage));
