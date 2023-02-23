@@ -90,7 +90,7 @@ class MakeEntityCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Make entity with Model, Repository, Service, Migration, Controller and Resource, Nova Resource.';
+    protected $description = 'Make entity with Model, Repository, Service, Migration, Controller, Resource and Nova Resource.';
 
     protected $controllerGenerator;
     protected $migrationGenerator;
