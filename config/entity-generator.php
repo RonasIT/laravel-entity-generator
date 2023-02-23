@@ -15,7 +15,7 @@ return [
         'factory' => 'database/factories/ModelFactory.php',
         'translations' => 'resources/lang/en/validation.php',
         'resources' => 'app/Http/Resources',
-        'nova-provider' => 'app/Providers/NovaServiceProvider.php'
+        'nova_provider' => 'app/Providers/NovaServiceProvider.php'
      ],
     'stubs' => [
         'model' => 'entity-generator::model',

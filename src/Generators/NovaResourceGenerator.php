@@ -32,7 +32,7 @@ class NovaResourceGenerator extends EntityGenerator
 
     public function generate()
     {
-        if (file_exists($this->paths['nova-provider'])) {
+        if (file_exists($this->paths['nova_provider'])) {
             if (!$this->classExists('models', $this->model)) {
                 $this->throwFailureException(
                     ClassNotExistsException::class,
