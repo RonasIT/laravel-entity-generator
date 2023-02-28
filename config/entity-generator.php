@@ -14,7 +14,8 @@ return [
         'routes' => 'routes/api.php',
         'factory' => 'database/factories/ModelFactory.php',
         'translations' => 'resources/lang/en/validation.php',
-        'resources' => 'app/Http/Resources'
+        'resources' => 'app/Http/Resources',
+        'nova' => 'app/Nova'
      ],
     'stubs' => [
         'model' => 'entity-generator::model',
@@ -37,6 +38,7 @@ return [
         'database_empty_seeder' => 'entity-generator::database_seed_empty',
         'resource' => 'entity-generator::resource',
         'factory_separate_class' => 'entity-generator::factory_separate_class',
-        'seeder_for_separate_factory' => 'entity-generator::seeder_for_separate_factory'
+        'seeder_for_separate_factory' => 'entity-generator::seeder_for_separate_factory',
+        'nova_resource' => 'entity-generator::nova_resource'
     ]
 ];
