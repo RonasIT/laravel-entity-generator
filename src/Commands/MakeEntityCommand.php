@@ -145,6 +145,7 @@ class MakeEntityCommand extends Command
         $this->translationsGenerator = app(TranslationsGenerator::class);
         $this->seederGenerator = app(SeederGenerator::class);
         $this->resourceGenerator = app(ResourceGenerator::class);
+        $this->novaResourceGenerator = app(NovaResourceGenerator::class);
         $this->eventDispatcher = app(EventDispatcher::class);
     }
 
