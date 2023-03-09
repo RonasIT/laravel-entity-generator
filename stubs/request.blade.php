@@ -8,7 +8,7 @@ use App\Http\Requests\Request;
 
 class {{$method}}{{$entity}}Request extends Request
 {
-@if($method !== 'Delete')
+@if($method !== \RonasIT\Support\Generators\RequestsGenerator::DELETE_METHOD)
     public function rules(): array
     {
 @if(!empty($parameters))
@@ -23,7 +23,9 @@ class {{$method}}{{$entity}}Request extends Request
     }
 @endif
 @if($needToValidate)
+@if($method !== \RonasIT\Support\Generators\RequestsGenerator::DELETE_METHOD)
 
+@endif
 @if(app()::VERSION < 5.6)
     public function validate()
     {
