@@ -24,12 +24,19 @@ class SeederGenerator extends EntityGenerator
         $this->checkConfigs();
 
         if (!file_exists($this->databaseSeederPath)) {
+            $databaseSeederPathSegments = explode('/', $this->databaseSeederPath);
+            array_pop($databaseSeederPathSegments);
+            $databaseSeederDir = implode('/', $databaseSeederPathSegments);
 
-            if (!is_dir($this->seedsPath)){
-                mkdir($this->seedsPath);
+            if (!is_dir($databaseSeederDir)) {
+                mkdir($databaseSeederDir);
             }
 
             $this->createDatabaseSeeder();
+        }
+
+        if (!is_dir($this->seedsPath)) {
+            mkdir($this->seedsPath);
         }
 
         $this->createEntitySeeder();
@@ -52,7 +59,7 @@ class SeederGenerator extends EntityGenerator
 
     protected function createEntitySeeder()
     {
-        $seeder = (floatval(app()->version()) >= 8) ? 'seeder_for_separate_factory' : 'seeder';
+        $seeder = (floatval(app()->version()) >= 8) ? 'seeder' : 'legacy_seeder';
 
         $stubPath = config("entity-generator.stubs.{$seeder}");
 
@@ -83,7 +90,7 @@ class SeederGenerator extends EntityGenerator
 
     protected function checkConfigs()
     {
-        if (empty(config('entity-generator.stubs.seeder')) || empty(config('entity-generator.stubs.seeder_for_separate_factory'))) {
+        if (empty(config('entity-generator.stubs.seeder')) || empty(config('entity-generator.stubs.legacy_seeder'))) {
             throw new EntityCreateException('
                 Looks like you have deprecated configs.
                 Please follow instructions(https://github.com/RonasIT/laravel-entity-generator/blob/master/ReadMe.md#13)

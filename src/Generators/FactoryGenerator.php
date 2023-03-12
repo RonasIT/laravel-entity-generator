@@ -43,7 +43,7 @@ class FactoryGenerator extends EntityGenerator
             );
         }
 
-        $factoryContent = $this->getStub('factory_separate_class', [
+        $factoryContent = $this->getStub('factory', [
             'entity' => $this->model,
             'fields' => $this->prepareFields()
         ]);
@@ -60,7 +60,7 @@ class FactoryGenerator extends EntityGenerator
         }
 
         if (!$this->checkExistModelFactory() && $this->checkExistRelatedModelsFactories()) {
-            $stubPath = config("entity-generator.stubs.factory");
+            $stubPath = config("entity-generator.stubs.legacy_factory");
 
             $content = view($stubPath)->with([
                 'entity' => $this->model,
@@ -83,18 +83,16 @@ class FactoryGenerator extends EntityGenerator
 
     public function generate()
     {
-        if (floatval(app()->version()) >= 8) {
-            $createMessage = $this->generateSeparateClass();
-        } else {
-            $createMessage = $this->generateToGenericClass();
-        }
+        $createMessage = (floatval(app()->version()) >= 8)
+            ? $this->generateSeparateClass()
+            : $this->generateToGenericClass();
 
         event(new SuccessCreateMessage($createMessage));
     }
 
     protected function prepareEmptyFactory()
     {
-        $stubPath = config('entity-generator.stubs.empty_factory');
+        $stubPath = config('entity-generator.stubs.legacy_empty_factory');
         $content = "<?php \n\n" . view($stubPath)->render();
         file_put_contents($this->paths['factory'], $content);
     }
