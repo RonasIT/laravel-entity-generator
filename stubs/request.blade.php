@@ -27,7 +27,7 @@ class {{$method}}{{$entity}}Request extends Request
 @if($method !== $requestsGenerator::DELETE_METHOD)
 
 @endif
-@if(app()::VERSION < 5.6)
+@if(version_compare(app()->version(), '5.6', '<'))
     public function validate()
     {
         parent::validate();

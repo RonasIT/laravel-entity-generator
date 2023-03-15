@@ -59,7 +59,7 @@ class SeederGenerator extends EntityGenerator
 
     protected function createEntitySeeder()
     {
-        $seeder = (floatval(app()->version()) >= 8) ? 'seeder' : 'legacy_seeder';
+        $seeder = (version_compare(app()->version(), '8', '>=')) ? 'seeder' : 'legacy_seeder';
 
         $stubPath = config("entity-generator.stubs.{$seeder}");
 
