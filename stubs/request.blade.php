@@ -1,3 +1,4 @@
+@inject('requestsGenerator', 'RonasIT\Support\Generators\RequestsGenerator')
 namespace App\Http\Requests\{{$requestsFolder}};
 
 @if($needToValidate)
@@ -8,7 +9,7 @@ use App\Http\Requests\Request;
 
 class {{$method}}{{$entity}}Request extends Request
 {
-@if($method !== 'Delete')
+@if($method !== $requestsGenerator::DELETE_METHOD)
     public function rules(): array
     {
 @if(!empty($parameters))
@@ -23,7 +24,9 @@ class {{$method}}{{$entity}}Request extends Request
     }
 @endif
 @if($needToValidate)
+@if($method !== $requestsGenerator::DELETE_METHOD)
 
+@endif
 @if(app()::VERSION < 5.6)
     public function validate()
     {
