@@ -24,9 +24,7 @@ class SeederGenerator extends EntityGenerator
         $this->checkConfigs();
 
         if (!file_exists($this->databaseSeederPath)) {
-            $databaseSeederPathSegments = explode('/', $this->databaseSeederPath);
-            array_pop($databaseSeederPathSegments);
-            $databaseSeederDir = implode('/', $databaseSeederPathSegments);
+            list(, $databaseSeederDir) = extract_last_part($this->databaseSeederPath, '/');
 
             if (!is_dir($databaseSeederDir)) {
                 mkdir($databaseSeederDir);
