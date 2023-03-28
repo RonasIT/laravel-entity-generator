@@ -27,18 +27,18 @@ return [
         'request' => 'entity-generator::request',
         'routes' => 'entity-generator::routes',
         'use_routes' => 'entity-generator::use_routes',
-        'factory' => 'entity-generator::factory',
+        'legacy_factory' => 'entity-generator::factory',
         'migration' => 'entity-generator::migration',
         'dump' => 'entity-generator::dumps.pgsql',
         'test' => 'entity-generator::test',
-        'empty_factory' => 'entity-generator::empty_factory',
+        'legacy_empty_factory' => 'entity-generator::empty_factory',
         'translation_not_found' => 'entity-generator::translation_not_found',
         'validation' => 'entity-generator::validation',
-        'seeder' => 'entity-generator::seeder',
+        'legacy_seeder' => 'entity-generator::seeder',
         'database_empty_seeder' => 'entity-generator::database_seed_empty',
         'resource' => 'entity-generator::resource',
-        'factory_separate_class' => 'entity-generator::factory_separate_class',
-        'seeder_for_separate_factory' => 'entity-generator::seeder_for_separate_factory',
+        'factory' => 'entity-generator::factory_separate_class',
+        'seeder' => 'entity-generator::seeder_for_separate_factory',
         'nova_resource' => 'entity-generator::nova_resource'
     ]
 ];
