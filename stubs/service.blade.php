@@ -1,8 +1,8 @@
 namespace App\Services;
 
+use App\Repositories\{{$entity}}Repository;
 use Illuminate\Support\Arr;
 use RonasIT\Support\Services\EntityService;
-use App\Repositories\{{$entity}}Repository;
 {{--
     Laravel inserts two spaces between @property and type, so we are forced
     to use hack here to preserve one space
