@@ -1,9 +1,9 @@
 namespace App\Tests;
 
-use Symfony\Component\HttpFoundation\Response;
 @if ($withAuth)
 use App\Models\User;
 @endif
+use Symfony\Component\HttpFoundation\Response;
 
 class {{$entity}}Test extends TestCase
 {
