@@ -1,6 +1,7 @@
+@php($shouldUseStatus = version_compare(app()->version(), '7', '<'))
 namespace App\Tests;
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
 use Symfony\Component\HttpFoundation\Response;
 @endif
 @if ($withAuth)
@@ -33,7 +34,7 @@ class {{$entity}}Test extends TestCase
         $response = $this->actingAs($this->user)->json('post', '/{{$entities}}', $data);
 @endif
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_CREATED);
 @else
         $response->assertCreated()
@@ -50,7 +51,7 @@ class {{$entity}}Test extends TestCase
 
         $response = $this->json('post', '/{{$entities}}', $data);
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
 @else
         $response->assertUnauthorized()
@@ -70,7 +71,7 @@ class {{$entity}}Test extends TestCase
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/1', $data);
 @endif
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 @else
         $response->assertNoContent()
@@ -89,7 +90,7 @@ class {{$entity}}Test extends TestCase
         $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/0', $data);
 @endif
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
 @else
         $response->assertNotFound()
@@ -103,7 +104,7 @@ class {{$entity}}Test extends TestCase
 
         $response = $this->json('put', '/{{$entities}}/1', $data);
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
 @else
         $response->assertUnauthorized()
@@ -121,7 +122,7 @@ class {{$entity}}Test extends TestCase
         $response = $this->actingAs($this->user)->json('delete', '/{{$entities}}/1');
 @endif
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 @else
         $response->assertNoContent()
@@ -139,7 +140,7 @@ class {{$entity}}Test extends TestCase
         $response = $this->actingAs($this->user)->json('delete', '/{{$entities}}/0');
 @endif
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
 @else
         $response->assertNotFound()
@@ -155,7 +156,7 @@ class {{$entity}}Test extends TestCase
     {
         $response = $this->json('delete', '/{{$entities}}/1');
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
 @else
         $response->assertUnauthorized()
@@ -173,7 +174,7 @@ class {{$entity}}Test extends TestCase
         $response = $this->actingAs($this->user)->json('get', '/{{$entities}}/1');
 @endif
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
 @else
         $response->assertOk()
@@ -193,7 +194,7 @@ class {{$entity}}Test extends TestCase
         $response = $this->actingAs($this->user)->json('get', '/{{$entities}}/0');
 @endif
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
 @else
         $response->assertNotFound()
@@ -235,7 +236,7 @@ PHPDOC;
     {
         $response = $this->json('get', '/{{$entities}}', $filter);
 
-@if(version_compare(app()->version(), '7', '<'))
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
 @else
         $response->assertOk()
