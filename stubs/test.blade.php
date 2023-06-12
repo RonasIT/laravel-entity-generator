@@ -1,11 +1,11 @@
 @php($shouldUseStatus = version_compare(app()->version(), '7', '<'))
 namespace App\Tests;
 
-@if($shouldUseStatus)
-use Symfony\Component\HttpFoundation\Response;
-@endif
 @if ($withAuth)
 use App\Models\User;
+@endif
+@if($shouldUseStatus)
+use Symfony\Component\HttpFoundation\Response;
 @endif
 
 class {{$entity}}Test extends TestCase
