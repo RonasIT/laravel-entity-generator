@@ -3,8 +3,8 @@ namespace App\Models;
 @if(version_compare(app()->version(), '8', '>='))
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 @endif
-use RonasIT\Support\Traits\ModelTrait;
 use Illuminate\Database\Eloquent\Model;
+use RonasIT\Support\Traits\ModelTrait;
 
 class {{$entity}} extends Model
 {
