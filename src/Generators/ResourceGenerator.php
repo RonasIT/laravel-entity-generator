@@ -9,6 +9,31 @@ class ResourceGenerator extends EntityGenerator
 {
     public function generate()
     {
+        $this->generateResource();
+        $this->generateResourceCollection();
+    }
+
+    public function generateResourceCollection()
+    {
+        if ($this->classExists('resources', "{$this->model}ResourceCollection")) {
+            $this->throwFailureException(
+                ClassAlreadyExistsException::class,
+                "Cannot create {$this->model}ResourceCollection cause {$this->model}ResourceCollection already exists.",
+                "Remove {$this->model}ResourceCollection."
+            );
+        }
+
+        $resourceCollectionContent = $this->getStub('resource_collection', [
+            'entity' => $this->model
+        ]);
+
+        $this->saveClass('resources', "{$this->model}ResourceCollection", $resourceCollectionContent);
+
+        event(new SuccessCreateMessage("Created a new ResourceCollection: {$this->model}ResourceCollection"));
+    }
+
+    public function generateResource()
+    {
         if ($this->classExists('resources', "{$this->model}Resource")) {
             $this->throwFailureException(
                 ClassAlreadyExistsException::class,

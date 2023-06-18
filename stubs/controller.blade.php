@@ -1,6 +1,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\{{$entity}}Resource;
+use App\Http\Resources\{{$entity}}ResourceCollection;
 @if (in_array('C', $options))
 use App\Http\Requests\{{$requestsFolder}}\Create{{$entity}}Request;
 @endif
@@ -47,7 +48,7 @@ class {{$entity}}Controller extends Controller
     {
         $result = $service->search($request->onlyValidated());
 
-        return {{$entity}}Resource::make($result);
+        return {{$entity}}ResourceCollection::make($result);
     }
 
 @endif
