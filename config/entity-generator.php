@@ -37,6 +37,7 @@ return [
         'legacy_seeder' => 'entity-generator::seeder',
         'database_empty_seeder' => 'entity-generator::database_seed_empty',
         'resource' => 'entity-generator::resource',
+        'collection_resource' => 'entity-generator::collection_resource',
         'factory' => 'entity-generator::factory_separate_class',
         'seeder' => 'entity-generator::seeder_for_separate_factory',
         'nova_resource' => 'entity-generator::nova_resource'

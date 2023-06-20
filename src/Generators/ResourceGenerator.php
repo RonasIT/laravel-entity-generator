@@ -10,26 +10,29 @@ class ResourceGenerator extends EntityGenerator
     public function generate()
     {
         $this->generateResource();
-        $this->generateResourceCollection();
+        $this->generateCollectionResource();
     }
 
-    public function generateResourceCollection()
+    public function generateCollectionResource()
     {
-        if ($this->classExists('resources', "{$this->model}ResourceCollection")) {
+        $pluralName = $this->getPluralName($this->model);
+
+        if ($this->classExists('resources', "{$pluralName}CollectionResource")) {
             $this->throwFailureException(
                 ClassAlreadyExistsException::class,
-                "Cannot create {$this->model}ResourceCollection cause {$this->model}ResourceCollection already exists.",
-                "Remove {$this->model}ResourceCollection."
+                "Cannot create {$pluralName}CollectionResource cause {$pluralName}CollectionResource already exists.",
+                "Remove {$pluralName}CollectionResource."
             );
         }
 
-        $resourceCollectionContent = $this->getStub('resource_collection', [
-            'entity' => $this->model
+        $collectionResourceContent = $this->getStub('collection_resource', [
+            'singular_name' => $this->model,
+            'plural_name' => $pluralName
         ]);
 
-        $this->saveClass('resources', "{$this->model}ResourceCollection", $resourceCollectionContent);
+        $this->saveClass('resources', "{$pluralName}CollectionResource", $collectionResourceContent);
 
-        event(new SuccessCreateMessage("Created a new ResourceCollection: {$this->model}ResourceCollection"));
+        event(new SuccessCreateMessage("Created a new CollectionResource: {$pluralName}CollectionResource"));
     }
 
     public function generateResource()
