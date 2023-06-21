@@ -1,7 +1,9 @@
 namespace App\Nova;
 
+@inject('str', 'Illuminate\Support\Str')
 use App\Models\{{$model}};
 use Illuminate\Http\Request;
+
 @foreach($types as $fieldType)
 use Laravel\Nova\Fields\{{$fieldType}};
 @endforeach
@@ -18,16 +20,24 @@ class {{$model}}Resource extends Resource
 
     public static function label(): string
     {
-        return '{{\Illuminate\Support\Str::plural($model)}}';
+        return '{{Str::plural($model)}}';
     }
 
     public function fields(Request $request): array
     {
         return [
-            @foreach($fields as $fieldName => $fieldType)
+        @foreach($fields as $fieldName => $fieldOptions)
+            @if ($fieldOptions['is_required'])
 
-            {{$fieldType}}::make('{{\Illuminate\Support\Str::of($fieldName)->ucfirst()->replace('_', ' ')}}')->sortable(),
-            @endforeach
+            {{$fieldOptions['type']}}::make('{{Str::of($fieldName)->ucfirst()->replace('_', ' ')}}')
+                ->sortable()
+                ->required(),
+            @else
+
+            {{$fieldOptions['type']}}::make('{{Str::of($fieldName)->ucfirst()->replace('_', ' ')}}')
+                ->sortable(),
+            @endif
+        @endforeach
 
         ];
     }
