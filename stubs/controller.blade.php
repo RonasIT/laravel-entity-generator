@@ -1,5 +1,7 @@
 namespace App\Http\Controllers;
 
+@inject('str', 'Illuminate\Support\Str')
+use App\Http\Resources\{{Str::plural($entity)}}CollectionResource;
 @if (in_array('C', $options))
 use App\Http\Requests\{{$requestsFolder}}\Create{{$entity}}Request;
 @endif
@@ -8,7 +10,7 @@ use App\Http\Requests\{{$requestsFolder}}\Delete{{$entity}}Request;
 @endif
 use App\Http\Requests\{{$requestsFolder}}\Get{{$entity}}Request;
 @if (in_array('R', $options))
-use App\Http\Requests\{{$requestsFolder}}\Search{{\Illuminate\Support\Str::plural($entity)}}Request;
+use App\Http\Requests\{{$requestsFolder}}\Search{{Str::plural($entity)}}Request;
 @endif
 @if (in_array('U', $options))
 use App\Http\Requests\{{$requestsFolder}}\Update{{$entity}}Request;
@@ -43,11 +45,11 @@ class {{$entity}}Controller extends Controller
         return {{$entity}}Resource::make($result);
     }
 
-    public function search(Search{{\Illuminate\Support\Str::plural($entity)}}Request $request, {{$entity}}Service $service)
+    public function search(Search{{Str::plural($entity)}}Request $request, {{$entity}}Service $service)
     {
         $result = $service->search($request->onlyValidated());
 
-        return {{$entity}}Resource::make($result);
+        return {{Str::plural($entity)}}CollectionResource::make($result);
     }
 
 @endif
