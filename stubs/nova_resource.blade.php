@@ -3,7 +3,6 @@ namespace App\Nova;
 @inject('str', 'Illuminate\Support\Str')
 use App\Models\{{$model}};
 use Illuminate\Http\Request;
-
 @foreach($types as $fieldType)
 use Laravel\Nova\Fields\{{$fieldType}};
 @endforeach
@@ -27,16 +26,17 @@ class {{$model}}Resource extends Resource
     {
         return [
         @foreach($fields as $fieldName => $fieldOptions)
-            @if ($fieldOptions['is_required'])
+            @php
+                $headline = Str::headline($fieldName);
+                $result = "{$fieldOptions['type']}::make('{$headline}')";
 
-            {{$fieldOptions['type']}}::make('{{Str::of($fieldName)->ucfirst()->replace('_', ' ')}}')
+                echo ($fieldOptions['is_required'])
+                ? "\n\t\t\t{$result}
                 ->sortable()
-                ->required(),
-            @else
-
-            {{$fieldOptions['type']}}::make('{{Str::of($fieldName)->ucfirst()->replace('_', ' ')}}')
-                ->sortable(),
-            @endif
+                ->required(),\n"
+                : "\n\t\t\t{$result}
+                ->sortable(),\n"
+            @endphp
         @endforeach
 
         ];

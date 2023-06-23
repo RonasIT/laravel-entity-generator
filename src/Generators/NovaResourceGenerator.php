@@ -11,54 +11,18 @@ use RonasIT\Support\Exceptions\ClassNotExistsException;
 class NovaResourceGenerator extends EntityGenerator
 {
     protected $novaFieldTypesMap = [
-        'boolean' => [
-            'type' => 'Boolean',
-            'is_required' => false
-        ],
-        'boolean-required' => [
-            'type' => 'Boolean',
-            'is_required' => true
-        ],
-        'timestamp' => [
-            'type' => 'DateTime',
-            'is_required' => false
-        ],
-        'timestamp-required' => [
-            'type' => 'DateTime',
-            'is_required' => true
-        ],
-        'string' => [
-            'type' => 'Text',
-            'is_required' => false
-        ],
-        'string-required' => [
-            'type' => 'Text',
-            'is_required' => true
-        ],
-        'json' => [
-            'type' => 'Text',
-            'is_required' => false
-        ],
-        'json-required' => [
-            'type' => 'Text',
-            'is_required' => true
-        ],
-        'integer' => [
-            'type' => 'Number',
-            'is_required' => false
-        ],
-        'integer-required' => [
-            'type' => 'Number',
-            'is_required' => true
-        ],
-        'float' => [
-            'type' => 'Number',
-            'is_required' => false
-        ],
-        'float-required' => [
-            'type' => 'Number',
-            'is_required' => true
-        ]
+        'boolean' => 'Boolean',
+        'boolean-required' => 'Boolean',
+        'timestamp' => 'DateTime',
+        'timestamp-required' => 'DateTime',
+        'string' => 'Text',
+        'string-required' => 'Text',
+        'json' => 'Text',
+        'json-required' => 'Text',
+        'integer' => 'Number',
+        'integer-required' => 'Number',
+        'float' => 'Number',
+        'float-required' => 'Number'
     ];
 
     protected $specialFieldNamesMap = [
@@ -109,7 +73,10 @@ class NovaResourceGenerator extends EntityGenerator
                         'is_required' => Str::contains($fieldType, 'required')
                     ];
                 } else {
-                    $result[$fieldName] = $this->novaFieldTypesMap[$fieldType];
+                    $result[$fieldName] = [
+                        'type' => $this->novaFieldTypesMap[$fieldType],
+                        'is_required' => Str::contains($fieldType, 'required')
+                    ];
                 }
             }
         }
