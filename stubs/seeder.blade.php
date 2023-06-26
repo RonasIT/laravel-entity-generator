@@ -1,6 +1,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\{{$entity}};
 
 class {{$entity}}Seeder extends Seeder
 {
@@ -8,36 +9,36 @@ class {{$entity}}Seeder extends Seeder
     {
 @if (empty($relations['belongsTo']))
 @if(empty(array_filter($relations)))
-        factory(\App\Models\{{$entity}}::class)->create([]);
+        {{$entity}}::factory()->create();
 @else
-        ${{strtolower($entity)}} = factory(\App\Models\{{$entity}}::class)->create([]);
+        ${{strtolower($entity)}} = {{$entity}}::factory()->create();
 @endif
 @else
 @if(empty(array_filter($relations)))
-        ${{strtolower($entity)}} = factory(\App\Models\{{$entity}}::class)->create([
+        ${{strtolower($entity)}} = {{$entity}}::factory()->make([
 @else
-        factory(\App\Models\{{$entity}}::class)->create([
+        {{$entity}}::factory()->make([
 @endif
 @foreach($relations['belongsTo'] as $relation)
-            '{{strtolower($relation)}}_id' => factory(\App\Models\{{$relation}}::class)->create()->id,
+            '{{strtolower($relation)}}_id' => \App\Models\{{$relation}}::factory()->create()->id,
 @endforeach
         ]);
 @endif
 
 @foreach($relations['hasOne'] as $relation)
-        factory(\App\Models\{{$relation}}::class)->create([
+        \App\Models\{{$relation}}::factory()->make([
             '{{strtolower($entity)}}_id' => ${{strtolower($entity)}}->id,
         ]);
 
 @endforeach
 @foreach($relations['hasMany'] as $relation)
-        factory(\App\Models\{{$relation}}::class, 10)->create()->each([
+        \App\Models\{{$relation}}::factory()->count(10)->make([
             '{{strtolower($entity)}}_id' => ${{strtolower($entity)}}->id,
         ]);
 
 @endforeach
 @foreach($relations['belongsToMany'] as $relation)
-        $list = factory(\App\Models\{{$relation}}::class, 10)->create()->pluck('id');
+        $list = \App\Models\{{$relation}}::factory()->count(10)->create()->pluck('id');
         ${{strtolower($entity)}}->{{strtolower($relation)}}s()->sync($list);
 @endforeach
     }
