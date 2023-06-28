@@ -28,15 +28,16 @@ class {{$model}}Resource extends Resource
         @foreach($fields as $fieldName => $fieldOptions)
             @php
                 $headline = Str::headline($fieldName);
-                $result = "{$fieldOptions['type']}::make('{$headline}')";
+                $result = "{$fieldOptions['type']}::make('{$headline}')
+                ->sortable()";
 
-                echo ($fieldOptions['is_required'])
-                ? "\n\t\t\t{$result}
-                ->sortable()
-                ->required(),\n"
-                : "\n\t\t\t{$result}
-                ->sortable(),\n"
+                $result = $fieldOptions['is_required']
+                ? "{$result}
+                ->required(),"
+                : "{$result},";
             @endphp
+
+            {!! $result !!}
         @endforeach
 
         ];
