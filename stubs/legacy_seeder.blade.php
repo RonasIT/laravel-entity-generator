@@ -1,4 +1,4 @@
-namespace Database\Seeders;
+namespace Database\Seeds;
 
 use Illuminate\Database\Seeder;
 

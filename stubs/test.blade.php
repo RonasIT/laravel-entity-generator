@@ -37,7 +37,7 @@ class {{$entity}}Test extends TestCase
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_CREATED);
 @else
-        $response->assertCreated()
+        $response->assertCreated();
 @endif
         $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json', $response->json());
 
@@ -54,7 +54,7 @@ class {{$entity}}Test extends TestCase
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
 @else
-        $response->assertUnauthorized()
+        $response->assertUnauthorized();
 @endif
     }
 
@@ -74,7 +74,7 @@ class {{$entity}}Test extends TestCase
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 @else
-        $response->assertNoContent()
+        $response->assertNoContent();
 @endif
 
         $this->assertDatabaseHas('{{$databaseTableName}}', $data);
@@ -93,7 +93,7 @@ class {{$entity}}Test extends TestCase
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
 @else
-        $response->assertNotFound()
+        $response->assertNotFound();
 @endif
     }
 
@@ -107,7 +107,7 @@ class {{$entity}}Test extends TestCase
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
 @else
-        $response->assertUnauthorized()
+        $response->assertUnauthorized();
 @endif
     }
 
@@ -125,7 +125,7 @@ class {{$entity}}Test extends TestCase
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 @else
-        $response->assertNoContent()
+        $response->assertNoContent();
 @endif
         $this->assertDatabaseMissing('{{$databaseTableName}}', [
             'id' => 1
@@ -143,7 +143,7 @@ class {{$entity}}Test extends TestCase
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
 @else
-        $response->assertNotFound()
+        $response->assertNotFound();
 @endif
 
         $this->assertDatabaseMissing('{{$databaseTableName}}', [
@@ -159,7 +159,7 @@ class {{$entity}}Test extends TestCase
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
 @else
-        $response->assertUnauthorized()
+        $response->assertUnauthorized();
 @endif
     }
 
@@ -177,7 +177,7 @@ class {{$entity}}Test extends TestCase
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
 @else
-        $response->assertOk()
+        $response->assertOk();
 @endif
 
         // TODO: Need to remove after first successful start
@@ -197,7 +197,7 @@ class {{$entity}}Test extends TestCase
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
 @else
-        $response->assertNotFound()
+        $response->assertNotFound();
 @endif
     }
 
@@ -217,21 +217,13 @@ class {{$entity}}Test extends TestCase
             ],
         ];
     }
-{{--
-    Laravel inserts two spaces between @param and type, so we are forced
-    to use hack here to preserve one space
---}}
-@php
-echo <<<PHPDOC
+
     /**
      * @dataProvider getSearchFilters
      *
-     * @param array \$filter
-     * @param string \$fixture
+     * @param array $filter
+     * @param string $fixture
      */
-
-PHPDOC;
-@endphp
     public function testSearch($filter, $fixture)
     {
         $response = $this->json('get', '/{{$entities}}', $filter);
@@ -239,7 +231,7 @@ PHPDOC;
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
 @else
-        $response->assertOk()
+        $response->assertOk();
 @endif
 
         // TODO: Need to remove after first successful start

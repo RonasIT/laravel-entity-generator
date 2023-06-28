@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ModelFactoryNotFound;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ModelFactoryNotFoundedException;
+use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use Exception;
 
@@ -94,6 +95,13 @@ class FactoryGenerator extends EntityGenerator
     {
         $stubPath = config('entity-generator.stubs.legacy_empty_factory');
         $content = "<?php \n\n" . view($stubPath)->render();
+
+        list($basePath, $databaseFactoryDir) = extract_last_part(config('entity-generator.paths.factory'), '/');
+
+        if (!is_dir($databaseFactoryDir)) {
+            mkdir($databaseFactoryDir);
+        }
+
         file_put_contents($this->paths['factory'], $content);
     }
 
