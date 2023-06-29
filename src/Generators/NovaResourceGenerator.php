@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
@@ -47,12 +48,14 @@ class NovaResourceGenerator extends EntityGenerator
             $fileContent = $this->getStub('nova_resource', [
                 'model' => $this->model,
                 'fields' => $novaFields,
-                'types' => array_unique($novaFields)
+                'types' => array_unique(data_get($novaFields, '*.type'))
             ]);
 
             $this->saveClass('nova', "{$this->model}Resource", $fileContent);
 
             event(new SuccessCreateMessage("Created a new Nova Resource: {$this->model}Resource"));
+        } else {
+            event(new SuccessCreateMessage("Nova is not installed and NovaResource is skipped"));
         }
     }
 
@@ -62,12 +65,18 @@ class NovaResourceGenerator extends EntityGenerator
 
         foreach ($this->fields as $fieldType => $fieldNames) {
             foreach ($fieldNames as $fieldName) {
-                if (Arr::has($this->specialFieldNamesMap, $fieldName)) {
-                    $result[$fieldName] = $this->specialFieldNamesMap[$fieldName];
-                } else if (!Arr::has($this->novaFieldTypesMap, $fieldType)) {
+                if (!Arr::has($this->novaFieldTypesMap, $fieldType)) {
                     event(new SuccessCreateMessage("Field '{$fieldName}' had been skipped cause has an unhandled type {$fieldType}."));
+                } else if (Arr::has($this->specialFieldNamesMap, $fieldName)) {
+                    $result[$fieldName] = [
+                        'type' => $this->specialFieldNamesMap[$fieldName],
+                        'is_required' => Str::contains($fieldType, 'required')
+                    ];
                 } else {
-                    $result[$fieldName] = $this->novaFieldTypesMap[$fieldType];
+                    $result[$fieldName] = [
+                        'type' => $this->novaFieldTypesMap[$fieldType],
+                        'is_required' => Str::contains($fieldType, 'required')
+                    ];
                 }
             }
         }

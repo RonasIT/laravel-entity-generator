@@ -1,5 +1,6 @@
 namespace App\Nova;
 
+@inject('str', 'Illuminate\Support\Str')
 use App\Models\{{$model}};
 use Illuminate\Http\Request;
 @foreach($types as $fieldType)
@@ -18,16 +19,19 @@ class {{$model}}Resource extends Resource
 
     public static function label(): string
     {
-        return '{{\Illuminate\Support\Str::plural($model)}}';
+        return '{{Str::plural($model)}}';
     }
 
     public function fields(Request $request): array
     {
         return [
-            @foreach($fields as $fieldName => $fieldType)
-
-            {{$fieldType}}::make('{{\Illuminate\Support\Str::of($fieldName)->ucfirst()->replace('_', ' ')}}')->sortable(),
-            @endforeach
+@foreach($fields as $fieldName => $fieldOptions)
+            {{$fieldOptions['type']}}::make('{{Str::headline($fieldName)}}')
+@if($fieldOptions['is_required'])
+                ->required()
+@endif
+                ->sortable(),
+@endforeach
 
         ];
     }
