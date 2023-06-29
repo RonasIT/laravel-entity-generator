@@ -26,7 +26,7 @@ class {{$model}}Resource extends Resource
     {
         return [
         @foreach($fields as $fieldName => $fieldOptions)
-            {{$fieldOptions['type']}}"::make('{{Str::headline($fieldName)}}')
+            {{$fieldOptions['type']}}::make('{{Str::headline($fieldName)}}')
             @if($fieldOptions['is_required'])
                 ->required(),
             @endif
