@@ -30,7 +30,7 @@ class {{$model}}Resource extends Resource
 @if($fieldOptions['is_required'])
                 ->required()
 @endif
-                ->sortable();
+                ->sortable(),
 @endforeach
 
         ];
