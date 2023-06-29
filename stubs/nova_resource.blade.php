@@ -25,13 +25,13 @@ class {{$model}}Resource extends Resource
     public function fields(Request $request): array
     {
         return [
-        @foreach($fields as $fieldName => $fieldOptions)
+@foreach($fields as $fieldName => $fieldOptions)
             {{$fieldOptions['type']}}::make('{{Str::headline($fieldName)}}')
-            @if($fieldOptions['is_required'])
-                ->required(),
-            @endif
+@if($fieldOptions['is_required'])
+                ->required()
+@endif
                 ->sortable();
-        @endforeach
+@endforeach
 
         ];
     }
