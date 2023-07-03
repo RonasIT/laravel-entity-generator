@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 
 class NovaResourceGenerator extends EntityGenerator
@@ -40,6 +41,14 @@ class NovaResourceGenerator extends EntityGenerator
                     ClassNotExistsException::class,
                     "Cannot create {$this->model} Nova resource cause {$this->model} Model does not exists.",
                     "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'."
+                );
+            }
+
+            if ($this->classExists('nova', "{$this->model}Resource")) {
+                $this->throwFailureException(
+                    ClassAlreadyExistsException::class,
+                    "Cannot create {$this->model}Resource cause {$this->model}Resource already exists.",
+                    "Remove {$this->model}Resource."
                 );
             }
 
