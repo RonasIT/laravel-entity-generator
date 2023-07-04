@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
@@ -58,6 +59,8 @@ class TestsGenerator extends EntityGenerator
             $this->withAuth = true;
         }
 
+        $relations = $this->buildRelationsTree($arrayModels);
+
         return array_map(function ($model) {
             return [
                 'name' => $this->getTableName($model),
@@ -68,7 +71,28 @@ class TestsGenerator extends EntityGenerator
                     ]
                 ]
             ];
-        }, $this->buildRelationsTree($arrayModels));
+        }, $this->getRelationsWithFactories($relations));
+    }
+
+    protected function getRelationsWithFactories($relations)
+    {
+        $factory = app(Factory::class);
+
+        $relationsWithFactories = [];
+
+        foreach ($relations as $relation) {
+            if (
+                !empty($factory[$this->getModelClass($relation)])
+                || (
+                    $this->classExists('factory', "{$relation}Factory")
+                    && method_exists($this->getModelClass($relation), 'factory')
+                )
+            ) {
+                $relationsWithFactories[] = $relation;
+            }
+        }
+
+        return $relationsWithFactories;
     }
 
     protected function getDumpValuesList($model)
