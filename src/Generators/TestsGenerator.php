@@ -74,20 +74,25 @@ class TestsGenerator extends EntityGenerator
         }, $this->getRelationsWithFactories($relations));
     }
 
-    protected function getRelationsWithFactories($relations)
+    protected function isLegacyFactoryExists($modelName)
     {
         $factory = app(Factory::class);
 
+        return !empty($factory[$this->getModelClass($modelName)]);
+    }
+
+    protected function isFactoryExists($modelName)
+    {
+        return $this->classExists('factory', "{$modelName}Factory")
+            && method_exists($this->getModelClass($modelName), 'factory');
+    }
+
+    protected function getRelationsWithFactories($relations)
+    {
         $relationsWithFactories = [];
 
         foreach ($relations as $relation) {
-            if (
-                !empty($factory[$this->getModelClass($relation)])
-                || (
-                    $this->classExists('factory', "{$relation}Factory")
-                    && method_exists($this->getModelClass($relation), 'factory')
-                )
-            ) {
+            if ($this->isLegacyFactoryExists($relation) || $this->isFactoryExists($relation)) {
                 $relationsWithFactories[] = $relation;
             }
         }
