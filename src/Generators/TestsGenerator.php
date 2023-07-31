@@ -54,12 +54,14 @@ class TestsGenerator extends EntityGenerator
     {
         $arrayModels = [$this->model];
 
-        if ($this->classExists('models', 'User')) {
+        if (
+            $this->classExists('models', 'User')
+            && ($this->isFactoryExists('User')
+            || $this->isLegacyFactoryExists('User'))
+        ) {
             array_unshift($arrayModels, 'User');
             $this->withAuth = true;
         }
-
-        $relations = $this->buildRelationsTree($arrayModels);
 
         return array_map(function ($model) {
             return [
@@ -71,7 +73,7 @@ class TestsGenerator extends EntityGenerator
                     ]
                 ]
             ];
-        }, $this->getRelationsWithFactories($relations));
+        }, $this->buildRelationsTree($arrayModels));
     }
 
     protected function isLegacyFactoryExists($modelName)
@@ -87,17 +89,17 @@ class TestsGenerator extends EntityGenerator
             && method_exists($this->getModelClass($modelName), 'factory');
     }
 
-    protected function getRelationsWithFactories($relations)
+    protected function getModelsWithFactories($models)
     {
-        $relationsWithFactories = [];
+        $modelsWithFactories = [];
 
-        foreach ($relations as $relation) {
-            if ($this->isLegacyFactoryExists($relation) || $this->isFactoryExists($relation)) {
-                $relationsWithFactories[] = $relation;
+        foreach ($models as $model) {
+            if ($this->isFactoryExists($model) || $this->isLegacyFactoryExists($model)) {
+                $modelsWithFactories[] = $model;
             }
         }
 
-        return $relationsWithFactories;
+        return $modelsWithFactories;
     }
 
     protected function getDumpValuesList($model)
@@ -262,12 +264,13 @@ class TestsGenerator extends EntityGenerator
     {
         foreach ($models as $model) {
             $relations = $this->getRelatedModels($model);
+            $relationsWithFactories = $this->getModelsWithFactories($relations);
 
-            if (empty($relations)) {
+            if (empty($relationsWithFactories)) {
                 continue;
             }
 
-            if (in_array($model, $relations)) {
+            if (in_array($model, $relationsWithFactories)) {
                 $this->throwFailureException(
                     CircularRelationsFoundedException::class,
                     'Circular relations founded.',
@@ -275,7 +278,7 @@ class TestsGenerator extends EntityGenerator
                 );
             }
 
-            $relatedModels = $this->buildRelationsTree($relations);
+            $relatedModels = $this->buildRelationsTree($relationsWithFactories);
 
             $models = array_merge($relatedModels, $models);
         }
