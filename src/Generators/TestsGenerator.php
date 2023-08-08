@@ -54,11 +54,7 @@ class TestsGenerator extends EntityGenerator
     {
         $arrayModels = [$this->model];
 
-        if (
-            $this->classExists('models', 'User')
-            && ($this->isFactoryExists('User')
-            || $this->isLegacyFactoryExists('User'))
-        ) {
+        if ($this->classExists('models', 'User') && $this->isFactoryExists('User')) {
             array_unshift($arrayModels, 'User');
             $this->withAuth = true;
         }
@@ -76,30 +72,21 @@ class TestsGenerator extends EntityGenerator
         }, $this->buildRelationsTree($arrayModels));
     }
 
-    protected function isLegacyFactoryExists($modelName)
+    protected function isFactoryExists($modelName)
     {
         $factory = app(Factory::class);
 
-        return !empty($factory[$this->getModelClass($modelName)]);
-    }
-
-    protected function isFactoryExists($modelName)
-    {
-        return $this->classExists('factory', "{$modelName}Factory")
-            && method_exists($this->getModelClass($modelName), 'factory');
+        return
+            !empty($factory[$this->getModelClass($modelName)])
+            || ($this->classExists('factory', "{$modelName}Factory")
+            && method_exists($this->getModelClass($modelName), 'factory'));
     }
 
     protected function getModelsWithFactories($models)
     {
-        $modelsWithFactories = [];
-
-        foreach ($models as $model) {
-            if ($this->isFactoryExists($model) || $this->isLegacyFactoryExists($model)) {
-                $modelsWithFactories[] = $model;
-            }
-        }
-
-        return $modelsWithFactories;
+        return array_filter($models, function ($model) {
+            return $this->isFactoryExists($model);
+        });
     }
 
     protected function getDumpValuesList($model)
