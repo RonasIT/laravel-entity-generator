@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Database\Eloquent\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
@@ -53,7 +54,7 @@ class TestsGenerator extends EntityGenerator
     {
         $arrayModels = [$this->model];
 
-        if ($this->classExists('models', 'User')) {
+        if ($this->classExists('models', 'User') && $this->isFactoryExists('User')) {
             array_unshift($arrayModels, 'User');
             $this->withAuth = true;
         }
@@ -69,6 +70,23 @@ class TestsGenerator extends EntityGenerator
                 ]
             ];
         }, $this->buildRelationsTree($arrayModels));
+    }
+
+    protected function isFactoryExists($modelName)
+    {
+        $factory = app(Factory::class);
+        $modelClass = $this->getModelClass($modelName);
+
+        $isNewStyleFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
+
+        return !empty($factory[$this->getModelClass($modelName)]) || $isNewStyleFactoryExists;
+    }
+
+    protected function getModelsWithFactories($models)
+    {
+        return array_filter($models, function ($model) {
+            return $this->isFactoryExists($model);
+        });
     }
 
     protected function getDumpValuesList($model)
@@ -233,12 +251,13 @@ class TestsGenerator extends EntityGenerator
     {
         foreach ($models as $model) {
             $relations = $this->getRelatedModels($model);
+            $relationsWithFactories = $this->getModelsWithFactories($relations);
 
-            if (empty($relations)) {
+            if (empty($relationsWithFactories)) {
                 continue;
             }
 
-            if (in_array($model, $relations)) {
+            if (in_array($model, $relationsWithFactories)) {
                 $this->throwFailureException(
                     CircularRelationsFoundedException::class,
                     'Circular relations founded.',
@@ -246,7 +265,7 @@ class TestsGenerator extends EntityGenerator
                 );
             }
 
-            $relatedModels = $this->buildRelationsTree($relations);
+            $relatedModels = $this->buildRelationsTree($relationsWithFactories);
 
             $models = array_merge($relatedModels, $models);
         }
