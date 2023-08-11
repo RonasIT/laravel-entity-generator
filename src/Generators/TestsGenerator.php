@@ -75,11 +75,11 @@ class TestsGenerator extends EntityGenerator
     protected function isFactoryExists($modelName)
     {
         $factory = app(Factory::class);
+        $modelClass = $this->getModelClass($modelName);
 
-        return
-            !empty($factory[$this->getModelClass($modelName)])
-            || ($this->classExists('factory', "{$modelName}Factory")
-            && method_exists($this->getModelClass($modelName), 'factory'));
+        $isNewStyleFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory')
+
+        return !empty($factory[$this->getModelClass($modelName)]) || $isNewStyleFactoryExists;
     }
 
     protected function getModelsWithFactories($models)
