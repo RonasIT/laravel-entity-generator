@@ -54,7 +54,11 @@ class TestsGenerator extends EntityGenerator
     {
         $arrayModels = [$this->model];
 
-        if ($this->classExists('models', 'User') && $this->isFactoryExists('User')) {
+        if (
+            $this->classExists('models', 'User')
+            && $this->isFactoryExists('User')
+            && $this->isMethodExists('User', 'getFields')
+        ) {
             array_unshift($arrayModels, 'User');
             $this->withAuth = true;
         }
@@ -80,6 +84,13 @@ class TestsGenerator extends EntityGenerator
         $isNewStyleFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
 
         return !empty($factory[$this->getModelClass($modelName)]) || $isNewStyleFactoryExists;
+    }
+
+    protected function isMethodExists($modelName, $method)
+    {
+        $modelClass = $this->getModelClass($modelName);
+
+        return method_exists($modelClass, $method);
     }
 
     protected function getModelsWithFactories($models)
