@@ -104,49 +104,36 @@ class TestsGenerator extends EntityGenerator
     {
         $values = $this->buildEntityObject($model);
 
-        return array_associate($values, function ($value, $key) {
+        array_walk($values, function (&$value) {
             if ($value instanceof \DateTime) {
-                return [
-                    'key' => $key,
-                    'value' => "'{$value->format('Y-m-d h:i:s')}'"
-                ];
+                $value = "'{$value->format('Y-m-d h:i:s')}'";
             }
 
             if (is_bool($value)) {
-                return [
-                    'key' => $key,
-                    'value' => $value ? 'true' : 'false'
-                ];
+                $value = $value ? 'true' : 'false';
             }
 
             if (is_array($value)) {
                 $value = json_encode($value);
             }
 
-            return [
-                'key' => $key,
-                'value' => is_string($value) ? "'{$value}'" : $value
-            ];
+            $value = is_string($value) ? "'{$value}'" : $value;
         });
+
+        return $values;
     }
 
     protected function getFixtureValuesList($model)
     {
         $values = $this->buildEntityObject($model);
 
-        return array_associate($values, function ($value, $key) {
+        array_walk($values, function (&$value) {
             if ($value instanceof \DateTime) {
-                return [
-                    'key' => $key,
-                    'value' => "{$value->format('Y-m-d h:i:s')}"
-                ];
+                $value = "{$value->format('Y-m-d h:i:s')}";
             }
-
-            return [
-                'key' => $key,
-                'value' => $value
-            ];
         });
+
+        return $values;
     }
 
     protected function buildEntityObject($model)
