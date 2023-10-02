@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use DateTime;
 
 class TestsGenerator extends EntityGenerator
 {
@@ -54,7 +55,7 @@ class TestsGenerator extends EntityGenerator
     {
         $arrayModels = [$this->model];
 
-        if ($this->classExists('models', 'User') && $this->isFactoryExists('User')) {
+        if ($this->canGenerateUserData()) {
             array_unshift($arrayModels, 'User');
             $this->withAuth = true;
         }
@@ -82,6 +83,13 @@ class TestsGenerator extends EntityGenerator
         return !empty($factory[$this->getModelClass($modelName)]) || $isNewStyleFactoryExists;
     }
 
+    protected function isMethodExists($modelName, $method)
+    {
+        $modelClass = $this->getModelClass($modelName);
+
+        return method_exists($modelClass, $method);
+    }
+
     protected function getModelsWithFactories($models)
     {
         return array_filter($models, function ($model) {
@@ -93,49 +101,32 @@ class TestsGenerator extends EntityGenerator
     {
         $values = $this->buildEntityObject($model);
 
-        return array_associate($values, function ($value, $key) {
-            if ($value instanceof \DateTime) {
-                return [
-                    'key' => $key,
-                    'value' => "'{$value->format('Y-m-d h:i:s')}'"
-                ];
-            }
-
-            if (is_bool($value)) {
-                return [
-                    'key' => $key,
-                    'value' => $value ? 'true' : 'false'
-                ];
-            }
-
-            if (is_array($value)) {
+        array_walk($values, function (&$value) {
+            if ($value instanceof DateTime) {
+                $value = "'{$value->format('Y-m-d h:i:s')}'";
+            } elseif (is_bool($value)) {
+                $value = ($value) ? 'true' : 'false';
+            } elseif (is_array($value)) {
                 $value = json_encode($value);
             }
 
-            return [
-                'key' => $key,
-                'value' => is_string($value) ? "'{$value}'" : $value
-            ];
+            $value = (is_string($value)) ? "'{$value}'" : $value;
         });
+
+        return $values;
     }
 
     protected function getFixtureValuesList($model)
     {
         $values = $this->buildEntityObject($model);
 
-        return array_associate($values, function ($value, $key) {
-            if ($value instanceof \DateTime) {
-                return [
-                    'key' => $key,
-                    'value' => "{$value->format('Y-m-d h:i:s')}"
-                ];
+        array_walk($values, function (&$value) {
+            if ($value instanceof DateTime) {
+                $value = "{$value->format('Y-m-d h:i:s')}";
             }
-
-            return [
-                'key' => $key,
-                'value' => $value
-            ];
         });
+
+        return $values;
     }
 
     protected function buildEntityObject($model)
@@ -295,6 +286,13 @@ class TestsGenerator extends EntityGenerator
         }
 
         return file_get_contents($path);
+    }
+
+    protected function canGenerateUserData()
+    {
+        return $this->classExists('models', 'User')
+            && $this->isFactoryExists('User')
+            && $this->isMethodExists('User', 'getFields');
     }
 
     private function filterBadModelField($fields)
