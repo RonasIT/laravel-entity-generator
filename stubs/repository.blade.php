@@ -23,16 +23,4 @@ class {{$entity}}Repository extends BaseRepository
     {
         $this->setModel({{$entity}}::class);
     }
-@if(!empty($fields['json']))
-
-    public function update($where, $data) {
-@foreach($fields['json'] as $field)
-        if (Arr::has($data, '{{$field}}')) {
-            $data['{{$field}}'] = json_encode($data['{{$field}}']);
-        }
-
-@endforeach
-        return parent::update($where, $data);
-    }
-@endif
 }
