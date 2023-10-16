@@ -17,20 +17,10 @@ class RepositoryGenerator extends EntityGenerator
             );
         }
 
-        $repositoryContent = $this->getStub('repository', [
-            'entity' => $this->model,
-            'fields' => $this->getFields()
-        ]);
+        $repositoryContent = $this->getStub('repository', ['entity' => $this->model]);
 
         $this->saveClass('repositories', "{$this->model}Repository", $repositoryContent);
 
         event(new SuccessCreateMessage("Created a new Repository: {$this->model}Repository"));
-    }
-
-    protected function getFields()
-    {
-        return [
-            'json' => $this->fields['json']
-        ];
     }
 }
