@@ -110,6 +110,12 @@ class RequestsGenerator extends EntityGenerator
 
         $parameters['string-required'] = ['with.*'];
 
+        if (!empty($parameters['boolean-required'])) {
+            $parameters['boolean'] = array_merge($parameters['boolean'], $parameters['boolean-required']);
+
+            Arr::forget($parameters, 'boolean-required');
+        }
+
         return $this->getValidationParameters($parameters, true);
     }
 
