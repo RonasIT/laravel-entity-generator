@@ -3,7 +3,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use RonasIT\Support\Traits\MigrationTrait;
 
-@if(version_compare(app()->version(), '9', '>='))
+@if (version_compare(app()->version(), '9', '>='))
 return new class extends Migration
 @else
 class {{$class}}CreateTable extends Migration
