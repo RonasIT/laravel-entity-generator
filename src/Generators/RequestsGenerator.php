@@ -45,6 +45,13 @@ class RequestsGenerator extends EntityGenerator
         }
 
         if (in_array('C', $this->crudOptions)) {
+
+            if (!empty($this->fields['boolean-required'])) {
+                $this->fields['boolean|present'] = $this->fields['boolean-required'];
+
+                Arr::forget($this->fields, 'boolean-required');
+            }
+
             $this->createRequest(
                 self::CREATE_METHOD,
                 false,
@@ -53,6 +60,12 @@ class RequestsGenerator extends EntityGenerator
         }
 
         if (in_array('U', $this->crudOptions)) {
+
+            if (!empty($this->fields['boolean|present'])) {
+                $this->fields['boolean'] = array_merge($this->fields['boolean'], $this->fields['boolean|present']);
+                Arr::forget($this->fields, 'boolean|present');
+            }
+
             $this->createRequest(
                 self::UPDATE_METHOD,
                 true,
@@ -110,13 +123,7 @@ class RequestsGenerator extends EntityGenerator
 
         $parameters['string-required'] = ['with.*'];
 
-        if (!empty($parameters['boolean-required'])) {
-            $parameters['boolean'] = array_merge($parameters['boolean'], $parameters['boolean-required']);
-
-            Arr::forget($parameters, 'boolean-required');
-        }
-
-        return $this->getValidationParameters($parameters, true);
+        return $this->getValidationParameters($parameters, false);
     }
 
     public function getValidationParameters($parameters, $requiredAvailable)
