@@ -71,14 +71,21 @@ abstract class EntityGenerator
         return $this;
     }
 
+    public function setPaths(array $paths)
+    {
+        $this->paths = $paths;
+
+        return $this;
+    }
+
     public function __construct()
     {
-        $this->paths = config('entity-generator.paths');
+        $this->setPaths(config('entity-generator.paths'));
     }
 
     abstract public function generate();
 
-    protected function classExists($path, $name)
+    protected function classExists($path, $name): bool
     {
         $entitiesPath = $this->paths[$path];
 
@@ -122,7 +129,7 @@ abstract class EntityGenerator
     {
         $entityName = Str::snake($entityName, $delimiter);
 
-        return Str::plural($entityName);
+        return $this->getPluralName($entityName);
     }
 
     protected function getPluralName($entityName)
