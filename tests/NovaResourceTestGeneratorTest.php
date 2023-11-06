@@ -2,10 +2,11 @@
 
 namespace RonasIT\Support\Tests;
 
+use Illuminate\Foundation\Testing\TestResponse;
 use Illuminate\Support\Facades\View;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
+use phpmock\Mock;
 use phpmock\MockBuilder;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -16,8 +17,10 @@ class NovaResourceTestGeneratorTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
+
         $this->mockFilesystem();
         $this->app->setBasePath(vfsStream::url('root'));
+
         View::addNamespace('entity-generator', '/app/stubs');
     }
 
@@ -89,35 +92,38 @@ class NovaResourceTestGeneratorTest extends TestCase
 
     public function testCreateWithActions()
     {
+        putenv('FAIL_EXPORT_JSON=false');
+        $this->setupConfigurations();
+        $this->mockViewsNamespace();
+
+        $functionMock = $this->mockClassExistsFunction();
+
+        $generator = new NovaResourceTestGenerator();
+        $generator
+            ->setModel('Post')
+            ->generate();
+
+        $this->assertTrue(file_exists(base_path('tests/PostResourceTest.php')));
+
+        $content = file_get_contents(base_path('tests/PostResourceTest.php'));
+        $this->app->setBasePath(__DIR__ . '/../');
+        $this->exportContent($content, '/created_resource_test.php');
+
+        $fixture = $this->getFixture('created_resource_test.php');
+
+        $this->assertEquals($fixture, $content);
+
+        $functionMock->disable();
+    }
+
+    protected function setupConfigurations()
+    {
         config()->set('entity-generator.stubs.nova_resource_test', 'entity-generator::nova_resource_test');
         config()->set('entity-generator.paths', [
             'nova' => 'app/Nova',
             'nova_actions' => 'app/Nova/Actions',
             'tests' => 'tests',
         ]);
-        $er = file_exists(vfsStream::url('root/app'));
-        $yt = 234;
-
-        $mocks = $this->mockClasses();
-        $generatorMock = $this->mockGenerator();
-        $this->mockViewsNamespace();
-
-        $generatorMock = new NovaResourceTestGenerator();
-        $generatorMock
-            ->setModel('Post')
-            ->generate();
-
-        foreach ($mocks as $mock) {
-            $mock->disable();
-        }
-        $ytr = vfsStream::url('app');
-        $dfgd = vfsStream::inspect(new vfsStreamStructureVisitor())
-            ->getStructure();
-        $this->assertEquals(
-            [],
-            vfsStream::inspect(new vfsStreamStructureVisitor())
-                ->getStructure()
-        );
     }
 
     protected function mockViewsNamespace()
@@ -125,7 +131,7 @@ class NovaResourceTestGeneratorTest extends TestCase
         app('view')->addNamespace('tests', '/app/stubs');
     }
 
-    protected function mockClasses(): array
+    protected function mockClassExistsFunction(): Mock
     {
         $classExistsBuilder = new MockBuilder();
         $classExistsBuilder->setNamespace('\\RonasIT\\Support\\Generators')
@@ -137,6 +143,11 @@ class NovaResourceTestGeneratorTest extends TestCase
         $classExistsMock = $classExistsBuilder->build();
         $classExistsMock->enable();
 
+        return $classExistsMock;
+    }
+
+    protected function mockFileExists(): Mock
+    {
         $fileExistsBuilder = new MockBuilder();
         $fileExistsBuilder->setNamespace('\\RonasIT\\Support\\Generators')
             ->setName('file_exists')
@@ -147,29 +158,7 @@ class NovaResourceTestGeneratorTest extends TestCase
         $fileExistsMock = $fileExistsBuilder->build();
         $fileExistsMock->enable();
 
-        return [
-            $classExistsMock,
-            $fileExistsMock,
-        ];
-    }
-
-    protected function mockGenerator()
-    {
-        $generatorMock = Mockery::mock(NovaResourceTestGenerator::class)->makePartial();
-        $generatorMock
-            ->shouldAllowMockingProtectedMethods()
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('nova', 'Post')
-            ->andReturn(true);
-
-        $generatorMock
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('nova', 'PostNovaTest')
-            ->andReturn(false);
-
-        return $generatorMock;
+        return $fileExistsMock;
     }
 
     protected function mockFilesystem()
@@ -178,9 +167,9 @@ class NovaResourceTestGeneratorTest extends TestCase
             'app' => [
                 'Nova' => [
                     'Actions' => [
-                        'PublishPostAction.php',
-                        'BlockCommentAction.php',
-                        'UnPublishPostAction.txt',
+                        'PublishPostAction.php' => '<?php',
+                        'BlockCommentAction.php' => '<?php',
+                        'UnPublishPostAction.txt' => 'text',
                     ],
                     'Post.php' => '<?php'
                 ]

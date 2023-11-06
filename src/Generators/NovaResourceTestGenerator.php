@@ -4,6 +4,8 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
