@@ -115,21 +115,16 @@ class RequestsGenerator extends EntityGenerator
     protected function getSearchValidationParameters(): array
     {
         $parameters = Arr::except($this->fields, [
-            'timestamp', 'timestamp-required', 'string-required', 'integer-required'
+            'timestamp', 'timestamp-required', 'string-required', 'integer-required', 'boolean-required'
         ]);
 
-        if (array_key_exists('boolean-required', $parameters)) {
-            $parameters['boolean'] = $this->fields['boolean-required'];
-            unset($parameters['boolean-required']);
-        }
+        $parameters['boolean'] = array_merge($this->fields['boolean-required'], ['desc']);
 
         $parameters['integer'] = array_merge($this->fields['integer'], [
             'page', 'per_page', 'all',
         ]);
 
         $parameters['array'] = ['with'];
-
-        $parameters['boolean'][] = 'desc';
 
         $parameters['string'] = ['order_by'];
 
