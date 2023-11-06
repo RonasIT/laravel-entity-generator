@@ -96,13 +96,13 @@ abstract class EntityGenerator
 
     protected function saveClass($path, $name, $content, $additionalEntityFolder = false)
     {
-        $entitiesPath = $this->paths[$path];
+        $entitiesPath = base_path($this->paths[$path]);
 
         if ($additionalEntityFolder) {
             $entitiesPath = $entitiesPath . "/{$additionalEntityFolder}";
         }
 
-        $classPath = base_path("{$entitiesPath}/{$name}.php");
+        $classPath = "{$entitiesPath}/{$name}.php";
         $tag = "<?php";
 
         if (!Str::contains($content, $tag)) {
@@ -110,7 +110,7 @@ abstract class EntityGenerator
         }
 
         if (!file_exists($entitiesPath)) {
-            mkdir_recursively(base_path($entitiesPath));
+            mkdir_recursively($entitiesPath);
         }
 
         return file_put_contents($classPath, $content);
@@ -118,7 +118,7 @@ abstract class EntityGenerator
 
     protected function getStub($stub, $data = [])
     {
-        $stubPath = config("entity-generator.stubs.$stub");
+        $stubPath = config("entity-generator.stubs.{$stub}");
 
         $data['options'] = $this->crudOptions;
 

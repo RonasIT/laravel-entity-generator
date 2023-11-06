@@ -2,9 +2,10 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
 use phpmock\MockBuilder;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -12,6 +13,14 @@ use RonasIT\Support\Generators\NovaResourceTestGenerator;
 
 class NovaResourceTestGeneratorTest extends TestCase
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->mockFilesystem();
+        $this->app->setBasePath(vfsStream::url('root'));
+        View::addNamespace('entity-generator', '/app/stubs');
+    }
+
     public function testCreateForNonExistingNovaResource()
     {
         $builder = new MockBuilder();
@@ -80,23 +89,35 @@ class NovaResourceTestGeneratorTest extends TestCase
 
     public function testCreateWithActions()
     {
+        config()->set('entity-generator.stubs.nova_resource_test', 'entity-generator::nova_resource_test');
+        config()->set('entity-generator.paths', [
+            'nova' => 'app/Nova',
+            'nova_actions' => 'app/Nova/Actions',
+            'tests' => 'tests',
+        ]);
+        $er = file_exists(vfsStream::url('root/app'));
+        $yt = 234;
+
         $mocks = $this->mockClasses();
         $generatorMock = $this->mockGenerator();
-        $this->mockFilesystem();
         $this->mockViewsNamespace();
 
+        $generatorMock = new NovaResourceTestGenerator();
         $generatorMock
             ->setModel('Post')
-            ->setPaths([
-                'nova' => 'app/Nova',
-                'nova_actions' => 'app/Nova/Actions',
-                'tests' => 'tests',
-            ])
             ->generate();
 
         foreach ($mocks as $mock) {
             $mock->disable();
         }
+        $ytr = vfsStream::url('app');
+        $dfgd = vfsStream::inspect(new vfsStreamStructureVisitor())
+            ->getStructure();
+        $this->assertEquals(
+            [],
+            vfsStream::inspect(new vfsStreamStructureVisitor())
+                ->getStructure()
+        );
     }
 
     protected function mockViewsNamespace()
@@ -126,20 +147,9 @@ class NovaResourceTestGeneratorTest extends TestCase
         $fileExistsMock = $fileExistsBuilder->build();
         $fileExistsMock->enable();
 
-        $configBuilder = new MockBuilder();
-        $configBuilder->setNamespace('\\RonasIT\\Support\\Generators')
-            ->setName('config')
-            ->setFunction(function () {
-                return 'tests::nova_resource_test';
-            });
-
-        $configMock = $configBuilder->build();
-        $configMock->enable();
-
         return [
             $classExistsMock,
             $fileExistsMock,
-            $configMock
         ];
     }
 
@@ -172,12 +182,12 @@ class NovaResourceTestGeneratorTest extends TestCase
                         'BlockCommentAction.php',
                         'UnPublishPostAction.txt',
                     ],
-                    'Post.php'
+                    'Post.php' => '<?php'
                 ]
             ],
-            'tests'
+            'tests' => []
         ];
 
-        vfsStream::setup('app', $structure);
+        vfsStream::setup('root', null, $structure);
     }
 }
