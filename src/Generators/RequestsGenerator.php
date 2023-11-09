@@ -147,17 +147,15 @@ class RequestsGenerator extends EntityGenerator
 
             foreach ($parameterNames as $name) {
                 $required = $isRequired && $requiredAvailable;
-                $nullable = $isNullable;
-                $present = $isPresent;
 
-                $result[] = $this->getRules($name, $type, $required, $nullable, $present);
+                $result[] = $this->getRules($name, $type, $required, $isNullable, $isPresent);
             }
         }
 
         return $result;
     }
 
-    protected function getRules($name, $type, $required, $nullable, $resent): array
+    protected function getRules($name, $type, $required, $nullable, $present): array
     {
         $replaces = [
             'timestamp' => 'date',
@@ -185,7 +183,7 @@ class RequestsGenerator extends EntityGenerator
             $rules[] = 'nullable';
         }
 
-        if ($resent) {
+        if ($present) {
             $rules[] = 'present';
         }
 
