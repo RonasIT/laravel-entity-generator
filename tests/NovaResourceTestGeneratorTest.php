@@ -18,10 +18,11 @@ class NovaResourceTestGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockFilesystem();
-        $this->app->setBasePath(vfsStream::url('root'));
+        putenv('FAIL_EXPORT_JSON=false');
 
-        View::addNamespace('entity-generator', '/app/stubs');
+        vfsStream::setup();
+
+        $this->app->setBasePath(vfsStream::url('root'));
     }
 
     public function testCreateForNonExistingNovaResource()
@@ -92,7 +93,8 @@ class NovaResourceTestGeneratorTest extends TestCase
 
     public function testCreateWithActions()
     {
-        putenv('FAIL_EXPORT_JSON=false');
+        $this->mockFilesystem();
+
         $this->setupConfigurations();
         $this->mockViewsNamespace();
 
@@ -128,7 +130,7 @@ class NovaResourceTestGeneratorTest extends TestCase
 
     protected function mockViewsNamespace()
     {
-        app('view')->addNamespace('tests', '/app/stubs');
+        View::addNamespace('entity-generator', '/app/stubs');
     }
 
     protected function mockClassExistsFunction(): Mock
@@ -177,6 +179,6 @@ class NovaResourceTestGeneratorTest extends TestCase
             'tests' => []
         ];
 
-        vfsStream::setup('root', null, $structure);
+        vfsStream::create($structure);
     }
 }
