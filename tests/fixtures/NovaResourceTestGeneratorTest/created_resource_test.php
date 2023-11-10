@@ -56,8 +56,7 @@ class PostTest extends TestCase
 
         $response->assertUnprocessable();
 
-        // TODO: Need to remove after first successful start
-        $this->assertEquals($modelState->getExpectedEmptyState(), $modelState->getChanges(), true);
+        $this->assertEquals($modelState->getExpectedEmptyState(), $modelState->getChanges());
     }
 
     public function testUpdate(): void
