@@ -31,16 +31,20 @@ class NovaResourceTestGenerator extends EntityGenerator
                 );
             }
 
-            $actionsUrl = [];
+            $actions = [];
 
-            if (file_exists($this->paths['nova_actions'])) {
-                $objectsInsideFolder = scandir($this->paths['nova_actions']);
+            if (file_exists(base_path($this->paths['nova_actions']))) {
+                $objectsInsideFolder = scandir(base_path($this->paths['nova_actions']));
                 $modelActions = array_filter($objectsInsideFolder, function ($value) {
                     return strpos($value, $this->model) !== false
-                        && substr($value, -strlen($value)) === '.php';
+                        && substr($value, -4) === '.php';
                 });
                 foreach ($modelActions as $action) {
-                    $actionsUrl[] = Str::kebab($action);
+                    $action = substr($action, 0, -4);
+                    $actions[] = [
+                        'url' => Str::kebab($action),
+                        'fixture' => Str::snake($action),
+                    ];
                 }
             }
 
@@ -50,7 +54,7 @@ class NovaResourceTestGenerator extends EntityGenerator
                 'entities' => $this->getPluralName($this->model),
                 'lower_entity' => Str::snake($this->model),
                 'lower_entities' => $this->getPluralName(Str::snake($this->model)),
-                'actions_url' => $actionsUrl,
+                'actions' => $actions,
             ]);
 
             $this->saveClass('tests', "{$this->model}ResourceTest", $fileContent);
