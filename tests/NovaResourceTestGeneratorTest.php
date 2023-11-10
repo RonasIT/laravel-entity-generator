@@ -170,6 +170,7 @@ class NovaResourceTestGeneratorTest extends TestCase
                 'Nova' => [
                     'Actions' => [
                         'PublishPostAction.php' => '<?php',
+                        'ArchivePostAction.php' => '<?php',
                         'BlockCommentAction.php' => '<?php',
                         'UnPublishPostAction.txt' => 'text',
                     ],
