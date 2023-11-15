@@ -14,7 +14,7 @@ class {{$entity}}Test extends TestCase
     use AuthTestTrait;
 
     protected $user;
-    protected ${{$lower_entity}}State:
+    protected ${{$lower_entity}}State;
 
     public function setUp(): void
     {
