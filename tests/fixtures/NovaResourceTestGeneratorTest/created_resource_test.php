@@ -12,19 +12,27 @@ class PostTest extends TestCase
     use AuthTestTrait;
 
     protected $user;
+    protected $postState:
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->user = 1;
+        $this->postlState = new ModelTestState(Post::class);
 
         $this->skipDocumentationCollecting();
     }
 
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        unset($this->postState);
+    }
+
     public function testCreate(): void
     {
-        $modelState = new ModelTestState(Post::class);
         $data = $this->getJsonFixture('create_post_request.json');
 
         $response = $this->actingViaSession($this->user)->json('post', '/nova-api/posts', $data);
@@ -34,8 +42,8 @@ class PostTest extends TestCase
 
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture(
-            $modelTestState->getFixturePath('create_posts_state.json'),
-            $modelTestState->getChanges(),
+            $this->postState->getFixturePath('create_posts_state.json'),
+            $this->postState->getChanges(),
             true
         );
     }
@@ -47,16 +55,24 @@ class PostTest extends TestCase
         $response = $this->json('post', '/nova-api/posts', $data);
 
         $response->assertUnauthorized();
-    }
+
+        $this->assertEquals(
+            $this->postState->getExpectedEmptyState(),
+            $this->postState->getChanges()
+        );
+}
 
     public function testCreateValidationError(): void
     {
         $modelState = new ModelTestState(Post::class);
-        $response = $this->actingViaSession($this->user['id'])->json('post', '/nova-api/posts', []);
+        $response = $this->actingViaSession($this->user['id'])->json('post', '/nova-api/posts');
 
         $response->assertUnprocessable();
 
-        $this->assertEquals($modelState->getExpectedEmptyState(), $modelState->getChanges());
+        $this->assertEquals(
+            $this->postState->getExpectedEmptyState(),
+            $this->postState->getChanges()
+        );
     }
 
     public function testUpdate(): void
@@ -70,8 +86,8 @@ class PostTest extends TestCase
 
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture(
-            $modelTestState->getFixturePath('update_posts_state.json'),
-            $modelTestState->getChanges(),
+            $this->postState->getFixturePath('update_posts_state.json'),
+            $this->postState->getChanges(),
             true
         );
     }
@@ -122,8 +138,8 @@ class PostTest extends TestCase
 
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture(
-            $modelTestState->getFixturePath('delete_posts_state.json'),
-            $modelTestState->getChanges(),
+            $this->postState->getFixturePath('delete_posts_state.json'),
+            $this->postState->getChanges(),
             true
         );
     }
@@ -207,18 +223,18 @@ class PostTest extends TestCase
     {
         return [
                     [
-                'action' => 'archive-post-action',
+                'action' => '',
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_archive_post_action_state.json',
+                'state' => 'run__state.json',
             ],
                     [
-                'action' => 'publish-post-action',
+                'action' => '',
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_publish_post_action_state.json',
+                'state' => 'run__state.json',
             ],
                 ];
     }
@@ -228,16 +244,17 @@ class PostTest extends TestCase
      */
     public function testRunPostAction($action, $request, $postsStateFixture): void
     {
+        $request['action'] = $action;
         $modelState = new ModelTestState(Post::class);
-        $response = $this->actingViaSession($this->user)->json('post', "/nova-api/posts/action?action={$action}", $request);
+        $response = $this->actingViaSession($this->user)->json('post', "/nova-api/posts/action", $request);
 
         $response->assertOk();
 
         $this->assertEmpty($response->getContent());
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture(
-            $modelTestState->getFixturePath($postsStateFixture),
-            $modelTestState->getChanges(),
+            $this->postState->getFixturePath($postsStateFixture),
+            $this->postState->getChanges(),
             true
         );
     }
@@ -249,13 +266,13 @@ class PostTest extends TestCase
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'response_fixture' => 'get_post_actions_archive_post_action.json',
+                'response_fixture' => 'get_post_actions_.json',
             ],
                     [
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'response_fixture' => 'get_post_actions_publish_post_action.json',
+                'response_fixture' => 'get_post_actions_.json',
             ],
                 ];
     }

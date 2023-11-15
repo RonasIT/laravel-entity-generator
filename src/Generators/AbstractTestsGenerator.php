@@ -10,7 +10,7 @@ use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use DateTime;
 
-abstract class BaseTestsGenerator extends EntityGenerator
+abstract class AbstractTestsGenerator extends EntityGenerator
 {
     protected $fakerProperties = [];
     protected $getFields = [];
@@ -25,36 +25,43 @@ abstract class BaseTestsGenerator extends EntityGenerator
     const UPDATED_AT = 'updated_at';
     const CREATED_AT = 'created_at';
 
-    public function generate()
+    public function generate(): void
     {
         $this->createDump();
-        $this->createTests();
+        $this->generateExistedEntityFixture();
+        $this->generateTests();
     }
 
-    protected function createDump()
+    public function getFixturesPath($fileName = null): string
+    {
+        $path = base_path("{$this->paths['tests']}/fixtures/{$this->getTestClassName()}");
+
+        if (empty($fileName)) {
+            return $path;
+        }
+
+        return "{$path}/{$fileName}";
+    }
+
+    protected function createDump(): void
     {
         $content = $this->getStub('dump', [
             'inserts' => $this->getInserts()
         ]);
-        $createMessage = "Created a new Test dump on path: {$this->paths['tests']}/fixtures/{$this->getTestClassName()}/dump.sql";
 
         $fixturePath = $this->getFixturesPath();
+
         if (!file_exists($fixturePath)) {
             mkdir_recursively($fixturePath);
         }
 
         file_put_contents($this->getFixturesPath('dump.sql'), $content);
 
-        event(new SuccessCreateMessage($createMessage));
+        event(new SuccessCreateMessage("Created a new Test dump on path: "
+            . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/dump.sql"));
     }
 
-    protected function createTests()
-    {
-        $this->generateExistedEntityFixture();
-        $this->generateTest();
-    }
-
-    protected function getInserts()
+    protected function getInserts(): array
     {
         $arrayModels = [$this->model];
 
@@ -76,31 +83,31 @@ abstract class BaseTestsGenerator extends EntityGenerator
         }, $this->buildRelationsTree($arrayModels));
     }
 
-    protected function isFactoryExists($modelName)
+    protected function isFactoryExists($modelName): bool
     {
         $factory = app(Factory::class);
         $modelClass = $this->getModelClass($modelName);
+        $isFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
+        $isLegacyFactoryExists = !empty($factory[$this->getModelClass($modelName)]);
 
-        $isNewStyleFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
-
-        return !empty($factory[$this->getModelClass($modelName)]) || $isNewStyleFactoryExists;
+        return $isLegacyFactoryExists || $isFactoryExists;
     }
 
-    protected function isMethodExists($modelName, $method)
+    protected function isMethodExists($modelName, $method): bool
     {
         $modelClass = $this->getModelClass($modelName);
 
         return method_exists($modelClass, $method);
     }
 
-    protected function getModelsWithFactories($models)
+    protected function getModelsWithFactories($models): array
     {
         return array_filter($models, function ($model) {
             return $this->isFactoryExists($model);
         });
     }
 
-    protected function getDumpValuesList($model)
+    protected function getDumpValuesList($model): array
     {
         $values = $this->buildEntityObject($model);
 
@@ -119,7 +126,7 @@ abstract class BaseTestsGenerator extends EntityGenerator
         return $values;
     }
 
-    protected function getFixtureValuesList($model)
+    protected function getFixtureValuesList($model): array
     {
         $values = $this->buildEntityObject($model);
 
@@ -132,7 +139,7 @@ abstract class BaseTestsGenerator extends EntityGenerator
         return $values;
     }
 
-    protected function buildEntityObject($model)
+    protected function buildEntityObject($model): array
     {
         $modelFields = $this->getModelFields($model);
         $mockEntity = $this->getMockModel($model);
@@ -148,19 +155,19 @@ abstract class BaseTestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getModelClass($model)
+    protected function getModelClass($model): string
     {
         return "App\\Models\\{$model}";
     }
 
-    protected function getModelFields($model)
+    protected function getModelFields($model): array
     {
         $modelClass = $this->getModelClass($model);
 
         return $this->filterBadModelField($modelClass::getFields());
     }
 
-    protected function getMockModel($model)
+    protected function getMockModel($model): array
     {
         $modelClass = $this->getModelClass($model);
 
@@ -171,20 +178,7 @@ abstract class BaseTestsGenerator extends EntityGenerator
             ->toArray();
     }
 
-    public function getFixturesPath($fileName = null)
-    {
-        $path = base_path("{$this->paths['tests']}/fixtures/{$this->getTestClassName()}");
-
-        if (empty($fileName)) {
-            return $path;
-        }
-
-        return "{$path}/{$fileName}";
-    }
-
-    abstract public function getTestClassName();
-
-    protected function generateExistedEntityFixture()
+    protected function generateExistedEntityFixture(): void
     {
         $object = $this->getFixtureValuesList($this->model);
         $entity = Str::snake($this->model);
@@ -192,19 +186,15 @@ abstract class BaseTestsGenerator extends EntityGenerator
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
             if ($this->isFixtureNeeded($type)) {
                 foreach ($modifications as $modification) {
-                    $excepts = [];
-                    if ($modification === 'request') {
-                        $excepts = ['id'];
-                    }
+                    $excepts = ($modification === 'request') ? ['id'] : [];
+
                     $this->generateFixture("{$type}_{$entity}_{$modification}.json", Arr::except($object, $excepts));
                 }
             }
         }
     }
 
-    abstract protected function isFixtureNeeded($type): bool;
-
-    protected function generateFixture($fixtureName, $data)
+    protected function generateFixture($fixtureName, $data): void
     {
         $fixturePath = $this->getFixturesPath($fixtureName);
         $content = json_encode($data, JSON_PRETTY_PRINT);
@@ -216,9 +206,7 @@ abstract class BaseTestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    abstract protected function generateTest();
-
-    protected function buildRelationsTree($models)
+    protected function buildRelationsTree($models): array
     {
         foreach ($models as $model) {
             $relations = $this->getRelatedModels($model);
@@ -253,7 +241,7 @@ abstract class BaseTestsGenerator extends EntityGenerator
         return head($matches);
     }
 
-    protected function getModelClassContent($model)
+    protected function getModelClassContent($model): string
     {
         $path = base_path("{$this->paths['models']}/{$model}.php");
 
@@ -268,14 +256,20 @@ abstract class BaseTestsGenerator extends EntityGenerator
         return file_get_contents($path);
     }
 
-    protected function canGenerateUserData()
+    protected function canGenerateUserData(): bool
     {
         return $this->classExists('models', 'User')
             && $this->isFactoryExists('User')
             && $this->isMethodExists('User', 'getFields');
     }
 
-    private function filterBadModelField($fields)
+    abstract protected function getTestClassName(): string;
+
+    abstract protected function isFixtureNeeded($type): bool;
+
+    abstract protected function generateTests(): void;
+
+    private function filterBadModelField($fields): array
     {
         return array_diff($fields, [
             self::EMPTY_GUARDED_FIELD,

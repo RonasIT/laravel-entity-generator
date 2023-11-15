@@ -14,19 +14,27 @@ class {{$entity}}Test extends TestCase
     use AuthTestTrait;
 
     protected $user;
+    protected ${{$lower_entity}}State:
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
         $this->user = 1;
+        $this->{{$lower_entity}}lState = new ModelTestState({{$entity}}::class);
 
         $this->skipDocumentationCollecting();
     }
 
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        unset($this->{{$lower_entity}}State);
+    }
+
     public function testCreate(): void
     {
-        $modelState = new ModelTestState({{$entity}}::class);
         $data = $this->getJsonFixture('create_{{$lower_entity}}_request.json');
 
         $response = $this->actingViaSession($this->user)->json('post', '/nova-api/{{$url_path}}', $data);
@@ -40,8 +48,8 @@ class {{$entity}}Test extends TestCase
 
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture(
-            $modelTestState->getFixturePath('create_{{$lower_entities}}_state.json'),
-            $modelTestState->getChanges(),
+            $this->{{$lower_entity}}State->getFixturePath('create_{{$lower_entities}}_state.json'),
+            $this->{{$lower_entity}}State->getChanges(),
             true
         );
     }
@@ -57,12 +65,17 @@ class {{$entity}}Test extends TestCase
 @else
         $response->assertUnauthorized();
 @endif
-    }
+
+        $this->assertEquals(
+            $this->{{$lower_entity}}State->getExpectedEmptyState(),
+            $this->{{$lower_entity}}State->getChanges()
+        );
+}
 
     public function testCreateValidationError(): void
     {
         $modelState = new ModelTestState({{$entity}}::class);
-        $response = $this->actingViaSession($this->user['id'])->json('post', '/nova-api/{{$url_path}}', []);
+        $response = $this->actingViaSession($this->user['id'])->json('post', '/nova-api/{{$url_path}}');
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -70,7 +83,10 @@ class {{$entity}}Test extends TestCase
         $response->assertUnprocessable();
 @endif
 
-        $this->assertEquals($modelState->getExpectedEmptyState(), $modelState->getChanges());
+        $this->assertEquals(
+            $this->{{$lower_entity}}State->getExpectedEmptyState(),
+            $this->{{$lower_entity}}State->getChanges()
+        );
     }
 
     public function testUpdate(): void
@@ -88,8 +104,8 @@ class {{$entity}}Test extends TestCase
 
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture(
-            $modelTestState->getFixturePath('update_{{$lower_entities}}_state.json'),
-            $modelTestState->getChanges(),
+            $this->{{$lower_entity}}State->getFixturePath('update_{{$lower_entities}}_state.json'),
+            $this->{{$lower_entity}}State->getChanges(),
             true
         );
     }
@@ -160,8 +176,8 @@ class {{$entity}}Test extends TestCase
 
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture(
-            $modelTestState->getFixturePath('delete_{{$lower_entities}}_state.json'),
-            $modelTestState->getChanges(),
+            $this->{{$lower_entity}}State->getFixturePath('delete_{{$lower_entities}}_state.json'),
+            $this->{{$lower_entity}}State->getChanges(),
             true
         );
     }
@@ -289,8 +305,9 @@ class {{$entity}}Test extends TestCase
      */
     public function testRun{{$entity}}Action($action, $request, ${{$lower_entities}}StateFixture): void
     {
+        $request['action'] = $action;
         $modelState = new ModelTestState({{$entity}}::class);
-        $response = $this->actingViaSession($this->user)->json('post', "/nova-api/{{$url_path}}/action?action={$action}", $request);
+        $response = $this->actingViaSession($this->user)->json('post', "/nova-api/{{$url_path}}/action", $request);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -301,8 +318,8 @@ class {{$entity}}Test extends TestCase
         $this->assertEmpty($response->getContent());
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture(
-            $modelTestState->getFixturePath(${{$lower_entities}}StateFixture),
-            $modelTestState->getChanges(),
+            $this->{{$lower_entity}}State->getFixturePath(${{$lower_entities}}StateFixture),
+            $this->{{$lower_entity}}State->getChanges(),
             true
         );
     }

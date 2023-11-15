@@ -8,9 +8,9 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 
-class NovaResourceTestGenerator extends BaseTestsGenerator
+class NovaTestGenerator extends AbstractTestsGenerator
 {
-    public function generate()
+    public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
             if (!$this->classExists('nova', "{$this->model}")) {
@@ -35,18 +35,18 @@ class NovaResourceTestGenerator extends BaseTestsGenerator
         }
     }
 
-    public function generateTest(): void
+    public function generateTests(): void
     {
         $actions = [];
 
         if (file_exists(base_path($this->paths['nova_actions']))) {
             $objectsInsideFolder = scandir(base_path($this->paths['nova_actions']));
             $modelActions = array_filter($objectsInsideFolder, function ($value) {
-                return strpos($value, $this->model) !== false
-                    && substr($value, -4) === '.php';
+                return Str::contains($value, $this->model)
+                    && Str::endsWith($value, '.php');
             });
             foreach ($modelActions as $action) {
-                $action = substr($action, 0, -4);
+                $action = Str::replaceFirst($action, '.php', '');
                 $actions[] = [
                     'url' => Str::kebab($action),
                     'fixture' => Str::snake($action),

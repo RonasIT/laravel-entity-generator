@@ -46,6 +46,6 @@ return [
         'resource' => 'entity-generator::resource',
         'collection_resource' => 'entity-generator::collection_resource',
         'nova_resource' => 'entity-generator::nova_resource',
-        'nova_resource_test' => 'entity-generator::nova_resource_test'
+        'nova_test' => 'entity-generator::nova_test'
     ]
 ];

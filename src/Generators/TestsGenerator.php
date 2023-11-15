@@ -4,14 +4,14 @@ namespace RonasIT\Support\Generators;
 
 use RonasIT\Support\Events\SuccessCreateMessage;
 
-class TestsGenerator extends BaseTestsGenerator
+class TestsGenerator extends AbstractTestsGenerator
 {
-    public function getTestClassName()
+    public function getTestClassName(): string
     {
         return "{$this->model}Test";
     }
 
-    protected function generateTest()
+    protected function generateTests(): void
     {
         $content = $this->getStub('test', [
             'entity' => $this->model,

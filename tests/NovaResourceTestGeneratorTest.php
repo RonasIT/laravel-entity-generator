@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\TestResponse;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Generators\NovaResourceTestGenerator;
+use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\NovaResourceMockTrait;
 
 class NovaResourceTestGeneratorTest extends TestCase
@@ -69,7 +69,7 @@ class NovaResourceTestGeneratorTest extends TestCase
         $this->mockViewsNamespace();
         $this->mockNovaResourceTestGenerator();
 
-        app(NovaResourceTestGenerator::class)
+        app(NovaTestGenerator::class)
             ->setModel('Post')
             ->generate();
 

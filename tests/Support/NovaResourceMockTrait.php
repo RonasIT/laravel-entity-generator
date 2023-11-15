@@ -8,14 +8,14 @@ use Mockery\MockInterface;
 use org\bovigo\vfs\vfsStream;
 use phpmock\Mock;
 use phpmock\MockBuilder;
-use RonasIT\Support\Generators\NovaResourceTestGenerator;
+use RonasIT\Support\Generators\NovaTestGenerator;
 
 trait NovaResourceMockTrait
 {
     public function mockNovaResourceTestGenerator(): void
     {
         $mock = $this
-            ->getMockBuilder(NovaResourceTestGenerator::class)
+            ->getMockBuilder(NovaTestGenerator::class)
             ->onlyMethods(['getModelFields', 'getMockModel'])
             ->getMock();
 
@@ -23,18 +23,19 @@ trait NovaResourceMockTrait
             ->method('getModelFields')
             ->willReturn(['title', 'name']);
 
-        $mock->method('getMockModel')
+        $mock
+            ->method('getMockModel')
             ->willReturn(['title' => 'some title', 'name' => 'some name']);
 
-        $this->app->instance(NovaResourceTestGenerator::class, $mock);
+        $this->app->instance(NovaTestGenerator::class, $mock);
     }
 
     public function getGeneratorMockForNonExistingNovaResource(): MockInterface
     {
-        $mock = Mockery::mock(NovaResourceTestGenerator::class)
-            ->makePartial();
+        $mock = Mockery::mock(NovaTestGenerator::class)->makePartial();
 
-        $mock->shouldAllowMockingProtectedMethods()
+        $mock
+            ->shouldAllowMockingProtectedMethods()
             ->shouldReceive('classExists')
             ->once()
             ->andReturn(false);
@@ -44,16 +45,17 @@ trait NovaResourceMockTrait
 
     public function getGeneratorMockForExistingNovaResourceTest(): MockInterface
     {
-        $mock = Mockery::mock(NovaResourceTestGenerator::class)
-            ->makePartial();
+        $mock = Mockery::mock(NovaTestGenerator::class)->makePartial();
 
-        $mock->shouldAllowMockingProtectedMethods()
+        $mock
+            ->shouldAllowMockingProtectedMethods()
             ->shouldReceive('classExists')
             ->once()
             ->with('nova', 'Post')
             ->andReturn(true);
 
-        $mock->shouldReceive('classExists')
+        $mock
+            ->shouldReceive('classExists')
             ->once()
             ->with('nova', 'NovaPostTest')
             ->andReturn(true);
@@ -63,13 +65,15 @@ trait NovaResourceMockTrait
 
     public function setupConfigurations(): void
     {
-        config()->set('entity-generator.stubs.nova_resource_test', 'entity-generator::nova_resource_test');
-        config()->set('entity-generator.stubs.dump', 'entity-generator::dumps.pgsql');
-        config()->set('entity-generator.paths', [
-            'nova' => 'app/Nova',
-            'nova_actions' => 'app/Nova/Actions',
-            'tests' => 'tests',
-            'models' => 'app/Models'
+        config([
+            'entity-generator.stubs.nova_resource_test' => 'entity-generator::nova_test',
+            'entity-generator.stubs.dump' => 'entity-generator::dumps.pgsql',
+            'entity-generator.paths' => [
+                'nova' => 'app/Nova',
+                'nova_actions' => 'app/Nova/Actions',
+                'tests' => 'tests',
+                'models' => 'app/Models'
+            ]
         ]);
     }
 
@@ -81,7 +85,8 @@ trait NovaResourceMockTrait
     public function mockClassExistsFunction(): Mock
     {
         $classExistsBuilder = new MockBuilder();
-        $classExistsBuilder->setNamespace('\\RonasIT\\Support\\Generators')
+        $classExistsBuilder
+            ->setNamespace('\\RonasIT\\Support\\Generators')
             ->setName('class_exists')
             ->setFunction(function () {
                 return true;
@@ -96,7 +101,8 @@ trait NovaResourceMockTrait
     public function mockFileExists(): Mock
     {
         $fileExistsBuilder = new MockBuilder();
-        $fileExistsBuilder->setNamespace('\\RonasIT\\Support\\Generators')
+        $fileExistsBuilder
+            ->setNamespace('\\RonasIT\\Support\\Generators')
             ->setName('file_exists')
             ->setFunction(function () {
                 return false;

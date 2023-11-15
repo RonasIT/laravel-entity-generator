@@ -71,16 +71,9 @@ abstract class EntityGenerator
         return $this;
     }
 
-    public function setPaths(array $paths)
-    {
-        $this->paths = $paths;
-
-        return $this;
-    }
-
     public function __construct()
     {
-        $this->setPaths(config('entity-generator.paths'));
+        $this->paths = config('entity-generator.paths');
     }
 
     abstract public function generate();
