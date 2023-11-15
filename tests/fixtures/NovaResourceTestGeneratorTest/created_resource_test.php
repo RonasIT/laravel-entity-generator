@@ -12,7 +12,7 @@ class PostTest extends TestCase
     use AuthTestTrait;
 
     protected $user;
-    protected $postState:
+    protected $postState;
 
     public function setUp(): void
     {
