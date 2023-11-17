@@ -1,7 +1,7 @@
-namespace App\Nova;
+namespace {{$nova}};
 
 @inject('str', 'Illuminate\Support\Str')
-use App\Models\{{$model}};
+use {{$modelNamespace}}\{{$model}};
 use Illuminate\Http\Request;
 @foreach($types as $fieldType)
 use Laravel\Nova\Fields\{{$fieldType}};

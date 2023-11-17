@@ -20,7 +20,7 @@ class ServiceGenerator extends EntityGenerator
         return $this;
     }
 
-    public function generate()
+    public function generate(): void
     {
         if ($this->classExists('repositories', "{$this->model}Repository")) {
             $stub = 'service';
@@ -38,7 +38,10 @@ class ServiceGenerator extends EntityGenerator
 
         $serviceContent = $this->getStub($stub, [
             'entity' => $this->model,
-            'fields' => $this->getFields()
+            'fields' => $this->getFields(),
+            'namespace' => $this->getNamespace('services'),
+            'repositoriesNamespace' => $this->getNamespace('repositories'),
+            'modelsNamespace' => $this->getNamespace('models')
         ]);
 
         $this->saveClass('services', "{$this->model}Service", $serviceContent);
@@ -46,7 +49,7 @@ class ServiceGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Service: {$this->model}Service"));
     }
 
-    protected function getFields()
+    protected function getFields(): array
     {
         $simpleSearch = Arr::only($this->fields, ['integer', 'integer-required', 'boolean', 'boolean-required']);
 

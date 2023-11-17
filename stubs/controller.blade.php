@@ -1,22 +1,22 @@
 namespace App\Http\Controllers;
 
 @inject('str', 'Illuminate\Support\Str')
-use App\Http\Resources\{{$str::plural($entity)}}CollectionResource;
+use {{$resourcesNamespace}}\{{$str::plural($entity)}}CollectionResource;
 @if (in_array('C', $options))
-use App\Http\Requests\{{$requestsFolder}}\Create{{$entity}}Request;
+use {{$requestsNamespace}}\{{$requestsFolder}}\Create{{$entity}}Request;
 @endif
 @if (in_array('D', $options))
-use App\Http\Requests\{{$requestsFolder}}\Delete{{$entity}}Request;
+use {{$requestsNamespace}}\{{$requestsFolder}}\Delete{{$entity}}Request;
 @endif
-use App\Http\Requests\{{$requestsFolder}}\Get{{$entity}}Request;
+use {{$requestsNamespace}}\{{$requestsFolder}}\Get{{$entity}}Request;
 @if (in_array('R', $options))
-use App\Http\Requests\{{$requestsFolder}}\Search{{$str::plural($entity)}}Request;
+use {{$requestsNamespace}}\{{$requestsFolder}}\Search{{$str::plural($entity)}}Request;
 @endif
 @if (in_array('U', $options))
-use App\Http\Requests\{{$requestsFolder}}\Update{{$entity}}Request;
+use {{$requestsNamespace}}\{{$requestsFolder}}\Update{{$entity}}Request;
 @endif
-use App\Http\Resources\{{$entity}}Resource;
-use App\Services\{{$entity}}Service;
+use {{$resourcesNamespace}}\{{$entity}}Resource;
+use {{$servicesNamespace}}\{{$entity}}Service;
 @if (in_array('D', $options) || in_array('U', $options))
 use Symfony\Component\HttpFoundation\Response;
 

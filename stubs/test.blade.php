@@ -2,7 +2,7 @@
 namespace App\Tests;
 
 @if ($withAuth)
-use App\Models\User;
+use {{$modelsNamespace}}\User;
 @endif
 @if($shouldUseStatus)
 use Symfony\Component\HttpFoundation\Response;

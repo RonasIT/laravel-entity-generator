@@ -16,7 +16,7 @@ class TranslationsGenerator extends EntityGenerator
         $this->translationPath = Arr::get($this->paths, 'translations', 'resources/lang/en/validation.php');
     }
 
-    public function generate()
+    public function generate(): void
     {
         if (!file_exists($this->translationPath)) {
             $this->createTranslate();
@@ -27,12 +27,12 @@ class TranslationsGenerator extends EntityGenerator
         }
     }
 
-    protected function isTranslationMissed($translation) 
+    protected function isTranslationMissed($translation) : bool
     {
         return __($translation) === 'validation.exceptions.not_found';
     }
 
-    protected function createTranslate()
+    protected function createTranslate(): void
     {
         $stubPath = config('entity-generator.stubs.validation');
 
@@ -45,7 +45,7 @@ class TranslationsGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function appendNotFoundException()
+    protected function appendNotFoundException(): void
     {
         $content = file_get_contents($this->translationPath);
         

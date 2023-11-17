@@ -8,7 +8,7 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class MigrationGenerator extends EntityGenerator
 {
-    public function generate()
+    public function generate(): void
     {
         $entities = $this->getTableName($this->model);
 
@@ -27,22 +27,22 @@ class MigrationGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Migration: {$entities}_create_table"));
     }
 
-    protected function isJson($typeName)
+    protected function isJson($typeName): bool
     {
         return $typeName == 'json';
     }
 
-    protected function isRequired($typeName)
+    protected function isRequired($typeName): bool
     {
         return !empty(explode('-', $typeName)[1]);
     }
 
-    protected function isNullable($typeName)
+    protected function isNullable($typeName): bool
     {
         return empty(explode('-', $typeName)[1]);
     }
 
-    protected function getJsonLine($fieldName)
+    protected function getJsonLine($fieldName): string
     {
         if (env("DB_CONNECTION") == "mysql") {
             return "\$table->json('{$fieldName}')->nullable();";
@@ -51,7 +51,7 @@ class MigrationGenerator extends EntityGenerator
         return "\$table->jsonb('{$fieldName}')->default(\"{}\");";
     }
 
-    protected function getRequiredLine($fieldName, $typeName)
+    protected function getRequiredLine($fieldName, $typeName): string
     {
         $type = explode('-', $typeName)[0];
 
@@ -62,14 +62,14 @@ class MigrationGenerator extends EntityGenerator
         return "\$table->{$type}('{$fieldName}');";
     }
 
-    protected function getNonRequiredLine($fieldName, $typeName)
+    protected function getNonRequiredLine($fieldName, $typeName): string
     {
         $type = explode('-', $typeName)[0];
 
         return "\$table->{$type}('{$fieldName}')->nullable();";
     }
 
-    protected function generateTable($fields)
+    protected function generateTable($fields): array
     {
         $resultTable = [];
 
@@ -82,7 +82,7 @@ class MigrationGenerator extends EntityGenerator
         return $resultTable;
     }
 
-    protected function getTableRow($fieldName, $typeName)
+    protected function getTableRow($fieldName, $typeName): string
     {
         if ($this->isJson($typeName)) {
             return $this->getJsonLine($fieldName);

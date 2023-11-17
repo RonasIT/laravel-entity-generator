@@ -65,7 +65,8 @@ class FactoryGenerator extends EntityGenerator
 
             $content = view($stubPath)->with([
                 'entity' => $this->model,
-                'fields' => $this->prepareFields()
+                'fields' => $this->prepareFields(),
+                'modelsNamespace' => $this->getNamespace('models')
             ])->render();
 
             $content = "\n\n" . $content;
@@ -82,7 +83,7 @@ class FactoryGenerator extends EntityGenerator
         return $createMessage;
     }
 
-    public function generate()
+    public function generate(): void
     {
         $createMessage = (version_compare(app()->version(), '8', '>='))
             ? $this->generateSeparateClass()
@@ -91,10 +92,12 @@ class FactoryGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function prepareEmptyFactory()
+    protected function prepareEmptyFactory(): void
     {
         $stubPath = config('entity-generator.stubs.legacy_empty_factory');
-        $content = "<?php \n\n" . view($stubPath)->render();
+        $content = "<?php \n\n" . view($stubPath, [
+            'modelsNamespace' => $this->getNamespace('models')
+        ])->render();
 
         list($basePath, $databaseFactoryDir) = extract_last_part(config('entity-generator.paths.factory'), '/');
 
@@ -105,7 +108,7 @@ class FactoryGenerator extends EntityGenerator
         file_put_contents($this->paths['factory'], $content);
     }
 
-    protected function checkExistRelatedModelsFactories()
+    protected function checkExistRelatedModelsFactories(): bool
     {
         $modelFactoryContent = file_get_contents($this->paths['factory']);
         $relatedModels = $this->getRelatedModels($this->model);
@@ -126,7 +129,7 @@ class FactoryGenerator extends EntityGenerator
         return true;
     }
 
-    protected static function getFakerMethod($field)
+    protected static function getFakerMethod($field): string
     {
         if (Arr::has(self::FAKERS_METHODS, $field['type'])) {
             return "\$faker->" . self::FAKERS_METHODS[$field['type']];
@@ -135,7 +138,7 @@ class FactoryGenerator extends EntityGenerator
         return self::getCustomMethod($field);
     }
 
-    protected static function getCustomMethod($field)
+    protected static function getCustomMethod($field): string
     {
         if (Arr::has(self::CUSTOM_METHODS, $field['type'])) {
             return self::CUSTOM_METHODS[$field['type']];
@@ -145,7 +148,7 @@ class FactoryGenerator extends EntityGenerator
         throw new Exception($message);
     }
 
-    protected function prepareRelatedFactories()
+    protected function prepareRelatedFactories(): void
     {
         $relations = array_merge(
             $this->relations['hasOne'],
@@ -179,7 +182,7 @@ class FactoryGenerator extends EntityGenerator
         }
     }
 
-    public static function getFactoryFieldsContent($field)
+    public static function getFactoryFieldsContent($field): string
     {
         /** @var Faker $faker */
         $faker = app(Faker::class);
@@ -199,7 +202,7 @@ class FactoryGenerator extends EntityGenerator
         return self::getFakerMethod($field);
     }
 
-    protected function checkExistModelFactory()
+    protected function checkExistModelFactory(): int
     {
         $modelFactoryContent = file_get_contents($this->paths['factory']);
         $factoryClass = "App\\Models\\$this->model::class";
@@ -207,7 +210,7 @@ class FactoryGenerator extends EntityGenerator
         return strpos($modelFactoryContent, $factoryClass);
     }
 
-    protected function prepareFields()
+    protected function prepareFields(): array
     {
         $result = [];
 
@@ -225,7 +228,7 @@ class FactoryGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getFactoryPattern($model)
+    protected function getFactoryPattern($model): string
     {
         $modelNamespace = "App\\\\Models\\\\" . $model;
         $return = "return \\[";
@@ -233,7 +236,7 @@ class FactoryGenerator extends EntityGenerator
         return "/{$modelNamespace}.*{$return}/sU";
     }
 
-    protected function getModelClass($model)
+    protected function getModelClass($model): string
     {
         return "App\\Models\\{$model}";
     }
@@ -247,7 +250,7 @@ class FactoryGenerator extends EntityGenerator
         return head($matches);
     }
 
-    protected function getModelClassContent($model)
+    protected function getModelClassContent($model): string
     {
         $path = base_path("{$this->paths['models']}/{$model}.php");
 

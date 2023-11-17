@@ -7,13 +7,13 @@ use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 
 class ResourceGenerator extends EntityGenerator
 {
-    public function generate()
+    public function generate(): void
     {
         $this->generateResource();
         $this->generateCollectionResource();
     }
 
-    public function generateCollectionResource()
+    public function generateCollectionResource(): void
     {
         $pluralName = $this->getPluralName($this->model);
 
@@ -27,7 +27,8 @@ class ResourceGenerator extends EntityGenerator
 
         $collectionResourceContent = $this->getStub('collection_resource', [
             'singular_name' => $this->model,
-            'plural_name' => $pluralName
+            'plural_name' => $pluralName,
+            'namespace' => $this->getNamespace('resources', false)
         ]);
 
         $this->saveClass('resources', "{$pluralName}CollectionResource", $collectionResourceContent);
@@ -35,7 +36,7 @@ class ResourceGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new CollectionResource: {$pluralName}CollectionResource"));
     }
 
-    public function generateResource()
+    public function generateResource(): void
     {
         if ($this->classExists('resources', "{$this->model}Resource")) {
             $this->throwFailureException(
@@ -46,7 +47,8 @@ class ResourceGenerator extends EntityGenerator
         }
 
         $resourceContent = $this->getStub('resource', [
-            'entity' => $this->model
+            'entity' => $this->model,
+            'namespace' => $this->getNamespace('resources')
         ]);
 
         $this->saveClass('resources', "{$this->model}Resource", $resourceContent);

@@ -76,9 +76,24 @@ abstract class EntityGenerator
         $this->paths = config('entity-generator.paths');
     }
 
-    abstract public function generate();
+    protected function getNamespace(string $path, bool $createDirs = true): string
+    {
+        $path = $this->paths[$path];
+        $namespace = array_map(function (string $part) {
+            return Str::ucfirst($part);
+        }, explode('/', $path));
+        $path = base_path($path);
 
-    protected function classExists($path, $name)
+        if ($createDirs && !file_exists($path)) {
+            mkdir_recursively($path);
+        }
+
+        return implode('\\', $namespace);
+    }
+
+    abstract public function generate(): void;
+
+    protected function classExists($path, $name): bool
     {
         $entitiesPath = $this->paths[$path];
 
@@ -87,7 +102,7 @@ abstract class EntityGenerator
         return file_exists($classPath);
     }
 
-    protected function saveClass($path, $name, $content, $additionalEntityFolder = false)
+    protected function saveClass($path, $name, $content, $additionalEntityFolder = false): string
     {
         $entitiesPath = $this->paths[$path];
 
@@ -109,7 +124,7 @@ abstract class EntityGenerator
         return file_put_contents($classPath, $content);
     }
 
-    protected function getStub($stub, $data = [])
+    protected function getStub($stub, $data = []): string
     {
         $stubPath = config("entity-generator.stubs.$stub");
 
@@ -118,19 +133,19 @@ abstract class EntityGenerator
         return view($stubPath)->with($data)->render();
     }
 
-    protected function getTableName($entityName, $delimiter = '_')
+    protected function getTableName($entityName, $delimiter = '_'): string
     {
         $entityName = Str::snake($entityName, $delimiter);
 
         return Str::plural($entityName);
     }
 
-    protected function getPluralName($entityName)
+    protected function getPluralName($entityName): string
     {
         return Str::plural($entityName);
     }
 
-    protected function throwFailureException($exceptionClass, $failureMessage, $recommendedMessage)
+    protected function throwFailureException($exceptionClass, $failureMessage, $recommendedMessage): void
     {
         throw new $exceptionClass("{$failureMessage} {$recommendedMessage}");
     }

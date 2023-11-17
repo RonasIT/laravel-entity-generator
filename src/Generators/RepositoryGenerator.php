@@ -7,7 +7,7 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class RepositoryGenerator extends EntityGenerator
 {
-    public function generate()
+    public function generate(): void
     {
         if (!$this->classExists('models', $this->model)) {
             $this->throwFailureException(
@@ -17,7 +17,11 @@ class RepositoryGenerator extends EntityGenerator
             );
         }
 
-        $repositoryContent = $this->getStub('repository', ['entity' => $this->model]);
+        $repositoryContent = $this->getStub('repository', [
+            'entity' => $this->model,
+            'namespace' => $this->getNamespace('repositories'),
+            'modelNamespace' => $this->getNamespace('models', false)
+        ]);
 
         $this->saveClass('repositories', "{$this->model}Repository", $repositoryContent);
 

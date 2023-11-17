@@ -1,6 +1,6 @@
-namespace App\Services;
+namespace {{$namespace}};
 
-use App\Repositories\{{$entity}}Repository;
+use {{$repositoriesNamespace}}\{{$entity}}Repository;
 use Illuminate\Support\Arr;
 use RonasIT\Support\Services\EntityService;
 {{--
