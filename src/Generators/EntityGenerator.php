@@ -76,7 +76,7 @@ abstract class EntityGenerator
         $this->paths = config('entity-generator.paths');
     }
 
-    protected function getNamespace(string $path, bool $createDirs = true): string
+    protected function getNamespace(string $path): string
     {
         $path = $this->paths[$path];
         $namespace = array_map(function (string $part) {
@@ -84,7 +84,7 @@ abstract class EntityGenerator
         }, explode('/', $path));
         $path = base_path($path);
 
-        if ($createDirs && !file_exists($path)) {
+        if (!file_exists($path)) {
             mkdir_recursively($path);
         }
 
