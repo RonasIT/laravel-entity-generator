@@ -112,9 +112,10 @@ class FactoryGenerator extends EntityGenerator
     {
         $modelFactoryContent = file_get_contents($this->paths['factory']);
         $relatedModels = $this->getRelatedModels($this->model);
+        $modelNamespace = $this->getNamespace('models');
 
         foreach ($relatedModels as $relatedModel) {
-            $relatedFactoryClass = "App\\Models\\$relatedModel::class";
+            $relatedFactoryClass = "{$modelNamespace}\\$relatedModel::class";
             $existModelFactory = strpos($modelFactoryContent, $relatedFactoryClass);
 
             if (!$existModelFactory) {
@@ -205,7 +206,8 @@ class FactoryGenerator extends EntityGenerator
     protected function checkExistModelFactory(): int
     {
         $modelFactoryContent = file_get_contents($this->paths['factory']);
-        $factoryClass = "App\\Models\\$this->model::class";
+        $modelNamespace = $this->getNamespace('models');
+        $factoryClass = "{$modelNamespace}\\$this->model::class";
 
         return strpos($modelFactoryContent, $factoryClass);
     }
@@ -238,7 +240,9 @@ class FactoryGenerator extends EntityGenerator
 
     protected function getModelClass($model): string
     {
-        return "App\\Models\\{$model}";
+        $modelNamespace = $this->getNamespace('models');
+
+        return "{$modelNamespace}\\{$model}";
     }
 
     protected function getRelatedModels($model)

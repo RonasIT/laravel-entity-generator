@@ -147,7 +147,8 @@ class TestsGenerator extends EntityGenerator
 
     protected function getModelClass($model): string
     {
-        return "App\\Models\\{$model}";
+        $modelNamespace = $this->getNamespace('models');
+        return "{$modelNamespace}\\{$model}";
     }
 
     protected function getModelFields($model): array
