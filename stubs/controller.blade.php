@@ -1,4 +1,4 @@
-namespace App\Http\Controllers;
+namespace {{$namespace}};
 
 @inject('str', 'Illuminate\Support\Str')
 use {{$resourcesNamespace}}\{{$str::plural($entity)}}CollectionResource;
