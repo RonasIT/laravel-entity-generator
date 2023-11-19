@@ -1,4 +1,4 @@
-namespace {{$nova}};
+namespace {{$namespace}};
 
 @inject('str', 'Illuminate\Support\Str')
 use {{$modelNamespace}}\{{$model}};
