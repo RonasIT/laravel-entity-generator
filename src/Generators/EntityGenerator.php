@@ -79,13 +79,19 @@ abstract class EntityGenerator
     protected function getNamespace(string $path): string
     {
         $path = $this->paths[$path];
+        $pathParts = explode('/', $path);
+
+        if (str_ends_with(end($pathParts), '.php')) {
+            array_pop($pathParts);
+        }
+
         $namespace = array_map(function (string $part) {
             return Str::ucfirst($part);
-        }, explode('/', $path));
-        $path = base_path($path);
+        }, $pathParts);
+        $fullPath = base_path($path);
 
-        if (!file_exists($path)) {
-            mkdir_recursively($path);
+        if (!file_exists($fullPath)) {
+            mkdir_recursively($fullPath);
         }
 
         return implode('\\', $namespace);
