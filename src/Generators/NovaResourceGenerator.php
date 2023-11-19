@@ -143,14 +143,17 @@ class NovaResourceGenerator extends EntityGenerator
 
             if (!Arr::has($this->novaFieldsDatabaseMap, $fieldType)) {
                 event(new SuccessCreateMessage("Field '{$fieldName}' had been skipped cause has an unhandled type {$fieldType}."));
-
-                continue;
+            } else if (Arr::has($this->specialFieldNamesMap, $fieldName)) {
+                $result[$fieldName] = [
+                    'type' => $this->specialFieldNamesMap[$fieldName],
+                    'is_required' => $column->getNotNull()
+                ];
+            } else {
+                $result[$fieldName] = [
+                    'type' => $this->novaFieldsDatabaseMap[$fieldType],
+                    'is_required' => $column->getNotNull()
+                ];
             }
-
-            $result[$fieldName] = [
-                'type' => $this->novaFieldsDatabaseMap[$fieldType],
-                'is_required' => $column->getNotNull()
-            ];
         }
 
         return $result;
