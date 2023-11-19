@@ -130,7 +130,7 @@ class NovaResourceGenerator extends EntityGenerator
             $fieldType = $column->getType()->getName();
             $fieldName = $column->getName();
 
-            if (!Arr::has($this->novaFieldTypesMap, $fieldType)) {
+            if (!Arr::has($this->novaFieldsDatabaseMap, $fieldType)) {
                 event(new SuccessCreateMessage("Field '{$fieldName}' had been skipped cause has an unhandled type {$fieldType}."));
 
                 continue;
