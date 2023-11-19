@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
 use Illuminate\Support\Arr;
@@ -24,6 +25,22 @@ class NovaResourceGenerator extends EntityGenerator
         'integer-required' => 'Number',
         'float' => 'Number',
         'float-required' => 'Number'
+    ];
+
+    protected $novaFieldsDatabaseMap = [
+        'integer' => 'Number',
+        'smallint' => 'Number',
+        'bigint' => 'Number',
+        'float' => 'Number',
+        'decimal' => 'Number',
+        'string' => 'Text',
+        'text' => 'Text',
+        'guid' => 'Text',
+        'json' => 'Text',
+        'date' => 'Date',
+        'datetime' => 'DateTime',
+        'datetimetz' => 'DateTime',
+        'boolean' => 'Boolean',
     ];
 
     protected $specialFieldNamesMap = [
@@ -70,6 +87,15 @@ class NovaResourceGenerator extends EntityGenerator
 
     protected function prepareNovaFields(): array
     {
+        if (empty($this->fields)) {
+            return $this->prepareFieldsFromDB();
+        }
+
+        return $this->prepareFieldsFromCommand();
+    }
+
+    protected function prepareFieldsFromCommand(): array
+    {
         $result = [];
 
         foreach ($this->fields as $fieldType => $fieldNames) {
@@ -88,6 +114,42 @@ class NovaResourceGenerator extends EntityGenerator
                     ];
                 }
             }
+        }
+
+        return $result;
+    }
+
+    protected function prepareFieldsFromDB(): array
+    {
+        $result = [];
+        $fields = $this->getFieldsFromDB();
+
+        foreach ($fields as $fieldType => $fieldNames) {
+            foreach ($fieldNames as $fieldName) {
+                if (!Arr::has($this->novaFieldTypesMap, $fieldType)) {
+                    event(new SuccessCreateMessage("Field '{$fieldName}' had been skipped cause has an unhandled type {$fieldType}."));
+
+                    continue;
+                }
+
+                $result[$fieldName] = [
+                    'type' => $this->novaFieldsDatabaseMap[$fieldType]
+                ];
+            }
+        }
+
+        return $result;
+    }
+
+    protected function getFieldsFromDB(): array
+    {
+        $modelClass = "App\Models\{$this->model}";
+        $tableName = app($modelClass)->getTable();
+        $columns = Schema::getColumnListing($tableName);
+        $result = [];
+
+        foreach ($columns as $column) {
+            $result[Schema::getColumnType($tableName, $column)][] = $column;
         }
 
         return $result;
