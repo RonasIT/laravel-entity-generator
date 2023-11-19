@@ -87,11 +87,22 @@ class NovaResourceGenerator extends EntityGenerator
 
     protected function prepareNovaFields(): array
     {
-        if (empty($this->fields)) {
-            return $this->prepareFieldsFromDB();
+        if ($this->commandFieldsExists()) {
+            return $this->prepareFieldsFromCommand();
         }
 
-        return $this->prepareFieldsFromCommand();
+        return $this->prepareFieldsFromDB();
+    }
+
+    protected function commandFieldsExists(): bool
+    {
+        foreach ($this->fields as $fields) {
+            if (!empty($fields)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function prepareFieldsFromCommand(): array
