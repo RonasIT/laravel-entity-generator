@@ -1,4 +1,4 @@
-namespace Database\Seeders;
+namespace {{$namespace}};
 
 use Illuminate\Database\Seeder;
 use {{$modelsNamespace}}\{{$entity}};

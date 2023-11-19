@@ -1,7 +1,7 @@
 @if((version_compare(app()->version(), '8', '>=')))
-namespace Database\Seeders;
+namespace {{$namespace}};
 @else
-namespace Database\Seeds;
+namespace {{$namespace}};
 @endif
 
 use Illuminate\Database\Seeder;

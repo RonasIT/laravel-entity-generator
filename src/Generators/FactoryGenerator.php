@@ -45,6 +45,7 @@ class FactoryGenerator extends EntityGenerator
         }
 
         $factoryContent = $this->getStub('factory', [
+            'namespace' => $this->getNamespace('factory'),
             'entity' => $this->model,
             'fields' => $this->prepareFields()
         ]);

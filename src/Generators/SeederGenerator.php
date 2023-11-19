@@ -46,7 +46,9 @@ class SeederGenerator extends EntityGenerator
     {
         $stubPath = config('entity-generator.stubs.database_empty_seeder');
 
-        $content = "<?php \n\n" . view($stubPath)->render();
+        $content = "<?php \n\n" . view($stubPath, [
+            'namespace' => $this->getNamespace('seeders')
+        ])->render();
 
         file_put_contents($this->databaseSeederPath, $content);
 
@@ -64,6 +66,7 @@ class SeederGenerator extends EntityGenerator
         $content = "<?php \n\n" . view($stubPath)->with([
             'entity' => $this->model,
             'relations' => $this->relations,
+            'namespace' => $this->getNamespace('seeders'),
             'modelsNamespace' => $this->getNamespace('models')
         ])->render();
 
