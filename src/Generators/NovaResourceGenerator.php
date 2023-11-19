@@ -2,10 +2,10 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
-use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -121,35 +121,25 @@ class NovaResourceGenerator extends EntityGenerator
 
     protected function prepareFieldsFromDB(): array
     {
-        $result = [];
-        $fields = $this->getFieldsFromDB();
-
-        foreach ($fields as $fieldType => $fieldNames) {
-            foreach ($fieldNames as $fieldName) {
-                if (!Arr::has($this->novaFieldTypesMap, $fieldType)) {
-                    event(new SuccessCreateMessage("Field '{$fieldName}' had been skipped cause has an unhandled type {$fieldType}."));
-
-                    continue;
-                }
-
-                $result[$fieldName] = [
-                    'type' => $this->novaFieldsDatabaseMap[$fieldType]
-                ];
-            }
-        }
-
-        return $result;
-    }
-
-    protected function getFieldsFromDB(): array
-    {
         $modelClass = "App\Models\{$this->model}";
         $tableName = app($modelClass)->getTable();
-        $columns = Schema::getColumnListing($tableName);
+        $columns = DB::getDoctrineSchemaManager($tableName);
         $result = [];
 
         foreach ($columns as $column) {
-            $result[Schema::getColumnType($tableName, $column)][] = $column;
+            $fieldType = $column->getType()->getName();
+            $fieldName = $column->getName();
+
+            if (!Arr::has($this->novaFieldTypesMap, $fieldType)) {
+                event(new SuccessCreateMessage("Field '{$fieldName}' had been skipped cause has an unhandled type {$fieldType}."));
+
+                continue;
+            }
+
+            $result[$fieldName] = [
+                'type' => $this->novaFieldsDatabaseMap[$fieldType],
+                'is_required' => $column->getNotNull()
+            ];
         }
 
         return $result;
