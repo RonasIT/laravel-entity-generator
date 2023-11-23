@@ -162,7 +162,7 @@ class TestsGenerator extends EntityGenerator
     {
         $modelClass = $this->getModelClass($model);
         $hasFactory = method_exists($modelClass, 'factory') && class_exists(Factory::resolveFactoryName($modelClass));
-        $factory = ($useModelClassFactory) ? $modelClass::factory() : factory($modelClass);
+        $factory = ($hasFactory) ? $modelClass::factory() : factory($modelClass);
 
         return $factory
             ->make()
