@@ -2,7 +2,8 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Database\Eloquent\Factory;
+use Illuminate\Database\Eloquent\Factory as LegacyFactories;
+use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
@@ -75,7 +76,7 @@ class TestsGenerator extends EntityGenerator
 
     protected function isFactoryExists($modelName)
     {
-        $factory = app(Factory::class);
+        $factory = app(LegacyFactories::class);
         $modelClass = $this->getModelClass($modelName);
 
         $isNewStyleFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
@@ -160,8 +161,8 @@ class TestsGenerator extends EntityGenerator
     protected function getMockModel($model)
     {
         $modelClass = $this->getModelClass($model);
-
-        $factory = (method_exists($modelClass, 'factory')) ? $modelClass::factory() : factory($modelClass);
+        $hasFactory = method_exists($modelClass, 'factory') && class_exists(Factory::resolveFactoryName($modelClass));
+        $factory = ($useModelClassFactory) ? $modelClass::factory() : factory($modelClass);
 
         return $factory
             ->make()

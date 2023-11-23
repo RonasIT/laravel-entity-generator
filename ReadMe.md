@@ -155,6 +155,6 @@ Since 1.3 version you need to add to your config/entity-generator.php following 
         'translation_not_found' => 'entity-generator::translation_not_found',
         'validation' => 'entity-generator::validation',
         'seeder' => 'entity-generator::seeder',
-        'database_empty_seeder' => 'entity-generator::database_seed_empty'
+        'database_empty_seeder' => 'entity-generator::database_empty_seeder'
     ]
 ``` 
