@@ -161,8 +161,7 @@ class TestsGenerator extends EntityGenerator
     protected function getMockModel($model)
     {
         $modelClass = $this->getModelClass($model);
-        $useModelClassFactory = method_exists($modelClass, 'factory')
-            && class_exists(Factory::resolveFactoryName($modelClass));
+        $hasFactory = method_exists($modelClass, 'factory') && class_exists(Factory::resolveFactoryName($modelClass));
         $factory = ($useModelClassFactory) ? $modelClass::factory() : factory($modelClass);
 
         return $factory
