@@ -28,11 +28,11 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     public function generate(): void
     {
         $this->createDump();
-        $this->generateExistedEntityFixture();
+        $this->generateFixtures();
         $this->generateTests();
     }
 
-    public function getFixturesPath($fileName = null): string
+    protected function getFixturesPath($fileName = null): string
     {
         $path = base_path("{$this->paths['tests']}/fixtures/{$this->getTestClassName()}");
 
@@ -178,7 +178,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
             ->toArray();
     }
 
-    protected function generateExistedEntityFixture(): void
+    protected function generateFixtures(): void
     {
         $object = $this->getFixtureValuesList($this->model);
         $entity = Str::snake($this->model);
@@ -199,11 +199,10 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $fixturePath = $this->getFixturesPath($fixtureName);
         $content = json_encode($data, JSON_PRETTY_PRINT);
         $fixtureRelativePath = "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$fixtureName}";
-        $createMessage = "Created a new Test fixture on path: {$fixtureRelativePath}";
 
         file_put_contents($fixturePath, $content);
 
-        event(new SuccessCreateMessage($createMessage));
+        event(new SuccessCreateMessage("Created a new Test fixture on path: {$fixtureRelativePath}"));
     }
 
     protected function buildRelationsTree($models): array

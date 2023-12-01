@@ -45,6 +45,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
                 return Str::contains($value, $this->model)
                     && Str::endsWith($value, '.php');
             });
+
             foreach ($modelActions as $action) {
                 $action = Str::replaceFirst($action, '.php', '');
                 $actions[] = [

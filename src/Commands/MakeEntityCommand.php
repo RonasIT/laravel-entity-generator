@@ -107,7 +107,7 @@ class MakeEntityCommand extends Command
     protected $seederGenerator;
     protected $resourceGenerator;
     protected $novaResourceGenerator;
-    protected $novaResourceTestGenerator;
+    protected $novaTestGenerator;
     protected $eventDispatcher;
 
     protected $rules = [
@@ -152,7 +152,7 @@ class MakeEntityCommand extends Command
         $this->seederGenerator = app(SeederGenerator::class);
         $this->resourceGenerator = app(ResourceGenerator::class);
         $this->novaResourceGenerator = app(NovaResourceGenerator::class);
-        $this->novaResourceTestGenerator = app(NovaTestGenerator::class);
+        $this->novaTestGenerator = app(NovaTestGenerator::class);
         $this->eventDispatcher = app(EventDispatcher::class);
     }
 

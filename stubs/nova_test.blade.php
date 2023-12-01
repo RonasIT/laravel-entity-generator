@@ -13,31 +13,24 @@ class {{$entity}}Test extends TestCase
 {
     use AuthTestTrait;
 
-    protected $user;
-    protected ${{$lower_entity}}State;
+    protected static $user;
+    protected static ${{$lower_entity}}State;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->user = 1;
-        $this->{{$lower_entity}}lState = new ModelTestState({{$entity}}::class);
+        self::$user = 1;
+        self::${{$lower_entity}}State = new ModelTestState({{$entity}}::class);
 
         $this->skipDocumentationCollecting();
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-        unset($this->{{$lower_entity}}State);
     }
 
     public function testCreate(): void
     {
         $data = $this->getJsonFixture('create_{{$lower_entity}}_request.json');
 
-        $response = $this->actingViaSession($this->user)->json('post', '/nova-api/{{$url_path}}', $data);
+        $response = $this->actingViaSession(self::$user)->json('post', '/nova-api/{{$url_path}}', $data);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_CREATED);
@@ -47,11 +40,7 @@ class {{$entity}}Test extends TestCase
         $this->assertEqualsFixture('create_{{$lower_entity}}_response.json', $response->json());
 
         // TODO: Need to remove after first successful start
-        $this->assertEqualsFixture(
-            $this->{{$lower_entity}}State->getFixturePath('create_{{$lower_entities}}_state.json'),
-            $this->{{$lower_entity}}State->getChanges(),
-            true
-        );
+        self::${{$lower_entity}}State->assertChangesEqualsFixture('create_{{$lower_entities}}_state.json', true);
     }
 
     public function testCreateNoAuth(): void
@@ -66,16 +55,12 @@ class {{$entity}}Test extends TestCase
         $response->assertUnauthorized();
 @endif
 
-        $this->assertEquals(
-            $this->{{$lower_entity}}State->getExpectedEmptyState(),
-            $this->{{$lower_entity}}State->getChanges()
-        );
+        self::${{$lower_entity}}State->assertNotChanged();
 }
 
     public function testCreateValidationError(): void
     {
-        $modelState = new ModelTestState({{$entity}}::class);
-        $response = $this->actingViaSession($this->user['id'])->json('post', '/nova-api/{{$url_path}}');
+        $response = $this->actingViaSession(self::$user)->json('post', '/nova-api/{{$url_path}}');
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -83,18 +68,14 @@ class {{$entity}}Test extends TestCase
         $response->assertUnprocessable();
 @endif
 
-        $this->assertEquals(
-            $this->{{$lower_entity}}State->getExpectedEmptyState(),
-            $this->{{$lower_entity}}State->getChanges()
-        );
+        self::${{$lower_entity}}State->assertNotChanged();
     }
 
     public function testUpdate(): void
     {
-        $modelState = new ModelTestState({{$entity}}::class);
         $data = $this->getJsonFixture('update_{{$lower_entity}}_request.json');
 
-        $response = $this->actingViaSession($this->user)->json('put', '/nova-api/{{$url_path}}/1', $data);
+        $response = $this->actingViaSession(self::$user)->json('put', '/nova-api/{{$url_path}}/1', $data);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NO_CONTENT);
@@ -103,18 +84,14 @@ class {{$entity}}Test extends TestCase
 @endif
 
         // TODO: Need to remove after first successful start
-        $this->assertEqualsFixture(
-            $this->{{$lower_entity}}State->getFixturePath('update_{{$lower_entities}}_state.json'),
-            $this->{{$lower_entity}}State->getChanges(),
-            true
-        );
+        self::${{$lower_entity}}State->assertChangesEqualsFixture('update_{{$lower_entities}}_state.json', true);
     }
 
     public function testUpdateNotExists(): void
     {
         $data = $this->getJsonFixture('update_{{$lower_entity}}_request.json');
 
-        $response = $this->actingViaSession($this->user)->json('put', '/nova-api/{{$url_path}}/0', $data);
+        $response = $this->actingViaSession(self::$user)->json('put', '/nova-api/{{$url_path}}/0', $data);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
@@ -138,7 +115,7 @@ class {{$entity}}Test extends TestCase
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->actingViaSession($this->user['id'])->json('put', '/nova-api/{{$url_path}}/4', []);
+        $response = $this->actingViaSession(self::$user)->json('put', '/nova-api/{{$url_path}}/4', []);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -149,7 +126,7 @@ class {{$entity}}Test extends TestCase
 
     public function testGetUpdatableFields(): void
     {
-        $response = $this->actingViaSession($this->user['id'])->json('get', '/nova-api/{{$url_path}}/1/update-fields');
+        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/{{$url_path}}/1/update-fields');
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -163,8 +140,7 @@ class {{$entity}}Test extends TestCase
 
     public function testDelete(): void
     {
-        $modelState = new ModelTestState({{$entity}}::class);
-        $response = $this->actingViaSession($this->user)->json('delete', '/nova-api/{{$url_path}}', [
+        $response = $this->actingViaSession(self::$user)->json('delete', '/nova-api/{{$url_path}}', [
             'resources' => [1, 2]
         ]);
 
@@ -175,16 +151,12 @@ class {{$entity}}Test extends TestCase
 @endif
 
         // TODO: Need to remove after first successful start
-        $this->assertEqualsFixture(
-            $this->{{$lower_entity}}State->getFixturePath('delete_{{$lower_entities}}_state.json'),
-            $this->{{$lower_entity}}State->getChanges(),
-            true
-        );
+        self::${{$lower_entity}}State->assertChangesEqualsFixture('delete_{{$lower_entities}}_state.json', true);
     }
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->actingViaSession($this->user)->json('delete', '/nova-api/{{$url_path}}', [
+        $response = $this->actingViaSession(self::$user)->json('delete', '/nova-api/{{$url_path}}', [
             'resources' => [0]
         ]);
 
@@ -210,7 +182,7 @@ class {{$entity}}Test extends TestCase
 
     public function testGet(): void
     {
-        $response = $this->actingViaSession($this->user)->json('get', '/nova-api/{{$url_path}}/1');
+        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/{{$url_path}}/1');
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -224,7 +196,7 @@ class {{$entity}}Test extends TestCase
 
     public function testGetNotExists(): void
     {
-        $response = $this->actingViaSession($this->user)->json('get', '/nova-api/{{$url_path}}/0');
+        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/{{$url_path}}/0');
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
@@ -246,7 +218,7 @@ class {{$entity}}Test extends TestCase
 
     public function testSearch(): void
     {
-        $response = $this->actingViaSession($this->user)->json('get', '/nova-api/{{$url_path}}', [
+        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/{{$url_path}}', [
             'orderBy' => 'id',
             'orderByDirection' => 'asc'
         ]);
@@ -277,10 +249,13 @@ class {{$entity}}Test extends TestCase
 
     public function testGetFieldsVisibleOnCreate(): void
     {
-        $response = $this->actingViaSession($this->user)->json('get', '/nova-api/{{$url_path}}/creation-fields');
+        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/{{$url_path}}/creation-fields');
 
+@if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
-
+@else
+        $response->assertOk();
+@endif
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture('get_fields_visible_on_create_response.json', $response->json(), true);
     }
@@ -289,7 +264,7 @@ class {{$entity}}Test extends TestCase
     {
         return [
         @foreach($actions as $action)
-            [
+    [
                 'action' => '{{$action['url']}}',
                 'request' => [
                     'resources' => '1,2',
@@ -297,7 +272,7 @@ class {{$entity}}Test extends TestCase
                 'state' => 'run_{{$action['fixture']}}_state.json',
             ],
         @endforeach
-        ];
+];
     }
 
     /**
@@ -306,8 +281,7 @@ class {{$entity}}Test extends TestCase
     public function testRun{{$entity}}Action($action, $request, ${{$lower_entities}}StateFixture): void
     {
         $request['action'] = $action;
-        $modelState = new ModelTestState({{$entity}}::class);
-        $response = $this->actingViaSession($this->user)->json('post', "/nova-api/{{$url_path}}/action", $request);
+        $response = $this->actingViaSession(self::$user)->json('post', "/nova-api/{{$url_path}}/action", $request);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -317,11 +291,7 @@ class {{$entity}}Test extends TestCase
 
         $this->assertEmpty($response->getContent());
         // TODO: Need to remove after first successful start
-        $this->assertEqualsFixture(
-            $this->{{$lower_entity}}State->getFixturePath(${{$lower_entities}}StateFixture),
-            $this->{{$lower_entity}}State->getChanges(),
-            true
-        );
+        self::${{$lower_entity}}State->assertChangesEqualsFixture(${{$lower_entities}}StateFixture, true);
     }
 
     public function get{{$entity}}ActionsData(): array
@@ -343,7 +313,7 @@ class {{$entity}}Test extends TestCase
      */
     public function testGet{{$entity}}Actions($request, $responseFixture): void
     {
-        $response = $this->actingViaSession($this->user)->json('get', '/nova-api/{{$url_path}}/actions', $request);
+        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/{{$url_path}}/actions', $request);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
