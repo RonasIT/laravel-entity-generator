@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
+use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use RonasIT\Support\Traits\FixturesTrait;
 
@@ -11,6 +12,7 @@ class TestCase extends BaseTestCase
     use FixturesTrait, InteractsWithViews;
 
     protected $globalExportMode = false;
+    protected $generatedFileBasePath;
 
     public function setUp(): void
     {
@@ -21,48 +23,29 @@ class TestCase extends BaseTestCase
 
     public function rollbackToDefaultBasePath(): void
     {
-        $this->app->setBasePath(__DIR__ . '/../');
+        $this->app->setBasePath('/app');
     }
 
-    public function loadJSONContent(string $path): array
+    protected function assertGeneratedFileEquals(string $fixtureName, string $filePath, bool $exportMode = false): void
     {
-        return json_decode(file_get_contents(base_path($path)), true);
-    }
+        $filePath = "{$this->generatedFileBasePath}/$filePath";
 
-    public function loadFileContent(string $path): string
-    {
-        return file_get_contents(base_path($path));
-    }
-
-    public function assertEqualsFixture(string $fixture, $data, bool $exportMode = false): void
-    {
-        if (substr($fixture, -5) === '.json') {
-            $this->assertEqualsJSONFixture($fixture, $data, $exportMode);
-        } else {
-            $this->assertEqualsGeneralFixture($fixture, $data, $exportMode);
-        }
-    }
-
-    public function assertEqualsJSONFixture(string $fixture, $data, bool $exportMode = false): void
-    {
         if ($exportMode || $this->globalExportMode) {
-            $this->exportJson($fixture, $data);
+            $content = file_get_contents($filePath);
+
+            if (Str::endsWith($fixtureName, '.json')) {
+                $content = json_decode($content, true);
+                $this->exportJson($fixtureName, $content);
+            } else {
+                $this->exportContent($content, $fixtureName);
+            }
         }
 
-        $this->assertEquals($this->getJsonFixture($fixture), $data);
+        $this->assertFileEquals($this->getFixturePath($fixtureName), $filePath);
     }
 
-    public function assertEqualsGeneralFixture(string $fixture, $data, bool $exportMode = false): void
+    protected function assertGenerateFileExists(string $path): void
     {
-        if ($exportMode || $this->globalExportMode) {
-            $this->exportContent($data, $fixture);
-        }
-
-        $this->assertEquals($this->getFixture($fixture), $data);
-    }
-
-    public function generatedFileExists(string $path): bool
-    {
-        return file_exists(base_path($path));
+        $this->assertFileExists("{$this->generatedFileBasePath}/{$path}");
     }
 }

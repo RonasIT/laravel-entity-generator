@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Foundation\Testing\TestResponse;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -21,10 +20,12 @@ class NovaResourceTestGeneratorTest extends TestCase
 
         vfsStream::setup();
 
-        $this->app->setBasePath(vfsStream::url('root'));
+        $this->generatedFileBasePath = vfsStream::url('root');
+
+        $this->app->setBasePath($this->generatedFileBasePath);
     }
 
-    public function testCreateForNonExistingNovaResource()
+    public function testCreateNovaTestsResourceNotExists()
     {
         $mock = $this->mockClassExistsFunction();
 
@@ -42,7 +43,7 @@ class NovaResourceTestGeneratorTest extends TestCase
         }
     }
 
-    public function testCreateForExistingNovaResourceTest()
+    public function testCreateNovaTestAlreadyExists()
     {
         $mock = $this->mockClassExistsFunction();
 
@@ -73,25 +74,19 @@ class NovaResourceTestGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->assertTrue($this->generatedFileExists('tests/NovaPostTest.php'));
-        $this->assertTrue($this->generatedFileExists('tests/fixtures/NovaPostTest/dump.sql'));
-        $this->assertTrue($this->generatedFileExists('tests/fixtures/NovaPostTest/create_post_request.json'));
-        $this->assertTrue($this->generatedFileExists('tests/fixtures/NovaPostTest/create_post_response.json'));
-        $this->assertTrue($this->generatedFileExists('tests/fixtures/NovaPostTest/update_post_request.json'));
-
-        $testClassContent = $this->loadFileContent('tests/NovaPostTest.php');
-        $dumpContent = $this->loadFileContent('tests/fixtures/NovaPostTest/dump.sql');
-        $createPostRequestContent = $this->loadJSONContent('tests/fixtures/NovaPostTest/create_post_request.json');
-        $createPostResponseContent = $this->loadJSONContent('tests/fixtures/NovaPostTest/create_post_response.json');
-        $updatePostRequestContent = $this->loadJSONContent('tests/fixtures/NovaPostTest/update_post_request.json');
-
         $this->rollbackToDefaultBasePath();
 
-        $this->assertEqualsFixture('created_resource_test.php', $testClassContent);
-        $this->assertEqualsFixture('dump.sql', $dumpContent);
-        $this->assertEqualsFixture('create_post_request.json', $createPostRequestContent);
-        $this->assertEqualsFixture('create_post_response.json', $createPostResponseContent);
-        $this->assertEqualsFixture('update_post_request.json', $updatePostRequestContent);
+        $this->assertGenerateFileExists('tests/fixtures/NovaPostTest/dump.sql');
+        $this->assertGenerateFileExists('tests/fixtures/NovaPostTest/create_post_request.json');
+        $this->assertGenerateFileExists('tests/fixtures/NovaPostTest/create_post_response.json');
+        $this->assertGenerateFileExists('tests/fixtures/NovaPostTest/update_post_request.json');
+        $this->assertGenerateFileExists('tests/NovaPostTest.php');
+
+        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaPostTest.php', true);
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaPostTest/dump.sql', true);
+        $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/NovaPostTest/create_post_request.json', true);
+        $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/NovaPostTest/create_post_response.json', true);
+        $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/NovaPostTest/update_post_request.json', true);
 
         $functionMock->disable();
     }

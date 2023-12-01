@@ -12,6 +12,20 @@ use RonasIT\Support\Generators\NovaTestGenerator;
 
 trait NovaResourceMockTrait
 {
+    public function mockNativeFunction(string $namespace, string $name, callable $callback): Mock
+    {
+        $builder = new MockBuilder();
+        $builder
+            ->setNamespace($namespace)
+            ->setName($name)
+            ->setFunction($callback);
+
+        $mock = $builder->build();
+        $mock->enable();
+
+        return $mock;
+    }
+
     public function mockNovaResourceTestGenerator(): void
     {
         $mock = $this
@@ -84,37 +98,27 @@ trait NovaResourceMockTrait
 
     public function mockClassExistsFunction(): Mock
     {
-        $classExistsBuilder = new MockBuilder();
-        $classExistsBuilder
-            ->setNamespace('\\RonasIT\\Support\\Generators')
-            ->setName('class_exists')
-            ->setFunction(function () {
+        return $this->mockNativeFunction(
+            '\\RonasIT\\Support\\Generators',
+            'class_exists',
+            function () {
                 return true;
-            });
-
-        $classExistsMock = $classExistsBuilder->build();
-        $classExistsMock->enable();
-
-        return $classExistsMock;
+            }
+        );
     }
 
     public function mockFileExists(): Mock
     {
-        $fileExistsBuilder = new MockBuilder();
-        $fileExistsBuilder
-            ->setNamespace('\\RonasIT\\Support\\Generators')
-            ->setName('file_exists')
-            ->setFunction(function () {
+        return $this->mockNativeFunction(
+            '\\RonasIT\\Support\\Generators',
+            'file_exists',
+            function () {
                 return false;
-            });
-
-        $fileExistsMock = $fileExistsBuilder->build();
-        $fileExistsMock->enable();
-
-        return $fileExistsMock;
+            }
+        );
     }
 
-    public function mockFilesystem()
+    public function mockFilesystem(): void
     {
         $structure = [
             'app' => [
