@@ -10,7 +10,7 @@ use phpmock\Mock;
 use phpmock\MockBuilder;
 use RonasIT\Support\Generators\NovaTestGenerator;
 
-trait NovaResourceMockTrait
+trait NovaTestMockTrait
 {
     public function mockNativeFunction(string $namespace, string $name, callable $callback): Mock
     {
@@ -129,7 +129,7 @@ trait NovaResourceMockTrait
                         'BlockCommentAction.php' => '<?php',
                         'UnPublishPostAction.txt' => 'text',
                     ],
-                    'Post.php' => '<?php'
+                    'Post.php' => file_get_contents('/app/tests/fixtures/NovaTestGeneratorTest/post_class_mock.php')
                 ],
                 'Models' => [
                     'Post.php' => '<?php'

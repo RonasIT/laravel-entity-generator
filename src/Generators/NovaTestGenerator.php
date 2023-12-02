@@ -2,8 +2,14 @@
 
 namespace RonasIT\Support\Generators;
 
+use App\Nova\Post;
 use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Stmt\Class_;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\ParserFactory;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -40,14 +46,9 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $actions = [];
 
         if (file_exists(base_path($this->paths['nova_actions']))) {
-            $objectsInsideFolder = scandir(base_path($this->paths['nova_actions']));
-            $modelActions = array_filter($objectsInsideFolder, function ($value) {
-                return Str::contains($value, $this->model)
-                    && Str::endsWith($value, '.php');
-            });
+            $modelActions = $this->getModelActions();
 
             foreach ($modelActions as $action) {
-                $action = Str::replaceFirst($action, '.php', '');
                 $actions[] = [
                     'url' => Str::kebab($action),
                     'fixture' => Str::snake($action),
@@ -67,6 +68,58 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $this->saveClass('tests', "Nova{$this->model}Test", $fileContent);
 
         event(new SuccessCreateMessage("Created a new Nova test: Nova{$this->model}Test"));
+    }
+
+    protected function getModelActions()
+    {
+        $novaResource = base_path($this->paths['nova'] . "/{$this->model}.php");
+        $code = file_get_contents($novaResource);
+        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+        $ast = $parser->parse($code);
+        $modelActions = [];
+
+        foreach ($ast[0]->stmts as $astStmt) {
+            if ($astStmt instanceof Class_) {
+                foreach ($astStmt->stmts as $classStmt) {
+                    if (!$classStmt instanceof ClassMethod || $classStmt->name->name !== 'actions') {
+                        continue;
+                    }
+
+                    foreach ($classStmt->stmts as $methodStmt) {
+                        if (!$methodStmt instanceof Return_) {
+                            continue;
+                        }
+
+                        foreach ($methodStmt->expr->items as $returnArrayItem) {
+                            $actionClassName = $this->getActionClassName($returnArrayItem->value);
+
+                            if (is_null($actionClassName)) {
+                                continue;
+                            }
+
+                            if (!in_array($actionClassName, $modelActions)) {
+                                $modelActions[] = $actionClassName;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return $modelActions;
+    }
+
+    protected function getActionClassName(Expr $expr): ?string
+    {
+        if (property_exists($expr, 'class')) {
+            return $expr->class->parts[0];
+        }
+
+        if (property_exists($expr, 'var')) {
+            return $this->getActionClassName($expr->var);
+        }
+
+        return null;
     }
 
     public function getTestClassName(): string

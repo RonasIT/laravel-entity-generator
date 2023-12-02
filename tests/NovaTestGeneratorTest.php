@@ -6,11 +6,11 @@ use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Tests\Support\NovaResourceMockTrait;
+use RonasIT\Support\Tests\Support\NovaTestMockTrait;
 
-class NovaResourceTestGeneratorTest extends TestCase
+class NovaTestGeneratorTest extends TestCase
 {
-    use NovaResourceMockTrait;
+    use NovaTestMockTrait;
 
     public function setUp(): void
     {
