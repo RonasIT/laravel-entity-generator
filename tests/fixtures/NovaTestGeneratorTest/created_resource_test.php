@@ -31,6 +31,7 @@ class PostTest extends TestCase
         $response = $this->actingViaSession(self::$user)->json('post', '/nova-api/posts', $data);
 
         $response->assertCreated();
+
         $this->assertEqualsFixture('create_post_response.json', $response->json());
 
         // TODO: Need to remove after first successful start
@@ -186,6 +187,7 @@ class PostTest extends TestCase
         $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/posts/creation-fields');
 
         $response->assertOk();
+
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture('get_fields_visible_on_create_response.json', $response->json(), true);
     }
@@ -194,18 +196,18 @@ class PostTest extends TestCase
     {
         return [
             [
-                'action' => '',
+                'action' => 'publish-post-action',
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run__state.json',
+                'state' => 'run_publish_post_action_state.json',
             ],
             [
-                'action' => '',
+                'action' => 'un-publish-post-action',
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run__state.json',
+                'state' => 'run_un_publish_post_action_state.json',
             ],
         ];
     }
@@ -221,6 +223,7 @@ class PostTest extends TestCase
         $response->assertOk();
 
         $this->assertEmpty($response->getContent());
+
         // TODO: Need to remove after first successful start
         self::$postState->assertChangesEqualsFixture($postsStateFixture, true);
     }
@@ -232,13 +235,13 @@ class PostTest extends TestCase
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'response_fixture' => 'get_post_actions_.json',
+                'response_fixture' => 'get_post_actions_publish_post_action.json',
             ],
                     [
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'response_fixture' => 'get_post_actions_.json',
+                'response_fixture' => 'get_post_actions_un_publish_post_action.json',
             ],
                 ];
     }

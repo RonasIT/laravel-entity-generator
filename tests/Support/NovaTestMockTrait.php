@@ -129,7 +129,7 @@ trait NovaTestMockTrait
                         'BlockCommentAction.php' => '<?php',
                         'UnPublishPostAction.txt' => 'text',
                     ],
-                    'Post.php' => file_get_contents('/app/tests/fixtures/NovaTestGeneratorTest/post_class_mock.php')
+                    'Post.php' => file_get_contents('/app/tests/Support/PostClassMock.php')
                 ],
                 'Models' => [
                     'Post.php' => '<?php'

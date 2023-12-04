@@ -37,6 +37,7 @@ class {{$entity}}Test extends TestCase
 @else
         $response->assertCreated();
 @endif
+
         $this->assertEqualsFixture('create_{{$lower_entity}}_response.json', $response->json());
 
         // TODO: Need to remove after first successful start
@@ -256,6 +257,7 @@ class {{$entity}}Test extends TestCase
 @else
         $response->assertOk();
 @endif
+
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture('get_fields_visible_on_create_response.json', $response->json(), true);
     }
@@ -290,6 +292,7 @@ class {{$entity}}Test extends TestCase
 @endif
 
         $this->assertEmpty($response->getContent());
+
         // TODO: Need to remove after first successful start
         self::${{$lower_entity}}State->assertChangesEqualsFixture(${{$lower_entities}}StateFixture, true);
     }
