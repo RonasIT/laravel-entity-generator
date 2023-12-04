@@ -58,8 +58,8 @@ class NovaResourceGenerator extends EntityGenerator
                 'model' => $this->model,
                 'fields' => $novaFields,
                 'types' => array_unique(data_get($novaFields, '*.type')),
-                'modelNamespace' => $this->getNamespace('models'),
-                'namespace' => $this->getNamespace('nova')
+                'modelNamespace' => $this->getOrCreateNamespace('models'),
+                'namespace' => $this->getOrCreateNamespace('nova')
             ]);
 
             $this->saveClass('nova', "{$this->model}Resource", $fileContent);

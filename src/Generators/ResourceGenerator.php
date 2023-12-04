@@ -28,7 +28,7 @@ class ResourceGenerator extends EntityGenerator
         $collectionResourceContent = $this->getStub('collection_resource', [
             'singular_name' => $this->model,
             'plural_name' => $pluralName,
-            'namespace' => $this->getNamespace('resources')
+            'namespace' => $this->getOrCreateNamespace('resources')
         ]);
 
         $this->saveClass('resources', "{$pluralName}CollectionResource", $collectionResourceContent);
@@ -48,7 +48,7 @@ class ResourceGenerator extends EntityGenerator
 
         $resourceContent = $this->getStub('resource', [
             'entity' => $this->model,
-            'namespace' => $this->getNamespace('resources')
+            'namespace' => $this->getOrCreateNamespace('resources')
         ]);
 
         $this->saveClass('resources', "{$this->model}Resource", $resourceContent);

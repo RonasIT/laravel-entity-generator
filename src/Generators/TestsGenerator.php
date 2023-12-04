@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Generators;
 
+use Exception;
 use Illuminate\Database\Eloquent\Factory as LegacyFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
@@ -76,12 +77,24 @@ class TestsGenerator extends EntityGenerator
 
     protected function isFactoryExists($modelName): bool
     {
-        $factory = app(LegacyFactory::class);
+        return $this->isLegacyFactoryExists($modelName) || $this->isNewStyleFactoryExists($modelName);
+    }
+
+    protected function isLegacyFactoryExists($modelName): bool
+    {
+        $legacyFactory = app(LegacyFactory::class);
         $modelClass = $this->getModelClass($modelName);
 
-        $isNewStyleFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
+        return !empty($legacyFactory[$modelClass]);
+    }
 
-        return !empty($factory[$this->getModelClass($modelName)]) || $isNewStyleFactoryExists;
+    protected function isNewStyleFactoryExists($modelName): bool
+    {
+        $modelClass = $this->getModelClass($modelName);
+
+        return $this->classExists('factory', "{$modelName}Factory")
+            && method_exists($modelClass, 'factory')
+            && class_exists(Factory::resolveFactoryName($modelClass));
     }
 
     protected function isMethodExists($modelName, $method): bool
@@ -148,7 +161,8 @@ class TestsGenerator extends EntityGenerator
 
     protected function getModelClass($model): string
     {
-        $modelNamespace = $this->getNamespace('models');
+        $modelNamespace = $this->getOrCreateNamespace('models');
+
         return "{$modelNamespace}\\{$model}";
     }
 
@@ -162,9 +176,14 @@ class TestsGenerator extends EntityGenerator
     protected function getMockModel($model): array
     {
         $modelClass = $this->getModelClass($model);
-        $useModelClassFactory = method_exists($modelClass, 'factory')
-            && class_exists(Factory::resolveFactoryName($modelClass));
-        $factory = ($useModelClassFactory) ? $modelClass::factory() : factory($modelClass);
+
+        if ($this->isNewStyleFactoryExists($model)) {
+            $factory = $modelClass::factory();
+        } else if ($this->isLegacyFactoryExists($model)) {
+            $factory = factory($modelClass);
+        } else {
+            throw new Exception('You should set up legacy or new model class factory.');
+        }
 
         return $factory
             ->make()
@@ -231,7 +250,7 @@ class TestsGenerator extends EntityGenerator
             'databaseTableName' => $this->getTableName($this->model),
             'entities' => $this->getTableName($this->model, '-'),
             'withAuth' => $this->withAuth,
-            'modelsNamespace' => $this->getNamespace('models')
+            'modelsNamespace' => $this->getOrCreateNamespace('models')
         ]);
 
         $testName = $this->getTestClassName();

@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Generators;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
@@ -76,18 +77,19 @@ abstract class EntityGenerator
         $this->paths = config('entity-generator.paths');
     }
 
-    protected function getNamespace(string $path): string
+    protected function getOrCreateNamespace(string $path): string
     {
         $path = $this->paths[$path];
         $pathParts = explode('/', $path);
 
-        if (str_ends_with(end($pathParts), '.php')) {
+        if (Str::endsWith(Arr::last($pathParts), '.php')) {
             array_pop($pathParts);
         }
 
         $namespace = array_map(function (string $part) {
-            return Str::ucfirst($part);
+            return ucfirst($part);
         }, $pathParts);
+
         $fullPath = base_path($path);
 
         if (!file_exists($fullPath)) {

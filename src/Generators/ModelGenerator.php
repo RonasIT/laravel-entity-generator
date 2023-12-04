@@ -40,7 +40,7 @@ class ModelGenerator extends EntityGenerator
             'fields' => Arr::collapse($this->fields),
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
-            'namespace' => $this->getNamespace('models')
+            'namespace' => $this->getOrCreateNamespace('models')
         ]);
     }
 

@@ -42,10 +42,10 @@ class ControllerGenerator extends EntityGenerator
         return $this->getStub('controller', [
             'entity' => $model,
             'requestsFolder' => $this->getPluralName($model),
-            'namespace' => $this->getNamespace('controllers'),
-            'requestsNamespace' => $this->getNamespace('requests'),
-            'resourcesNamespace' => $this->getNamespace('resources'),
-            'servicesNamespace' => $this->getNamespace('services'),
+            'namespace' => $this->getOrCreateNamespace('controllers'),
+            'requestsNamespace' => $this->getOrCreateNamespace('requests'),
+            'resourcesNamespace' => $this->getOrCreateNamespace('resources'),
+            'servicesNamespace' => $this->getOrCreateNamespace('services'),
         ]);
     }
 
@@ -90,7 +90,7 @@ class ControllerGenerator extends EntityGenerator
         $routesFileContent = file_get_contents($routesPath);
 
         $stub = $this->getStub('use_routes', [
-            'namespace' => $this->getNamespace('controllers'),
+            'namespace' => $this->getOrCreateNamespace('controllers'),
             'entity' => $this->model
         ]);
 

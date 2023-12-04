@@ -45,7 +45,7 @@ class FactoryGenerator extends EntityGenerator
         }
 
         $factoryContent = $this->getStub('factory', [
-            'namespace' => $this->getNamespace('factory'),
+            'namespace' => $this->getOrCreateNamespace('factory'),
             'entity' => $this->model,
             'fields' => $this->prepareFields()
         ]);
@@ -67,7 +67,7 @@ class FactoryGenerator extends EntityGenerator
             $content = view($stubPath)->with([
                 'entity' => $this->model,
                 'fields' => $this->prepareFields(),
-                'modelsNamespace' => $this->getNamespace('models')
+                'modelsNamespace' => $this->getOrCreateNamespace('models')
             ])->render();
 
             $content = "\n\n" . $content;
@@ -97,7 +97,7 @@ class FactoryGenerator extends EntityGenerator
     {
         $stubPath = config('entity-generator.stubs.legacy_empty_factory');
         $content = "<?php \n\n" . view($stubPath, [
-            'modelsNamespace' => $this->getNamespace('models')
+            'modelsNamespace' => $this->getOrCreateNamespace('models')
         ])->render();
 
         list($basePath, $databaseFactoryDir) = extract_last_part(config('entity-generator.paths.factory'), '/');
@@ -113,7 +113,7 @@ class FactoryGenerator extends EntityGenerator
     {
         $modelFactoryContent = file_get_contents($this->paths['factory']);
         $relatedModels = $this->getRelatedModels($this->model);
-        $modelNamespace = $this->getNamespace('models');
+        $modelNamespace = $this->getOrCreateNamespace('models');
 
         foreach ($relatedModels as $relatedModel) {
             $relatedFactoryClass = "{$modelNamespace}\\$relatedModel::class";
@@ -207,7 +207,7 @@ class FactoryGenerator extends EntityGenerator
     protected function checkExistModelFactory(): int
     {
         $modelFactoryContent = file_get_contents($this->paths['factory']);
-        $modelNamespace = $this->getNamespace('models');
+        $modelNamespace = $this->getOrCreateNamespace('models');
         $factoryClass = "{$modelNamespace}\\$this->model::class";
 
         return strpos($modelFactoryContent, $factoryClass);
@@ -241,7 +241,7 @@ class FactoryGenerator extends EntityGenerator
 
     protected function getModelClass($model): string
     {
-        $modelNamespace = $this->getNamespace('models');
+        $modelNamespace = $this->getOrCreateNamespace('models');
 
         return "{$modelNamespace}\\{$model}";
     }

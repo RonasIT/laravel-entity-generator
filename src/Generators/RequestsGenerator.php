@@ -72,8 +72,8 @@ class RequestsGenerator extends EntityGenerator
             'parameters' => $parameters,
             'needToValidate' => $needToValidate,
             'requestsFolder' => $requestsFolder,
-            'namespace' => $this->getNamespace('requests'),
-            'servicesNamespace' => $this->getNamespace('services')
+            'namespace' => $this->getOrCreateNamespace('requests'),
+            'servicesNamespace' => $this->getOrCreateNamespace('services')
         ]);
 
         $this->saveClass('requests', "{$method}{$modelName}Request",
