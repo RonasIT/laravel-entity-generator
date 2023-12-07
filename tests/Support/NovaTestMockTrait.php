@@ -12,13 +12,15 @@ use RonasIT\Support\Generators\NovaTestGenerator;
 
 trait NovaTestMockTrait
 {
-    public function mockNativeFunction(string $namespace, string $name, callable $callback): Mock
+    public function mockNativeFunction(string $namespace, string $name, $result): Mock
     {
         $builder = new MockBuilder();
         $builder
             ->setNamespace($namespace)
             ->setName($name)
-            ->setFunction($callback);
+            ->setFunction(function () use ($result) {
+                return $result;
+            });
 
         $mock = $builder->build();
         $mock->enable();
@@ -98,24 +100,12 @@ trait NovaTestMockTrait
 
     public function mockClassExistsFunction(): Mock
     {
-        return $this->mockNativeFunction(
-            '\\RonasIT\\Support\\Generators',
-            'class_exists',
-            function () {
-                return true;
-            }
-        );
+        return $this->mockNativeFunction('\\RonasIT\\Support\\Generators', 'class_exists', true);
     }
 
     public function mockFileExists(): Mock
     {
-        return $this->mockNativeFunction(
-            '\\RonasIT\\Support\\Generators',
-            'file_exists',
-            function () {
-                return false;
-            }
-        );
+        return $this->mockNativeFunction( '\\RonasIT\\Support\\Generators', 'file_exists', false);
     }
 
     public function mockFilesystem(): void

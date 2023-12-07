@@ -16,8 +16,6 @@ class NovaTestGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        putenv('FAIL_EXPORT_JSON=false');
-
         vfsStream::setup();
 
         $this->generatedFileBasePath = vfsStream::url('root');
@@ -76,13 +74,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->rollbackToDefaultBasePath();
 
-        $this->assertGenerateFileExists('tests/fixtures/NovaPostTest/dump.sql');
-        $this->assertGenerateFileExists('tests/fixtures/NovaPostTest/create_post_request.json');
-        $this->assertGenerateFileExists('tests/fixtures/NovaPostTest/create_post_response.json');
-        $this->assertGenerateFileExists('tests/fixtures/NovaPostTest/update_post_request.json');
-        $this->assertGenerateFileExists('tests/NovaPostTest.php');
-
-        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaPostTest.php');
+        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaPostTest.php', true);
         $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaPostTest/dump.sql');
         $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/NovaPostTest/create_post_request.json');
         $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/NovaPostTest/create_post_response.json');

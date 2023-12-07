@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Generators;
 
-use App\Nova\Post;
 use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
 use PhpParser\Node\Expr;
@@ -19,7 +18,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
-            if (!$this->classExists('nova', "{$this->model}")) {
+            if (!$this->classExists('nova', $this->model)) {
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create Nova{$this->model}Test cause {$this->model} Nova resource does not exist.",

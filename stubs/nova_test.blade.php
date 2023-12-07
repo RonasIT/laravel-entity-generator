@@ -69,6 +69,9 @@ class {{$entity}}Test extends TestCase
         $response->assertUnprocessable();
 @endif
 
+        // TODO: Need to remove after first successful start
+        $this->assertEqualsFixture('create_validation_response.json', $response->json(), true);
+
         self::${{$lower_entity}}State->assertNotChanged();
     }
 
@@ -116,13 +119,16 @@ class {{$entity}}Test extends TestCase
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->actingViaSession(self::$user)->json('put', '/nova-api/{{$url_path}}/4', []);
+        $response = $this->actingViaSession(self::$user)->json('put', '/nova-api/{{$url_path}}/4');
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 @else
         $response->assertUnprocessable();
 @endif
+
+        // TODO: Need to remove after first successful start
+        $this->assertEqualsFixture('update_validation_response.json', $response->json(), true);
     }
 
     public function testGetUpdatableFields(): void
@@ -262,25 +268,25 @@ class {{$entity}}Test extends TestCase
         $this->assertEqualsFixture('get_fields_visible_on_create_response.json', $response->json(), true);
     }
 
-    public function getRun{{$entity}}ActionData(): array
+    public function getRun{{$entity}}ActionsData(): array
     {
         return [
-        @foreach($actions as $action)
-    [
+@foreach($actions as $action)
+            [
                 'action' => '{{$action['url']}}',
                 'request' => [
                     'resources' => '1,2',
                 ],
                 'state' => 'run_{{$action['fixture']}}_state.json',
             ],
-        @endforeach
-];
+@endforeach
+        ];
     }
 
     /**
-     * @dataProvider getRun{{$entity}}ActionData
+     * @dataProvider getRun{{$entity}}ActionsData
      */
-    public function testRun{{$entity}}Action($action, $request, ${{$lower_entities}}StateFixture): void
+    public function testRun{{$entity}}Actions($action, $request, ${{$lower_entities}}StateFixture): void
     {
         $request['action'] = $action;
         $response = $this->actingViaSession(self::$user)->json('post', "/nova-api/{{$url_path}}/action", $request);
@@ -300,21 +306,21 @@ class {{$entity}}Test extends TestCase
     public function get{{$entity}}ActionsData(): array
     {
         return [
-        @foreach($actions as $action)
+@foreach($actions as $action)
             [
                 'request' => [
                     'resources' => '1,2',
                 ],
                 'response_fixture' => 'get_{{$lower_entity}}_actions_{{$action['fixture']}}.json',
             ],
-        @endforeach
+@endforeach
         ];
     }
 
     /**
      * @dataProvider get{{$entity}}ActionsData
      */
-    public function testGet{{$entity}}Actions($request, $responseFixture): void
+    public function testGet{{$entity}}Actions(array $request, string $responseFixture): void
     {
         $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/{{$url_path}}/actions', $request);
 

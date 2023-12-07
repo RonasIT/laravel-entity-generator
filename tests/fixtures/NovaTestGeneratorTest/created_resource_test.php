@@ -55,6 +55,9 @@ class PostTest extends TestCase
 
         $response->assertUnprocessable();
 
+        // TODO: Need to remove after first successful start
+        $this->assertEqualsFixture('create_validation_response.json', $response->json(), true);
+
         self::$postState->assertNotChanged();
     }
 
@@ -90,9 +93,12 @@ class PostTest extends TestCase
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->actingViaSession(self::$user)->json('put', '/nova-api/posts/4', []);
+        $response = $this->actingViaSession(self::$user)->json('put', '/nova-api/posts/4');
 
         $response->assertUnprocessable();
+
+        // TODO: Need to remove after first successful start
+        $this->assertEqualsFixture('update_validation_response.json', $response->json(), true);
     }
 
     public function testGetUpdatableFields(): void
@@ -192,7 +198,7 @@ class PostTest extends TestCase
         $this->assertEqualsFixture('get_fields_visible_on_create_response.json', $response->json(), true);
     }
 
-    public function getRunPostActionData(): array
+    public function getRunPostActionsData(): array
     {
         return [
             [
@@ -213,9 +219,9 @@ class PostTest extends TestCase
     }
 
     /**
-     * @dataProvider  getRunPostActionData
+     * @dataProvider  getRunPostActionsData
      */
-    public function testRunPostAction($action, $request, $postsStateFixture): void
+    public function testRunPostActions($action, $request, $postsStateFixture): void
     {
         $request['action'] = $action;
         $response = $this->actingViaSession(self::$user)->json('post', "/nova-api/posts/action", $request);
@@ -231,25 +237,25 @@ class PostTest extends TestCase
     public function getPostActionsData(): array
     {
         return [
-                    [
+            [
                 'request' => [
                     'resources' => '1,2',
                 ],
                 'response_fixture' => 'get_post_actions_publish_post_action.json',
             ],
-                    [
+            [
                 'request' => [
                     'resources' => '1,2',
                 ],
                 'response_fixture' => 'get_post_actions_un_publish_post_action.json',
             ],
-                ];
+        ];
     }
 
     /**
      * @dataProvider  getPostActionsData
      */
-    public function testGetPostActions($request, $responseFixture): void
+    public function testGetPostActions(array $request, string $responseFixture): void
     {
         $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/posts/actions', $request);
 
