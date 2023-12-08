@@ -32,7 +32,7 @@ trait NovaTestMockTrait
     {
         $mock = $this
             ->getMockBuilder(NovaTestGenerator::class)
-            ->onlyMethods(['getModelFields', 'getMockModel'])
+            ->onlyMethods(['getModelFields', 'getMockModel', 'loadNovaActions'])
             ->getMock();
 
         $mock
@@ -42,6 +42,14 @@ trait NovaTestMockTrait
         $mock
             ->method('getMockModel')
             ->willReturn(['title' => 'some title', 'name' => 'some name']);
+
+        $mock
+            ->method('loadNovaActions')
+            ->willReturn([
+                new PublishPostAction,
+                new UnPublishPostAction,
+                new UnPublishPostAction,
+            ]);
 
         $this->app->instance(NovaTestGenerator::class, $mock);
     }
@@ -119,7 +127,7 @@ trait NovaTestMockTrait
                         'BlockCommentAction.php' => '<?php',
                         'UnPublishPostAction.txt' => 'text',
                     ],
-                    'Post.php' => file_get_contents('/app/tests/Support/PostClassMock.php')
+                    'Post.php' => '<?php'
                 ],
                 'Models' => [
                     'Post.php' => '<?php'

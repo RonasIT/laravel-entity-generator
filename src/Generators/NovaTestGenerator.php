@@ -4,6 +4,7 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
+use Laravel\Nova\Http\Requests\NovaRequest;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -45,14 +46,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $actions = [];
 
         if (file_exists(base_path($this->paths['nova_actions']))) {
-            $modelActions = $this->getModelActions();
-
-            foreach ($modelActions as $action) {
-                $actions[] = [
-                    'url' => Str::kebab($action),
-                    'fixture' => Str::snake($action),
-                ];
-            }
+            $actions = $this->getActions();
         }
 
         $fileContent = $this->getStub('nova_resource_test', [
@@ -69,56 +63,32 @@ class NovaTestGenerator extends AbstractTestsGenerator
         event(new SuccessCreateMessage("Created a new Nova test: Nova{$this->model}Test"));
     }
 
-    protected function getModelActions()
+    protected function getActions(): array
     {
-        $novaResource = base_path($this->paths['nova'] . "/{$this->model}.php");
-        $code = file_get_contents($novaResource);
-        $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
-        $ast = $parser->parse($code);
-        $modelActions = [];
+        $actions = $this->loadNovaActions();
 
-        foreach ($ast[0]->stmts as $astStmt) {
-            if ($astStmt instanceof Class_) {
-                foreach ($astStmt->stmts as $classStmt) {
-                    if (!$classStmt instanceof ClassMethod || $classStmt->name->name !== 'actions') {
-                        continue;
-                    }
-
-                    foreach ($classStmt->stmts as $methodStmt) {
-                        if (!$methodStmt instanceof Return_) {
-                            continue;
-                        }
-
-                        foreach ($methodStmt->expr->items as $returnArrayItem) {
-                            $actionClassName = $this->getActionClassName($returnArrayItem->value);
-
-                            if (is_null($actionClassName)) {
-                                continue;
-                            }
-
-                            if (!in_array($actionClassName, $modelActions)) {
-                                $modelActions[] = $actionClassName;
-                            }
-                        }
-                    }
-                }
-            }
+        if (empty($actions)) {
+            return [];
         }
 
-        return $modelActions;
+        $actions = array_unique(array_map(function ($action) {
+            return get_class($action);
+        }, $actions));
+
+        return array_map(function (string $action) {
+            $actionNamespace = explode('\\', $action);
+            $actionClass = end($actionNamespace);
+
+            return [
+                'url' => Str::kebab($actionClass),
+                'fixture' => Str::snake($actionClass),
+            ];
+        }, $actions);
     }
 
-    protected function getActionClassName(Expr $expr): ?string
+    protected function loadNovaActions()
     {
-        if (property_exists($expr, 'class')) {
-            return $expr->class->parts[0];
-        }
-
-        if (property_exists($expr, 'var')) {
-            return $this->getActionClassName($expr->var);
-        }
-
-        return null;
+        return app("\\App\\Nova\\{$this->model}")->actions(new NovaRequest());
     }
 
     public function getTestClassName(): string
