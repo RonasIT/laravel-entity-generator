@@ -122,7 +122,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $fields = $this->loadNovaFields();
 
         foreach ($fields as $field) {
-            if (is_null($field->filterableCallback)) {
+            if (!method_exists($field, 'filterableCallback') || is_null($field->filterableCallback)) {
                 continue;
             }
 
