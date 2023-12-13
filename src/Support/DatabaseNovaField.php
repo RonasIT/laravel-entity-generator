@@ -2,20 +2,12 @@
 
 namespace RonasIT\Support\Support;
 
-class DatabaseNovaField extends BaseNovaField
+class DatabaseNovaField extends AbstractNovaField
 {
-    protected function setIsRequired($field): void
+    public function __construct($field)
     {
         $this->isRequired = $field->getNotNull();
-    }
-
-    protected function setType($field): void
-    {
         $this->type = $field->getType()->getName();
-    }
-
-    protected function setName($field): void
-    {
         $this->name = $field->getName();
     }
 }

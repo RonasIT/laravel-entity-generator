@@ -4,20 +4,12 @@ namespace RonasIT\Support\Support;
 
 use Illuminate\Support\Str;
 
-class CommandLineNovaField extends BaseNovaField
+class CommandLineNovaField extends AbstractNovaField
 {
-    protected function setIsRequired($field): void
+    public function __construct($field)
     {
         $this->isRequired = Str::contains($field['type'], 'required');
-    }
-
-    protected function setType($field): void
-    {
         $this->type = $field['type'];
-    }
-
-    protected function setName($field): void
-    {
         $this->name = $field['name'];
     }
 }
