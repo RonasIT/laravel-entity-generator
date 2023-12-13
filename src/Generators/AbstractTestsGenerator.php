@@ -2,13 +2,14 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Database\Eloquent\Factory;
+use DateTime;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Factory as LegacyFactories;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use DateTime;
 
 abstract class AbstractTestsGenerator extends EntityGenerator
 {
@@ -170,9 +171,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected function getMockModel($model): array
     {
         $modelClass = $this->getModelClass($model);
-        $isNewStyleFactoryExists = $this->classExists('factory', "{$model}Factory")
-            && method_exists($modelClass, 'factory');
-        $factory = ($isNewStyleFactoryExists) ? $modelClass::factory() : factory($modelClass);
+        $hasFactory = method_exists($modelClass, 'factory') && class_exists(Factory::resolveFactoryName($modelClass));
+        $factory = ($hasFactory) ? $modelClass::factory() : factory($modelClass);
 
         return $factory
             ->make()
