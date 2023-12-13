@@ -148,12 +148,6 @@ class NovaResourceGenerator extends EntityGenerator
 
     protected function commandFieldsExists(): bool
     {
-        foreach ($this->fields as $fields) {
-            if (!empty($fields)) {
-                return true;
-            }
-        }
-
-        return false;
+        return !empty(Arr::flatten($this->fields));
     }
 }
