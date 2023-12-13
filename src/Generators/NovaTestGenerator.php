@@ -43,19 +43,17 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     public function generateTests(): void
     {
-        $actions = [];
+        $actions = $this->getActions();
+        $filters = $this->collectFilters();
 
-        if (file_exists(base_path($this->paths['nova_actions']))) {
-            $actions = $this->getActions();
-        }
-
-        $fileContent = $this->getStub('nova_resource_test', [
+        $fileContent = $this->getStub('nova_test', [
             'url_path' => $this->getPluralName(Str::kebab($this->model)),
             'entity' => $this->model,
             'entities' => $this->getPluralName($this->model),
             'lower_entity' => Str::snake($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
+            'filters' => $filters,
         ]);
 
         $this->saveClass('tests', "Nova{$this->model}Test", $fileContent);
@@ -76,8 +74,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         }, $actions));
 
         return array_map(function (string $action) {
-            $actionNamespace = explode('\\', $action);
-            $actionClass = end($actionNamespace);
+            $actionClass = class_basename($action);
 
             return [
                 'url' => Str::kebab($actionClass),
@@ -91,6 +88,16 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return app("\\App\\Nova\\{$this->model}")->actions(new NovaRequest());
     }
 
+    protected function loadNovaFields()
+    {
+        return app("\\App\\Nova\\{$this->model}")->fields(new NovaRequest());
+    }
+
+    protected function loadNovaFilters()
+    {
+        return app("\\App\\Nova\\{$this->model}")->filters(new NovaRequest());
+    }
+
     public function getTestClassName(): string
     {
         return "Nova{$this->model}Test";
@@ -99,5 +106,53 @@ class NovaTestGenerator extends AbstractTestsGenerator
     protected function isFixtureNeeded($type): bool
     {
         return true;
+    }
+
+    protected function collectFilters()
+    {
+        $filtersFromFields = $this->getFiltersFromFields();
+        $filters = $this->getFilters();
+
+        return array_merge($filtersFromFields, $filters);
+    }
+
+    protected function getFiltersFromFields(): array
+    {
+        $filters = [];
+        $fields = $this->loadNovaFields();
+
+        foreach ($fields as $field) {
+            if (is_null($field->filterableCallback)) {
+                continue;
+            }
+
+            $classname = class_basename($field);
+            $fieldName = strtolower($field->name);
+            $filterName = "{$classname}:{$fieldName}";
+
+            if (!in_array($filterName, $filters)) {
+                $filters[] = [
+                    'name' => $filterName,
+                    'fixture_name' => Str::snake($classname),
+                ];
+            }
+        }
+
+        return $filters;
+    }
+
+    protected function getFilters(): array
+    {
+        $filters= [];
+        $novaResourceFilters = $this->loadNovaFilters();
+
+        foreach ($novaResourceFilters as $filter) {
+            $filters[] = [
+                'name' => get_class($filter),
+                'fixture_name' => Str::snake(class_basename($filter))
+            ];
+        }
+
+        return $filters;
     }
 }

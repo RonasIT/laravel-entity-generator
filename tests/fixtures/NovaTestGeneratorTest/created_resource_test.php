@@ -165,19 +165,6 @@ class PostTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testSearch(): void
-    {
-        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/posts', [
-            'orderBy' => 'id',
-            'orderByDirection' => 'asc'
-        ]);
-
-        $response->assertOk();
-
-        // TODO: Need to remove after first successful start
-        $this->assertEqualsFixture('search_posts_response.json', $response->json(), true);
-    }
-
     public function testSearchUnauthorized(): void
     {
         $response = $this->json('get', '/nova-api/posts', [
@@ -258,6 +245,39 @@ class PostTest extends TestCase
     public function testGetPostActions(array $request, string $responseFixture): void
     {
         $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/posts/actions', $request);
+
+        $response->assertOk();
+
+        // TODO: Need to remove after first successful start
+        $this->assertEqualsFixture($responseFixture, $response->json(), true);
+    }
+
+    public function getPostFiltersData(): array
+    {
+        return [
+            [
+                'filters' => [
+                    'TextField:description' => 'search term',
+                ],
+                'response_fixture' => 'filter_post_by_text_field.json',
+            ],
+            [
+                'filters' => [
+                    'RonasIT\Support\Tests\Support\CreatedAtFilter' => 'search term',
+                ],
+                'response_fixture' => 'filter_post_by_created_at_filter.json',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider  getPostFiltersData
+     */
+    public function testFilterPost(array $filters, string $responseFixture): void
+    {
+        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/posts', [
+            'filters' => base64_encode(json_encode($filters))
+        ]);
 
         $response->assertOk();
 

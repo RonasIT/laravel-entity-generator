@@ -32,7 +32,7 @@ trait NovaTestMockTrait
     {
         $mock = $this
             ->getMockBuilder(NovaTestGenerator::class)
-            ->onlyMethods(['getModelFields', 'getMockModel', 'loadNovaActions'])
+            ->onlyMethods(['getModelFields', 'getMockModel', 'loadNovaActions', 'loadNovaFields', 'loadNovaFilters'])
             ->getMock();
 
         $mock
@@ -49,6 +49,19 @@ trait NovaTestMockTrait
                 new PublishPostAction,
                 new UnPublishPostAction,
                 new UnPublishPostAction,
+            ]);
+
+        $mock
+            ->method('loadNovaFields')
+            ->willReturn([
+                new TextField,
+                new DateField,
+            ]);
+
+        $mock
+            ->method('loadNovaFilters')
+            ->willReturn([
+                new CreatedAtFilter,
             ]);
 
         $this->app->instance(NovaTestGenerator::class, $mock);
@@ -90,7 +103,7 @@ trait NovaTestMockTrait
     public function setupConfigurations(): void
     {
         config([
-            'entity-generator.stubs.nova_resource_test' => 'entity-generator::nova_test',
+            'entity-generator.stubs.nova_test' => 'entity-generator::nova_test',
             'entity-generator.stubs.dump' => 'entity-generator::dumps.pgsql',
             'entity-generator.paths' => [
                 'nova' => 'app/Nova',

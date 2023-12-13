@@ -223,23 +223,6 @@ class {{$entity}}Test extends TestCase
 @endif
     }
 
-    public function testSearch(): void
-    {
-        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/{{$url_path}}', [
-            'orderBy' => 'id',
-            'orderByDirection' => 'asc'
-        ]);
-
-@if($shouldUseStatus)
-        $response->assertStatus(Response::HTTP_OK);
-@else
-        $response->assertOk();
-@endif
-
-        // TODO: Need to remove after first successful start
-        $this->assertEqualsFixture('search_{{$lower_entities}}_response.json', $response->json(), true);
-    }
-
     public function testSearchUnauthorized(): void
     {
         $response = $this->json('get', '/nova-api/{{$url_path}}', [
@@ -323,6 +306,39 @@ class {{$entity}}Test extends TestCase
     public function testGet{{$entity}}Actions(array $request, string $responseFixture): void
     {
         $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/{{$url_path}}/actions', $request);
+
+@if($shouldUseStatus)
+        $response->assertStatus(Response::HTTP_OK);
+@else
+        $response->assertOk();
+@endif
+
+        // TODO: Need to remove after first successful start
+        $this->assertEqualsFixture($responseFixture, $response->json(), true);
+    }
+
+    public function get{{$entity}}FiltersData(): array
+    {
+        return [
+@foreach($filters as $filter)
+            [
+                'filters' => [
+                    '{{$filter['name']}}' => 'search term',
+                ],
+                'response_fixture' => 'filter_{{$lower_entity}}_by_{{$filter['fixture_name']}}.json',
+            ],
+@endforeach
+        ];
+    }
+
+    /**
+     * @dataProvider get{{$entity}}FiltersData
+     */
+    public function testFilter{{$entity}}(array $filters, string $responseFixture): void
+    {
+        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/{{$url_path}}', [
+            'filters' => base64_encode(json_encode($filters))
+        ]);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
