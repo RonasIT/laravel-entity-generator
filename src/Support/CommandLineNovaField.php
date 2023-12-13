@@ -6,10 +6,10 @@ use Illuminate\Support\Str;
 
 class CommandLineNovaField extends AbstractNovaField
 {
-    public function __construct($field)
+    public function __construct(string $type, string $name)
     {
-        $this->isRequired = Str::contains($field['type'], 'required');
-        $this->type = $field['type'];
-        $this->name = $field['name'];
+        $this->isRequired = Str::contains($type, 'required');
+        $this->type = $type;
+        $this->name = $name;
     }
 }
