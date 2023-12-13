@@ -19,7 +19,6 @@ return [
         'factory' => 'database/factories/ModelFactory.php',
         'translations' => 'resources/lang/en/validation.php',
         'resources' => 'app/Http/Resources',
-        'nova_actions' => 'app/Nova/Actions',
         'nova' => 'app/Nova',
      ],
     'stubs' => [
