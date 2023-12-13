@@ -25,7 +25,7 @@ class RequestsGenerator extends EntityGenerator
         return $this;
     }
 
-    public function generate()
+    public function generate(): void
     {
         if (in_array('R', $this->crudOptions)) {
             $this->createRequest(
@@ -48,7 +48,7 @@ class RequestsGenerator extends EntityGenerator
             $this->createRequest(
                 self::CREATE_METHOD,
                 false,
-                $this->getValidationParameters($this->fields, true)
+                $this->getCreateValidationParameters()
             );
         }
 
@@ -56,12 +56,12 @@ class RequestsGenerator extends EntityGenerator
             $this->createRequest(
                 self::UPDATE_METHOD,
                 true,
-                $this->getValidationParameters($this->fields, false)
+                $this->getUpdateValidationParameters()
             );
         }
     }
 
-    protected function createRequest($method, $needToValidate = true, $parameters = [])
+    protected function createRequest($method, $needToValidate = true, $parameters = []): void
     {
         $requestsFolder = $this->getPluralName($this->model);
         $modelName = $this->getEntityName($method);
@@ -81,7 +81,7 @@ class RequestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Request: {$method}{$modelName}Request"));
     }
 
-    protected function getGetValidationParameters()
+    protected function getGetValidationParameters(): array
     {
         $parameters['array'] = ['with'];
 
@@ -90,11 +90,35 @@ class RequestsGenerator extends EntityGenerator
         return $this->getValidationParameters($parameters, true);
     }
 
-    protected function getSearchValidationParameters()
+    protected function getCreateValidationParameters(): array
+    {
+        $parameters = Arr::except($this->fields, 'boolean-required');
+
+        if (!empty($this->fields['boolean-required'])) {
+            $parameters['boolean-present'] = $this->fields['boolean-required'];
+        }
+
+        return $this->getValidationParameters($parameters, true);
+    }
+
+    protected function getUpdateValidationParameters(): array
+    {
+        $parameters = Arr::except($this->fields, 'boolean-required');
+
+        if (!empty($this->fields['boolean-required'])) {
+            $parameters['boolean'] = array_merge($parameters['boolean'], $this->fields['boolean-required']);
+        }
+
+        return $this->getValidationParameters($parameters, false);
+    }
+
+    protected function getSearchValidationParameters(): array
     {
         $parameters = Arr::except($this->fields, [
-            'timestamp', 'timestamp-required', 'string-required', 'integer-required'
+            'timestamp', 'timestamp-required', 'string-required', 'integer-required', 'boolean-required'
         ]);
+
+        $parameters['boolean'] = array_merge($this->fields['boolean-required'], ['desc']);
 
         $parameters['integer'] = array_merge($this->fields['integer'], [
             'page', 'per_page', 'all',
@@ -102,38 +126,36 @@ class RequestsGenerator extends EntityGenerator
 
         $parameters['array'] = ['with'];
 
-        $parameters['boolean'] = ['desc'];
-
         $parameters['string'] = ['order_by'];
 
         $parameters['string-nullable'] = ['query'];
 
         $parameters['string-required'] = ['with.*'];
 
-        return $this->getValidationParameters($parameters, true);
+        return $this->getValidationParameters($parameters, false);
     }
 
-    public function getValidationParameters($parameters, $requiredAvailable)
+    public function getValidationParameters($parameters, $requiredAvailable): array
     {
         $result = [];
 
         foreach ($parameters as $type => $parameterNames) {
             $isRequired = Str::contains($type, 'required');
             $isNullable = Str::contains($type, 'nullable');
+            $isPresent = Str::contains($type, 'present');
             $type = head(explode('-', $type));
 
             foreach ($parameterNames as $name) {
                 $required = $isRequired && $requiredAvailable;
-                $nullable = $isNullable;
 
-                $result[] = $this->getRules($name, $type, $required, $nullable);
+                $result[] = $this->getRules($name, $type, $required, $isNullable, $isPresent);
             }
         }
 
         return $result;
     }
 
-    protected function getRules($name, $type, $required, $nullable)
+    protected function getRules($name, $type, $required, $nullable, $present): array
     {
         $replaces = [
             'timestamp' => 'date',
@@ -161,13 +183,18 @@ class RequestsGenerator extends EntityGenerator
             $rules[] = 'nullable';
         }
 
+        if ($present) {
+            $rules[] = 'present';
+        }
+
         return [
             'name' => $name,
             'rules' => $rules
         ];
     }
 
-    private function getEntityName($method) {
+    private function getEntityName($method): string
+    {
         if ($method === self::SEARCH_METHOD) {
             return Str::plural($this->model);
         }

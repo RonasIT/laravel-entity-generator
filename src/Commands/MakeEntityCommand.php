@@ -5,6 +5,7 @@ namespace RonasIT\Support\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
@@ -324,7 +325,7 @@ class MakeEntityCommand extends Command
     protected function validateOnlyApiOption()
     {
         if ($this->option('only-api')) {
-            $modelName = $this->argument('name');
+            $modelName = Str::studly($this->argument('name'));
             if (!$this->classExists('services', "{$modelName}Service")) {
                 throw new ClassNotExistsException('Cannot create API without entity.');
             }
