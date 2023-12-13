@@ -85,12 +85,12 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function isFactoryExists($modelName): bool
     {
-        $factory = app(Factory::class);
+        $factory = app(LegacyFactories::class);
         $modelClass = $this->getModelClass($modelName);
-        $isFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
-        $isLegacyFactoryExists = !empty($factory[$this->getModelClass($modelName)]);
 
-        return $isLegacyFactoryExists || $isFactoryExists;
+        $isNewStyleFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
+
+        return !empty($factory[$this->getModelClass($modelName)]) || $isNewStyleFactoryExists;
     }
 
     protected function isMethodExists($modelName, $method): bool
@@ -170,8 +170,9 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected function getMockModel($model): array
     {
         $modelClass = $this->getModelClass($model);
-        $hasFactory = method_exists($modelClass, 'factory') && class_exists(Factory::resolveFactoryName($modelClass));
-        $factory = ($hasFactory) ? $modelClass::factory() : factory($modelClass);
+        $isNewStyleFactoryExists = $this->classExists('factory', "{$model}Factory")
+            && method_exists($modelClass, 'factory');
+        $factory = ($isNewStyleFactoryExists) ? $modelClass::factory() : factory($modelClass);
 
         return $factory
             ->make()
