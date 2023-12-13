@@ -127,7 +127,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             }
 
             $classname = class_basename($field);
-            $fieldName = strtolower($field->name);
+            $fieldName = Str::snake($field->name);
             $filterName = "{$classname}:{$fieldName}";
 
             if (!in_array($filterName, $filters)) {

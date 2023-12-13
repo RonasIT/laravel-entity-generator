@@ -257,7 +257,7 @@ class PostTest extends TestCase
         return [
             [
                 'filters' => [
-                    'TextField:description' => 'search term',
+                    'TextField:description_field' => 'search term',
                 ],
                 'response_fixture' => 'filter_post_by_text_field.json',
             ],
