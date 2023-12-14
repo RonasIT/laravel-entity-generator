@@ -1,1 +1,1 @@
-use App\Http\Controllers\{{$entity}}Controller;
+use {{$namespace}}\{{$entity}}Controller;

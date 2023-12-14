@@ -1,6 +1,6 @@
-namespace App\Repositories;
+namespace {{$namespace}};
 
-use App\Models\{{$entity}};
+use {{$modelNamespace}}\{{$entity}};
 @if(!empty($fields['json']))
 use Illuminate\Support\Arr;
 @endif

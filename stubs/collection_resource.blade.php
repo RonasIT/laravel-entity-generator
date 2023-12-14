@@ -1,4 +1,4 @@
-namespace App\Http\Resources;
+namespace {{$namespace}};
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 

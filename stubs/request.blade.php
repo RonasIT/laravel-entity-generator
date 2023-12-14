@@ -1,9 +1,9 @@
 @inject('requestsGenerator', 'RonasIT\Support\Generators\RequestsGenerator')
-namespace App\Http\Requests\{{$requestsFolder}};
+namespace {{$namespace}}\{{$requestsFolder}};
 
-use App\Http\Requests\Request;
+use {{$namespace}}\Request;
 @if($needToValidate)
-use App\Services\{{$entity}}Service;
+use {{$servicesNamespace}}\{{$entity}}Service;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 @endif
 

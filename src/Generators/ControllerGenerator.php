@@ -9,7 +9,7 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ControllerGenerator extends EntityGenerator
 {
-    public function generate()
+    public function generate(): void
     {
         if ($this->classExists('controllers', "{$this->model}Controller")) {
             $this->throwFailureException(
@@ -37,15 +37,19 @@ class ControllerGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Controller: {$this->model}Controller"));
     }
 
-    protected function getControllerContent($model)
+    protected function getControllerContent($model): string
     {
         return $this->getStub('controller', [
             'entity' => $model,
-            'requestsFolder' => $this->getPluralName($model)
+            'requestsFolder' => $this->getPluralName($model),
+            'namespace' => $this->getOrCreateNamespace('controllers'),
+            'requestsNamespace' => $this->getOrCreateNamespace('requests'),
+            'resourcesNamespace' => $this->getOrCreateNamespace('resources'),
+            'servicesNamespace' => $this->getOrCreateNamespace('services'),
         ]);
     }
 
-    protected function createRoutes()
+    protected function createRoutes(): void
     {
         $routesPath = base_path($this->paths['routes']);
 
@@ -61,7 +65,7 @@ class ControllerGenerator extends EntityGenerator
         $this->addRoutes($routesPath);
     }
 
-    protected function addRoutes($routesPath)
+    protected function addRoutes($routesPath): string
     {
         $routesContent = $this->getStub('routes', [
             'entity' => $this->model,
@@ -81,11 +85,12 @@ class ControllerGenerator extends EntityGenerator
         return file_put_contents($routesPath, "\n\n{$routesContent}", FILE_APPEND);
     }
 
-    protected function addUseController($routesPath)
+    protected function addUseController(string $routesPath): void
     {
         $routesFileContent = file_get_contents($routesPath);
 
         $stub = $this->getStub('use_routes', [
+            'namespace' => $this->getOrCreateNamespace('controllers'),
             'entity' => $this->model
         ]);
 

@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 */
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
-$factory->define(App\Models\User::class, function (Faker\Generator $faker) {
+$factory->define({{$modelsNamespace}}\User::class, function (Faker\Generator $faker) {
     static $password;
 
     return [
@@ -23,7 +23,7 @@ $factory->define(App\Models\User::class, function (Faker\Generator $faker) {
     ];
 });
 
-$factory->define(App\Models\Role::class, function () {
+$factory->define({{$modelsNamespace}}\Role::class, function () {
     return [
         'name' => 'user'
     ];
