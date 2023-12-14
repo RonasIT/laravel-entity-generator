@@ -137,11 +137,10 @@ class NovaResourceGenerator extends EntityGenerator
         $modelClass = "App\Models\{$this->model}";
         $tableName = app($modelClass)->getTable();
         $columns = DB::getDoctrineSchemaManager($tableName);
-        $fields = [];
 
-        foreach ($columns as $column) {
-            $fields[] = new DatabaseNovaField($column);
-        }
+        $fields = array_map(function ($column) {
+            return new DatabaseNovaField($column);
+        }, $columns);
 
         return [$fields, $this->novaFieldsDatabaseMap];
     }
