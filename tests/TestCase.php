@@ -17,7 +17,7 @@ class TestCase extends BaseTestCase
 
     public function rollbackToDefaultBasePath(): void
     {
-        $this->app->setBasePath('/app');
+        $this->app->setBasePath(getcwd());
     }
 
     protected function getEnvironmentSetUp($app)
