@@ -137,8 +137,10 @@ class NovaResourceGenerator extends EntityGenerator
     protected function getFieldsFromDatabase(): array
     {
         $modelClass = "App\Models\{$this->model}";
-        $tableName = app($modelClass)->getTable();
-        $columns = DB::getDoctrineSchemaManager($tableName);
+        $model = app($modelClass);
+        $columns = DB::connection($model->getConnectionName())
+            ->getDoctrineSchemaManager()
+            ->listTableColumns($model->getTable());
 
         $fields = array_map(function ($column) {
             return new DatabaseNovaField($column);
