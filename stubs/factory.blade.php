@@ -1,4 +1,4 @@
-namespace Database\Factories;
+namespace {{$namespace}};
 
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;

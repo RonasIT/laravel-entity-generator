@@ -1,4 +1,4 @@
-namespace App\Models;
+namespace {{$namespace}};
 
 @if(version_compare(app()->version(), '8', '>='))
 use Illuminate\Database\Eloquent\Factories\HasFactory;

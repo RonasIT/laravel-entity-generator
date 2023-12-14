@@ -51,7 +51,7 @@ class NovaResourceGenerator extends EntityGenerator
         'time_zone' => 'Timezone'
     ];
 
-    public function generate()
+    public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
             if (!$this->classExists('models', $this->model)) {
@@ -75,7 +75,9 @@ class NovaResourceGenerator extends EntityGenerator
             $fileContent = $this->getStub('nova_resource', [
                 'model' => $this->model,
                 'fields' => $novaFields,
-                'types' => array_unique(data_get($novaFields, '*.type'))
+                'types' => array_unique(data_get($novaFields, '*.type')),
+                'modelNamespace' => $this->getOrCreateNamespace('models'),
+                'namespace' => $this->getOrCreateNamespace('nova')
             ]);
 
             $this->saveClass('nova', "{$this->model}Resource", $fileContent);

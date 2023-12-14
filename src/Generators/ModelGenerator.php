@@ -15,7 +15,7 @@ class ModelGenerator extends EntityGenerator
         'hasMany'
     ];
 
-    public function generate()
+    public function generate(): void
     {
         if ($this->classExists('models', $this->model)) {
             $this->throwFailureException(
@@ -33,17 +33,18 @@ class ModelGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Model: {$this->model}"));
     }
 
-    protected function getNewModelContent()
+    protected function getNewModelContent(): string
     {
         return $this->getStub('model', [
             'entity' => $this->model,
             'fields' => Arr::collapse($this->fields),
             'relations' => $this->prepareRelations(),
-            'casts' => $this->getCasts($this->fields)
+            'casts' => $this->getCasts($this->fields),
+            'namespace' => $this->getOrCreateNamespace('models')
         ]);
     }
 
-    public function prepareRelatedModels()
+    public function prepareRelatedModels(): void
     {
         $types = [
             'hasMany' => 'belongsTo',
@@ -77,14 +78,14 @@ class ModelGenerator extends EntityGenerator
         }
     }
 
-    public function getModelContent($model)
+    public function getModelContent($model): string
     {
         $modelPath = base_path($this->paths['models'] . "/{$model}.php");
 
         return file_get_contents($modelPath);
     }
 
-    public function prepareRelations()
+    public function prepareRelations(): array
     {
         $result = [];
 
@@ -103,7 +104,7 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getCasts($fields)
+    protected function getCasts($fields): array
     {
         $casts = [
             'boolean-required' => 'boolean',
@@ -126,7 +127,7 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    private function getRelationName($relation, $type)
+    private function getRelationName($relation, $type): string
     {
         $relationName = Str::snake($relation);
 

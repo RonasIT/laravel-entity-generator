@@ -1,6 +1,6 @@
-namespace App\Services;
+namespace {{$namespace}};
 
-use App\Models\{{$entity}};
+use {{$modelsNamespace}}\{{$entity}};
 use RonasIT\Support\Traits\EntityControlTrait;
 {{--
     Laravel inserts two spaces between @property and type, so we are forced

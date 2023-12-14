@@ -2,7 +2,8 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Database\Eloquent\Factory as LegacyFactories;
+use Exception;
+use Illuminate\Database\Eloquent\Factory as LegacyFactory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -26,13 +27,13 @@ class TestsGenerator extends EntityGenerator
     const UPDATED_AT = 'updated_at';
     const CREATED_AT = 'created_at';
 
-    public function generate()
+    public function generate(): void
     {
         $this->createDump();
         $this->createTests();
     }
 
-    protected function createDump()
+    protected function createDump(): void
     {
         $content = $this->getStub('dump', [
             'inserts' => $this->getInserts()
@@ -46,13 +47,13 @@ class TestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function createTests()
+    protected function createTests(): void
     {
         $this->generateExistedEntityFixture();
         $this->generateTest();
     }
 
-    protected function getInserts()
+    protected function getInserts(): array
     {
         $arrayModels = [$this->model];
 
@@ -74,31 +75,43 @@ class TestsGenerator extends EntityGenerator
         }, $this->buildRelationsTree($arrayModels));
     }
 
-    protected function isFactoryExists($modelName)
+    protected function isFactoryExists($modelName): bool
     {
-        $factory = app(LegacyFactories::class);
-        $modelClass = $this->getModelClass($modelName);
-
-        $isNewStyleFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
-
-        return !empty($factory[$this->getModelClass($modelName)]) || $isNewStyleFactoryExists;
+        return $this->isLegacyFactoryExists($modelName) || $this->isNewStyleFactoryExists($modelName);
     }
 
-    protected function isMethodExists($modelName, $method)
+    protected function isLegacyFactoryExists($modelName): bool
+    {
+        $legacyFactory = app(LegacyFactory::class);
+        $modelClass = $this->getModelClass($modelName);
+
+        return !empty($legacyFactory[$modelClass]);
+    }
+
+    protected function isNewStyleFactoryExists($modelName): bool
+    {
+        $modelClass = $this->getModelClass($modelName);
+
+        return $this->classExists('factory', "{$modelName}Factory")
+            && method_exists($modelClass, 'factory')
+            && class_exists(Factory::resolveFactoryName($modelClass));
+    }
+
+    protected function isMethodExists($modelName, $method): bool
     {
         $modelClass = $this->getModelClass($modelName);
 
         return method_exists($modelClass, $method);
     }
 
-    protected function getModelsWithFactories($models)
+    protected function getModelsWithFactories($models): array
     {
         return array_filter($models, function ($model) {
             return $this->isFactoryExists($model);
         });
     }
 
-    protected function getDumpValuesList($model)
+    protected function getDumpValuesList($model): array
     {
         $values = $this->buildEntityObject($model);
 
@@ -117,7 +130,7 @@ class TestsGenerator extends EntityGenerator
         return $values;
     }
 
-    protected function getFixtureValuesList($model)
+    protected function getFixtureValuesList($model): array
     {
         $values = $this->buildEntityObject($model);
 
@@ -130,7 +143,7 @@ class TestsGenerator extends EntityGenerator
         return $values;
     }
 
-    protected function buildEntityObject($model)
+    protected function buildEntityObject($model): array
     {
         $modelFields = $this->getModelFields($model);
         $mockEntity = $this->getMockModel($model);
@@ -146,30 +159,38 @@ class TestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getModelClass($model)
+    protected function getModelClass($model): string
     {
-        return "App\\Models\\{$model}";
+        $modelNamespace = $this->getOrCreateNamespace('models');
+
+        return "{$modelNamespace}\\{$model}";
     }
 
-    protected function getModelFields($model)
+    protected function getModelFields($model): array
     {
         $modelClass = $this->getModelClass($model);
 
         return $this->filterBadModelField($modelClass::getFields());
     }
 
-    protected function getMockModel($model)
+    protected function getMockModel($model): array
     {
         $modelClass = $this->getModelClass($model);
-        $hasFactory = method_exists($modelClass, 'factory') && class_exists(Factory::resolveFactoryName($modelClass));
-        $factory = ($hasFactory) ? $modelClass::factory() : factory($modelClass);
+
+        if ($this->isNewStyleFactoryExists($model)) {
+            $factory = $modelClass::factory();
+        } else if ($this->isLegacyFactoryExists($model)) {
+            $factory = factory($modelClass);
+        } else {
+            throw new Exception('You should set up legacy or new model class factory.');
+        }
 
         return $factory
             ->make()
             ->toArray();
     }
 
-    public function getFixturesPath($fileName = null)
+    public function getFixturesPath($fileName = null): string
     {
         $path = base_path("{$this->paths['tests']}/fixtures/{$this->getTestClassName()}");
 
@@ -180,12 +201,12 @@ class TestsGenerator extends EntityGenerator
         return "{$path}/{$fileName}";
     }
 
-    public function getTestClassName()
+    public function getTestClassName(): string
     {
         return "{$this->model}Test";
     }
 
-    protected function generateExistedEntityFixture()
+    protected function generateExistedEntityFixture(): void
     {
         $object = $this->getFixtureValuesList($this->model);
         $entity = Str::snake($this->model);
@@ -203,14 +224,14 @@ class TestsGenerator extends EntityGenerator
         }
     }
 
-    protected function isFixtureNeeded($type)
+    protected function isFixtureNeeded($type): bool
     {
         $firstLetter = strtoupper($type[0]);
 
         return in_array($firstLetter, $this->crudOptions);
     }
 
-    protected function generateFixture($fixtureName, $data)
+    protected function generateFixture($fixtureName, $data): void
     {
         $fixturePath = $this->getFixturesPath($fixtureName);
         $content = json_encode($data, JSON_PRETTY_PRINT);
@@ -222,13 +243,14 @@ class TestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function generateTest()
+    protected function generateTest(): void
     {
         $content = $this->getStub('test', [
             'entity' => $this->model,
             'databaseTableName' => $this->getTableName($this->model),
             'entities' => $this->getTableName($this->model, '-'),
-            'withAuth' => $this->withAuth
+            'withAuth' => $this->withAuth,
+            'modelsNamespace' => $this->getOrCreateNamespace('models')
         ]);
 
         $testName = $this->getTestClassName();
@@ -239,7 +261,7 @@ class TestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function buildRelationsTree($models)
+    protected function buildRelationsTree($models): array
     {
         foreach ($models as $model) {
             $relations = $this->getRelatedModels($model);
@@ -265,7 +287,7 @@ class TestsGenerator extends EntityGenerator
         return array_unique($models);
     }
 
-    protected function getRelatedModels($model)
+    protected function getRelatedModels($model): array
     {
         $content = $this->getModelClassContent($model);
 
@@ -274,7 +296,7 @@ class TestsGenerator extends EntityGenerator
         return head($matches);
     }
 
-    protected function getModelClassContent($model)
+    protected function getModelClassContent($model): string
     {
         $path = base_path("{$this->paths['models']}/{$model}.php");
 
@@ -289,14 +311,14 @@ class TestsGenerator extends EntityGenerator
         return file_get_contents($path);
     }
 
-    protected function canGenerateUserData()
+    protected function canGenerateUserData(): bool
     {
         return $this->classExists('models', 'User')
             && $this->isFactoryExists('User')
             && $this->isMethodExists('User', 'getFields');
     }
 
-    private function filterBadModelField($fields)
+    private function filterBadModelField($fields): array
     {
         return array_diff($fields, [
             self::EMPTY_GUARDED_FIELD,

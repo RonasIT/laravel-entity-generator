@@ -19,7 +19,7 @@ class SeederGenerator extends EntityGenerator
         $this->databaseSeederPath = Arr::get($this->paths, 'database_seeder', 'database/seeders/DatabaseSeeder.php');
     }
 
-    public function generate()
+    public function generate(): void
     {
         $this->checkConfigs();
 
@@ -42,11 +42,13 @@ class SeederGenerator extends EntityGenerator
         $this->appendSeederToList();
     }
 
-    protected function createDatabaseSeeder()
+    protected function createDatabaseSeeder(): void
     {
         $stubPath = config('entity-generator.stubs.database_empty_seeder');
 
-        $content = "<?php \n\n" . view($stubPath)->render();
+        $content = "<?php \n\n" . view($stubPath, [
+            'namespace' => $this->getOrCreateNamespace('seeders')
+        ])->render();
 
         file_put_contents($this->databaseSeederPath, $content);
 
@@ -55,7 +57,7 @@ class SeederGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function createEntitySeeder()
+    protected function createEntitySeeder(): void
     {
         $seeder = (version_compare(app()->version(), '8', '>=')) ? 'seeder' : 'legacy_seeder';
 
@@ -63,7 +65,9 @@ class SeederGenerator extends EntityGenerator
 
         $content = "<?php \n\n" . view($stubPath)->with([
             'entity' => $this->model,
-            'relations' => $this->relations
+            'relations' => $this->relations,
+            'namespace' => $this->getOrCreateNamespace('seeders'),
+            'modelsNamespace' => $this->getOrCreateNamespace('models')
         ])->render();
 
         $seederPath = base_path("{$this->seedsPath}/{$this->model}Seeder.php");
@@ -75,7 +79,7 @@ class SeederGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function appendSeederToList()
+    protected function appendSeederToList(): void
     {
         $content = file_get_contents($this->databaseSeederPath);
 
@@ -86,7 +90,7 @@ class SeederGenerator extends EntityGenerator
         file_put_contents($this->databaseSeederPath, $fixedContent);
     }
 
-    protected function checkConfigs()
+    protected function checkConfigs(): void
     {
         if (empty(config('entity-generator.stubs.seeder')) || empty(config('entity-generator.stubs.legacy_seeder'))) {
             throw new EntityCreateException('

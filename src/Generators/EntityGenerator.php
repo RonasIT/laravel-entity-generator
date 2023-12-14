@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Generators;
 
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
@@ -76,9 +77,31 @@ abstract class EntityGenerator
         $this->paths = config('entity-generator.paths');
     }
 
-    abstract public function generate();
+    protected function getOrCreateNamespace(string $path): string
+    {
+        $path = $this->paths[$path];
+        $pathParts = explode('/', $path);
 
-    protected function classExists($path, $name)
+        if (Str::endsWith(Arr::last($pathParts), '.php')) {
+            array_pop($pathParts);
+        }
+
+        $namespace = array_map(function (string $part) {
+            return ucfirst($part);
+        }, $pathParts);
+
+        $fullPath = base_path($path);
+
+        if (!file_exists($fullPath)) {
+            mkdir_recursively($fullPath);
+        }
+
+        return implode('\\', $namespace);
+    }
+
+    abstract public function generate(): void;
+
+    protected function classExists($path, $name): bool
     {
         $entitiesPath = $this->paths[$path];
 
@@ -87,7 +110,7 @@ abstract class EntityGenerator
         return file_exists($classPath);
     }
 
-    protected function saveClass($path, $name, $content, $additionalEntityFolder = false)
+    protected function saveClass($path, $name, $content, $additionalEntityFolder = false): string
     {
         $entitiesPath = $this->paths[$path];
 
@@ -109,7 +132,7 @@ abstract class EntityGenerator
         return file_put_contents($classPath, $content);
     }
 
-    protected function getStub($stub, $data = [])
+    protected function getStub($stub, $data = []): string
     {
         $stubPath = config("entity-generator.stubs.$stub");
 
@@ -118,19 +141,19 @@ abstract class EntityGenerator
         return view($stubPath)->with($data)->render();
     }
 
-    protected function getTableName($entityName, $delimiter = '_')
+    protected function getTableName($entityName, $delimiter = '_'): string
     {
         $entityName = Str::snake($entityName, $delimiter);
 
         return Str::plural($entityName);
     }
 
-    protected function getPluralName($entityName)
+    protected function getPluralName($entityName): string
     {
         return Str::plural($entityName);
     }
 
-    protected function throwFailureException($exceptionClass, $failureMessage, $recommendedMessage)
+    protected function throwFailureException($exceptionClass, $failureMessage, $recommendedMessage): void
     {
         throw new $exceptionClass("{$failureMessage} {$recommendedMessage}");
     }
