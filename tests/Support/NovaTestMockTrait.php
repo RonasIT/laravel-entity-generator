@@ -116,7 +116,7 @@ trait NovaTestMockTrait
 
     public function mockViewsNamespace(): void
     {
-        View::addNamespace('entity-generator', '/app/stubs');
+        View::addNamespace('entity-generator', getcwd() . '/stubs');
     }
 
     public function mockClassExistsFunction(): Mock
