@@ -137,7 +137,7 @@ abstract class EntityGenerator
         $stubPath = config("entity-generator.stubs.{$stub}");
 
         $data['options'] = $this->crudOptions;
-        dump(scandir('/app/stubs'));
+        dump(scandir(base_path()));
         return view($stubPath)->with($data)->render();
     }
 
