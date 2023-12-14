@@ -2,12 +2,14 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Support\Str;
-use Laravel\Nova\NovaServiceProvider;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Support\CommandLineNovaField;
+use RonasIT\Support\Support\DatabaseNovaField;
 
 class NovaResourceGenerator extends EntityGenerator
 {
@@ -24,6 +26,22 @@ class NovaResourceGenerator extends EntityGenerator
         'integer-required' => 'Number',
         'float' => 'Number',
         'float-required' => 'Number'
+    ];
+
+    protected $novaFieldsDatabaseMap = [
+        'integer' => 'Number',
+        'smallint' => 'Number',
+        'bigint' => 'Number',
+        'float' => 'Number',
+        'decimal' => 'Number',
+        'string' => 'Text',
+        'text' => 'Text',
+        'guid' => 'Text',
+        'json' => 'Text',
+        'date' => 'Date',
+        'datetime' => 'DateTime',
+        'datetimetz' => 'DateTime',
+        'boolean' => 'Boolean',
     ];
 
     protected $specialFieldNamesMap = [
@@ -71,25 +89,64 @@ class NovaResourceGenerator extends EntityGenerator
     protected function prepareNovaFields(): array
     {
         $result = [];
+        list($fields, $fieldTypesMap) = $this->getFieldsForCreation();
 
-        foreach ($this->fields as $fieldType => $fieldNames) {
-            foreach ($fieldNames as $fieldName) {
-                if (!Arr::has($this->novaFieldTypesMap, $fieldType)) {
-                    event(new SuccessCreateMessage("Field '{$fieldName}' had been skipped cause has an unhandled type {$fieldType}."));
-                } else if (Arr::has($this->specialFieldNamesMap, $fieldName)) {
-                    $result[$fieldName] = [
-                        'type' => $this->specialFieldNamesMap[$fieldName],
-                        'is_required' => Str::contains($fieldType, 'required')
-                    ];
-                } else {
-                    $result[$fieldName] = [
-                        'type' => $this->novaFieldTypesMap[$fieldType],
-                        'is_required' => Str::contains($fieldType, 'required')
-                    ];
-                }
+        foreach ($fields as $field) {
+            if (!Arr::has($fieldTypesMap, $field->type)) {
+                event(new SuccessCreateMessage("Field '{$field->name}' had been skipped cause has an unhandled type {$field->type}."));
+            } else if (Arr::has($this->specialFieldNamesMap, $field->name)) {
+                $result[$field->name] = [
+                    'type' => $this->specialFieldNamesMap[$field->name],
+                    'is_required' => $field->isRequired
+                ];
+            } else {
+                $result[$field->name] = [
+                    'type' => $fieldTypesMap[$field->type],
+                    'is_required' => $field->isRequired
+                ];
             }
         }
 
         return $result;
+    }
+
+    protected function getFieldsForCreation(): array
+    {
+        if ($this->commandFieldsExists()) {
+            return $this->getFieldsFromCommandLineArguments();
+        }
+
+        return $this->getFieldsFromDatabase();
+    }
+
+    protected function getFieldsFromCommandLineArguments(): array
+    {
+        $fields = [];
+
+        foreach ($this->fields as $type => $names) {
+            foreach ($names as $name) {
+                $fields[] = new CommandLineNovaField($type, $name);
+            }
+        }
+
+        return [$fields, $this->novaFieldTypesMap];
+    }
+
+    protected function getFieldsFromDatabase(): array
+    {
+        $modelClass = "App\Models\{$this->model}";
+        $tableName = app($modelClass)->getTable();
+        $columns = DB::getDoctrineSchemaManager($tableName);
+
+        $fields = array_map(function ($column) {
+            return new DatabaseNovaField($column);
+        }, $columns);
+
+        return [$fields, $this->novaFieldsDatabaseMap];
+    }
+
+    protected function commandFieldsExists(): bool
+    {
+        return !empty(Arr::flatten($this->fields));
     }
 }
