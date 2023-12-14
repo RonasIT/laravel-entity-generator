@@ -14,6 +14,8 @@ jobs:
         with:
           php-version: '7.4'
       - uses: actions/checkout@v3
+      - name: Validate composer.json and composer.lock
+        run: composer validate
       - name: Install Dependencies
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
       - name: Execute unit tests via PHPUnit with coverage
