@@ -3,14 +3,7 @@
          bootstrap="bootstrap/autoload.php" colors="true" convertErrorsToExceptions="true"
          convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false"
          stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.5/phpunit.xsd">
-    <coverage processUncoveredFiles="true">
-        <include>
-            <directory suffix=".php">./src</directory>
-        </include>
-        <exclude>
-            <file>./app/Http/routes.php</file>
-        </exclude>
-    </coverage>
+    <coverage/>
     <testsuites>
         <testsuite name="Application Test Suite">
             <directory suffix="Test.php">./tests</directory>

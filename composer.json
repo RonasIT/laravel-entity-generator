@@ -18,6 +18,7 @@
   },
   "require-dev": {
     "fzaninotto/faker": "~1.4",
+    "php-coveralls/php-coveralls": "^2.5",
     "mockery/mockery": "^1.4",
     "phpunit/phpunit": "^8.0",
     "mikey179/vfsstream": "^1.6.11",
