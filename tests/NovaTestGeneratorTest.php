@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Tests;
 
 use org\bovigo\vfs\vfsStream;
+use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
@@ -59,7 +60,7 @@ class NovaTestGeneratorTest extends TestCase
         }
     }
 
-    public function testCreateWithActions()
+    public function testCreate()
     {
         $functionMock = $this->mockClassExistsFunction();
 
@@ -79,6 +80,19 @@ class NovaTestGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/NovaPostTest/create_post_request.json');
         $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/NovaPostTest/create_post_response.json');
         $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/NovaPostTest/update_post_request.json');
+
+        $functionMock->disable();
+    }
+
+    public function testCreateWithMissingNovaPackage()
+    {
+        $this->expectsEvents([SuccessCreateMessage::class]);
+
+        $functionMock = $this->mockCheckingNovaPackageExistence();
+
+        app(NovaTestGenerator::class)
+            ->setModel('Post')
+            ->generate();
 
         $functionMock->disable();
     }

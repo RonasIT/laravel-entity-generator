@@ -124,6 +124,12 @@ trait NovaTestMockTrait
         return $this->mockNativeFunction('\\RonasIT\\Support\\Generators', 'class_exists', true);
     }
 
+    public function mockCheckingNovaPackageExistence(): Mock
+    {
+        return $this->mockNativeFunction('\\RonasIT\\Support\\Generators', 'class_exists', false);
+    }
+
+
     public function mockFilesystem(): void
     {
         $structure = [

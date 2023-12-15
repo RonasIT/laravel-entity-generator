@@ -12,11 +12,6 @@
     <filter>
         <whitelist>
             <directory suffix=".php">./src</directory>
-            <directory suffix=".php">./tests</directory>
-            <exclude>
-                <directory>./tests/fixtures</directory>
-                <file>./tests/TestCase.php</file>
-            </exclude>
         </whitelist>
     </filter>
     <php>
