@@ -5,16 +5,17 @@ namespace RonasIT\Support\Tests\Support;
 use Mockery;
 use Mockery\MockInterface;
 use org\bovigo\vfs\vfsStream;
+use RonasIT\Support\Generators\NovaResourceGenerator;
 use RonasIT\Support\Generators\NovaTestGenerator;
 
-trait NovaTestMockTrait
+trait NovaResourceMockTrait
 {
     use GeneratorMockTrait;
 
-    public function mockNovaResourceTestGenerator(): void
+    public function mockNovaResourceGenerator(): void
     {
         $mock = $this
-            ->getMockBuilder(NovaTestGenerator::class)
+            ->getMockBuilder(NovaResourceGenerator::class)
             ->onlyMethods(['getModelFields', 'getMockModel', 'loadNovaActions', 'loadNovaFields', 'loadNovaFilters'])
             ->getMock();
 
@@ -50,26 +51,26 @@ trait NovaTestMockTrait
         $this->app->instance(NovaTestGenerator::class, $mock);
     }
 
-    public function getTestGeneratorMockForNonExistingNovaResource(): MockInterface
+    public function getResourceGeneratorMockForNonExistingNovaResource(): MockInterface
     {
-        return $this->getGeneratorMockForNonExistingNovaResource(NovaTestGenerator::class);
+        return $this->getGeneratorMockForNonExistingNovaResource(NovaResourceGenerator::class);
     }
 
-    public function getGeneratorMockForExistingNovaTest(): MockInterface
+    public function getResourceGeneratorMockForExistingNovaResource(): MockInterface
     {
-        $mock = Mockery::mock(NovaTestGenerator::class)->makePartial();
+        $mock = Mockery::mock(NovaResourceGenerator::class)->makePartial();
 
         $mock
             ->shouldAllowMockingProtectedMethods()
             ->shouldReceive('classExists')
             ->once()
-            ->with('nova', 'Post')
+            ->with('models', 'Post')
             ->andReturn(true);
 
         $mock
             ->shouldReceive('classExists')
             ->once()
-            ->with('nova', 'NovaPostTest')
+            ->with('nova', 'PostResource')
             ->andReturn(true);
 
         return $mock;
@@ -78,12 +79,10 @@ trait NovaTestMockTrait
     public function setupConfigurations(): void
     {
         config([
-            'entity-generator.stubs.nova_test' => 'entity-generator::nova_test',
+            'entity-generator.stubs.nova_resource' => 'entity-generator::nova_resource',
             'entity-generator.stubs.dump' => 'entity-generator::dumps.pgsql',
             'entity-generator.paths' => [
                 'nova' => 'app/Nova',
-                'nova_actions' => 'app/Nova/Actions',
-                'tests' => 'tests',
                 'models' => 'app/Models'
             ]
         ]);
@@ -93,24 +92,11 @@ trait NovaTestMockTrait
     {
         $structure = [
             'app' => [
-                'Nova' => [
-                    'Actions' => [
-                        'PublishPostAction.php' => '<?php',
-                        'ArchivePostAction.php' => '<?php',
-                        'BlockCommentAction.php' => '<?php',
-                        'UnPublishPostAction.txt' => 'text',
-                    ],
-                    'Post.php' => '<?php'
-                ],
+                'Nova' => [],
                 'Models' => [
                     'Post.php' => '<?php'
                 ]
             ],
-            'tests' => [
-                'fixtures' => [
-                    'NovaPostTest' => []
-                ]
-            ]
         ];
 
         vfsStream::create($structure);
