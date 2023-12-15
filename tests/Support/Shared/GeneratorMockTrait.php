@@ -1,18 +1,31 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support;
+namespace RonasIT\Support\Tests\Support\Shared;
 
 use Illuminate\Support\Facades\View;
 use Mockery;
 use Mockery\MockInterface;
-use org\bovigo\vfs\vfsStream;
 use phpmock\Mock;
 use phpmock\MockBuilder;
-use RonasIT\Support\Generators\NovaResourceGenerator;
-use RonasIT\Support\Generators\NovaTestGenerator;
+use PHPUnit\Framework\MockObject\MockObject;
 
 trait GeneratorMockTrait
 {
+    protected function mockClassWithReturn($className, $methods = [], $disableConstructor = false): MockObject
+    {
+        $builder = $this->getMockBuilder($className);
+
+        if ($methods) {
+            $builder->onlyMethods($methods);
+        }
+
+        if ($disableConstructor) {
+            $builder->disableOriginalConstructor();
+        }
+
+        return $builder->getMock();
+    }
+
     public function mockNativeFunction(string $namespace, string $name, $result): Mock
     {
         $builder = new MockBuilder();

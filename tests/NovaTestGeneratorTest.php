@@ -7,7 +7,7 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Tests\Support\NovaTestMockTrait;
+use RonasIT\Support\Tests\Support\NovaTest\NovaTestMockTrait;
 
 class NovaTestGeneratorTest extends TestCase
 {

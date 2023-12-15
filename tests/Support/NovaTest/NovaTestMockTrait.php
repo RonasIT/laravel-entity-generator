@@ -1,11 +1,12 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support;
+namespace RonasIT\Support\Tests\Support\NovaTest;
 
 use Mockery;
 use Mockery\MockInterface;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\NovaTestGenerator;
+use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
 
 trait NovaTestMockTrait
 {

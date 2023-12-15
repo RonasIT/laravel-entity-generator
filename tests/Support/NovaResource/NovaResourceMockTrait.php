@@ -1,55 +1,22 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support;
+namespace RonasIT\Support\Tests\Support\NovaResource;
 
+use Illuminate\Container\Container;
+use Illuminate\Database\Connection;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\DB;
 use Mockery;
 use Mockery\MockInterface;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\MockObject\MockObject;
 use RonasIT\Support\Generators\NovaResourceGenerator;
-use RonasIT\Support\Generators\NovaTestGenerator;
+use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Traits\MockClassTrait;
 
 trait NovaResourceMockTrait
 {
-    use GeneratorMockTrait;
-
-    public function mockNovaResourceGenerator(): void
-    {
-        $mock = $this
-            ->getMockBuilder(NovaResourceGenerator::class)
-            ->onlyMethods(['getModelFields', 'getMockModel', 'loadNovaActions', 'loadNovaFields', 'loadNovaFilters'])
-            ->getMock();
-
-        $mock
-            ->method('getModelFields')
-            ->willReturn(['title', 'name']);
-
-        $mock
-            ->method('getMockModel')
-            ->willReturn(['title' => 'some title', 'name' => 'some name']);
-
-        $mock
-            ->method('loadNovaActions')
-            ->willReturn([
-                new PublishPostAction,
-                new UnPublishPostAction,
-                new UnPublishPostAction,
-            ]);
-
-        $mock
-            ->method('loadNovaFields')
-            ->willReturn([
-                new TextField,
-                new DateField,
-            ]);
-
-        $mock
-            ->method('loadNovaFilters')
-            ->willReturn([
-                new CreatedAtFilter,
-            ]);
-
-        $this->app->instance(NovaTestGenerator::class, $mock);
-    }
+    use GeneratorMockTrait, MockClassTrait;
 
     public function getResourceGeneratorMockForNonExistingNovaResource(): MockInterface
     {
@@ -80,7 +47,6 @@ trait NovaResourceMockTrait
     {
         config([
             'entity-generator.stubs.nova_resource' => 'entity-generator::nova_resource',
-            'entity-generator.stubs.dump' => 'entity-generator::dumps.pgsql',
             'entity-generator.paths' => [
                 'nova' => 'app/Nova',
                 'models' => 'app/Models'
@@ -100,5 +66,23 @@ trait NovaResourceMockTrait
         ];
 
         vfsStream::create($structure);
+    }
+
+    public function mockGettingModelInstance()
+    {
+        $connection = $this->mockClassWithReturn(Connection::class, ['getDoctrineSchemaManager'], true);
+
+        $mock = Mockery::mock('alias:' . DB::class);
+        $mock
+            ->expects('connection')
+            ->with('pgsql')
+            ->andReturn($connection);
+
+        $connection
+            ->expects($this->once())
+            ->method('getDoctrineSchemaManager')
+            ->willReturn(new SchemaManager);
+
+        $this->app->instance('App\\Models\\Post', new Post);
     }
 }

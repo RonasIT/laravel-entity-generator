@@ -2,13 +2,18 @@
 
 namespace RonasIT\Support\Tests;
 
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\DBAL\Types\IntegerType;
+use Doctrine\DBAL\Types\StringType;
 use org\bovigo\vfs\vfsStream;
+use ReflectionClass;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaResourceGenerator;
-use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Tests\Support\NovaResourceMockTrait;
+use RonasIT\Support\Support\DatabaseNovaField;
+use RonasIT\Support\Tests\Support\NovaResource\NovaResourceMockTrait;
 
 class NovaResourceGeneratorTest extends TestCase
 {
@@ -77,25 +82,78 @@ class NovaResourceGeneratorTest extends TestCase
 
     public function testCreate()
     {
+        $this->expectsEvents(SuccessCreateMessage::class);
+
         $functionMock = $this->mockClassExistsFunction();
 
         $this->mockFilesystem();
         $this->setupConfigurations();
         $this->mockViewsNamespace();
-        $this->mockNovaResourceTestGenerator();
 
-        app(NovaTestGenerator::class)
+        app(NovaResourceGenerator::class)
             ->setModel('Post')
+            ->setFields($this->getFieldsMock())
             ->generate();
 
         $this->rollbackToDefaultBasePath();
 
-        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaPostTest.php');
-        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaPostTest/dump.sql');
-        $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/NovaPostTest/create_post_request.json');
-        $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/NovaPostTest/create_post_response.json');
-        $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/NovaPostTest/update_post_request.json');
+        $this->assertGeneratedFileEquals('created_resource.php', 'app/Nova/PostResource.php');
 
         $functionMock->disable();
+    }
+
+    public function testGetModelFieldsFromDatabase()
+    {
+        $this->mockGettingModelInstance();
+
+        $reflectionClass = new ReflectionClass(NovaResourceGenerator::class);
+        $method = $reflectionClass->getMethod('getFieldsForCreation');
+        $method->setAccessible(true);
+
+        $generator = (new NovaResourceGenerator)
+            ->setFields([])
+            ->setModel('Post');
+
+        $fields = $method->invokeArgs($generator, []);
+
+        $this->assertEquals($this->getDatabaseAssertionData(), $fields);
+    }
+
+    public function getFieldsMock(): array
+    {
+        return [
+            'boolean' => ['is_published'],
+            'string-required' => ['title', 'body'],
+            'integer' => ['id'],
+            'non_existing_type' => ['comment'],
+            'json' => [],
+            'timestamp-required' => [],
+        ];
+    }
+
+    public function getDatabaseAssertionData(): array
+    {
+        return [
+            [
+                new DatabaseNovaField(new Column('id', new IntegerType)),
+                new DatabaseNovaField(new Column('title', new StringType)),
+                new DatabaseNovaField(new Column('created_at', new DatetimeType)),
+            ],
+            [
+                'integer' => 'Number',
+                'smallint' => 'Number',
+                'bigint' => 'Number',
+                'float' => 'Number',
+                'decimal' => 'Number',
+                'string' => 'Text',
+                'text' => 'Text',
+                'guid' => 'Text',
+                'json' => 'Text',
+                'date' => 'Date',
+                'datetime' => 'DateTime',
+                'datetimetz' => 'DateTime',
+                'boolean' => 'Boolean',
+            ]
+        ];
     }
 }
