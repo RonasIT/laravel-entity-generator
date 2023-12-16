@@ -2,14 +2,11 @@
 
 namespace RonasIT\Support\Tests\Support\NovaResource;
 
-use Illuminate\Container\Container;
 use Illuminate\Database\Connection;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\DB;
 use Mockery;
 use Mockery\MockInterface;
 use org\bovigo\vfs\vfsStream;
-use PHPUnit\Framework\MockObject\MockObject;
 use RonasIT\Support\Generators\NovaResourceGenerator;
 use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
 use RonasIT\Support\Traits\MockClassTrait;
