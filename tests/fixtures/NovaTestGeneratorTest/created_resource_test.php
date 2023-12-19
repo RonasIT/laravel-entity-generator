@@ -19,7 +19,7 @@ class PostTest extends TestCase
         parent::setUp();
 
         self::$user = 1;
-        self::$postState = new ModelTestState(Post::class);
+        self::$postState ??= new ModelTestState(Post::class);
 
         $this->skipDocumentationCollecting();
     }
