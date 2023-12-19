@@ -90,7 +90,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
         $isNewStyleFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
 
-        return !empty($factory[$this->getModelClass($modelName)]) || $isNewStyleFactoryExists;
+        return $isNewStyleFactoryExists || !empty($factory[$this->getModelClass($modelName)]);
     }
 
     protected function isMethodExists($modelName, $method): bool
