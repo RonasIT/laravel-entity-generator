@@ -15,6 +15,7 @@ use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Generators\MigrationGenerator;
 use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Generators\NovaResourceGenerator;
+use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Generators\RequestsGenerator;
 use RonasIT\Support\Generators\ResourceGenerator;
@@ -38,6 +39,7 @@ use UnexpectedValueException;
  * @property SeederGenerator $seederGenerator
  * @property ResourceGenerator $resourceGenerator
  * @property NovaResourceGenerator $novaResourceGenerator
+ * @property NovaTestGenerator $novaTestGenerator
  * @property EventDispatcher $eventDispatcher
  */
 class MakeEntityCommand extends Command
@@ -66,6 +68,7 @@ class MakeEntityCommand extends Command
         {--only-tests : Set this flag if you want to create only tests.}
         {--only-seeder : Set this flag if you want to create only seeder.}
         {--only-nova-resource : Set this flag if you want to create only nova resource.}
+        {--only-nova-tests : Set this flag if you want to create only nova resource tests.}
 
         {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
@@ -105,6 +108,7 @@ class MakeEntityCommand extends Command
     protected $seederGenerator;
     protected $resourceGenerator;
     protected $novaResourceGenerator;
+    protected $novaTestGenerator;
     protected $eventDispatcher;
 
     protected $rules = [
@@ -121,14 +125,16 @@ class MakeEntityCommand extends Command
             'only-factory' => [FactoryGenerator::class],
             'only-tests' => [FactoryGenerator::class, TestsGenerator::class],
             'only-seeder' => [SeederGenerator::class],
-            'only-nova-resource' => [NovaResourceGenerator::class]
+            'only-nova-resource' => [NovaResourceGenerator::class],
+            'only-nova-tests' => [NovaTestGenerator::class]
         ]
     ];
 
     public $generators = [
         ModelGenerator::class, RepositoryGenerator::class, ServiceGenerator::class, RequestsGenerator::class,
         ResourceGenerator::class, ControllerGenerator::class, MigrationGenerator::class, FactoryGenerator::class,
-        TestsGenerator::class, TranslationsGenerator::class, SeederGenerator::class, NovaResourceGenerator::class
+        TestsGenerator::class, TranslationsGenerator::class, SeederGenerator::class, NovaResourceGenerator::class,
+        NovaTestGenerator::class
     ];
 
     public function __construct()
@@ -147,6 +153,7 @@ class MakeEntityCommand extends Command
         $this->seederGenerator = app(SeederGenerator::class);
         $this->resourceGenerator = app(ResourceGenerator::class);
         $this->novaResourceGenerator = app(NovaResourceGenerator::class);
+        $this->novaTestGenerator = app(NovaTestGenerator::class);
         $this->eventDispatcher = app(EventDispatcher::class);
     }
 

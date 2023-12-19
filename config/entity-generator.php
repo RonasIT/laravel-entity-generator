@@ -19,7 +19,7 @@ return [
         'factory' => 'database/factories/ModelFactory.php',
         'translations' => 'resources/lang/en/validation.php',
         'resources' => 'app/Http/Resources',
-        'nova' => 'app/Nova'
+        'nova' => 'app/Nova',
      ],
     'stubs' => [
         'model' => 'entity-generator::model',
@@ -44,6 +44,7 @@ return [
         'validation' => 'entity-generator::validation',
         'resource' => 'entity-generator::resource',
         'collection_resource' => 'entity-generator::collection_resource',
-        'nova_resource' => 'entity-generator::nova_resource'
+        'nova_resource' => 'entity-generator::nova_resource',
+        'nova_test' => 'entity-generator::nova_test'
     ]
 ];
