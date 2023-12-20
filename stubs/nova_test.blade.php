@@ -21,7 +21,7 @@ class {{$entity}}Test extends TestCase
         parent::setUp();
 
         self::$user = 1;
-        self::${{$lower_entity}}State = new ModelTestState({{$entity}}::class);
+        self::${{$lower_entity}}State ??= new ModelTestState({{$entity}}::class);
 
         $this->skipDocumentationCollecting();
     }
