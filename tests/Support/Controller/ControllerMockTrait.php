@@ -2,8 +2,6 @@
 
 namespace RonasIT\Support\Tests\Support\Controller;
 
-use Mockery;
-use Mockery\MockInterface;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\ControllerGenerator;
 use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
@@ -13,41 +11,34 @@ trait ControllerMockTrait
 {
     use GeneratorMockTrait, MockClassTrait;
 
-    public function getControllerGeneratorMockForExistingController(): MockInterface
+    public function mockControllerGeneratorForExistingController(): void
     {
-        $mock = Mockery::mock(ControllerGenerator::class)->makePartial();
-
-        $mock
-            ->shouldAllowMockingProtectedMethods()
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('controllers', 'PostController')
-            ->andReturn(true);
-
-        return $mock;
+        $this->mockClass(ControllerGenerator::class, [
+            [
+                'method' => 'classExists',
+                'arguments' => ['controllers', 'PostController'],
+                'result' => true
+            ]
+        ]);
     }
 
-    public function getControllerGeneratorMockForNotExistingService(): MockInterface
+    public function mockControllerGeneratorForNotExistingService(): void
     {
-        $mock = Mockery::mock(ControllerGenerator::class)->makePartial();
-
-        $mock
-            ->shouldAllowMockingProtectedMethods()
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('controllers', 'PostController')
-            ->andReturn(false);
-
-        $mock
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('services', 'PostService')
-            ->andReturn(false);
-
-        return $mock;
+        $this->mockClass(ControllerGenerator::class, [
+            [
+                'method' => 'classExists',
+                'arguments' => ['controllers', 'PostController'],
+                'result' => false
+            ],
+            [
+                'method' => 'classExists',
+                'arguments' => ['services', 'PostService'],
+                'result' => false
+            ],
+        ]);
     }
 
-    public function mockConfigurations()
+    public function mockConfigurations(): void
     {
         config([
             'entity-generator.stubs.controller' => 'entity-generator::controller',

@@ -31,9 +31,9 @@ class ControllerGeneratorTest extends TestCase
         $this->expectException(ClassAlreadyExistsException::class);
         $this->expectErrorMessage('Cannot create PostController cause PostController already exists. Remove PostController.');
 
-        $generatorMock = $this->getControllerGeneratorMockForExistingController();
+        $this->mockControllerGeneratorForExistingController();
 
-        $generatorMock
+        app(ControllerGenerator::class)
             ->setModel('Post')
             ->generate();
     }
@@ -44,9 +44,9 @@ class ControllerGeneratorTest extends TestCase
         $this->expectException(ClassNotExistsException::class);
         $this->expectErrorMessage('Cannot create PostService cause PostService does not exists. Create a PostService by himself.');
 
-        $generatorMock = $this->getControllerGeneratorMockForNotExistingService();
+        $this->mockControllerGeneratorForNotExistingService();
 
-        $generatorMock
+        app(ControllerGenerator::class)
             ->setModel('Post')
             ->generate();
     }

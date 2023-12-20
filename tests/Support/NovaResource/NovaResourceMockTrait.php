@@ -5,7 +5,6 @@ namespace RonasIT\Support\Tests\Support\NovaResource;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\DB;
 use Mockery;
-use Mockery\MockInterface;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\NovaResourceGenerator;
 use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
@@ -15,29 +14,31 @@ trait NovaResourceMockTrait
 {
     use GeneratorMockTrait, MockClassTrait;
 
-    public function getResourceGeneratorMockForNonExistingNovaResource(): MockInterface
+    public function mockResourceGeneratorForNonExistingNovaResource(): void
     {
-        return $this->getGeneratorMockForNonExistingNovaResource(NovaResourceGenerator::class);
+        $this->mockClass(NovaResourceGenerator::class, [
+            [
+                'method' => 'classExists',
+                'arguments' => [],
+                'result' => false
+            ]
+        ]);
     }
 
-    public function getResourceGeneratorMockForExistingNovaResource(): MockInterface
+    public function mockResourceGeneratorForExistingNovaResource(): void
     {
-        $mock = Mockery::mock(NovaResourceGenerator::class)->makePartial();
-
-        $mock
-            ->shouldAllowMockingProtectedMethods()
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('models', 'Post')
-            ->andReturn(true);
-
-        $mock
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('nova', 'PostResource')
-            ->andReturn(true);
-
-        return $mock;
+        $this->mockClass(NovaResourceGenerator::class, [
+            [
+                'method' => 'classExists',
+                'arguments' => ['models', 'Post'],
+                'result' => true
+            ],
+            [
+                'method' => 'classExists',
+                'arguments' => ['nova', 'PostResource'],
+                'result' => true
+            ]
+        ]);
     }
 
     public function setupConfigurations(): void
@@ -65,7 +66,7 @@ trait NovaResourceMockTrait
         vfsStream::create($structure);
     }
 
-    public function mockGettingModelInstance()
+    public function mockGettingModelInstance(): void
     {
         $connection = $this->mockClassWithReturn(Connection::class, ['getDoctrineSchemaManager'], true);
 
