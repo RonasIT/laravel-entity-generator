@@ -2,78 +2,95 @@
 
 namespace RonasIT\Support\Tests\Support\NovaTest;
 
-use Mockery;
-use Mockery\MockInterface;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Traits\MockClassTrait;
 
 trait NovaTestMockTrait
 {
-    use GeneratorMockTrait;
+    use GeneratorMockTrait, MockClassTrait;
 
     public function mockNovaResourceTestGenerator(): void
     {
-        $mock = $this
-            ->getMockBuilder(NovaTestGenerator::class)
-            ->onlyMethods(['getModelFields', 'getMockModel', 'loadNovaActions', 'loadNovaFields', 'loadNovaFilters'])
-            ->getMock();
-
-        $mock
-            ->method('getModelFields')
-            ->willReturn(['title', 'name']);
-
-        $mock
-            ->method('getMockModel')
-            ->willReturn(['title' => 'some title', 'name' => 'some name']);
-
-        $mock
-            ->method('loadNovaActions')
-            ->willReturn([
-                new PublishPostAction,
-                new UnPublishPostAction,
-                new UnPublishPostAction,
-            ]);
-
-        $mock
-            ->method('loadNovaFields')
-            ->willReturn([
-                new TextField,
-                new DateField,
-            ]);
-
-        $mock
-            ->method('loadNovaFilters')
-            ->willReturn([
-                new CreatedAtFilter,
-            ]);
-
-        $this->app->instance(NovaTestGenerator::class, $mock);
+        $this->mockClass(NovaTestGenerator::class, [
+            [
+                'method' => 'getModelFields',
+                'arguments' => ['Post'],
+                'result' => ['title', 'name']
+            ],
+            [
+                'method' => 'getModelFields',
+                'arguments' => ['Post'],
+                'result' => ['title', 'name']
+            ],
+            [
+                'method' => 'getModelFields',
+                'arguments' => ['Post'],
+                'result' => ['title', 'name']
+            ],
+            [
+                'method' => 'getMockModel',
+                'arguments' => ['Post'],
+                'result' => ['title' => 'some title', 'name' => 'some name']
+            ],
+            [
+                'method' => 'getMockModel',
+                'arguments' => ['Post'],
+                'result' => ['title' => 'some title', 'name' => 'some name']
+            ],
+            [
+                'method' => 'loadNovaActions',
+                'arguments' => [],
+                'result' => [
+                    new PublishPostAction,
+                    new UnPublishPostAction,
+                    new UnPublishPostAction,
+                ]
+            ],
+            [
+                'method' => 'loadNovaFields',
+                'arguments' => [],
+                'result' => [
+                    new TextField,
+                    new DateField,
+                ]
+            ],
+            [
+                'method' => 'loadNovaFilters',
+                'arguments' => [],
+                'result' => [
+                    new CreatedAtFilter,
+                ]
+            ],
+        ]);
     }
 
-    public function getTestGeneratorMockForNonExistingNovaResource(): MockInterface
+    public function mockTestGeneratorForNonExistingNovaResource(): void
     {
-        return $this->getGeneratorMockForNonExistingNovaResource(NovaTestGenerator::class);
+        $this->mockClass(NovaTestGenerator::class, [
+            [
+                'method' => 'classExists',
+                'arguments' => [],
+                'result' => false
+            ]
+        ]);
     }
 
-    public function getGeneratorMockForExistingNovaTest(): MockInterface
+    public function mockGeneratorForExistingNovaTest(): void
     {
-        $mock = Mockery::mock(NovaTestGenerator::class)->makePartial();
-
-        $mock
-            ->shouldAllowMockingProtectedMethods()
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('nova', 'Post')
-            ->andReturn(true);
-
-        $mock
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('nova', 'NovaPostTest')
-            ->andReturn(true);
-
-        return $mock;
+        $this->mockClass(NovaTestGenerator::class, [
+            [
+                'method' => 'classExists',
+                'arguments' => ['nova', 'Post'],
+                'result' => true
+            ],
+            [
+                'method' => 'classExists',
+                'arguments' => ['nova', 'NovaPostTest'],
+                'result' => true
+            ]
+        ]);
     }
 
     public function setupConfigurations(): void

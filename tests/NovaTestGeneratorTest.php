@@ -31,10 +31,10 @@ class NovaTestGeneratorTest extends TestCase
         $this->expectException(ClassNotExistsException::class);
         $this->expectErrorMessage("Cannot create NovaPostTest cause Post Nova resource does not exist. Create Post Nova resource.");
 
-        $generatorMock = $this->getTestGeneratorMockForNonExistingNovaResource();
+        $this->mockTestGeneratorForNonExistingNovaResource();
 
         try {
-            $generatorMock
+            app(NovaTestGenerator::class)
                 ->setModel('Post')
                 ->generate();
         } finally {
@@ -49,10 +49,10 @@ class NovaTestGeneratorTest extends TestCase
         $this->expectException(ClassAlreadyExistsException::class);
         $this->expectErrorMessage("Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.");
 
-        $generatorMock = $this->getGeneratorMockForExistingNovaTest();
+        $this->mockGeneratorForExistingNovaTest();
 
         try {
-            $generatorMock
+            app(NovaTestGenerator::class)
                 ->setModel('Post')
                 ->generate();
         } finally {
