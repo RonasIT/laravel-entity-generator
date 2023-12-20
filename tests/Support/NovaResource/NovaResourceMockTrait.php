@@ -8,11 +8,10 @@ use Mockery;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\NovaResourceGenerator;
 use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockClassTrait;
 
 trait NovaResourceMockTrait
 {
-    use GeneratorMockTrait, MockClassTrait;
+    use GeneratorMockTrait;
 
     public function mockResourceGeneratorForNonExistingNovaResource(): void
     {

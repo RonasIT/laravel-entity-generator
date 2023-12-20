@@ -6,9 +6,12 @@ use Illuminate\Support\Facades\View;
 use phpmock\Mock;
 use phpmock\MockBuilder;
 use PHPUnit\Framework\MockObject\MockObject;
+use RonasIT\Support\Traits\MockClassTrait;
 
 trait GeneratorMockTrait
 {
+    use MockClassTrait;
+
     protected function mockClassWithReturn($className, $methods = [], $disableConstructor = false): MockObject
     {
         $builder = $this->getMockBuilder($className);

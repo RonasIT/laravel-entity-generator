@@ -6,7 +6,6 @@ use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\DateTimeType;
 use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\StringType;
-use org\bovigo\vfs\vfsStream;
 use ReflectionClass;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -18,17 +17,6 @@ use RonasIT\Support\Tests\Support\NovaResource\NovaResourceMockTrait;
 class NovaResourceGeneratorTest extends TestCase
 {
     use NovaResourceMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        vfsStream::setup();
-
-        $this->generatedFileBasePath = vfsStream::url('root');
-
-        $this->app->setBasePath($this->generatedFileBasePath);
-    }
 
     public function testCreateWithMissingNovaPackage()
     {

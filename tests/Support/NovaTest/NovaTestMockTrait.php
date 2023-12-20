@@ -5,11 +5,10 @@ namespace RonasIT\Support\Tests\Support\NovaTest;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockClassTrait;
 
 trait NovaTestMockTrait
 {
-    use GeneratorMockTrait, MockClassTrait;
+    use GeneratorMockTrait;
 
     public function mockNovaResourceTestGenerator(): void
     {

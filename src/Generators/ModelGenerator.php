@@ -58,8 +58,8 @@ class ModelGenerator extends EntityGenerator
                 if (!$this->classExists('models', $relation)) {
                     $this->throwFailureException(
                         ClassNotExistsException::class,
-                        "Cannot create {$relation} Model cause {$relation} Model does not exists.",
-                        "Create a {$relation} Model by himself or run command 'php artisan make:entity {$relation} --only-model'."
+                        "Cannot create {$this->model} Model cause relation model {$relation} does not exist.",
+                        "Create the {$relation} Model by himself or run command 'php artisan make:entity {$relation} --only-model'."
                     );
                 }
 
@@ -115,7 +115,7 @@ class ModelGenerator extends EntityGenerator
         $result = [];
 
         foreach ($fields as $fieldType => $names) {
-            if (empty($casts[$fieldType])) {
+            if (!array_key_exists($fieldType, $casts)) {
                 continue;
             }
 

@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Carbon;
-use org\bovigo\vfs\vfsStream;
 use ReflectionClass;
 use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 use RonasIT\Support\Generators\MigrationGenerator;
@@ -12,17 +11,6 @@ use RonasIT\Support\Tests\Support\Migration\MigrationMockTrait;
 class MigrationGeneratorTest extends TestCase
 {
     use MigrationMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        vfsStream::setup();
-
-        $this->generatedFileBasePath = vfsStream::url('root');
-
-        $this->app->setBasePath($this->generatedFileBasePath);
-    }
 
     public function testSetUnknownFieldType()
     {

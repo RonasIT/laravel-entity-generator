@@ -6,11 +6,10 @@ use org\bovigo\vfs\vfsStream;
 use ReflectionClass;
 use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockClassTrait;
 
 trait FactoryMockTrait
 {
-    use GeneratorMockTrait, MockClassTrait;
+    use GeneratorMockTrait;
 
     public function getFactoryGeneratorMockForMissingModel(): void
     {

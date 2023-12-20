@@ -5,11 +5,10 @@ namespace RonasIT\Support\Tests\Support\Controller;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\ControllerGenerator;
 use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockClassTrait;
 
 trait ControllerMockTrait
 {
-    use GeneratorMockTrait, MockClassTrait;
+    use GeneratorMockTrait;
 
     public function mockControllerGeneratorForExistingController(): void
     {

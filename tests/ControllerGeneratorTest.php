@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -13,17 +12,6 @@ use RonasIT\Support\Tests\Support\Controller\ControllerMockTrait;
 class ControllerGeneratorTest extends TestCase
 {
     use ControllerMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        vfsStream::setup();
-
-        $this->generatedFileBasePath = vfsStream::url('root');
-
-        $this->app->setBasePath($this->generatedFileBasePath);
-    }
 
     public function testControllerAlreadyExists()
     {

@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\View\ViewException;
-use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -15,17 +14,6 @@ use RonasIT\Support\Tests\Support\Factory\FactoryMockTrait;
 class FactoryGeneratorTest extends TestCase
 {
     use FactoryMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        vfsStream::setup();
-
-        $this->generatedFileBasePath = vfsStream::url('root');
-
-        $this->app->setBasePath($this->generatedFileBasePath);
-    }
 
     public function testModelNotExists()
     {
