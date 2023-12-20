@@ -2,12 +2,7 @@
 
 namespace RonasIT\Support\Tests\Support\Factory;
 
-use Illuminate\Foundation\Application;
-use Mockery;
-use Mockery\MockInterface;
 use org\bovigo\vfs\vfsStream;
-use phpmock\functions\FixedValueFunction;
-use phpmock\MockBuilder;
 use ReflectionClass;
 use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
@@ -17,38 +12,31 @@ trait FactoryMockTrait
 {
     use GeneratorMockTrait, MockClassTrait;
 
-    public function getFactoryGeneratorMockForMissingModel(): MockInterface
+    public function getFactoryGeneratorMockForMissingModel(): void
     {
-        $mock = Mockery::mock(FactoryGenerator::class)->makePartial();
-
-        $mock
-            ->shouldAllowMockingProtectedMethods()
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('models', 'Post')
-            ->andReturn(false);
-
-        return $mock;
+        $this->mockClass(FactoryGenerator::class, [
+            [
+                'method' => 'classExists',
+                'arguments' => ['models', 'Post'],
+                'result' => false
+            ]
+        ]);
     }
 
-    public function getFactoryGeneratorMockForExistingFactory(): MockInterface
+    public function getFactoryGeneratorMockForExistingFactory(): void
     {
-        $mock = Mockery::mock(FactoryGenerator::class)->makePartial();
-
-        $mock
-            ->shouldAllowMockingProtectedMethods()
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('models', 'Post')
-            ->andReturn(true);
-
-        $mock
-            ->shouldReceive('classExists')
-            ->once()
-            ->with('factory', 'PostFactory')
-            ->andReturn(true);
-
-        return $mock;
+        $this->mockClass(FactoryGenerator::class, [
+            [
+                'method' => 'classExists',
+                'arguments' => ['models', 'Post'],
+                'result' => true
+            ],
+            [
+                'method' => 'classExists',
+                'arguments' => ['factory', 'PostFactory'],
+                'result' => true
+            ],
+        ]);
     }
 
     public function mockGeneratorForMissingRevertedRelationModelFactory(): void
@@ -99,13 +87,24 @@ trait FactoryMockTrait
         ]);
     }
 
-    public function mockFactoryGeneratorForCreation(): void
+    public function mockFactoryGeneratorForGenericTypeCreation(): void
     {
         $this->mockClass(FactoryGenerator::class, [
             [
                 'method' => 'allowedToCreateFactoryInSeparateClass',
                 'arguments' => [],
                 'result' => false
+            ]
+        ]);
+    }
+
+    public function mockFactoryGeneratorForClassTypeCreation(): void
+    {
+        $this->mockClass(FactoryGenerator::class, [
+            [
+                'method' => 'allowedToCreateFactoryInSeparateClass',
+                'arguments' => [],
+                'result' => true
             ]
         ]);
     }
@@ -131,7 +130,7 @@ trait FactoryMockTrait
         return $this->mockNativeFunction('\\RonasIT\\Support\\Generators', 'file_exists', $result);
     }
 
-    public function mockConfigurations()
+    public function mockConfigurations(): void
     {
         config([
             'entity-generator.stubs.factory' => 'entity-generator::factory',
@@ -140,6 +139,19 @@ trait FactoryMockTrait
             'entity-generator.paths' => [
                 'models' => 'app/Models',
                 'factory' => 'database/factories/ModelFactory.php',
+            ]
+        ]);
+    }
+
+    public function mockConfigurationsForClassStyleFactory(): void
+    {
+        config([
+            'entity-generator.stubs.factory' => 'entity-generator::factory',
+            'entity-generator.stubs.legacy_factory' => 'entity-generator::legacy_factory',
+            'entity-generator.stubs.legacy_empty_factory' => 'entity-generator::legacy_empty_factory',
+            'entity-generator.paths' => [
+                'models' => 'app/Models',
+                'factory' => 'database/factories',
             ]
         ]);
     }
@@ -213,7 +225,7 @@ trait FactoryMockTrait
         vfsStream::create($structure);
     }
 
-    public function mockFilesystemForCreation(): void
+    public function mockFilesystemForGenericStyleCreation(): void
     {
         $structure = [
             'app' => [
@@ -223,6 +235,23 @@ trait FactoryMockTrait
                 ]
             ],
             'database' => []
+        ];
+
+        vfsStream::create($structure);
+    }
+
+    public function mockFilesystemForClassStyleFactoryCreation(): void
+    {
+        $structure = [
+            'app' => [
+                'Models' => [
+                    'Post.php' => file_get_contents(getcwd() . '/tests/Support/Factory/Post.php'),
+                    'User.php' => '<?php'
+                ]
+            ],
+            'database' => [
+                'factories' => []
+            ]
         ];
 
         vfsStream::create($structure);

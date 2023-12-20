@@ -2,11 +2,11 @@
 
 namespace RonasIT\Support\Generators;
 
-use Exception;
 use Faker\Generator as Faker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use RonasIT\Support\Exceptions\FakerMethodNotFound;
 use RonasIT\Support\Exceptions\ModelFactoryNotFound;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ModelFactoryNotFoundedException;
@@ -155,8 +155,10 @@ class FactoryGenerator extends EntityGenerator
             return self::CUSTOM_METHODS[$field['type']];
         }
 
-        $message = $field['type'] . 'not found in CUSTOM_METHODS variable CUSTOM_METHODS = ' . self::CUSTOM_METHODS;
-        throw new Exception($message);
+        $message = "Cannot generate fake data for unsupported {$field['type']} field type. "
+            . "Supported custom field types are " . implode(', ', array_keys(self::CUSTOM_METHODS));
+
+        throw new FakerMethodNotFound($message);
     }
 
     protected function prepareRelatedFactories(): void
@@ -210,18 +212,7 @@ class FactoryGenerator extends EntityGenerator
         }
 
         if ($hasFormatter) {
-            return "\$faker-\>{$field['name']}";
-        }
-
-        try {
-            $faker->{$field['name']}();
-            $hasFormatter = true;
-        } catch (InvalidArgumentException $e) {
-            $hasFormatter = false;
-        }
-
-        if ($hasFormatter) {
-            return "\$faker-\>{$field['name']}()";
+            return "\$faker->{$field['name']}";
         }
 
         return self::getFakerMethod($field);

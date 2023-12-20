@@ -37,7 +37,9 @@ $factory->define(App\Models\Post::class, function (Faker\Generator $faker) {
     return [
         'author_id' => 1,
         'user_id' => 1,
-        'title' => $faker-\>title,
-        'iban' => $faker-\>iban,
+        'title' => $faker->title,
+        'iban' => $faker->iban,
+        'something' => $faker->word,
+        'json_text' => [],
     ];
 });

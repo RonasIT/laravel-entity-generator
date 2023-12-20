@@ -2,15 +2,13 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use Illuminate\View\ViewException;
 use org\bovigo\vfs\vfsStream;
-use ReflectionClass;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ModelFactoryNotFound;
 use RonasIT\Support\Exceptions\ModelFactoryNotFoundedException;
-use RonasIT\Support\Generators\ControllerGenerator;
 use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Tests\Support\Factory\FactoryMockTrait;
 
@@ -36,8 +34,9 @@ class FactoryGeneratorTest extends TestCase
         $this->expectErrorMessage("Cannot create PostFactory cause Post Model does not exists. "
             . "Create a Post Model by itself or run command 'php artisan make:entity Post --only-model'.");
 
-        $mock = $this->getFactoryGeneratorMockForMissingModel();
-        $mock
+        $this->getFactoryGeneratorMockForMissingModel();
+
+        app(FactoryGenerator::class)
             ->setModel('Post')
             ->generate();
     }
@@ -48,8 +47,9 @@ class FactoryGeneratorTest extends TestCase
         $this->expectException(ClassAlreadyExistsException::class);
         $this->expectErrorMessage("Cannot create PostFactory cause PostFactory already exists. Remove PostFactory.");
 
-        $mock = $this->getFactoryGeneratorMockForExistingFactory();
-        $mock
+        $this->getFactoryGeneratorMockForExistingFactory();
+
+        app(FactoryGenerator::class)
             ->setModel('Post')
             ->generate();
     }
@@ -147,19 +147,20 @@ class FactoryGeneratorTest extends TestCase
         }
     }
 
-    public function testCreate()
+    public function testCreateGenericFactory()
     {
         $this->expectsEvents([SuccessCreateMessage::class]);
 
         $this->mockConfigurations();
         $this->mockViewsNamespace();
-        $this->mockFilesystemForCreation();
-        $this->mockFactoryGeneratorForCreation();
+        $this->mockFilesystemForGenericStyleCreation();
+        $this->mockFactoryGeneratorForGenericTypeCreation();
 
         app(FactoryGenerator::class)
             ->setFields([
                 'integer-required' => ['author_id'],
-                'string' => ['title', 'iban']
+                'string' => ['title', 'iban', 'something'],
+                'json' => ['json_text'],
             ])
             ->setRelations([
                 'hasOne' => ['User'],
@@ -172,5 +173,57 @@ class FactoryGeneratorTest extends TestCase
         $this->rollbackToDefaultBasePath();
 
         $this->assertGeneratedFileEquals('model_factory.php', '/database/factories/ModelFactory.php', true);
+    }
+
+    public function testProcessUnknownFieldType()
+    {
+        $this->mockConfigurations();
+        $this->mockViewsNamespace();
+        $this->mockFilesystemForGenericStyleCreation();
+        $this->mockFactoryGeneratorForGenericTypeCreation();
+
+        $this->expectException(ViewException::class);
+        $this->expectErrorMessage("Cannot generate fake data for unsupported another_type field type. "
+            . "Supported custom field types are json");
+
+        app(FactoryGenerator::class)
+            ->setFields([
+                'another_type' => ['some_field'],
+            ])
+            ->setRelations([
+                'hasOne' => [],
+                'hasMany' => [],
+                'belongsTo' => []
+            ])
+            ->setModel('Post')
+            ->generate();
+    }
+
+    public function testCreateClassStyleFactory()
+    {
+        $this->expectsEvents([SuccessCreateMessage::class]);
+
+        $this->mockConfigurationsForClassStyleFactory();
+        $this->mockViewsNamespace();
+        $this->mockFilesystemForClassStyleFactoryCreation();
+        $this->mockFactoryGeneratorForClassTypeCreation();
+
+        app(FactoryGenerator::class)
+            ->setFields([
+                'integer-required' => ['author_id'],
+                'string' => ['title', 'iban', 'something'],
+                'json' => ['json_text'],
+            ])
+            ->setRelations([
+                'hasOne' => ['User'],
+                'hasMany' => [],
+                'belongsTo' => ['user']
+            ])
+            ->setModel('Post')
+            ->generate();
+
+        $this->rollbackToDefaultBasePath();
+
+        $this->assertGeneratedFileEquals('post_factory.php', '/database/factories/PostFactory.php', true);
     }
 }
