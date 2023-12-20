@@ -6,6 +6,7 @@ use Exception;
 use Faker\Generator as Faker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use RonasIT\Support\Exceptions\ModelFactoryNotFound;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ModelFactoryNotFoundedException;
@@ -107,11 +108,13 @@ class FactoryGenerator extends EntityGenerator
 
         list($basePath, $databaseFactoryDir) = extract_last_part(config('entity-generator.paths.factory'), '/');
 
+        $databaseFactoryDir = base_path($databaseFactoryDir);
+
         if (!is_dir($databaseFactoryDir)) {
             mkdir($databaseFactoryDir);
         }
 
-        file_put_contents($this->paths['factory'], $content);
+        file_put_contents(base_path($this->paths['factory']), $content);
     }
 
     protected function checkExistRelatedModelsFactories(): bool
@@ -199,11 +202,25 @@ class FactoryGenerator extends EntityGenerator
             return 1;
         }
 
-        if (property_exists($faker, $field['name'])) {
+        try {
+            $faker->{$field['name']};
+            $hasFormatter = true;
+        } catch (InvalidArgumentException $e) {
+            $hasFormatter = false;
+        }
+
+        if ($hasFormatter) {
             return "\$faker-\>{$field['name']}";
         }
 
-        if (method_exists($faker, $field['name'])) {
+        try {
+            $faker->{$field['name']}();
+            $hasFormatter = true;
+        } catch (InvalidArgumentException $e) {
+            $hasFormatter = false;
+        }
+
+        if ($hasFormatter) {
             return "\$faker-\>{$field['name']}()";
         }
 

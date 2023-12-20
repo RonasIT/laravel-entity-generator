@@ -99,6 +99,17 @@ trait FactoryMockTrait
         ]);
     }
 
+    public function mockFactoryGeneratorForCreation(): void
+    {
+        $this->mockClass(FactoryGenerator::class, [
+            [
+                'method' => 'allowedToCreateFactoryInSeparateClass',
+                'arguments' => [],
+                'result' => false
+            ]
+        ]);
+    }
+
     public function mockFactoryGeneratorForMissingRelatedModelFactory(): void
     {
         $this->mockClass(FactoryGenerator::class, [
@@ -115,9 +126,9 @@ trait FactoryMockTrait
         ]);
     }
 
-    public function getMockForFileExists()
+    public function getMockForFileExists(bool $result = true)
     {
-        return $this->mockNativeFunction('\\RonasIT\\Support\\Generators', 'file_exists', true);
+        return $this->mockNativeFunction('\\RonasIT\\Support\\Generators', 'file_exists', $result);
     }
 
     public function mockConfigurations()
@@ -197,6 +208,21 @@ trait FactoryMockTrait
                     'ModelFactory.php' => file_get_contents(getcwd() . '/tests/Support/Factory/ModelFactory.php'),
                 ]
             ]
+        ];
+
+        vfsStream::create($structure);
+    }
+
+    public function mockFilesystemForCreation(): void
+    {
+        $structure = [
+            'app' => [
+                'Models' => [
+                    'Post.php' => file_get_contents(getcwd() . '/tests/Support/Factory/Post.php'),
+                    'User.php' => '<?php'
+                ]
+            ],
+            'database' => []
         ];
 
         vfsStream::create($structure);

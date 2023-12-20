@@ -146,4 +146,31 @@ class FactoryGeneratorTest extends TestCase
             $mock->disable();
         }
     }
+
+    public function testCreate()
+    {
+        $this->expectsEvents([SuccessCreateMessage::class]);
+
+        $this->mockConfigurations();
+        $this->mockViewsNamespace();
+        $this->mockFilesystemForCreation();
+        $this->mockFactoryGeneratorForCreation();
+
+        app(FactoryGenerator::class)
+            ->setFields([
+                'integer-required' => ['author_id'],
+                'string' => ['title', 'iban']
+            ])
+            ->setRelations([
+                'hasOne' => ['User'],
+                'hasMany' => [],
+                'belongsTo' => ['user']
+            ])
+            ->setModel('Post')
+            ->generate();
+
+        $this->rollbackToDefaultBasePath();
+
+        $this->assertGeneratedFileEquals('model_factory.php', '/database/factories/ModelFactory.php', true);
+    }
 }
