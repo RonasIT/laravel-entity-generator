@@ -32,6 +32,8 @@ class NovaTestGeneratorTest extends TestCase
 
     public function testCreateNovaTestAlreadyExists()
     {
+        $this->setupConfigurations();
+
         $mock = $this->mockClassExistsFunction();
 
         $this->expectException(ClassAlreadyExistsException::class);
