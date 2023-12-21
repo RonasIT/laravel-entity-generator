@@ -70,7 +70,17 @@ trait NovaTestMockTrait
         $this->mockClass(NovaTestGenerator::class, [
             [
                 'method' => 'classExists',
-                'arguments' => [],
+                'arguments' => ['nova', 'PostNovaResource'],
+                'result' => false
+            ],
+            [
+                'method' => 'classExists',
+                'arguments' => ['nova', 'PostResource'],
+                'result' => false
+            ],
+            [
+                'method' => 'classExists',
+                'arguments' => ['nova', 'Post'],
                 'result' => false
             ]
         ]);
@@ -81,7 +91,7 @@ trait NovaTestMockTrait
         $this->mockClass(NovaTestGenerator::class, [
             [
                 'method' => 'classExists',
-                'arguments' => ['nova', 'Post'],
+                'arguments' => ['nova', 'PostNovaResource'],
                 'result' => true
             ],
             [
