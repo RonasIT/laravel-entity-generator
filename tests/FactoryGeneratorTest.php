@@ -160,7 +160,7 @@ class FactoryGeneratorTest extends TestCase
 
         $this->rollbackToDefaultBasePath();
 
-        $this->assertGeneratedFileEquals('model_factory.php', '/database/factories/ModelFactory.php', true);
+        $this->assertGeneratedFileEquals('model_factory.php', '/database/factories/ModelFactory.php');
     }
 
     public function testProcessUnknownFieldType()
@@ -212,6 +212,6 @@ class FactoryGeneratorTest extends TestCase
 
         $this->rollbackToDefaultBasePath();
 
-        $this->assertGeneratedFileEquals('post_factory.php', '/database/factories/PostFactory.php', true);
+        $this->assertGeneratedFileEquals('post_factory.php', '/database/factories/PostFactory.php');
     }
 }
