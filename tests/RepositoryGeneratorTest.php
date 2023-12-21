@@ -2,70 +2,39 @@
 
 namespace RonasIT\Support\Tests;
 
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Generators\ModelGenerator;
+use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Tests\Support\Repository\RepositoryMockTrait;
 
 class RepositoryGeneratorTest extends TestCase
 {
     use RepositoryMockTrait;
 
-    public function testModelAlreadyExists()
+    public function testModelDoesntExists()
     {
-        $this->mockGeneratorForExistingModel();
-
-        $this->expectException(ClassAlreadyExistsException::class);
-        $this->expectErrorMessage('Cannot create Post Model cause Post Model already exists. Remove Post Model.');
-
-        app(ModelGenerator::class)
-            ->setModel('Post')
-            ->generate();
-    }
-
-    public function testRelationModelMissing()
-    {
-        $this->mockGeneratorForMissingRelationModel();
+        $this->mockGeneratorForMissingModel();
 
         $this->expectException(ClassNotExistsException::class);
-        $this->expectErrorMessage("Cannot create Post Model cause relation model Comment does not exist. "
-            . "Create the Comment Model by himself or run command 'php artisan make:entity Comment --only-model'.");
+        $this->expectErrorMessage("Cannot create Post Model cause Post Model does not exists. "
+            . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'.");
 
-        app(ModelGenerator::class)
+        app(RepositoryGenerator::class)
             ->setModel('Post')
-            ->setRelations([
-                'hasOne' => ['Comment'],
-                'hasMany' => [],
-                'belongsTo' => [],
-                'belongsToMany' => [],
-            ])
             ->generate();
     }
 
-    public function testCreateModel()
+    public function testCreateRepository()
     {
-        $this->setupConfigurations();
+        $this->mockConfigurations();
         $this->mockViewsNamespace();
         $this->mockFilesystem();
 
-        app(ModelGenerator::class)
+        app(RepositoryGenerator::class)
             ->setModel('Post')
-            ->setfields([
-                'integer-required' => ['media_id'],
-                'boolean-required' => ['is_published'],
-            ])
-            ->setRelations([
-                'hasOne' => ['Comment'],
-                'hasMany' => ['User'],
-                'belongsTo' => [],
-                'belongsToMany' => [],
-            ])
             ->generate();
 
         $this->rollbackToDefaultBasePath();
 
-        $this->assertGeneratedFileEquals('new_model.php', 'app/Models/Post.php');
-        $this->assertGeneratedFileEquals('comment_relation_model.php', 'app/Models/Comment.php');
-        $this->assertGeneratedFileEquals('user_relation_model.php', 'app/Models/User.php');
+        $this->assertGeneratedFileEquals('repository.php', 'app/Repositories/PostRepository.php');
     }
 }
