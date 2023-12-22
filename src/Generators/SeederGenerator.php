@@ -15,26 +15,28 @@ class SeederGenerator extends EntityGenerator
     {
         parent::__construct();
 
-        $this->seedsPath = Arr::get($this->paths, 'seeders', 'database/seeders');
-        $this->databaseSeederPath = Arr::get($this->paths, 'database_seeder', 'database/seeders/DatabaseSeeder.php');
+        $this->seedsPath = base_path(Arr::get($this->paths, 'seeders', 'database/seeders'));
+        $this->databaseSeederPath = base_path(Arr::get($this->paths, 'database_seeder', 'database/seeders/DatabaseSeeder.php'));
     }
 
     public function generate(): void
     {
         $this->checkConfigs();
 
+        if (!file_exists($this->seedsPath)) {
+            mkdir($this->seedsPath);
+        }
+
         if (!file_exists($this->databaseSeederPath)) {
             list($basePath, $databaseSeederDir) = extract_last_part($this->databaseSeederPath, '/');
+
+            $databaseSeederDir = base_path($databaseSeederDir);
 
             if (!is_dir($databaseSeederDir)) {
                 mkdir($databaseSeederDir);
             }
 
             $this->createDatabaseSeeder();
-        }
-
-        if (!is_dir($this->seedsPath)) {
-            mkdir($this->seedsPath);
         }
 
         $this->createEntitySeeder();
@@ -59,7 +61,7 @@ class SeederGenerator extends EntityGenerator
 
     protected function createEntitySeeder(): void
     {
-        $seeder = (version_compare(app()->version(), '8', '>=')) ? 'seeder' : 'legacy_seeder';
+        $seeder = ($this->useClassStyleSeeder()) ? 'seeder' : 'legacy_seeder';
 
         $stubPath = config("entity-generator.stubs.{$seeder}");
 
@@ -70,13 +72,18 @@ class SeederGenerator extends EntityGenerator
             'modelsNamespace' => $this->getOrCreateNamespace('models')
         ])->render();
 
-        $seederPath = base_path("{$this->seedsPath}/{$this->model}Seeder.php");
+        $seederPath = "{$this->seedsPath}/{$this->model}Seeder.php";
 
         file_put_contents($seederPath, $content);
 
         $createMessage = "Created a new Seeder on path: {$seederPath}";
 
         event(new SuccessCreateMessage($createMessage));
+    }
+
+    protected function useClassStyleSeeder(): bool
+    {
+        return version_compare(app()->version(), '8', '>=');
     }
 
     protected function appendSeederToList(): void
