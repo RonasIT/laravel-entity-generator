@@ -2,14 +2,13 @@
 namespace App\Tests;
 
 use App\Models\{{$entity}};
-use Illuminate\Support\Collection;
 use RonasIT\Support\Tests\ModelTestState;
 use RonasIT\Support\Traits\AuthTestTrait;
 @if($shouldUseStatus)
 use Symfony\Component\HttpFoundation\Response;
 @endif
 
-class {{$entity}}Test extends TestCase
+class Nova{{$entity}}Test extends TestCase
 {
     use AuthTestTrait;
 

@@ -3,8 +3,9 @@
 namespace RonasIT\Support\Generators;
 
 use Carbon\Carbon;
-use Exception;
+use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 
 class MigrationGenerator extends EntityGenerator
 {
@@ -34,7 +35,7 @@ class MigrationGenerator extends EntityGenerator
 
     protected function isRequired($typeName): bool
     {
-        return !empty(explode('-', $typeName)[1]);
+        return Arr::get(explode('-', $typeName), 1) === 'required';
     }
 
     protected function isNullable($typeName): bool
@@ -96,6 +97,6 @@ class MigrationGenerator extends EntityGenerator
             return $this->getNonRequiredLine($fieldName, $typeName);
         }
 
-        throw new Exception('Unknown fieldType in MigrationGenerator');
+        throw new UnknownFieldTypeException("Unknown field type {$typeName} in MigrationGenerator.");
     }
 }
