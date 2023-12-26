@@ -2,10 +2,8 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Carbon;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
+use ReflectionClass;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Tests\Support\Test\TestMockTrait;
@@ -45,10 +43,22 @@ class TestGeneratorTest extends TestCase
 
         $this->rollbackToDefaultBasePath();
 
-        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/PostTest/dump.sql', true);
-        $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/PostTest/create_post_request.json', true);
-        $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/PostTest/create_post_response.json', true);
-        $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/PostTest/update_post_request.json', true);
-        $this->assertGeneratedFileEquals('post_test.php', 'tests/PostTest.php', true);
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/PostTest/dump.sql');
+        $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/PostTest/create_post_request.json');
+        $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/PostTest/create_post_response.json');
+        $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/PostTest/update_post_request.json');
+        $this->assertGeneratedFileEquals('post_test.php', 'tests/PostTest.php');
+    }
+
+    public function testGetModelClass()
+    {
+        $reflectionClass = new ReflectionClass(TestsGenerator::class);
+        $method = $reflectionClass->getMethod('getModelClass');
+
+        $method->setAccessible(true);
+
+        $result = $method->invoke(new TestsGenerator, 'Post');
+
+        $this->assertEquals('App\\Models\\Post', $result);
     }
 }
