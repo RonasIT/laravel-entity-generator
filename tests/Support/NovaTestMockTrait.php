@@ -74,7 +74,7 @@ trait NovaTestMockTrait
         $mock
             ->shouldAllowMockingProtectedMethods()
             ->shouldReceive('classExists')
-            ->once()
+            ->times(3)
             ->andReturn(false);
 
         return $mock;
@@ -87,9 +87,18 @@ trait NovaTestMockTrait
         $mock
             ->shouldAllowMockingProtectedMethods()
             ->shouldReceive('classExists')
-            ->once()
             ->with('nova', 'Post')
             ->andReturn(true);
+
+        $mock
+            ->shouldReceive('classExists')
+            ->with('nova', 'PostResource')
+            ->andReturn(false);
+
+        $mock
+            ->shouldReceive('classExists')
+            ->with('nova', 'PostNovaResource')
+            ->andReturn(false);
 
         $mock
             ->shouldReceive('classExists')
