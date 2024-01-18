@@ -69,27 +69,15 @@ trait NovaTestMockTrait
     public function mockTestGeneratorForNonExistingNovaResource(): void
     {
         $this->mockClass(NovaTestGenerator::class, [
-            [
-                'method' => 'classExists',
-                'arguments' => [],
-                'result' => false
-            ]
+            $this->classExistsMethodCall(null, null, false)
         ]);
     }
 
     public function mockGeneratorForExistingNovaTest(): void
     {
         $this->mockClass(NovaTestGenerator::class, [
-            [
-                'method' => 'classExists',
-                'arguments' => ['nova', 'Post'],
-                'result' => true
-            ],
-            [
-                'method' => 'classExists',
-                'arguments' => ['nova', 'NovaPostTest'],
-                'result' => true
-            ]
+            $this->classExistsMethodCall('nova', 'Post'),
+            $this->classExistsMethodCall('nova', 'NovaPostTest')
         ]);
     }
 

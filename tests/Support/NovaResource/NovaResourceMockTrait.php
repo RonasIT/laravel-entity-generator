@@ -17,27 +17,15 @@ trait NovaResourceMockTrait
     public function mockResourceGeneratorForNonExistingNovaResource(): void
     {
         $this->mockClass(NovaResourceGenerator::class, [
-            [
-                'method' => 'classExists',
-                'arguments' => [],
-                'result' => false
-            ]
+            $this->classExistsMethodCall(null, null, false)
         ]);
     }
 
     public function mockResourceGeneratorForExistingNovaResource(): void
     {
         $this->mockClass(NovaResourceGenerator::class, [
-            [
-                'method' => 'classExists',
-                'arguments' => ['models', 'Post'],
-                'result' => true
-            ],
-            [
-                'method' => 'classExists',
-                'arguments' => ['nova', 'PostResource'],
-                'result' => true
-            ]
+            $this->classExistsMethodCall('models', 'Post'),
+            $this->classExistsMethodCall('nova', 'PostResource'),
         ]);
     }
 
@@ -68,7 +56,7 @@ trait NovaResourceMockTrait
 
     public function mockGettingModelInstance(): void
     {
-        $connection = $this->mockClassWithReturn(Connection::class, ['getDoctrineSchemaManager'], true);
+        $connection = $this->mockByClassBuilder(Connection::class, ['getDoctrineSchemaManager'], true);
 
         $mock = Mockery::mock('alias:' . DB::class);
         $mock

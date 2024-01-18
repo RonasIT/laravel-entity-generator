@@ -9,7 +9,7 @@ use PHPUnit\Framework\MockObject\MockObject;
 
 trait GeneratorMockTrait
 {
-    protected function mockClassWithReturn($className, $methods = [], $disableConstructor = false): MockObject
+    protected function mockByClassBuilder($className, $methods = [], $disableConstructor = false): MockObject
     {
         $builder = $this->getMockBuilder($className);
 
@@ -53,5 +53,14 @@ trait GeneratorMockTrait
     public function mockCheckingNonExistentNovaPackageExistence(): Mock
     {
         return $this->mockClassExistsFunction(false);
+    }
+
+    public function classExistsMethodCall(?string $path, ?string $className, bool $result = true): array
+    {
+        return [
+            'method' => 'classExists',
+            'arguments' => $path || $className ? [$path, $className] : [],
+            'result' => $result
+        ];
     }
 }

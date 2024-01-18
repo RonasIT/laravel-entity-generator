@@ -14,27 +14,15 @@ trait ControllerMockTrait
     public function mockControllerGeneratorForExistingController(): void
     {
         $this->mockClass(ControllerGenerator::class, [
-            [
-                'method' => 'classExists',
-                'arguments' => ['controllers', 'PostController'],
-                'result' => true
-            ]
+            $this->classExistsMethodCall('controllers', 'PostController')
         ]);
     }
 
     public function mockControllerGeneratorForNotExistingService(): void
     {
         $this->mockClass(ControllerGenerator::class, [
-            [
-                'method' => 'classExists',
-                'arguments' => ['controllers', 'PostController'],
-                'result' => false
-            ],
-            [
-                'method' => 'classExists',
-                'arguments' => ['services', 'PostService'],
-                'result' => false
-            ],
+            $this->classExistsMethodCall('controllers', 'PostController', false),
+            $this->classExistsMethodCall('services', 'PostService', false)
         ]);
     }
 
