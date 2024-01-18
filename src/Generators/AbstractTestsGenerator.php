@@ -169,6 +169,10 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function getMockModel($model): array
     {
+        if (!$this->isFactoryExists($model)) {
+            return [];
+        }
+
         $modelClass = $this->getModelClass($model);
         $hasFactory = method_exists($modelClass, 'factory') && $this->classExists('factory', "{$model}Factory");
         $factory = ($hasFactory) ? $modelClass::factory() : factory($modelClass);

@@ -3,11 +3,10 @@
 namespace App\Tests;
 
 use App\Models\Post;
-use Illuminate\Support\Collection;
 use RonasIT\Support\Tests\ModelTestState;
 use RonasIT\Support\Traits\AuthTestTrait;
 
-class PostTest extends TestCase
+class NovaPostTest extends TestCase
 {
     use AuthTestTrait;
 
