@@ -39,6 +39,7 @@ class {{$entity}}Test extends TestCase
 @else
         $response->assertCreated();
 @endif
+
         $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json', $response->json());
 
         $this->assertDatabaseHas('{{$databaseTableName}}', $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json'));
@@ -127,6 +128,7 @@ class {{$entity}}Test extends TestCase
 @else
         $response->assertNoContent();
 @endif
+
         $this->assertDatabaseMissing('{{$databaseTableName}}', [
             'id' => 1
         ]);
