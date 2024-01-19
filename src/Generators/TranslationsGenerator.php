@@ -13,7 +13,7 @@ class TranslationsGenerator extends EntityGenerator
     {
         parent::__construct();
 
-        $this->translationPath = Arr::get($this->paths, 'translations', 'resources/lang/en/validation.php');
+        $this->translationPath = base_path(Arr::get($this->paths, 'translations', 'resources/lang/en/validation.php'));
     }
 
     public function generate(): void
@@ -29,7 +29,7 @@ class TranslationsGenerator extends EntityGenerator
 
     protected function isTranslationMissed($translation) : bool
     {
-        return __($translation) === 'validation.exceptions.not_found';
+        return __($translation) !== 'validation.exceptions.not_found';
     }
 
     protected function createTranslate(): void
