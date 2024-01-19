@@ -57,4 +57,23 @@ trait GeneratorMockTrait
     {
         return $this->mockClassExistsFunction(false);
     }
+
+    protected function removeRecursivelyGeneratedFolders(string $path): void
+    {
+        $dirs = glob($path . '/*');
+
+        foreach($dirs as $dir) {
+            $scan = glob(rtrim($dir, '/').'/*');
+
+            foreach($scan as $nestedDirPath) {
+                $this->removeRecursivelyGeneratedFolders($nestedDirPath);
+            }
+
+            rmdir($dir);
+        }
+
+        if (file_exists($path)) {
+            rmdir($path);
+        }
+    }
 }

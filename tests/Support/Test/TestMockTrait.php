@@ -39,12 +39,37 @@ trait TestMockTrait
             [
                 'method' => 'getModelClass',
                 'arguments' => ['User'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\Post'
+                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
+            ],
+            [
+                'method' => 'getModelClass',
+                'arguments' => ['Comment'],
+                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\Comment'
+            ],
+            [
+                'method' => 'getModelClass',
+                'arguments' => ['Comment'],
+                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\Comment'
             ],
             [
                 'method' => 'getModelClass',
                 'arguments' => ['User'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\Post'
+                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
+            ],
+            [
+                'method' => 'getModelClass',
+                'arguments' => ['User'],
+                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
+            ],
+            [
+                'method' => 'getModelClass',
+                'arguments' => ['User'],
+                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
+            ],
+            [
+                'method' => 'getModelClass',
+                'arguments' => ['Post'],
+                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
             ],
             [
                 'method' => 'getModelClass',
@@ -65,6 +90,28 @@ trait TestMockTrait
                 'method' => 'getModelClass',
                 'arguments' => ['Post'],
                 'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\Post'
+            ]
+        ]);
+    }
+
+    public function mockGeneratorForCircularDependency()
+    {
+        $mock = Mockery::mock(Factory::class)->makePartial();
+
+        $mock
+            ->shouldAllowMockingProtectedMethods()
+            ->expects('isLegacyFactory')
+            ->zeroOrMoreTimes()
+            ->with('')
+            ->andReturn(false);
+
+        $this->app->instance(Factory::class, $mock);
+
+        $this->mockClass(TestsGenerator::class, [
+            [
+                'method' => 'getModelClass',
+                'arguments' => ['CircularDep'],
+                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\CircularDep'
             ]
         ]);
     }
@@ -85,6 +132,7 @@ trait TestMockTrait
     public function mockFilesystem(): void
     {
         $userModel = file_get_contents(getcwd() . '/tests/Support/Test/User.php');
+        $commentModel = file_get_contents(getcwd() . '/tests/Support/Test/Comment.php');
         $postModel = file_get_contents(getcwd() . '/tests/Support/Test/Post.php');
         $userFactory = file_get_contents(getcwd() . '/tests/Support/Test/UserFactory.php');
         $postFactory = file_get_contents(getcwd() . '/tests/Support/Test/PostFactory.php');
@@ -93,7 +141,8 @@ trait TestMockTrait
             'app' => [
                 'Models' => [
                     'Post.php' => $postModel,
-                    'User.php' => $userModel
+                    'User.php' => $userModel,
+                    'Comment.php' => $commentModel,
                 ],
             ],
             'database' => [
@@ -107,6 +156,27 @@ trait TestMockTrait
                     'PostTest' => []
                 ]
             ]
+        ];
+
+        vfsStream::create($structure);
+    }
+
+    public function mockFilesystemForCircleDependency(): void
+    {
+        $model = file_get_contents(getcwd() . '/tests/Support/Test/CircularDep.php');
+        $factory = file_get_contents(getcwd() . '/tests/Support/Test/CircularDepFactory.php');
+
+        $structure = [
+            'app' => [
+                'Models' => [
+                    'CircularDep.php' => $model
+                ],
+            ],
+            'database' => [
+                'factories' => [
+                    'CircularDepFactory.php' => $factory,
+                ]
+            ],
         ];
 
         vfsStream::create($structure);

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
-class Post extends Model
+class CircularDep extends Model
 {
     use HasFactory, ModelTrait;
 
@@ -21,23 +21,13 @@ class Post extends Model
         'updated_at'
     ];
 
-    protected static function newFactory(): PostFactory
+    protected static function newFactory(): CircularDepFactory
     {
-        return PostFactory::new();
+        return CircularDepFactory::new();
     }
 
-    public function user()
+    public function dep()
     {
-        return $this->belongsTo(User::class);
-    }
-
-    public function other_users()
-    {
-        return $this->hasMany(User::class);
-    }
-
-    public function comments()
-    {
-        return $this->belongsTo(Comment::class);
+        return $this->belongsTo(CircularDep::class);
     }
 }

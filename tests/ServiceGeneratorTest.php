@@ -75,5 +75,7 @@ class ServiceGeneratorTest extends TestCase
         $this->rollbackToDefaultBasePath();
 
         $this->assertGeneratedFileEquals('service_without_trait.php', 'app/Services/PostService.php');
+
+        $this->removeRecursivelyGeneratedFolders(getcwd() . '/vfs:');
     }
 }

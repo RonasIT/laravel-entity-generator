@@ -4,6 +4,7 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Carbon;
 use ReflectionClass;
+use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Tests\Support\Test\TestMockTrait;
@@ -34,8 +35,6 @@ class TestGeneratorTest extends TestCase
         $this->mockFilesystem();
         $this->mockViewsNamespace();
 
-        app()->databasePath();
-
         app(TestsGenerator::class)
             ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->setModel('Post')
@@ -43,11 +42,26 @@ class TestGeneratorTest extends TestCase
 
         $this->rollbackToDefaultBasePath();
 
-        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/PostTest/dump.sql');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/PostTest/dump.sql', true);
         $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/PostTest/create_post_request.json');
         $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/PostTest/create_post_response.json');
         $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/PostTest/update_post_request.json');
         $this->assertGeneratedFileEquals('post_test.php', 'tests/PostTest.php');
+    }
+
+    public function testCreateWithCircularDependencies()
+    {
+        $this->expectException(CircularRelationsFoundedException::class);
+        $this->expectErrorMessage('Circular relations founded. Please resolve you relations in models, factories and database.');
+
+        $this->mockConfigurations();
+        $this->mockGeneratorForCircularDependency();
+        $this->mockFilesystemForCircleDependency();
+
+        app(TestsGenerator::class)
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->setModel('CircularDep')
+            ->generate();
     }
 
     public function testGetModelClass()

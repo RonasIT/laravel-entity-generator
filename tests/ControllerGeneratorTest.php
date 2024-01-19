@@ -75,23 +75,4 @@ class ControllerGeneratorTest extends TestCase
         $this->removeRecursivelyGeneratedFolders(getcwd() . '/vfs:');
         $this->removeRecursivelyGeneratedFolders(getcwd() . '/tests/vfs:');
     }
-
-    protected function removeRecursivelyGeneratedFolders(string $path): void
-    {
-        $dirs = glob($path . '/*');
-
-        foreach($dirs as $dir) {
-            $scan = glob(rtrim($dir, '/').'/*');
-
-            foreach($scan as $nestedDirPath) {
-                $this->removeRecursivelyGeneratedFolders($nestedDirPath);
-            }
-
-            rmdir($dir);
-        }
-
-        if (file_exists($path)) {
-            rmdir($path);
-        }
-    }
 }

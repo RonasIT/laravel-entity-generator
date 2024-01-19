@@ -108,6 +108,27 @@ trait FactoryMockTrait
         ]);
     }
 
+    public function mockFactoryGeneratorForFileEndingPath(): void
+    {
+        $this->mockClass(FactoryGenerator::class, [
+            [
+                'method' => 'classExists',
+                'arguments' => ['models', 'Post'],
+                'result' => true
+            ],
+            [
+                'method' => 'classExists',
+                'arguments' => ['factory', 'PostFactory'],
+                'result' => false
+            ],
+            [
+                'method' => 'allowedToCreateFactoryInSeparateClass',
+                'arguments' => [],
+                'result' => true
+            ]
+        ]);
+    }
+
     public function mockFactoryGeneratorForMissingRelatedModelFactory(): void
     {
         $this->mockClass(FactoryGenerator::class, [
@@ -151,6 +172,19 @@ trait FactoryMockTrait
             'entity-generator.paths' => [
                 'models' => 'app/Models',
                 'factory' => 'database/factories',
+            ]
+        ]);
+    }
+
+    public function mockConfigurationsForPathWithEndingFile(): void
+    {
+        config([
+            'entity-generator.stubs.factory' => 'entity-generator::factory',
+            'entity-generator.stubs.legacy_factory' => 'entity-generator::legacy_factory',
+            'entity-generator.stubs.legacy_empty_factory' => 'entity-generator::legacy_empty_factory',
+            'entity-generator.paths' => [
+                'models' => 'app/Models',
+                'factory' => 'database/factories/Factory.php',
             ]
         ]);
     }
@@ -240,6 +274,23 @@ trait FactoryMockTrait
     }
 
     public function mockFilesystemForClassStyleFactoryCreation(): void
+    {
+        $structure = [
+            'app' => [
+                'Models' => [
+                    'Post.php' => file_get_contents(getcwd() . '/tests/Support/Factory/Post.php'),
+                    'User.php' => '<?php'
+                ]
+            ],
+            'database' => [
+                'factories' => []
+            ]
+        ];
+
+        vfsStream::create($structure);
+    }
+
+    public function mockFilesystemForPathWithEndingFile(): void
     {
         $structure = [
             'app' => [

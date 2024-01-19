@@ -41,5 +41,7 @@ class SeederGeneratorTest extends TestCase
 
         $this->assertGeneratedFileEquals('database_seeder.php', 'database/seeders/DatabaseSeeder.php');
         $this->assertGeneratedFileEquals('post_seeder.php', 'database/seeders/PostSeeder.php');
+
+        $this->removeRecursivelyGeneratedFolders(getcwd() . '/vfs:');
     }
 }
