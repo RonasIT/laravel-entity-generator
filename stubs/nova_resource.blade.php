@@ -26,13 +26,13 @@ class {{$model}}Resource extends Resource
     {
         return [
 @foreach($fields as $fieldName => $fieldOptions)
-            {{$fieldOptions['type']}}::make('{{Str::headline($fieldName)}}')
+@php($name = ctype_upper($fieldName) ? $fieldName : Str::headline($fieldName))
+            {{$fieldOptions['type']}}::make('{{$name}}')
 @if($fieldOptions['is_required'])
                 ->required()
 @endif
                 ->sortable(),
 @endforeach
-
         ];
     }
 
