@@ -42,7 +42,7 @@ class TestGeneratorTest extends TestCase
 
         $this->rollbackToDefaultBasePath();
 
-        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/PostTest/dump.sql', true);
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/PostTest/dump.sql');
         $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/PostTest/create_post_request.json');
         $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/PostTest/create_post_response.json');
         $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/PostTest/update_post_request.json');
