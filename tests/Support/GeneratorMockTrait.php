@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Shared;
+namespace RonasIT\Support\Tests\Support;
 
 use Illuminate\Support\Facades\View;
 use phpmock\Mock;
@@ -50,9 +50,9 @@ trait GeneratorMockTrait
         return $this->mockNativeFunction('\\RonasIT\\Support\\Generators', 'class_exists', $result);
     }
 
-    public function mockCheckingNonExistentNovaPackageExistence(): Mock
+    public function mockCheckingNovaPackageExistence(bool $result = false): Mock
     {
-        return $this->mockClassExistsFunction(false);
+        return $this->mockClassExistsFunction($result);
     }
 
     public function classExistsMethodCall(?string $path, ?string $className, bool $result = true): array

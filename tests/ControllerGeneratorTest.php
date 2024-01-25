@@ -8,11 +8,11 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\ControllerGenerator;
-use RonasIT\Support\Tests\Support\Controller\ControllerMockTrait;
+use RonasIT\Support\Tests\Support\ControllerGeneratorTest\ControllerGeneratorMockTrait;
 
 class ControllerGeneratorTest extends TestCase
 {
-    use ControllerMockTrait;
+    use ControllerGeneratorMockTrait;
 
     public function setUp(): void
     {

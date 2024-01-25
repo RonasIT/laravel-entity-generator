@@ -1,13 +1,13 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\NovaTest;
+namespace RonasIT\Support\Tests\Support\NovaTestGeneratorTest;
 
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 use RonasIT\Support\Traits\MockClassTrait;
 
-trait NovaTestMockTrait
+trait NovaTestGeneratorMockTrait
 {
     use GeneratorMockTrait, MockClassTrait;
 

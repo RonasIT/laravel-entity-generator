@@ -7,11 +7,11 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Tests\Support\NovaTest\NovaTestMockTrait;
+use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 
 class NovaTestGeneratorTest extends TestCase
 {
-    use NovaTestMockTrait;
+    use NovaTestGeneratorMockTrait;
 
     public function setUp(): void
     {
@@ -90,7 +90,7 @@ class NovaTestGeneratorTest extends TestCase
     {
         $this->expectsEvents([SuccessCreateMessage::class]);
 
-        $functionMock = $this->mockCheckingNonExistentNovaPackageExistence();
+        $functionMock = $this->mockCheckingNovaPackageExistence();
 
         app(NovaTestGenerator::class)
             ->setModel('Post')

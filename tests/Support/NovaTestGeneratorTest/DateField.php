@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\NovaTest;
+namespace RonasIT\Support\Tests\Support\NovaTestGeneratorTest;
 
 class DateField
 {

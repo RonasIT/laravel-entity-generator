@@ -13,11 +13,11 @@ use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaResourceGenerator;
 use RonasIT\Support\Support\DatabaseNovaField;
-use RonasIT\Support\Tests\Support\NovaResource\NovaResourceMockTrait;
+use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\NovaResourceGeneratorMockTrait;
 
 class NovaResourceGeneratorTest extends TestCase
 {
-    use NovaResourceMockTrait;
+    use NovaResourceGeneratorMockTrait;
 
     public function setUp(): void
     {
@@ -34,7 +34,7 @@ class NovaResourceGeneratorTest extends TestCase
     {
         $this->expectsEvents([SuccessCreateMessage::class]);
 
-        $functionMock = $this->mockCheckingNonExistentNovaPackageExistence();
+        $functionMock = $this->mockCheckingNovaPackageExistence();
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')

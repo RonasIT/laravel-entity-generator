@@ -1,16 +1,16 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\NovaResource;
+namespace RonasIT\Support\Tests\Support\NovaResourceGeneratorTest;
 
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\DB;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\NovaResourceGenerator;
-use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 use RonasIT\Support\Traits\MockClassTrait;
 
-trait NovaResourceMockTrait
+trait NovaResourceGeneratorMockTrait
 {
     use GeneratorMockTrait, MockClassTrait;
 

@@ -1,13 +1,13 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Controller;
+namespace RonasIT\Support\Tests\Support\ControllerGeneratorTest;
 
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\ControllerGenerator;
-use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 use RonasIT\Support\Traits\MockClassTrait;
 
-trait ControllerMockTrait
+trait ControllerGeneratorMockTrait
 {
     use GeneratorMockTrait, MockClassTrait;
 
