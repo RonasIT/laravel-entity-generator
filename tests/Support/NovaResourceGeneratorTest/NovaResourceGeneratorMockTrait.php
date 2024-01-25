@@ -56,18 +56,16 @@ trait NovaResourceGeneratorMockTrait
 
     public function mockGettingModelInstance(): void
     {
-        $connection = $this->mockByClassBuilder(Connection::class, ['getDoctrineSchemaManager'], true);
+        $connectionMock = Mockery::mock(Connection::class)->makePartial();
+        $connectionMock
+            ->expects('getDoctrineSchemaManager')
+            ->andReturn(new SchemaManager);
 
         $mock = Mockery::mock('alias:' . DB::class);
         $mock
             ->expects('connection')
             ->with('pgsql')
-            ->andReturn($connection);
-
-        $connection
-            ->expects($this->once())
-            ->method('getDoctrineSchemaManager')
-            ->willReturn(new SchemaManager);
+            ->andReturn($connectionMock);
 
         $this->app->instance('App\\Models\\Post', new Post);
     }

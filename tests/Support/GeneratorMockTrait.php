@@ -5,25 +5,9 @@ namespace RonasIT\Support\Tests\Support;
 use Illuminate\Support\Facades\View;
 use phpmock\Mock;
 use phpmock\MockBuilder;
-use PHPUnit\Framework\MockObject\MockObject;
 
 trait GeneratorMockTrait
 {
-    protected function mockByClassBuilder($className, $methods = [], $disableConstructor = false): MockObject
-    {
-        $builder = $this->getMockBuilder($className);
-
-        if ($methods) {
-            $builder->onlyMethods($methods);
-        }
-
-        if ($disableConstructor) {
-            $builder->disableOriginalConstructor();
-        }
-
-        return $builder->getMock();
-    }
-
     public function mockNativeFunction(string $namespace, string $name, $result): Mock
     {
         $builder = new MockBuilder();
