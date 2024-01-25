@@ -6,6 +6,7 @@ use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use RonasIT\Support\EntityGeneratorServiceProvider;
 use RonasIT\Support\Traits\FixturesTrait;
 
 class TestCase extends BaseTestCase
@@ -18,6 +19,13 @@ class TestCase extends BaseTestCase
     public function rollbackToDefaultBasePath(): void
     {
         $this->app->setBasePath(getcwd());
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [
+            EntityGeneratorServiceProvider::class
+        ];
     }
 
     protected function getEnvironmentSetUp($app)

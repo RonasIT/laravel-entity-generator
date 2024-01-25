@@ -26,22 +26,6 @@ trait ControllerGeneratorMockTrait
         ]);
     }
 
-    public function mockConfigurations(): void
-    {
-        config([
-            'entity-generator.stubs.controller' => 'entity-generator::controller',
-            'entity-generator.stubs.use_routes' => 'entity-generator::use_routes',
-            'entity-generator.stubs.routes' => 'entity-generator::routes',
-            'entity-generator.paths' => [
-                'controllers' => 'app/Controllers',
-                'services' => 'app/Services',
-                'requests' => 'app/Requests',
-                'resources' => 'app/Http/Resources',
-                'routes' => 'routes/api.php'
-            ]
-        ]);
-    }
-
     public function mockFilesystemWithoutRoutesFile(): void
     {
         $structure = [
@@ -63,7 +47,9 @@ trait ControllerGeneratorMockTrait
                 'Services' => [
                     'PostService.php' => '<?php'
                 ],
-                'Controllers' => []
+                'Http' => [
+                    'Controllers' => []
+                ]
             ],
             'routes' => [
                 'api.php' => '<?php'

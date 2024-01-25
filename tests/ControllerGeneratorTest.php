@@ -57,7 +57,6 @@ class ControllerGeneratorTest extends TestCase
         $this->expectErrorMessage("Not found file with routes. Create a routes file on path: 'vfs://root/routes/api.php'");
 
         $this->mockFilesystemWithoutRoutesFile();
-        $this->mockConfigurations();
         $this->mockViewsNamespace();
 
         app(ControllerGenerator::class)
@@ -71,7 +70,6 @@ class ControllerGeneratorTest extends TestCase
         $this->expectsEvents(SuccessCreateMessage::class);
 
         $this->mockFilesystem();
-        $this->mockConfigurations();
         $this->mockViewsNamespace();
 
         app(ControllerGenerator::class)
@@ -81,29 +79,7 @@ class ControllerGeneratorTest extends TestCase
 
         $this->rollbackToDefaultBasePath();
 
-        $this->assertGeneratedFileEquals('created_controller.php', 'app/Controllers/PostController.php');
+        $this->assertGeneratedFileEquals('created_controller.php', 'app/Http/Controllers/PostController.php');
         $this->assertGeneratedFileEquals('api.php', 'routes/api.php');
-
-        $this->removeRecursivelyGeneratedFolders(getcwd() . '/vfs:');
-        $this->removeRecursivelyGeneratedFolders(getcwd() . '/tests/vfs:');
-    }
-
-    protected function removeRecursivelyGeneratedFolders(string $path): void
-    {
-        $dirs = glob($path . '/*');
-
-        foreach($dirs as $dir) {
-            $scan = glob(rtrim($dir, '/').'/*');
-
-            foreach($scan as $nestedDirPath) {
-                $this->removeRecursivelyGeneratedFolders($nestedDirPath);
-            }
-
-            rmdir($dir);
-        }
-
-        if (file_exists($path)) {
-            rmdir($path);
-        }
     }
 }

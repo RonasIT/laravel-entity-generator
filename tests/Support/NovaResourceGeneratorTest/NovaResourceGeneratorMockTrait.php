@@ -6,39 +6,12 @@ use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\DB;
 use Mockery;
 use org\bovigo\vfs\vfsStream;
-use RonasIT\Support\Generators\NovaResourceGenerator;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 use RonasIT\Support\Traits\MockClassTrait;
 
 trait NovaResourceGeneratorMockTrait
 {
     use GeneratorMockTrait, MockClassTrait;
-
-    public function mockResourceGeneratorForNonExistingNovaResource(): void
-    {
-        $this->mockClass(NovaResourceGenerator::class, [
-            $this->classExistsMethodCall(null, null, false)
-        ]);
-    }
-
-    public function mockResourceGeneratorForExistingNovaResource(): void
-    {
-        $this->mockClass(NovaResourceGenerator::class, [
-            $this->classExistsMethodCall('models', 'Post'),
-            $this->classExistsMethodCall('nova', 'PostResource'),
-        ]);
-    }
-
-    public function setupConfigurations(): void
-    {
-        config([
-            'entity-generator.stubs.nova_resource' => 'entity-generator::nova_resource',
-            'entity-generator.paths' => [
-                'nova' => 'app/Nova',
-                'models' => 'app/Models'
-            ]
-        ]);
-    }
 
     public function mockFilesystem(): void
     {

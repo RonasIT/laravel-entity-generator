@@ -66,37 +66,6 @@ trait NovaTestGeneratorMockTrait
         ]);
     }
 
-    public function mockTestGeneratorForNonExistingNovaResource(): void
-    {
-        $this->mockClass(NovaTestGenerator::class, [
-            $this->classExistsMethodCall('nova', 'PostNovaResource', false),
-            $this->classExistsMethodCall('nova', 'PostResource', false),
-            $this->classExistsMethodCall('nova', 'Post', false),
-        ]);
-    }
-
-    public function mockGeneratorForExistingNovaTest(): void
-    {
-        $this->mockClass(NovaTestGenerator::class, [
-            $this->classExistsMethodCall('nova', 'PostNovaResource'),
-            $this->classExistsMethodCall('nova', 'NovaPostTest')
-        ]);
-    }
-
-    public function setupConfigurations(): void
-    {
-        config([
-            'entity-generator.stubs.nova_test' => 'entity-generator::nova_test',
-            'entity-generator.stubs.dump' => 'entity-generator::dumps.pgsql',
-            'entity-generator.paths' => [
-                'nova' => 'app/Nova',
-                'nova_actions' => 'app/Nova/Actions',
-                'tests' => 'tests',
-                'models' => 'app/Models'
-            ]
-        ]);
-    }
-
     public function mockFilesystem(): void
     {
         $structure = [
