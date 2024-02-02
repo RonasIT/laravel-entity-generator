@@ -31,7 +31,9 @@ class ControllerGeneratorTest extends TestCase
         $this->expectException(ClassAlreadyExistsException::class);
         $this->expectErrorMessage('Cannot create PostController cause PostController already exists. Remove PostController.');
 
-        $this->mockControllerGeneratorForExistingController();
+        $this->mockClass(ControllerGenerator::class, [
+            $this->classExistsMethodCall(['controllers', 'PostController'])
+        ]);
 
         app(ControllerGenerator::class)
             ->setModel('Post')
@@ -44,7 +46,10 @@ class ControllerGeneratorTest extends TestCase
         $this->expectException(ClassNotExistsException::class);
         $this->expectErrorMessage('Cannot create PostService cause PostService does not exists. Create a PostService by himself.');
 
-        $this->mockControllerGeneratorForNotExistingService();
+        $this->mockClass(ControllerGenerator::class, [
+            $this->classExistsMethodCall(['controllers', 'PostController'], false),
+            $this->classExistsMethodCall(['services', 'PostService'], false)
+        ]);
 
         app(ControllerGenerator::class)
             ->setModel('Post')
@@ -57,7 +62,6 @@ class ControllerGeneratorTest extends TestCase
         $this->expectErrorMessage("Not found file with routes. Create a routes file on path: 'vfs://root/routes/api.php'");
 
         $this->mockFilesystemWithoutRoutesFile();
-        $this->mockViewsNamespace();
 
         app(ControllerGenerator::class)
             ->setModel('Post')
@@ -70,7 +74,6 @@ class ControllerGeneratorTest extends TestCase
         $this->expectsEvents(SuccessCreateMessage::class);
 
         $this->mockFilesystem();
-        $this->mockViewsNamespace();
 
         app(ControllerGenerator::class)
             ->setModel('Post')

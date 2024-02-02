@@ -48,7 +48,7 @@ class NovaResourceGeneratorTest extends TestCase
         $mock = $this->mockClassExistsFunction();
 
         $this->mockClass(NovaResourceGenerator::class, [
-            $this->classExistsMethodCall(null, null, false)
+            $this->classExistsMethodCall([], false)
         ]);
 
         $this->expectException(ClassNotExistsException::class);
@@ -69,8 +69,8 @@ class NovaResourceGeneratorTest extends TestCase
         $mock = $this->mockClassExistsFunction();
 
         $this->mockClass(NovaResourceGenerator::class, [
-            $this->classExistsMethodCall('models', 'Post'),
-            $this->classExistsMethodCall('nova', 'PostResource'),
+            $this->classExistsMethodCall(['models', 'Post']),
+            $this->classExistsMethodCall(['nova', 'PostResource']),
         ]);
 
         $this->expectException(ClassAlreadyExistsException::class);
@@ -92,11 +92,17 @@ class NovaResourceGeneratorTest extends TestCase
         $functionMock = $this->mockClassExistsFunction();
 
         $this->mockFilesystem();
-        $this->mockViewsNamespace();
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
-            ->setFields($this->getFieldsMock())
+            ->setFields([
+                'boolean' => ['is_published'],
+                'string-required' => ['title', 'body'],
+                'integer' => ['id'],
+                'non_existing_type' => ['comment'],
+                'json' => [],
+                'timestamp-required' => [],
+            ])
             ->generate();
 
         $this->rollbackToDefaultBasePath();
@@ -120,24 +126,7 @@ class NovaResourceGeneratorTest extends TestCase
 
         $fields = $method->invokeArgs($generator, []);
 
-        $this->assertEquals($this->getDatabaseAssertionData(), $fields);
-    }
-
-    public function getFieldsMock(): array
-    {
-        return [
-            'boolean' => ['is_published'],
-            'string-required' => ['title', 'body'],
-            'integer' => ['id'],
-            'non_existing_type' => ['comment'],
-            'json' => [],
-            'timestamp-required' => [],
-        ];
-    }
-
-    public function getDatabaseAssertionData(): array
-    {
-        return [
+        $this->assertEquals([
             [
                 new DatabaseNovaField(new Column('id', new IntegerType)),
                 new DatabaseNovaField(new Column('title', new StringType)),
@@ -158,6 +147,6 @@ class NovaResourceGeneratorTest extends TestCase
                 'datetimetz' => 'DateTime',
                 'boolean' => 'Boolean',
             ]
-        ];
+        ], $fields);
     }
 }

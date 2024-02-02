@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
-use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use RonasIT\Support\EntityGeneratorServiceProvider;
@@ -11,7 +10,7 @@ use RonasIT\Support\Traits\FixturesTrait;
 
 class TestCase extends BaseTestCase
 {
-    use FixturesTrait, InteractsWithViews;
+    use FixturesTrait;
 
     protected $globalExportMode = false;
     protected $generatedFileBasePath;

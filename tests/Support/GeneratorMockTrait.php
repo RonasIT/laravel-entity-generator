@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests\Support;
 
-use Illuminate\Support\Facades\View;
 use phpmock\Mock;
 use phpmock\MockBuilder;
 
@@ -24,11 +23,6 @@ trait GeneratorMockTrait
         return $mock;
     }
 
-    public function mockViewsNamespace(): void
-    {
-        View::addNamespace('entity-generator', getcwd() . '/stubs');
-    }
-
     public function mockClassExistsFunction(bool $result = true): Mock
     {
         return $this->mockNativeFunction('\\RonasIT\\Support\\Generators', 'class_exists', $result);
@@ -39,11 +33,11 @@ trait GeneratorMockTrait
         return $this->mockClassExistsFunction($result);
     }
 
-    public function classExistsMethodCall(?string $path, ?string $className, bool $result = true): array
+    public function classExistsMethodCall(array $arguments, bool $result = true): array
     {
         return [
             'method' => 'classExists',
-            'arguments' => $path || $className ? [$path, $className] : [],
+            'arguments' => $arguments,
             'result' => $result
         ];
     }

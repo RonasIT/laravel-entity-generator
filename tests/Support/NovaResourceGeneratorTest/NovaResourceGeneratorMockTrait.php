@@ -5,7 +5,7 @@ namespace RonasIT\Support\Tests\Support\NovaResourceGeneratorTest;
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\DB;
 use Mockery;
-use org\bovigo\vfs\vfsStream;
+use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 use RonasIT\Support\Traits\MockClassTrait;
 
@@ -15,16 +15,13 @@ trait NovaResourceGeneratorMockTrait
 
     public function mockFilesystem(): void
     {
-        $structure = [
-            'app' => [
-                'Nova' => [],
-                'Models' => [
-                    'Post.php' => '<?php'
-                ]
-            ],
+        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock->novaModels = [];
+        $fileSystemMock->models = [
+            'Post.php' => '<?php'
         ];
 
-        vfsStream::create($structure);
+        $fileSystemMock->setStructure();
     }
 
     public function mockGettingModelInstance(): void

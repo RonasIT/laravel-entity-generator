@@ -2,8 +2,8 @@
 
 namespace RonasIT\Support\Tests\Support\NovaTestGeneratorTest;
 
-use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\NovaTestGenerator;
+use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 use RonasIT\Support\Traits\MockClassTrait;
 
@@ -68,28 +68,27 @@ trait NovaTestGeneratorMockTrait
 
     public function mockFilesystem(): void
     {
-        $structure = [
-            'app' => [
-                'Nova' => [
-                    'Actions' => [
-                        'PublishPostAction.php' => '<?php',
-                        'ArchivePostAction.php' => '<?php',
-                        'BlockCommentAction.php' => '<?php',
-                        'UnPublishPostAction.txt' => 'text',
-                    ],
-                    'Post.php' => '<?php'
-                ],
-                'Models' => [
-                    'Post.php' => '<?php'
-                ]
-            ],
-            'tests' => [
-                'fixtures' => [
-                    'NovaPostTest' => []
-                ]
-            ]
+        $fileSystemMock = new FileSystemMock;
+
+        $fileSystemMock->novaActions = [
+            'PublishPostAction.php' => '<?php',
+            'ArchivePostAction.php' => '<?php',
+            'BlockCommentAction.php' => '<?php',
+            'UnPublishPostAction.txt' => 'text',
         ];
 
-        vfsStream::create($structure);
+        $fileSystemMock->novaModels = [
+            'Post.php' => '<?php'
+        ];
+
+        $fileSystemMock->models = [
+            'Post.php' => '<?php'
+        ];
+
+        $fileSystemMock->testFixtures = [
+            'NovaPostTest' => []
+        ];
+
+        $fileSystemMock->setStructure();
     }
 }
