@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use RonasIT\Support\EntityGeneratorServiceProvider;
@@ -14,6 +15,15 @@ class TestCase extends BaseTestCase
 
     protected $globalExportMode = false;
     protected $generatedFileBasePath;
+
+    public function getFixturePath(string $fixtureName): string
+    {
+        $class = get_class($this);
+        $explodedClass = explode('\\', $class);
+        $className = Arr::last($explodedClass);
+
+        return getcwd() . "/tests/fixtures/{$className}/{$fixtureName}";
+    }
 
     public function rollbackToDefaultBasePath(): void
     {

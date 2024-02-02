@@ -93,16 +93,11 @@ class NovaResourceGeneratorTest extends TestCase
 
         $this->mockFilesystem();
 
+        $fields = $this->getJsonFixture('command_line_fields.json');
+
         app(NovaResourceGenerator::class)
             ->setModel('Post')
-            ->setFields([
-                'boolean' => ['is_published'],
-                'string-required' => ['title', 'body'],
-                'integer' => ['id'],
-                'non_existing_type' => ['comment'],
-                'json' => [],
-                'timestamp-required' => [],
-            ])
+            ->setFields($fields)
             ->generate();
 
         $this->rollbackToDefaultBasePath();
