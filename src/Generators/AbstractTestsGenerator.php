@@ -52,7 +52,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $fixturePath = $this->getFixturesPath();
 
         if (!file_exists($fixturePath)) {
-            mkdir_recursively($fixturePath);
+            mkdir($fixturePath, 0777, true);
         }
 
         file_put_contents($this->getFixturesPath('dump.sql'), $content);
