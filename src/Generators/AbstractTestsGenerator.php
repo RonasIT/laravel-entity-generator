@@ -55,10 +55,17 @@ abstract class AbstractTestsGenerator extends EntityGenerator
             mkdir_recursively($fixturePath);
         }
 
-        file_put_contents($this->getFixturesPath('dump.sql'), $content);
+        $dumpName = $this->getDumpName();
+
+        file_put_contents($this->getFixturesPath($dumpName), $content);
 
         event(new SuccessCreateMessage("Created a new Test dump on path: "
-            . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/dump.sql"));
+            . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$dumpName}"));
+    }
+
+    protected function getDumpName(): string
+    {
+        return 'dump.sql';
     }
 
     protected function getInserts(): array
