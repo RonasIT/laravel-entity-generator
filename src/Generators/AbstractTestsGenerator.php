@@ -60,7 +60,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         file_put_contents($this->getFixturesPath("{$dumpName}.sql"), $content);
 
         event(new SuccessCreateMessage("Created a new Test dump on path: "
-            . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{dumpName}.sql"));
+            . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$dumpName}.sql"));
     }
 
     protected function getDumpName(): string
