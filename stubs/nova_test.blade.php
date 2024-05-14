@@ -9,14 +9,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Nova{{$entity}}Test extends TestCase
 {
-    protected static $user;
-    protected static ${{$lower_entity}}State;
+    protected static User $user;
+    protected static ModelTestState ${{$lower_entity}}State;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        self::$user = 1;
+        self::$user = User::find(1);
         self::${{$lower_entity}}State ??= new ModelTestState({{$entity}}::class);
 
         $this->skipDocumentationCollecting();

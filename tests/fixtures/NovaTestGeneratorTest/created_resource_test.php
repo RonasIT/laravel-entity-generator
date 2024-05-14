@@ -7,14 +7,14 @@ use RonasIT\Support\Tests\ModelTestState;
 
 class NovaPostTest extends TestCase
 {
-    protected static $user;
-    protected static $postState;
+    protected static User $user;
+    protected static ModelTestState $postState;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        self::$user = 1;
+        self::$user = User::find(1);
         self::$postState ??= new ModelTestState(Post::class);
 
         $this->skipDocumentationCollecting();
