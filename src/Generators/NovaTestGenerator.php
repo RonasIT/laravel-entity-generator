@@ -172,7 +172,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return $filters;
     }
 
-    protected function getDumpName(string $dumpName = 'dump'): string
+    protected function getDumpName(): string
     {
         $modelName = Str::snake($this->model);
 
