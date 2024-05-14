@@ -176,6 +176,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
     {
         $modelName = Str::snake($this->model);
 
-        return "nova_{$modelName}_dump";
+        return "nova_{$modelName}_dump.sql";
     }
 }
