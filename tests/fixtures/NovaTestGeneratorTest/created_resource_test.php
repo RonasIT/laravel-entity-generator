@@ -14,7 +14,7 @@ class NovaPostTest extends TestCase
     {
         parent::setUp();
 
-        self::$user = User::find(1);
+        self::$user ??= User::find(1);
         self::$postState ??= new ModelTestState(Post::class);
 
         $this->skipDocumentationCollecting();
@@ -43,7 +43,7 @@ class NovaPostTest extends TestCase
         $response->assertUnauthorized();
 
         self::$postState->assertNotChanged();
-}
+    }
 
     public function testCreateValidationError(): void
     {
@@ -252,13 +252,13 @@ class NovaPostTest extends TestCase
         return [
             [
                 'filters' => [
-                    'TextField:description_field' => 'search term',
+                    'TextField:description_field' => ['search term'],
                 ],
                 'response_fixture' => 'filter_post_by_text_field.json',
             ],
             [
                 'filters' => [
-                    'RonasIT\Support\Tests\Support\CreatedAtFilter' => 'search term',
+                    'RonasIT\Support\Tests\Support\CreatedAtFilter' => ['search term'],
                 ],
                 'response_fixture' => 'filter_post_by_created_at_filter.json',
             ],
