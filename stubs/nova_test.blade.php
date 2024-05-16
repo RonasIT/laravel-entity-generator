@@ -16,7 +16,7 @@ class Nova{{$entity}}Test extends TestCase
     {
         parent::setUp();
 
-        self::$user = User::find(1);
+        self::$user ??= User::find(1);
         self::${{$lower_entity}}State ??= new ModelTestState({{$entity}}::class);
 
         $this->skipDocumentationCollecting();
@@ -53,7 +53,7 @@ class Nova{{$entity}}Test extends TestCase
 @endif
 
         self::${{$lower_entity}}State->assertNotChanged();
-}
+    }
 
     public function testCreateValidationError(): void
     {
@@ -318,7 +318,7 @@ class Nova{{$entity}}Test extends TestCase
 @foreach($filters as $filter)
             [
                 'filters' => [
-                    '{{$filter['name']}}' => 'search term',
+                    '{{$filter['name']}}' => ['search term'],
                 ],
                 'response_fixture' => 'filter_{{$lower_entity}}_by_{{$filter['fixture_name']}}.json',
             ],
