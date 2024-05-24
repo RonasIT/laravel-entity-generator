@@ -317,8 +317,8 @@ class Nova{{$entity}}Test extends TestCase
         return [
 @foreach($filters as $filter)
             [
-                'filters' => [
-                    '{{$filter['name']}}' => ['search term'],
+                'request' => [
+                    '{{$filter['name']}}' => $this->novaSearchParams(['search term']),
                 ],
                 'response_fixture' => 'filter_{{$lower_entity}}_by_{{$filter['fixture_name']}}.json',
             ],
@@ -329,11 +329,9 @@ class Nova{{$entity}}Test extends TestCase
     /**
      * @dataProvider get{{$entity}}FiltersData
      */
-    public function testFilter{{$entity}}(array $filters, string $responseFixture): void
+    public function testFilter{{$entity}}(array $request, string $responseFixture): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/{{$url_path}}', [
-            'filters' => base64_encode(json_encode($filters))
-        ]);
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/{{$url_path}}', $request);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
