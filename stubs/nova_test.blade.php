@@ -3,12 +3,15 @@ namespace App\Tests;
 
 use App\Models\{{$entity}};
 use RonasIT\Support\Tests\ModelTestState;
+use RonasIT\Support\Tests\NovaTestTraitTest;
 @if($shouldUseStatus)
 use Symfony\Component\HttpFoundation\Response;
 @endif
 
 class Nova{{$entity}}Test extends TestCase
 {
+    use NovaTestTrait;
+
     protected static User $user;
     protected static ModelTestState ${{$lower_entity}}State;
 
