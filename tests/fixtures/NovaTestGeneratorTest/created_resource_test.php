@@ -4,9 +4,12 @@ namespace App\Tests;
 
 use App\Models\Post;
 use RonasIT\Support\Tests\ModelTestState;
+use RonasIT\Support\Tests\NovaTestTraitTest;
 
 class NovaPostTest extends TestCase
 {
+    use NovaTestTrait;
+
     protected static User $user;
     protected static ModelTestState $postState;
 
@@ -251,14 +254,14 @@ class NovaPostTest extends TestCase
     {
         return [
             [
-                'filters' => [
-                    'TextField:description_field' => ['search term'],
+                'request' => [
+                    'TextField:description_field' => $this->novaSearchParams(['search term']),
                 ],
                 'response_fixture' => 'filter_post_by_text_field.json',
             ],
             [
-                'filters' => [
-                    'RonasIT\Support\Tests\Support\CreatedAtFilter' => ['search term'],
+                'request' => [
+                    'RonasIT\Support\Tests\Support\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
                 'response_fixture' => 'filter_post_by_created_at_filter.json',
             ],
@@ -268,11 +271,9 @@ class NovaPostTest extends TestCase
     /**
      * @dataProvider  getPostFiltersData
      */
-    public function testFilterPost(array $filters, string $responseFixture): void
+    public function testFilterPost(array $request, string $responseFixture): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources', [
-            'filters' => base64_encode(json_encode($filters))
-        ]);
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources', $request);
 
         $response->assertOk();
 
