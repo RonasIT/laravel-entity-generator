@@ -4,9 +4,12 @@ namespace App\Tests;
 
 use App\Models\Post;
 use RonasIT\Support\Tests\ModelTestState;
+use RonasIT\Support\Tests\NovaTestTraitTest;
 
 class NovaPostTest extends TestCase
 {
+    use NovaTestTrait;
+
     protected static User $user;
     protected static ModelTestState $postState;
 
