@@ -2,6 +2,8 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class TestsGenerator extends AbstractTestsGenerator
