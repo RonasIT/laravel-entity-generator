@@ -12,18 +12,18 @@ use RonasIT\Support\Exceptions\ClassNotExistsException;
 
 abstract class AbstractTestsGenerator extends EntityGenerator
 {
-    protected $fakerProperties = [];
-    protected $getFields = [];
-    protected $withAuth = false;
+    protected array $fakerProperties = [];
+    protected array $getFields = [];
+    protected bool $withAuth = false;
 
-    const FIXTURE_TYPES = [
+    const array FIXTURE_TYPES = [
         'create' => ['request', 'response'],
         'update' => ['request'],
     ];
 
-    const EMPTY_GUARDED_FIELD = '*';
-    const UPDATED_AT = 'updated_at';
-    const CREATED_AT = 'created_at';
+    const string EMPTY_GUARDED_FIELD = '*';
+    const string UPDATED_AT = 'updated_at';
+    const string CREATED_AT = 'created_at';
 
     public function generate(): void
     {
@@ -284,7 +284,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         return array_diff($fields, [
             self::EMPTY_GUARDED_FIELD,
             self::CREATED_AT,
-            self::UPDATED_AT
+            self::UPDATED_AT,
         ]);
     }
 }

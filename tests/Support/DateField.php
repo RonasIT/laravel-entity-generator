@@ -4,6 +4,6 @@ namespace RonasIT\Support\Tests\Support;
 
 class DateField
 {
-    public $name = 'Created at';
-    public $filterableCallback = null;
+    public string $name = 'Created at';
+    public ?string $filterableCallback = null;
 }

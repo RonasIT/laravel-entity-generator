@@ -205,7 +205,7 @@ class NovaPostTest extends TestCase
     }
 
     /**
-     * @dataProvider  getRunPostActionsData
+     * @dataProvider getRunPostActionsData
      */
     public function testRunPostActions($action, $request, $postsStateFixture): void
     {
@@ -238,7 +238,7 @@ class NovaPostTest extends TestCase
     }
 
     /**
-     * @dataProvider  getPostActionsData
+     * @dataProvider getPostActionsData
      */
     public function testGetPostActions(array $request, string $responseFixture): void
     {
@@ -269,7 +269,7 @@ class NovaPostTest extends TestCase
     }
 
     /**
-     * @dataProvider  getPostFiltersData
+     * @dataProvider getPostFiltersData
      */
     public function testFilterPost(array $request, string $responseFixture): void
     {

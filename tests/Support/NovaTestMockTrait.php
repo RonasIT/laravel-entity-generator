@@ -12,15 +12,13 @@ use RonasIT\Support\Generators\NovaTestGenerator;
 
 trait NovaTestMockTrait
 {
-    public function mockNativeFunction(string $namespace, string $name, $result): Mock
+    public function mockNativeFunction(string $namespace, string $name, bool $result): Mock
     {
         $builder = new MockBuilder();
         $builder
             ->setNamespace($namespace)
             ->setName($name)
-            ->setFunction(function () use ($result) {
-                return $result;
-            });
+            ->setFunction(fn () => $result);
 
         $mock = $builder->build();
         $mock->enable();
@@ -118,7 +116,7 @@ trait NovaTestMockTrait
                 'nova' => 'app/Nova',
                 'nova_actions' => 'app/Nova/Actions',
                 'tests' => 'tests',
-                'models' => 'app/Models'
+                'models' => 'app/Models',
             ]
         ]);
     }
@@ -144,15 +142,15 @@ trait NovaTestMockTrait
                         'BlockCommentAction.php' => '<?php',
                         'UnPublishPostAction.txt' => 'text',
                     ],
-                    'Post.php' => '<?php'
+                    'Post.php' => '<?php',
                 ],
                 'Models' => [
-                    'Post.php' => '<?php'
+                    'Post.php' => '<?php',
                 ]
             ],
             'tests' => [
                 'fixtures' => [
-                    'NovaPostTest' => []
+                    'NovaPostTest' => [],
                 ]
             ]
         ];
