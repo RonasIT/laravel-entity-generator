@@ -15,8 +15,5 @@
         <include>
             <directory suffix=".php">./src</directory>
         </include>
-        <exclude>
-            <file>./app/Http/routes.php</file>
-        </exclude>
     </source>
 </phpunit>
