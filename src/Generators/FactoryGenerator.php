@@ -14,7 +14,7 @@ use Exception;
 
 class FactoryGenerator extends EntityGenerator
 {
-    const FAKERS_METHODS = [
+    const array FAKERS_METHODS = [
         'integer' => 'randomNumber()',
         'boolean' => 'boolean',
         'string' => 'word',
@@ -22,8 +22,8 @@ class FactoryGenerator extends EntityGenerator
         'timestamp' => 'dateTime',
     ];
 
-    const CUSTOM_METHODS = [
-        'json' => '[]'
+    const array CUSTOM_METHODS = [
+        'json' => '[]',
     ];
 
     protected function generateSeparateClass(): string

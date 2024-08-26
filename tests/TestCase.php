@@ -10,19 +10,20 @@ use RonasIT\Support\Traits\FixturesTrait;
 
 class TestCase extends BaseTestCase
 {
-    use FixturesTrait, InteractsWithViews;
+    use FixturesTrait;
+    use InteractsWithViews;
 
-    protected $globalExportMode = false;
-    protected $generatedFileBasePath;
+    protected bool $globalExportMode = false;
+    protected string $generatedFileBasePath;
 
     public function rollbackToDefaultBasePath(): void
     {
         $this->app->setBasePath(getcwd());
     }
 
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
-        $app->useEnvironmentPath(__DIR__.'/..');
+        $app->useEnvironmentPath(__DIR__ . '/..');
         $app->bootstrapWith([LoadEnvironmentVariables::class]);
     }
 
