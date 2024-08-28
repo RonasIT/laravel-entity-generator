@@ -182,7 +182,7 @@ class MakeEntityCommand extends Command
 
         $projectConfigs = config('entity-generator');
 
-        $newConfig = $this->outputNewConfig($packageConfigs, $projectConfigs);
+        $newConfig = $this->outputNewConfig($projectConfigs, $packageConfigs);
 
         if ($newConfig !== $projectConfigs) {
             $this->comment('Config has been updated');
