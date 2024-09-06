@@ -48,6 +48,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             'entity' => $this->model,
             'entities' => $this->getPluralName($this->model),
             'lower_entity' => Str::snake($this->model),
+            'lower_first_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
