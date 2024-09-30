@@ -85,23 +85,23 @@ trait NovaTestMockTrait
         $mock
             ->shouldAllowMockingProtectedMethods()
             ->shouldReceive('classExists')
-            ->with('nova', 'Post')
+            ->with('nova', 'SomePost')
             ->andReturn(true);
 
         $mock
             ->shouldReceive('classExists')
-            ->with('nova', 'PostResource')
+            ->with('nova', 'SomePostResource')
             ->andReturn(false);
 
         $mock
             ->shouldReceive('classExists')
-            ->with('nova', 'PostNovaResource')
+            ->with('nova', 'SomePostNovaResource')
             ->andReturn(false);
 
         $mock
             ->shouldReceive('classExists')
             ->once()
-            ->with('nova', 'NovaPostTest')
+            ->with('nova', 'NovaSomePostTest')
             ->andReturn(true);
 
         return $mock;
@@ -137,20 +137,20 @@ trait NovaTestMockTrait
             'app' => [
                 'Nova' => [
                     'Actions' => [
-                        'PublishPostAction.php' => '<?php',
-                        'ArchivePostAction.php' => '<?php',
+                        'PublishSomePostAction.php' => '<?php',
+                        'ArchiveSomePostAction.php' => '<?php',
                         'BlockCommentAction.php' => '<?php',
-                        'UnPublishPostAction.txt' => 'text',
+                        'UnPublishSomePostAction.txt' => 'text',
                     ],
-                    'Post.php' => '<?php',
+                    'SomePost.php' => '<?php',
                 ],
                 'Models' => [
-                    'Post.php' => '<?php',
+                    'SomePost.php' => '<?php',
                 ]
             ],
             'tests' => [
                 'fixtures' => [
-                    'NovaPostTest' => [],
+                    'NovaSomePostTest' => [],
                 ]
             ]
         ];

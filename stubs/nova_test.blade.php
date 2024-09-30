@@ -13,21 +13,21 @@ class Nova{{$entity}}Test extends TestCase
     use NovaTestTrait;
 
     protected static User $user;
-    protected static ModelTestState ${{$lower_first_entity}}State;
+    protected static ModelTestState ${{$dromedary_entity}}State;
 
     public function setUp(): void
     {
         parent::setUp();
 
         self::$user ??= User::find(1);
-        self::${{$lower_first_entity}}State ??= new ModelTestState({{$entity}}::class);
+        self::${{$dromedary_entity}}State ??= new ModelTestState({{$entity}}::class);
 
         $this->skipDocumentationCollecting();
     }
 
     public function testCreate(): void
     {
-        $data = $this->getJsonFixture('create_{{$lower_entity}}_request.json');
+        $data = $this->getJsonFixture('create_{{$snake_entity}}_request.json');
 
         $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/{{$url_path}}', $data);
 
@@ -37,15 +37,15 @@ class Nova{{$entity}}Test extends TestCase
         $response->assertCreated();
 @endif
 
-        $this->assertEqualsFixture('create_{{$lower_entity}}_response.json', $response->json());
+        $this->assertEqualsFixture('create_{{$snake_entity}}_response.json', $response->json());
 
         // TODO: Need to remove after first successful start
-        self::${{$lower_first_entity}}State->assertChangesEqualsFixture('create_{{$lower_entities}}_state.json', true);
+        self::${{$dromedary_entity}}State->assertChangesEqualsFixture('create_{{$lower_entities}}_state.json', true);
     }
 
     public function testCreateNoAuth(): void
     {
-        $data = $this->getJsonFixture('create_{{$lower_entity}}_request.json');
+        $data = $this->getJsonFixture('create_{{$snake_entity}}_request.json');
 
         $response = $this->json('post', '/nova-api/{{$url_path}}', $data);
 
@@ -55,7 +55,7 @@ class Nova{{$entity}}Test extends TestCase
         $response->assertUnauthorized();
 @endif
 
-        self::${{$lower_first_entity}}State->assertNotChanged();
+        self::${{$dromedary_entity}}State->assertNotChanged();
     }
 
     public function testCreateValidationError(): void
@@ -71,12 +71,12 @@ class Nova{{$entity}}Test extends TestCase
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture('create_validation_response.json', $response->json(), true);
 
-        self::${{$lower_first_entity}}State->assertNotChanged();
+        self::${{$dromedary_entity}}State->assertNotChanged();
     }
 
     public function testUpdate(): void
     {
-        $data = $this->getJsonFixture('update_{{$lower_entity}}_request.json');
+        $data = $this->getJsonFixture('update_{{$snake_entity}}_request.json');
 
         $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/{{$url_path}}/1', $data);
 
@@ -87,12 +87,12 @@ class Nova{{$entity}}Test extends TestCase
 @endif
 
         // TODO: Need to remove after first successful start
-        self::${{$lower_first_entity}}State->assertChangesEqualsFixture('update_{{$lower_entities}}_state.json', true);
+        self::${{$dromedary_entity}}State->assertChangesEqualsFixture('update_{{$lower_entities}}_state.json', true);
     }
 
     public function testUpdateNotExists(): void
     {
-        $data = $this->getJsonFixture('update_{{$lower_entity}}_request.json');
+        $data = $this->getJsonFixture('update_{{$snake_entity}}_request.json');
 
         $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/{{$url_path}}/0', $data);
 
@@ -105,7 +105,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testUpdateNoAuth(): void
     {
-        $data = $this->getJsonFixture('update_{{$lower_entity}}_request.json');
+        $data = $this->getJsonFixture('update_{{$snake_entity}}_request.json');
 
         $response = $this->json('put', '/nova-api/{{$url_path}}/1', $data);
 
@@ -157,7 +157,7 @@ class Nova{{$entity}}Test extends TestCase
 @endif
 
         // TODO: Need to remove after first successful start
-        self::${{$lower_first_entity}}State->assertChangesEqualsFixture('delete_{{$lower_entities}}_state.json', true);
+        self::${{$dromedary_entity}}State->assertChangesEqualsFixture('delete_{{$lower_entities}}_state.json', true);
     }
 
     public function testDeleteNotExists(): void
@@ -197,7 +197,7 @@ class Nova{{$entity}}Test extends TestCase
 @endif
 
         // TODO: Need to remove after first successful start
-        $this->assertEqualsFixture('get_{{$lower_entity}}_response.json', $response->json(), true);
+        $this->assertEqualsFixture('get_{{$snake_entity}}_response.json', $response->json(), true);
     }
 
     public function testGetNotExists(): void
@@ -281,7 +281,7 @@ class Nova{{$entity}}Test extends TestCase
         $this->assertEmpty($response->getContent());
 
         // TODO: Need to remove after first successful start
-        self::${{$lower_first_entity}}State->assertChangesEqualsFixture(${{$lower_entities}}StateFixture, true);
+        self::${{$dromedary_entity}}State->assertChangesEqualsFixture(${{$lower_entities}}StateFixture, true);
     }
 
     public function get{{$entity}}ActionsData(): array
@@ -292,7 +292,7 @@ class Nova{{$entity}}Test extends TestCase
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'response_fixture' => 'get_{{$lower_entity}}_actions_{{$action['fixture']}}.json',
+                'response_fixture' => 'get_{{$snake_entity}}_actions_{{$action['fixture']}}.json',
             ],
 @endforeach
         ];
@@ -323,7 +323,7 @@ class Nova{{$entity}}Test extends TestCase
                 'request' => [
                     '{{$filter['name']}}' => $this->novaSearchParams(['search term']),
                 ],
-                'response_fixture' => 'filter_{{$lower_entity}}_by_{{$filter['fixture_name']}}.json',
+                'response_fixture' => 'filter_{{$snake_entity}}_by_{{$filter['fixture_name']}}.json',
             ],
 @endforeach
         ];

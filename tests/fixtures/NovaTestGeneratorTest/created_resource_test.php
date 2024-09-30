@@ -2,97 +2,97 @@
 
 namespace App\Tests;
 
-use App\Models\Post;
+use App\Models\SomePost;
 use RonasIT\Support\Tests\ModelTestState;
 use RonasIT\Support\Tests\NovaTestTraitTest;
 
-class NovaPostTest extends TestCase
+class NovaSomePostTest extends TestCase
 {
     use NovaTestTrait;
 
     protected static User $user;
-    protected static ModelTestState $postState;
+    protected static ModelTestState $somePostState;
 
     public function setUp(): void
     {
         parent::setUp();
 
         self::$user ??= User::find(1);
-        self::$postState ??= new ModelTestState(Post::class);
+        self::$somePostState ??= new ModelTestState(SomePost::class);
 
         $this->skipDocumentationCollecting();
     }
 
     public function testCreate(): void
     {
-        $data = $this->getJsonFixture('create_post_request.json');
+        $data = $this->getJsonFixture('create_some_post_request.json');
 
-        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/post-resources', $data);
+        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/some-post-resources', $data);
 
         $response->assertCreated();
 
-        $this->assertEqualsFixture('create_post_response.json', $response->json());
+        $this->assertEqualsFixture('create_some_post_response.json', $response->json());
 
         // TODO: Need to remove after first successful start
-        self::$postState->assertChangesEqualsFixture('create_posts_state.json', true);
+        self::$somePostState->assertChangesEqualsFixture('create_some_posts_state.json', true);
     }
 
     public function testCreateNoAuth(): void
     {
-        $data = $this->getJsonFixture('create_post_request.json');
+        $data = $this->getJsonFixture('create_some_post_request.json');
 
-        $response = $this->json('post', '/nova-api/post-resources', $data);
+        $response = $this->json('post', '/nova-api/some-post-resources', $data);
 
         $response->assertUnauthorized();
 
-        self::$postState->assertNotChanged();
+        self::$somePostState->assertNotChanged();
     }
 
     public function testCreateValidationError(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/post-resources');
+        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/some-post-resources');
 
         $response->assertUnprocessable();
 
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture('create_validation_response.json', $response->json(), true);
 
-        self::$postState->assertNotChanged();
+        self::$somePostState->assertNotChanged();
     }
 
     public function testUpdate(): void
     {
-        $data = $this->getJsonFixture('update_post_request.json');
+        $data = $this->getJsonFixture('update_some_post_request.json');
 
-        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/post-resources/1', $data);
+        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/some-post-resources/1', $data);
 
         $response->assertNoContent();
 
         // TODO: Need to remove after first successful start
-        self::$postState->assertChangesEqualsFixture('update_posts_state.json', true);
+        self::$somePostState->assertChangesEqualsFixture('update_some_posts_state.json', true);
     }
 
     public function testUpdateNotExists(): void
     {
-        $data = $this->getJsonFixture('update_post_request.json');
+        $data = $this->getJsonFixture('update_some_post_request.json');
 
-        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/post-resources/0', $data);
+        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/some-post-resources/0', $data);
 
         $response->assertNotFound();
     }
 
     public function testUpdateNoAuth(): void
     {
-        $data = $this->getJsonFixture('update_post_request.json');
+        $data = $this->getJsonFixture('update_some_post_request.json');
 
-        $response = $this->json('put', '/nova-api/post-resources/1', $data);
+        $response = $this->json('put', '/nova-api/some-post-resources/1', $data);
 
         $response->assertUnauthorized();
     }
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/post-resources/4');
+        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/some-post-resources/4');
 
         $response->assertUnprocessable();
 
@@ -102,7 +102,7 @@ class NovaPostTest extends TestCase
 
     public function testGetUpdatableFields(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources/1/update-fields');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources/1/update-fields');
 
         $response->assertOk();
 
@@ -112,19 +112,19 @@ class NovaPostTest extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/post-resources', [
+        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/some-post-resources', [
             'resources' => [1, 2]
         ]);
 
         $response->assertOk();
 
         // TODO: Need to remove after first successful start
-        self::$postState->assertChangesEqualsFixture('delete_posts_state.json', true);
+        self::$somePostState->assertChangesEqualsFixture('delete_some_posts_state.json', true);
     }
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/post-resources', [
+        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/some-post-resources', [
             'resources' => [0]
         ]);
 
@@ -133,7 +133,7 @@ class NovaPostTest extends TestCase
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->json('delete', '/nova-api/post-resources', [
+        $response = $this->json('delete', '/nova-api/some-post-resources', [
             'resources' => [1, 2]
         ]);
 
@@ -142,31 +142,31 @@ class NovaPostTest extends TestCase
 
     public function testGet(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources/1');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources/1');
 
         $response->assertOk();
 
         // TODO: Need to remove after first successful start
-        $this->assertEqualsFixture('get_post_response.json', $response->json(), true);
+        $this->assertEqualsFixture('get_some_post_response.json', $response->json(), true);
     }
 
     public function testGetNotExists(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources/0');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources/0');
 
         $response->assertNotFound();
     }
 
     public function testGetNoAuth(): void
     {
-        $response = $this->json('get', '/nova-api/post-resources/1');
+        $response = $this->json('get', '/nova-api/some-post-resources/1');
 
         $response->assertUnauthorized();
     }
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->json('get', '/nova-api/post-resources', [
+        $response = $this->json('get', '/nova-api/some-post-resources', [
             'orderBy' => 'id',
             'orderByDirection' => 'asc'
         ]);
@@ -176,7 +176,7 @@ class NovaPostTest extends TestCase
 
     public function testGetFieldsVisibleOnCreate(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources/creation-fields');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources/creation-fields');
 
         $response->assertOk();
 
@@ -184,7 +184,7 @@ class NovaPostTest extends TestCase
         $this->assertEqualsFixture('get_fields_visible_on_create_response.json', $response->json(), true);
     }
 
-    public function getRunPostActionsData(): array
+    public function getRunSomePostActionsData(): array
     {
         return [
             [
@@ -205,44 +205,44 @@ class NovaPostTest extends TestCase
     }
 
     /**
-     * @dataProvider getRunPostActionsData
+     * @dataProvider getRunSomePostActionsData
      */
-    public function testRunPostActions($action, $request, $postsStateFixture): void
+    public function testRunSomePostActions($action, $request, $some_postsStateFixture): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('post', "/nova-api/post-resources/action?action={$action}", $request);
+        $response = $this->actingAs(self::$user, 'web')->json('post', "/nova-api/some-post-resources/action?action={$action}", $request);
 
         $response->assertOk();
 
         $this->assertEmpty($response->getContent());
 
         // TODO: Need to remove after first successful start
-        self::$postState->assertChangesEqualsFixture($postsStateFixture, true);
+        self::$somePostState->assertChangesEqualsFixture($some_postsStateFixture, true);
     }
 
-    public function getPostActionsData(): array
+    public function getSomePostActionsData(): array
     {
         return [
             [
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'response_fixture' => 'get_post_actions_publish_post_action.json',
+                'response_fixture' => 'get_some_post_actions_publish_post_action.json',
             ],
             [
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'response_fixture' => 'get_post_actions_un_publish_post_action.json',
+                'response_fixture' => 'get_some_post_actions_un_publish_post_action.json',
             ],
         ];
     }
 
     /**
-     * @dataProvider getPostActionsData
+     * @dataProvider getSomePostActionsData
      */
-    public function testGetPostActions(array $request, string $responseFixture): void
+    public function testGetSomePostActions(array $request, string $responseFixture): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources/actions', $request);
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources/actions', $request);
 
         $response->assertOk();
 
@@ -250,30 +250,30 @@ class NovaPostTest extends TestCase
         $this->assertEqualsFixture($responseFixture, $response->json(), true);
     }
 
-    public function getPostFiltersData(): array
+    public function getSomePostFiltersData(): array
     {
         return [
             [
                 'request' => [
                     'TextField:description_field' => $this->novaSearchParams(['search term']),
                 ],
-                'response_fixture' => 'filter_post_by_text_field.json',
+                'response_fixture' => 'filter_some_post_by_text_field.json',
             ],
             [
                 'request' => [
                     'RonasIT\Support\Tests\Support\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
-                'response_fixture' => 'filter_post_by_created_at_filter.json',
+                'response_fixture' => 'filter_some_post_by_created_at_filter.json',
             ],
         ];
     }
 
     /**
-     * @dataProvider getPostFiltersData
+     * @dataProvider getSomePostFiltersData
      */
-    public function testFilterPost(array $request, string $responseFixture): void
+    public function testFilterSomePost(array $request, string $responseFixture): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources', $request);
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources', $request);
 
         $response->assertOk();
 
