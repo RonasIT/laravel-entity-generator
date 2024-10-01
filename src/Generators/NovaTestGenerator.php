@@ -44,7 +44,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $filters = $this->collectFilters();
 
         $fileContent = $this->getStub('nova_test', [
-            'url_path' => $this->getPluralName(Str::kebab($this->model)),
+            'url_path' => Str::kebab($this->model) . '-resources',
             'entity' => $this->model,
             'entities' => $this->getPluralName($this->model),
             'lower_entity' => Str::snake($this->model),
@@ -166,5 +166,12 @@ class NovaTestGenerator extends AbstractTestsGenerator
         }
 
         return $filters;
+    }
+
+    protected function getDumpName(): string
+    {
+        $modelName = Str::snake($this->model);
+
+        return "nova_{$modelName}_dump.sql";
     }
 }

@@ -4,20 +4,20 @@ namespace App\Tests;
 
 use App\Models\Post;
 use RonasIT\Support\Tests\ModelTestState;
-use RonasIT\Support\Traits\AuthTestTrait;
+use RonasIT\Support\Tests\NovaTestTraitTest;
 
 class NovaPostTest extends TestCase
 {
-    use AuthTestTrait;
+    use NovaTestTrait;
 
-    protected static $user;
-    protected static $postState;
+    protected static User $user;
+    protected static ModelTestState $postState;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        self::$user = 1;
+        self::$user ??= User::find(1);
         self::$postState ??= new ModelTestState(Post::class);
 
         $this->skipDocumentationCollecting();
@@ -27,7 +27,7 @@ class NovaPostTest extends TestCase
     {
         $data = $this->getJsonFixture('create_post_request.json');
 
-        $response = $this->actingViaSession(self::$user)->json('post', '/nova-api/posts', $data);
+        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/post-resources', $data);
 
         $response->assertCreated();
 
@@ -41,16 +41,16 @@ class NovaPostTest extends TestCase
     {
         $data = $this->getJsonFixture('create_post_request.json');
 
-        $response = $this->json('post', '/nova-api/posts', $data);
+        $response = $this->json('post', '/nova-api/post-resources', $data);
 
         $response->assertUnauthorized();
 
         self::$postState->assertNotChanged();
-}
+    }
 
     public function testCreateValidationError(): void
     {
-        $response = $this->actingViaSession(self::$user)->json('post', '/nova-api/posts');
+        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/post-resources');
 
         $response->assertUnprocessable();
 
@@ -64,7 +64,7 @@ class NovaPostTest extends TestCase
     {
         $data = $this->getJsonFixture('update_post_request.json');
 
-        $response = $this->actingViaSession(self::$user)->json('put', '/nova-api/posts/1', $data);
+        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/post-resources/1', $data);
 
         $response->assertNoContent();
 
@@ -76,7 +76,7 @@ class NovaPostTest extends TestCase
     {
         $data = $this->getJsonFixture('update_post_request.json');
 
-        $response = $this->actingViaSession(self::$user)->json('put', '/nova-api/posts/0', $data);
+        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/post-resources/0', $data);
 
         $response->assertNotFound();
     }
@@ -85,14 +85,14 @@ class NovaPostTest extends TestCase
     {
         $data = $this->getJsonFixture('update_post_request.json');
 
-        $response = $this->json('put', '/nova-api/posts/1', $data);
+        $response = $this->json('put', '/nova-api/post-resources/1', $data);
 
         $response->assertUnauthorized();
     }
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->actingViaSession(self::$user)->json('put', '/nova-api/posts/4');
+        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/post-resources/4');
 
         $response->assertUnprocessable();
 
@@ -102,7 +102,7 @@ class NovaPostTest extends TestCase
 
     public function testGetUpdatableFields(): void
     {
-        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/posts/1/update-fields');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources/1/update-fields');
 
         $response->assertOk();
 
@@ -112,7 +112,7 @@ class NovaPostTest extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->actingViaSession(self::$user)->json('delete', '/nova-api/posts', [
+        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/post-resources', [
             'resources' => [1, 2]
         ]);
 
@@ -124,7 +124,7 @@ class NovaPostTest extends TestCase
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->actingViaSession(self::$user)->json('delete', '/nova-api/posts', [
+        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/post-resources', [
             'resources' => [0]
         ]);
 
@@ -133,7 +133,7 @@ class NovaPostTest extends TestCase
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->json('delete', '/nova-api/posts', [
+        $response = $this->json('delete', '/nova-api/post-resources', [
             'resources' => [1, 2]
         ]);
 
@@ -142,7 +142,7 @@ class NovaPostTest extends TestCase
 
     public function testGet(): void
     {
-        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/posts/1');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources/1');
 
         $response->assertOk();
 
@@ -152,21 +152,21 @@ class NovaPostTest extends TestCase
 
     public function testGetNotExists(): void
     {
-        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/posts/0');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources/0');
 
         $response->assertNotFound();
     }
 
     public function testGetNoAuth(): void
     {
-        $response = $this->json('get', '/nova-api/posts/1');
+        $response = $this->json('get', '/nova-api/post-resources/1');
 
         $response->assertUnauthorized();
     }
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->json('get', '/nova-api/posts', [
+        $response = $this->json('get', '/nova-api/post-resources', [
             'orderBy' => 'id',
             'orderByDirection' => 'asc'
         ]);
@@ -176,7 +176,7 @@ class NovaPostTest extends TestCase
 
     public function testGetFieldsVisibleOnCreate(): void
     {
-        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/posts/creation-fields');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources/creation-fields');
 
         $response->assertOk();
 
@@ -205,12 +205,11 @@ class NovaPostTest extends TestCase
     }
 
     /**
-     * @dataProvider  getRunPostActionsData
+     * @dataProvider getRunPostActionsData
      */
     public function testRunPostActions($action, $request, $postsStateFixture): void
     {
-        $request['action'] = $action;
-        $response = $this->actingViaSession(self::$user)->json('post', "/nova-api/posts/action", $request);
+        $response = $this->actingAs(self::$user, 'web')->json('post', "/nova-api/post-resources/action?action={$action}", $request);
 
         $response->assertOk();
 
@@ -239,11 +238,11 @@ class NovaPostTest extends TestCase
     }
 
     /**
-     * @dataProvider  getPostActionsData
+     * @dataProvider getPostActionsData
      */
     public function testGetPostActions(array $request, string $responseFixture): void
     {
-        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/posts/actions', $request);
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources/actions', $request);
 
         $response->assertOk();
 
@@ -255,14 +254,14 @@ class NovaPostTest extends TestCase
     {
         return [
             [
-                'filters' => [
-                    'TextField:description_field' => 'search term',
+                'request' => [
+                    'TextField:description_field' => $this->novaSearchParams(['search term']),
                 ],
                 'response_fixture' => 'filter_post_by_text_field.json',
             ],
             [
                 'filters' => [
-                    'RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => 'search term',
+                    'RonasIT\Support\Tests\Support\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
                 'response_fixture' => 'filter_post_by_created_at_filter.json',
             ],
@@ -270,13 +269,11 @@ class NovaPostTest extends TestCase
     }
 
     /**
-     * @dataProvider  getPostFiltersData
+     * @dataProvider getPostFiltersData
      */
-    public function testFilterPost(array $filters, string $responseFixture): void
+    public function testFilterPost(array $request, string $responseFixture): void
     {
-        $response = $this->actingViaSession(self::$user)->json('get', '/nova-api/posts', [
-            'filters' => base64_encode(json_encode($filters))
-        ]);
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/post-resources', $request);
 
         $response->assertOk();
 

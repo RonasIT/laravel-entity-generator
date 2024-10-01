@@ -13,8 +13,8 @@ class TestCase extends BaseTestCase
 {
     use FixturesTrait;
 
-    protected $globalExportMode = false;
-    protected $generatedFileBasePath;
+    protected bool $globalExportMode = false;
+    protected string $generatedFileBasePath;
 
     public function getFixturePath(string $fixtureName): string
     {
@@ -37,9 +37,9 @@ class TestCase extends BaseTestCase
         ];
     }
 
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
-        $app->useEnvironmentPath(__DIR__.'/..');
+        $app->useEnvironmentPath(__DIR__ . '/..');
         $app->bootstrapWith([LoadEnvironmentVariables::class]);
     }
 

@@ -35,7 +35,7 @@ class NovaTestGeneratorTest extends TestCase
         ]);
 
         $this->expectException(ClassNotExistsException::class);
-        $this->expectErrorMessage("Cannot create NovaPostTest cause Post Nova resource does not exist. Create Post Nova resource.");
+        $this->expectExceptionMessage("Cannot create NovaPostTest cause Post Nova resource does not exist. Create Post Nova resource.");
 
         try {
             app(NovaTestGenerator::class)
@@ -51,7 +51,7 @@ class NovaTestGeneratorTest extends TestCase
         $mock = $this->mockClassExistsFunction();
 
         $this->expectException(ClassAlreadyExistsException::class);
-        $this->expectErrorMessage("Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.");
+        $this->expectExceptionMessage("Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.");
 
         $this->mockClass(NovaTestGenerator::class, [
             $this->classExistsMethodCall(['nova', 'PostNovaResource']),
@@ -81,7 +81,7 @@ class NovaTestGeneratorTest extends TestCase
         $this->rollbackToDefaultBasePath();
 
         $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaPostTest.php');
-        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaPostTest/dump.sql');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaPostTest/nova_post_dump.sql');
         $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/NovaPostTest/create_post_request.json');
         $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/NovaPostTest/create_post_response.json');
         $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/NovaPostTest/update_post_request.json');
