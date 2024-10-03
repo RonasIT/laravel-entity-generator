@@ -6,6 +6,7 @@ use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\DateTimeType;
 use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\StringType;
+use Illuminate\Support\Facades\Event;
 use org\bovigo\vfs\vfsStream;
 use ReflectionClass;
 use RonasIT\Support\Events\SuccessCreateMessage;
@@ -32,41 +33,37 @@ class NovaResourceGeneratorTest extends TestCase
 
     public function testCreateWithMissingNovaPackage()
     {
-        $this->expectsEvents([SuccessCreateMessage::class]);
+        Event::fake();
 
-        $functionMock = $this->mockCheckingNovaPackageExistence();
+        $this->mockCheckingNovaPackageExistence();
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
             ->generate();
 
-        $functionMock->disable();
+        Event::assertDispatched(SuccessCreateMessage::class);
     }
 
     public function testCreateNovaResourceWithMissingModel()
     {
-        $mock = $this->mockClassExistsFunction();
+        $this->mockClassExistsFunction();
 
         $this->mockClass(NovaResourceGenerator::class, [
             $this->classExistsMethodCall([], false)
         ]);
 
         $this->expectException(ClassNotExistsException::class);
-        $this->expectErrorMessage('Cannot create Post Nova resource cause Post Model does not exists. '
+        $this->expectExceptionMessage('Cannot create Post Nova resource cause Post Model does not exists. '
             . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'");
 
-        try {
-            app(NovaResourceGenerator::class)
-                ->setModel('Post')
-                ->generate();
-        } finally {
-            $mock->disable();
-        }
+        app(NovaResourceGenerator::class)
+            ->setModel('Post')
+            ->generate();
     }
 
     public function testCreateNovaTestAlreadyExists()
     {
-        $mock = $this->mockClassExistsFunction();
+        $this->mockClassExistsFunction();
 
         $this->mockClass(NovaResourceGenerator::class, [
             $this->classExistsMethodCall(['models', 'Post']),
@@ -74,22 +71,18 @@ class NovaResourceGeneratorTest extends TestCase
         ]);
 
         $this->expectException(ClassAlreadyExistsException::class);
-        $this->expectErrorMessage("Cannot create PostResource cause PostResource already exists. Remove PostResource.");
+        $this->expectExceptionMessage("Cannot create PostResource cause PostResource already exists. Remove PostResource.");
 
-        try {
-            app(NovaResourceGenerator::class)
-                ->setModel('Post')
-                ->generate();
-        } finally {
-            $mock->disable();
-        }
+        app(NovaResourceGenerator::class)
+            ->setModel('Post')
+            ->generate();
     }
 
     public function testCreate()
     {
-        $this->expectsEvents(SuccessCreateMessage::class);
+        Event::fake();
 
-        $functionMock = $this->mockClassExistsFunction();
+        $this->mockClassExistsFunction();
 
         $this->mockFilesystem();
 
@@ -104,7 +97,7 @@ class NovaResourceGeneratorTest extends TestCase
 
         $this->assertGeneratedFileEquals('created_resource.php', 'app/Nova/PostResource.php');
 
-        $functionMock->disable();
+        Event::assertDispatched(SuccessCreateMessage::class);
     }
 
     public function testGetModelFieldsFromDatabase()

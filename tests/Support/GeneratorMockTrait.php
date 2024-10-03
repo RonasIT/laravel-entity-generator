@@ -3,40 +3,28 @@
 namespace RonasIT\Support\Tests\Support;
 
 use phpmock\Mock;
-use phpmock\MockBuilder;
 
 trait GeneratorMockTrait
 {
-    public function mockNativeFunction(string $namespace, string $name, $result): Mock
+    public function mockClassExistsFunction(bool $result = true): void
     {
-        $builder = new MockBuilder();
-        $builder
-            ->setNamespace($namespace)
-            ->setName($name)
-            ->setFunction(function () use ($result) {
-                return $result;
-            });
-
-        $mock = $builder->build();
-        $mock->enable();
-
-        return $mock;
+        $this->mockNativeFunction('\RonasIT\Support\Generators', [
+            $this->functionCall(
+                name: 'class_exists',
+                result: $result,
+            ),
+        ]);
     }
 
-    public function mockClassExistsFunction(bool $result = true): Mock
+    public function mockCheckingNovaPackageExistence(bool $result = false): void
     {
-        return $this->mockNativeFunction('\\RonasIT\\Support\\Generators', 'class_exists', $result);
-    }
-
-    public function mockCheckingNovaPackageExistence(bool $result = false): Mock
-    {
-        return $this->mockClassExistsFunction($result);
+        $this->mockClassExistsFunction($result);
     }
 
     public function classExistsMethodCall(array $arguments, bool $result = true): array
     {
         return [
-            'method' => 'classExists',
+            'function' => 'classExists',
             'arguments' => $arguments,
             'result' => $result
         ];

@@ -5,42 +5,43 @@ namespace RonasIT\Support\Tests\Support\NovaTestGeneratorTest;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockClassTrait;
+use RonasIT\Support\Traits\MockTrait;
 
 trait NovaTestGeneratorMockTrait
 {
-    use GeneratorMockTrait, MockClassTrait;
+    use GeneratorMockTrait;
+    use MockTrait;
 
     public function mockNovaResourceTestGenerator(): void
     {
         $this->mockClass(NovaTestGenerator::class, [
             [
-                'method' => 'getModelFields',
+                'function' => 'getModelFields',
                 'arguments' => ['Post'],
                 'result' => ['title', 'name']
             ],
             [
-                'method' => 'getModelFields',
+                'function' => 'getModelFields',
                 'arguments' => ['Post'],
                 'result' => ['title', 'name']
             ],
             [
-                'method' => 'getModelFields',
+                'function' => 'getModelFields',
                 'arguments' => ['Post'],
                 'result' => ['title', 'name']
             ],
             [
-                'method' => 'getMockModel',
+                'function' => 'getMockModel',
                 'arguments' => ['Post'],
                 'result' => ['title' => 'some title', 'name' => 'some name']
             ],
             [
-                'method' => 'getMockModel',
+                'function' => 'getMockModel',
                 'arguments' => ['Post'],
                 'result' => ['title' => 'some title', 'name' => 'some name']
             ],
             [
-                'method' => 'loadNovaActions',
+                'function' => 'loadNovaActions',
                 'arguments' => [],
                 'result' => [
                     new PublishPostAction,
@@ -49,7 +50,7 @@ trait NovaTestGeneratorMockTrait
                 ]
             ],
             [
-                'method' => 'loadNovaFields',
+                'function' => 'loadNovaFields',
                 'arguments' => [],
                 'result' => [
                     new TextField,
@@ -57,7 +58,7 @@ trait NovaTestGeneratorMockTrait
                 ]
             ],
             [
-                'method' => 'loadNovaFilters',
+                'function' => 'loadNovaFilters',
                 'arguments' => [],
                 'result' => [
                     new CreatedAtFilter,

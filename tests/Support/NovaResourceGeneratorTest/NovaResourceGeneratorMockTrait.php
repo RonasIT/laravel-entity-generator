@@ -7,11 +7,12 @@ use Illuminate\Support\Facades\DB;
 use Mockery;
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockClassTrait;
+use RonasIT\Support\Traits\MockTrait;
 
 trait NovaResourceGeneratorMockTrait
 {
-    use GeneratorMockTrait, MockClassTrait;
+    use GeneratorMockTrait;
+    use MockTrait;
 
     public function mockFilesystem(): void
     {
