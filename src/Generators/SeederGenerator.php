@@ -4,6 +4,7 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningMessage;
 use RonasIT\Support\Exceptions\EntityCreateException;
 
 class SeederGenerator extends EntityGenerator
@@ -21,8 +22,6 @@ class SeederGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        $this->checkConfigs();
-
         if (!file_exists($this->databaseSeederPath)) {
             list($basePath, $databaseSeederDir) = extract_last_part($this->databaseSeederPath, '/');
 
@@ -45,6 +44,15 @@ class SeederGenerator extends EntityGenerator
     protected function createDatabaseSeeder(): void
     {
         $stubPath = config('entity-generator.stubs.database_empty_seeder');
+
+        //@TODO: remove after implementing https://github.com/RonasIT/laravel-entity-generator/issues/93
+        if ($stubPath === 'entity-generator::database_seed_empty') {
+            $stubPath = 'entity-generator::database_empty_seeder';
+
+            $message = "You are using the deprecated value for 'entity-generator.stubs.database_empty_seeder' config. Please use 'entity-generator::database_empty_seeder'.";
+
+            event(new WarningMessage($message));
+        }
 
         $content = "<?php \n\n" . view($stubPath, [
             'namespace' => $this->getOrCreateNamespace('seeders')
@@ -88,15 +96,5 @@ class SeederGenerator extends EntityGenerator
         $fixedContent = preg_replace('/\}\s*\}\s*\z/', $insertContent, $content);
 
         file_put_contents($this->databaseSeederPath, $fixedContent);
-    }
-
-    protected function checkConfigs(): void
-    {
-        if (empty(config('entity-generator.stubs.seeder')) || empty(config('entity-generator.stubs.legacy_seeder'))) {
-            throw new EntityCreateException('
-                Looks like you have deprecated configs.
-                Please follow instructions(https://github.com/RonasIT/laravel-entity-generator/blob/master/ReadMe.md#13)
-            ');
-        }
     }
 }
