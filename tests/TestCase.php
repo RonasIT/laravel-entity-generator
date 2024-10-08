@@ -6,6 +6,7 @@ use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Traits\FixturesTrait;
 
 class TestCase extends BaseTestCase
@@ -15,6 +16,17 @@ class TestCase extends BaseTestCase
 
     protected bool $globalExportMode = false;
     protected string $generatedFileBasePath;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        vfsStream::setup();
+
+        $this->generatedFileBasePath = vfsStream::url('root');
+
+        $this->app->setBasePath($this->generatedFileBasePath);
+    }
 
     public function rollbackToDefaultBasePath(): void
     {
