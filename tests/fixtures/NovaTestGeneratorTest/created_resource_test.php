@@ -261,7 +261,7 @@ class NovaPostTest extends TestCase
             ],
             [
                 'request' => [
-                    'RonasIT\Support\Tests\Support\CreatedAtFilter' => $this->novaSearchParams(['search term']),
+                    'RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
                 'response_fixture' => 'filter_post_by_created_at_filter.json',
             ],
