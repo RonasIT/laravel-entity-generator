@@ -21,6 +21,8 @@ class TestCase extends BaseTestCase
     {
         parent::setUp();
 
+        $this->mockConfigurations();
+
         vfsStream::setup();
 
         $this->generatedFileBasePath = vfsStream::url('root');
@@ -31,6 +33,13 @@ class TestCase extends BaseTestCase
     public function rollbackToDefaultBasePath(): void
     {
         $this->app->setBasePath(getcwd());
+    }
+
+    public function mockConfigurations(): void
+    {
+        config([
+            'entity-generator' => include('config/entity-generator.php'),
+        ]);
     }
 
     protected function getEnvironmentSetUp($app): void
