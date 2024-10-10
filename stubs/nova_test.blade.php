@@ -45,9 +45,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testCreateNoAuth(): void
     {
-        $data = $this->getJsonFixture('create_{{$snake_entity}}_request.json');
-
-        $response = $this->json('post', '/nova-api/{{$url_path}}', $data);
+        $response = $this->json('post', '/nova-api/{{$url_path}}');
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -105,9 +103,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testUpdateNoAuth(): void
     {
-        $data = $this->getJsonFixture('update_{{$snake_entity}}_request.json');
-
-        $response = $this->json('put', '/nova-api/{{$url_path}}/1', $data);
+        $response = $this->json('put', '/nova-api/{{$url_path}}/1');
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -224,10 +220,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->json('get', '/nova-api/{{$url_path}}', [
-            'orderBy' => 'id',
-            'orderByDirection' => 'asc'
-        ]);
+        $response = $this->json('get', '/nova-api/{{$url_path}}');
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
