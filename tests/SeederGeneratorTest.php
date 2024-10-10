@@ -3,13 +3,20 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
-use RonasIT\Support\Events\WarningMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Generators\SeederGenerator;
 use RonasIT\Support\Tests\Support\SeederGeneratorMockTrait;
 
 class SeederGeneratorTest extends TestCase
 {
     use SeederGeneratorMockTrait;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Event::fake();
+    }
 
     public function testCreateSeeder()
     {
@@ -35,7 +42,6 @@ class SeederGeneratorTest extends TestCase
 
     public function testCreateSeederWithOldConfig()
     {
-        Event::fake();
         $this->mockViewsNamespace();
         $this->mockConfigurations();
         $this->mockFilesystem();
@@ -56,6 +62,8 @@ class SeederGeneratorTest extends TestCase
 
         $this->rollbackToDefaultBasePath();
 
-        Event::assertDispatched(WarningMessage::class);
+        Event::assertDispatched(WarningEvent::class, function ($event) {
+            return $event->message === "You are using the deprecated value for 'entity-generator.stubs.database_empty_seeder' config. Please use 'entity-generator::database_empty_seeder'.";
+        });
     }
 }

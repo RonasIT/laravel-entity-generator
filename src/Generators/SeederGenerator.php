@@ -4,7 +4,7 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\EntityCreateException;
 
 class SeederGenerator extends EntityGenerator
@@ -51,7 +51,7 @@ class SeederGenerator extends EntityGenerator
 
             $message = "You are using the deprecated value for 'entity-generator.stubs.database_empty_seeder' config. Please use 'entity-generator::database_empty_seeder'.";
 
-            event(new WarningMessage($message));
+            event(new WarningEvent($message));
         }
 
         $content = "<?php \n\n" . view($stubPath, [

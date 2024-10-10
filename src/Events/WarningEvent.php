@@ -4,19 +4,17 @@ namespace RonasIT\Support\Events;
 
 use Illuminate\Queue\SerializesModels;
 
-class WarningMessage
+class WarningEvent
 {
     use SerializesModels;
-
-    public string $message;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($message)
-    {
-        $this->message = $message;
+    public function __construct(
+        public readonly string $message,
+    ) {
     }
 }
