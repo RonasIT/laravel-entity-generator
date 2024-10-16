@@ -2,93 +2,93 @@
 
 namespace App\Tests;
 
-use App\Models\SomePost;
+use App\Models\WelcomeBonus;
 use RonasIT\Support\Tests\ModelTestState;
 use RonasIT\Support\Tests\NovaTestTraitTest;
 
-class NovaSomePostTest extends TestCase
+class NovaWelcomeBonusTest extends TestCase
 {
     use NovaTestTrait;
 
     protected static User $user;
-    protected static ModelTestState $somePostState;
+    protected static ModelTestState $welcomeBonusState;
 
     public function setUp(): void
     {
         parent::setUp();
 
         self::$user ??= User::find(1);
-        self::$somePostState ??= new ModelTestState(SomePost::class);
+        self::$welcomeBonusState ??= new ModelTestState(WelcomeBonus::class);
 
         $this->skipDocumentationCollecting();
     }
 
     public function testCreate(): void
     {
-        $data = $this->getJsonFixture('create_some_post_request.json');
+        $data = $this->getJsonFixture('create_welcome_bonus_request.json');
 
-        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/some-post-resources', $data);
+        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/welcome-bonus-resources', $data);
 
         $response->assertCreated();
 
-        $this->assertEqualsFixture('create_some_post_response.json', $response->json());
+        $this->assertEqualsFixture('create_welcome_bonus_response.json', $response->json());
 
         // TODO: Need to remove after first successful start
-        self::$somePostState->assertChangesEqualsFixture('create_some_posts_state.json', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('create_welcome_bonuses_state.json', true);
     }
 
     public function testCreateNoAuth(): void
     {
-        $response = $this->json('post', '/nova-api/some-post-resources');
+        $response = $this->json('post', '/nova-api/welcome-bonus-resources');
 
         $response->assertUnauthorized();
 
-        self::$somePostState->assertNotChanged();
+        self::$welcomeBonusState->assertNotChanged();
     }
 
     public function testCreateValidationError(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/some-post-resources');
+        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/welcome-bonus-resources');
 
         $response->assertUnprocessable();
 
         // TODO: Need to remove after first successful start
         $this->assertEqualsFixture('create_validation_response.json', $response->json(), true);
 
-        self::$somePostState->assertNotChanged();
+        self::$welcomeBonusState->assertNotChanged();
     }
 
     public function testUpdate(): void
     {
-        $data = $this->getJsonFixture('update_some_post_request.json');
+        $data = $this->getJsonFixture('update_welcome_bonus_request.json');
 
-        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/some-post-resources/1', $data);
+        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/welcome-bonus-resources/1', $data);
 
         $response->assertNoContent();
 
         // TODO: Need to remove after first successful start
-        self::$somePostState->assertChangesEqualsFixture('update_some_posts_state.json', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('update_welcome_bonuses_state.json', true);
     }
 
     public function testUpdateNotExists(): void
     {
-        $data = $this->getJsonFixture('update_some_post_request.json');
+        $data = $this->getJsonFixture('update_welcome_bonus_request.json');
 
-        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/some-post-resources/0', $data);
+        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/welcome-bonus-resources/0', $data);
 
         $response->assertNotFound();
     }
 
     public function testUpdateNoAuth(): void
     {
-        $response = $this->json('put', '/nova-api/some-post-resources/1');
+        $response = $this->json('put', '/nova-api/welcome-bonus-resources/1');
 
         $response->assertUnauthorized();
     }
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/some-post-resources/4');
+        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/welcome-bonus-resources/4');
 
         $response->assertUnprocessable();
 
@@ -98,7 +98,7 @@ class NovaSomePostTest extends TestCase
 
     public function testGetUpdatableFields(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources/1/update-fields');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/welcome-bonus-resources/1/update-fields');
 
         $response->assertOk();
 
@@ -108,19 +108,19 @@ class NovaSomePostTest extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/some-post-resources', [
+        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/welcome-bonus-resources', [
             'resources' => [1, 2]
         ]);
 
         $response->assertOk();
 
         // TODO: Need to remove after first successful start
-        self::$somePostState->assertChangesEqualsFixture('delete_some_posts_state.json', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('delete_welcome_bonuses_state.json', true);
     }
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/some-post-resources', [
+        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/welcome-bonus-resources', [
             'resources' => [0]
         ]);
 
@@ -129,7 +129,7 @@ class NovaSomePostTest extends TestCase
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->json('delete', '/nova-api/some-post-resources', [
+        $response = $this->json('delete', '/nova-api/welcome-bonus-resources', [
             'resources' => [1, 2]
         ]);
 
@@ -138,38 +138,38 @@ class NovaSomePostTest extends TestCase
 
     public function testGet(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources/1');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/welcome-bonus-resources/1');
 
         $response->assertOk();
 
         // TODO: Need to remove after first successful start
-        $this->assertEqualsFixture('get_some_post_response.json', $response->json(), true);
+        $this->assertEqualsFixture('get_welcome_bonus_response.json', $response->json(), true);
     }
 
     public function testGetNotExists(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources/0');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/welcome-bonus-resources/0');
 
         $response->assertNotFound();
     }
 
     public function testGetNoAuth(): void
     {
-        $response = $this->json('get', '/nova-api/some-post-resources/1');
+        $response = $this->json('get', '/nova-api/welcome-bonus-resources/1');
 
         $response->assertUnauthorized();
     }
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->json('get', '/nova-api/some-post-resources');
+        $response = $this->json('get', '/nova-api/welcome-bonus-resources');
 
         $response->assertUnauthorized();
     }
 
     public function testGetFieldsVisibleOnCreate(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources/creation-fields');
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/welcome-bonus-resources/creation-fields');
 
         $response->assertOk();
 
@@ -177,7 +177,7 @@ class NovaSomePostTest extends TestCase
         $this->assertEqualsFixture('get_fields_visible_on_create_response.json', $response->json(), true);
     }
 
-    public function getRunSomePostActionsData(): array
+    public function getRunWelcomeBonusActionsData(): array
     {
         return [
             [
@@ -198,44 +198,44 @@ class NovaSomePostTest extends TestCase
     }
 
     /**
-     * @dataProvider getRunSomePostActionsData
+     * @dataProvider getRunWelcomeBonusActionsData
      */
-    public function testRunSomePostActions($action, $request, $some_postsStateFixture): void
+    public function testRunWelcomeBonusActions($action, $request, $welcome_bonusesStateFixture): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('post', "/nova-api/some-post-resources/action?action={$action}", $request);
+        $response = $this->actingAs(self::$user, 'web')->json('post', "/nova-api/welcome-bonus-resources/action?action={$action}", $request);
 
         $response->assertOk();
 
         $this->assertEmpty($response->getContent());
 
         // TODO: Need to remove after first successful start
-        self::$somePostState->assertChangesEqualsFixture($some_postsStateFixture, true);
+        self::$welcomeBonusState->assertChangesEqualsFixture($welcome_bonusesStateFixture, true);
     }
 
-    public function getSomePostActionsData(): array
+    public function getWelcomeBonusActionsData(): array
     {
         return [
             [
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'response_fixture' => 'get_some_post_actions_publish_post_action.json',
+                'response_fixture' => 'get_welcome_bonus_actions_publish_post_action.json',
             ],
             [
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'response_fixture' => 'get_some_post_actions_un_publish_post_action.json',
+                'response_fixture' => 'get_welcome_bonus_actions_un_publish_post_action.json',
             ],
         ];
     }
 
     /**
-     * @dataProvider getSomePostActionsData
+     * @dataProvider getWelcomeBonusActionsData
      */
-    public function testGetSomePostActions(array $request, string $responseFixture): void
+    public function testGetWelcomeBonusActions(array $request, string $responseFixture): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources/actions', $request);
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/welcome-bonus-resources/actions', $request);
 
         $response->assertOk();
 
@@ -243,30 +243,30 @@ class NovaSomePostTest extends TestCase
         $this->assertEqualsFixture($responseFixture, $response->json(), true);
     }
 
-    public function getSomePostFiltersData(): array
+    public function getWelcomeBonusFiltersData(): array
     {
         return [
             [
                 'request' => [
                     'TextField:description_field' => $this->novaSearchParams(['search term']),
                 ],
-                'response_fixture' => 'filter_some_post_by_text_field.json',
+                'response_fixture' => 'filter_welcome_bonus_by_text_field.json',
             ],
             [
                 'request' => [
                     'RonasIT\Support\Tests\Support\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
-                'response_fixture' => 'filter_some_post_by_created_at_filter.json',
+                'response_fixture' => 'filter_welcome_bonus_by_created_at_filter.json',
             ],
         ];
     }
 
     /**
-     * @dataProvider getSomePostFiltersData
+     * @dataProvider getWelcomeBonusFiltersData
      */
-    public function testFilterSomePost(array $request, string $responseFixture): void
+    public function testFilterWelcomeBonus(array $request, string $responseFixture): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/some-post-resources', $request);
+        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/welcome-bonus-resources', $request);
 
         $response->assertOk();
 

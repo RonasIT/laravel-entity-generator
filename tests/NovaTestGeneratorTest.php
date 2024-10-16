@@ -28,13 +28,13 @@ class NovaTestGeneratorTest extends TestCase
         $mock = $this->mockClassExistsFunction();
 
         $this->expectException(ClassNotExistsException::class);
-        $this->expectExceptionMessage("Cannot create NovaSomePostTest cause SomePost Nova resource does not exist. Create SomePost Nova resource.");
+        $this->expectExceptionMessage("Cannot create NovaWelcomeBonusTest cause WelcomeBonus Nova resource does not exist. Create WelcomeBonus Nova resource.");
 
         $generatorMock = $this->getGeneratorMockForNonExistingNovaResource();
 
         try {
             $generatorMock
-                ->setModel('SomePost')
+                ->setModel('WelcomeBonus')
                 ->generate();
         } finally {
             $mock->disable();
@@ -48,13 +48,13 @@ class NovaTestGeneratorTest extends TestCase
         $mock = $this->mockClassExistsFunction();
 
         $this->expectException(ClassAlreadyExistsException::class);
-        $this->expectExceptionMessage("Cannot create NovaSomePostTest cause it's already exist. Remove NovaSomePostTest.");
+        $this->expectExceptionMessage("Cannot create NovaWelcomeBonusTest cause it's already exist. Remove NovaWelcomeBonusTest.");
 
         $generatorMock = $this->getGeneratorMockForExistingNovaResourceTest();
 
         try {
             $generatorMock
-                ->setModel('SomePost')
+                ->setModel('WelcomeBonus')
                 ->generate();
         } finally {
             $mock->disable();
@@ -71,16 +71,16 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockNovaResourceTestGenerator();
 
         app(NovaTestGenerator::class)
-            ->setModel('SomePost')
+            ->setModel('WelcomeBonus')
             ->generate();
 
         $this->rollbackToDefaultBasePath();
 
-        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaSomePostTest.php');
-        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaSomePostTest/nova_some_post_dump.sql');
-        $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/NovaSomePostTest/create_some_post_request.json');
-        $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/NovaSomePostTest/create_some_post_response.json');
-        $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/NovaSomePostTest/update_some_post_request.json');
+        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaWelcomeBonusTest.php');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusTest/nova_welcome_bonus_dump.sql');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_request.json');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_response.json');
+        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/update_welcome_bonus_request.json');
 
         $functionMock->disable();
     }
