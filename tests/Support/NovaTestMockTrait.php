@@ -85,23 +85,23 @@ trait NovaTestMockTrait
         $mock
             ->shouldAllowMockingProtectedMethods()
             ->shouldReceive('classExists')
-            ->with('nova', 'Post')
+            ->with('nova', 'WelcomeBonus')
             ->andReturn(true);
 
         $mock
             ->shouldReceive('classExists')
-            ->with('nova', 'PostResource')
+            ->with('nova', 'WelcomeBonusResource')
             ->andReturn(false);
 
         $mock
             ->shouldReceive('classExists')
-            ->with('nova', 'PostNovaResource')
+            ->with('nova', 'WelcomeBonusNovaResource')
             ->andReturn(false);
 
         $mock
             ->shouldReceive('classExists')
             ->once()
-            ->with('nova', 'NovaPostTest')
+            ->with('nova', 'NovaWelcomeBonusTest')
             ->andReturn(true);
 
         return $mock;
@@ -137,20 +137,20 @@ trait NovaTestMockTrait
             'app' => [
                 'Nova' => [
                     'Actions' => [
-                        'PublishPostAction.php' => '<?php',
-                        'ArchivePostAction.php' => '<?php',
+                        'PublishWelcomeBonusAction.php' => '<?php',
+                        'ArchiveWelcomeBonusAction.php' => '<?php',
                         'BlockCommentAction.php' => '<?php',
-                        'UnPublishPostAction.txt' => 'text',
+                        'UnPublishWelcomeBonusAction.txt' => 'text',
                     ],
-                    'Post.php' => '<?php',
+                    'WelcomeBonus.php' => '<?php',
                 ],
                 'Models' => [
-                    'Post.php' => '<?php',
+                    'WelcomeBonus.php' => '<?php',
                 ]
             ],
             'tests' => [
                 'fixtures' => [
-                    'NovaPostTest' => [],
+                    'NovaWelcomeBonusTest' => [],
                 ]
             ]
         ];
