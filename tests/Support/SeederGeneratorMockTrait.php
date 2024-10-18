@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests\Support;
 
-use Illuminate\Support\Facades\View;
 use org\bovigo\vfs\vfsStream;
 
 trait SeederGeneratorMockTrait

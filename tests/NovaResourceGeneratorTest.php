@@ -7,7 +7,6 @@ use Doctrine\DBAL\Types\DateTimeType;
 use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\StringType;
 use Illuminate\Support\Facades\Event;
-use org\bovigo\vfs\vfsStream;
 use ReflectionClass;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
