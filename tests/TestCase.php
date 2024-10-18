@@ -3,15 +3,31 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
+use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\EntityGeneratorServiceProvider;
 use RonasIT\Support\Traits\FixturesTrait;
 
 class TestCase extends BaseTestCase
 {
     use FixturesTrait;
+    use InteractsWithViews;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockConfigurations();
+
+        vfsStream::setup();
+
+        $this->generatedFileBasePath = vfsStream::url('root');
+
+        $this->app->setBasePath($this->generatedFileBasePath);
+    }
 
     protected bool $globalExportMode = false;
     protected string $generatedFileBasePath;
@@ -28,6 +44,13 @@ class TestCase extends BaseTestCase
     public function rollbackToDefaultBasePath(): void
     {
         $this->app->setBasePath(getcwd());
+    }
+
+    public function mockConfigurations(): void
+    {
+        config([
+            'entity-generator' => include('config/entity-generator.php'),
+        ]);
     }
 
     protected function getPackageProviders($app): array

@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
-use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -13,17 +12,6 @@ use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTra
 class NovaTestGeneratorTest extends TestCase
 {
     use NovaTestGeneratorMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        vfsStream::setup();
-
-        $this->generatedFileBasePath = vfsStream::url('root');
-
-        $this->app->setBasePath($this->generatedFileBasePath);
-    }
 
     public function testCreateNovaTestsResourceNotExists()
     {

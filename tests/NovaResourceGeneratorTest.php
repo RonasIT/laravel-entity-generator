@@ -20,17 +20,6 @@ class NovaResourceGeneratorTest extends TestCase
 {
     use NovaResourceGeneratorMockTrait;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        vfsStream::setup();
-
-        $this->generatedFileBasePath = vfsStream::url('root');
-
-        $this->app->setBasePath($this->generatedFileBasePath);
-    }
-
     public function testCreateWithMissingNovaPackage()
     {
         Event::fake();

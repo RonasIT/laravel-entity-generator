@@ -39,9 +39,7 @@ class NovaPostTest extends TestCase
 
     public function testCreateNoAuth(): void
     {
-        $data = $this->getJsonFixture('create_post_request.json');
-
-        $response = $this->json('post', '/nova-api/post-resources', $data);
+        $response = $this->json('post', '/nova-api/post-resources');
 
         $response->assertUnauthorized();
 
@@ -83,9 +81,7 @@ class NovaPostTest extends TestCase
 
     public function testUpdateNoAuth(): void
     {
-        $data = $this->getJsonFixture('update_post_request.json');
-
-        $response = $this->json('put', '/nova-api/post-resources/1', $data);
+        $response = $this->json('put', '/nova-api/post-resources/1');
 
         $response->assertUnauthorized();
     }
@@ -166,10 +162,7 @@ class NovaPostTest extends TestCase
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->json('get', '/nova-api/post-resources', [
-            'orderBy' => 'id',
-            'orderByDirection' => 'asc'
-        ]);
+        $response = $this->json('get', '/nova-api/post-resources');
 
         $response->assertUnauthorized();
     }
