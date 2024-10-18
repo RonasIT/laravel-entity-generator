@@ -20,7 +20,6 @@ class SeederGeneratorTest extends TestCase
 
     public function testCreateSeeder()
     {
-        $this->mockViewsNamespace();
         $this->mockFilesystem();
 
         app(SeederGenerator::class)
@@ -41,7 +40,6 @@ class SeederGeneratorTest extends TestCase
 
     public function testCreateSeederWithOldConfig()
     {
-        $this->mockViewsNamespace();
         $this->mockFilesystem();
 
         config([

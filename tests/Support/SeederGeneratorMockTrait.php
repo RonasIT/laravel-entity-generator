@@ -2,11 +2,12 @@
 
 namespace RonasIT\Support\Tests\Support;
 
-use Illuminate\Support\Facades\View;
 use org\bovigo\vfs\vfsStream;
 
 trait SeederGeneratorMockTrait
 {
+    use GeneratorMockTrait;
+
     public function mockFilesystem(): void
     {
         $structure = [
@@ -14,10 +15,5 @@ trait SeederGeneratorMockTrait
         ];
 
         vfsStream::create($structure);
-    }
-
-    public function mockViewsNamespace(): void
-    {
-        View::addNamespace('entity-generator', getcwd() . '/stubs');
     }
 }

@@ -14,7 +14,8 @@
     "laravel/framework": "^11.21",
     "ronasit/laravel-helpers": "^3.0.0-beta",
     "laravel/legacy-factories": ">=1.3.0",
-    "ext-json": "*"
+    "ext-json": "*",
+    "doctrine/dbal": "^4.1"
   },
   "require-dev": {
     "fakerphp/faker": "^1.23.1",
