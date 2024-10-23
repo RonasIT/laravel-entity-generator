@@ -29,7 +29,7 @@ class Nova{{$entity}}Test extends TestCase
     {
         $data = $this->getJsonFixture('create_{{$snake_entity}}_request.json');
 
-        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/{{$url_path}}', $data);
+        $response = $this->novaActingAs(self::$user)->novaCreateResource({{$entity}}::class, $data);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_CREATED);
@@ -45,7 +45,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testCreateNoAuth(): void
     {
-        $response = $this->json('post', '/nova-api/{{$url_path}}');
+        $response = $this->novaCreateResource(Card::class);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -58,7 +58,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testCreateValidationError(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('post', '/nova-api/{{$url_path}}');
+        $response = $this->novaActingAs(self::$user)->novaCreateResource({{$entity}}::class);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -76,7 +76,7 @@ class Nova{{$entity}}Test extends TestCase
     {
         $data = $this->getJsonFixture('update_{{$snake_entity}}_request.json');
 
-        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/{{$url_path}}/1', $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResource({{$entity}}::class, 1, $data);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NO_CONTENT);
@@ -92,7 +92,7 @@ class Nova{{$entity}}Test extends TestCase
     {
         $data = $this->getJsonFixture('update_{{$snake_entity}}_request.json');
 
-        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/{{$url_path}}/0', $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResource({{$entity}}::class, 0, $data);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
@@ -103,7 +103,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testUpdateNoAuth(): void
     {
-        $response = $this->json('put', '/nova-api/{{$url_path}}/1');
+        $response = $this->novaUpdateResource({{$entity}}::class, 1);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -114,7 +114,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('put', '/nova-api/{{$url_path}}/4');
+        $response = $this->novaActingAs(self::$user)->novaUpdateResource({{$entity}}::class, 4);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -128,7 +128,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testGetUpdatableFields(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/{{$url_path}}/1/update-fields');
+        $response = $this->novaActingAs(self::$user)->novaGetUpdatableFields({{$entity}}::class, 1);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -142,9 +142,10 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/{{$url_path}}', [
-            'resources' => [1, 2]
-        ]);
+        $response = $this->novaActingAs(self::$user)->novaDeleteResource(
+            resourceClass: {{$entity}}::class,
+            resourceIds: [1, 2],
+        );
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -158,9 +159,10 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('delete', '/nova-api/{{$url_path}}', [
-            'resources' => [0]
-        ]);
+        $response = $this->novaActingAs(self::$user)->novaDeleteResource(
+            resourceClass: {{$entity}}::class,
+            resourceIds: [0],
+        );
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
@@ -171,9 +173,10 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->json('delete', '/nova-api/{{$url_path}}', [
-            'resources' => [1, 2]
-        ]);
+        $response = $this$this->novaDeleteResource(
+            resourceClass: {{$entity}}::class,
+            resourceIds: [1, 2],
+        );
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -184,7 +187,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testGet(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/{{$url_path}}/1');
+        $response = $this->novaActingAs(self::$user)->novaGetResource({{$entity}}::class, 1);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -198,7 +201,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testGetNotExists(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/{{$url_path}}/0');
+        $response = $this->novaActingAs(self::$user)->novaGetResource({{$entity}}::class, 0);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
@@ -209,7 +212,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testGetNoAuth(): void
     {
-        $response = $this->json('get', '/nova-api/{{$url_path}}/1');
+        $response = $this->novaGetResource({{$entity}}::class, 1);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -220,7 +223,13 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->json('get', '/nova-api/{{$url_path}}');
+        $response = $this->novaSearchResource(
+            resourceClass: {{$entity}}::class,
+            request: [
+                'orderBy' => 'id',
+                'orderByDirection' => 'asc',
+            ],
+        );
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -231,7 +240,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testGetFieldsVisibleOnCreate(): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/{{$url_path}}/creation-fields');
+        $response = $this->novaActingAs(self::$user)->novaGetCreationFields({{$entity}}::class);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -248,7 +257,7 @@ class Nova{{$entity}}Test extends TestCase
         return [
 @foreach($actions as $action)
             [
-                'action' => '{{$action['url']}}',
+                'action' => {{$action['className']}}::class,
                 'request' => [
                     'resources' => '1,2',
                 ],
@@ -263,7 +272,7 @@ class Nova{{$entity}}Test extends TestCase
      */
     public function testRun{{$entity}}Actions($action, $request, ${{$lower_entities}}StateFixture): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('post', "/nova-api/{{$url_path}}/action?action={$action}", $request);
+        $response = $this->novaActingAs(self::$user)->json('post', "/nova-api/{{$url_path}}/action?action={$action}", $request);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -282,9 +291,7 @@ class Nova{{$entity}}Test extends TestCase
         return [
 @foreach($actions as $action)
             [
-                'request' => [
-                    'resources' => '1,2',
-                ],
+                'resources' => [1, 2],
                 'response_fixture' => 'get_{{$snake_entity}}_actions_{{$action['fixture']}}.json',
             ],
 @endforeach
@@ -294,9 +301,9 @@ class Nova{{$entity}}Test extends TestCase
     /**
      * @dataProvider get{{$entity}}ActionsData
      */
-    public function testGet{{$entity}}Actions(array $request, string $responseFixture): void
+    public function testGet{{$entity}}Actions(array $resources, string $responseFixture): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/{{$url_path}}/actions', $request);
+        $response = $this->novaActingAs(self::$user)->novaGetActions({{$entity}}::class, $resources);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -327,7 +334,7 @@ class Nova{{$entity}}Test extends TestCase
      */
     public function testFilter{{$entity}}(array $request, string $responseFixture): void
     {
-        $response = $this->actingAs(self::$user, 'web')->json('get', '/nova-api/{{$url_path}}', $request);
+        $response = $this->novaActingAs(self::$user)->novaSearchResource({{$entity}}::class, $request);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
