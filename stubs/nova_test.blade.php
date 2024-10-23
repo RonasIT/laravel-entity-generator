@@ -173,7 +173,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this$this->novaDeleteResource(
+        $response = $this->novaDeleteResource(
             resourceClass: {{$entity}}::class,
             resourceIds: [1, 2],
         );
