@@ -23,22 +23,20 @@ class NovaResourceGeneratorTest extends TestCase
     {
         Event::fake();
 
-        $this->mockCheckingNovaPackageExistence();
+        $this->mockNovaServiceProviderExists(false);
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
             ->generate();
 
-        Event::assertDispatched(SuccessCreateMessage::class);
+        Event::assertDispatched(SuccessCreateMessage::class, function ($event) {
+            return $event->message === 'Nova is not installed and NovaResource is skipped';
+        });
     }
 
     public function testCreateNovaResourceWithMissingModel()
     {
-        $this->mockClassExistsFunction();
-
-        $this->mockClass(NovaResourceGenerator::class, [
-            $this->classExistsMethodCall([], false)
-        ]);
+        $this->mockNovaServiceProviderExists();
 
         $this->expectException(ClassNotExistsException::class);
         $this->expectExceptionMessage('Cannot create Post Nova resource cause Post Model does not exists. '
@@ -51,7 +49,7 @@ class NovaResourceGeneratorTest extends TestCase
 
     public function testCreateNovaTestAlreadyExists()
     {
-        $this->mockClassExistsFunction();
+        $this->mockNovaServiceProviderExists();
 
         $this->mockClass(NovaResourceGenerator::class, [
             $this->classExistsMethodCall(['models', 'Post']),
@@ -70,7 +68,7 @@ class NovaResourceGeneratorTest extends TestCase
     {
         Event::fake();
 
-        $this->mockClassExistsFunction();
+        $this->mockNovaServiceProviderExists();
 
         $this->mockFilesystem();
 

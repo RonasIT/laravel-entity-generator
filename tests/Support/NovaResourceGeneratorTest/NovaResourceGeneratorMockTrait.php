@@ -19,7 +19,7 @@ trait NovaResourceGeneratorMockTrait
         $fileSystemMock = new FileSystemMock;
         $fileSystemMock->novaModels = [];
         $fileSystemMock->models = [
-            'Post.php' => '<?php'
+            'Post.php' => $this->mockPhpFileContent(),
         ];
 
         $fileSystemMock->setStructure();

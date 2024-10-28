@@ -15,7 +15,7 @@ trait ControllerGeneratorMockTrait
     {
         $fileSystemMock = new FileSystemMock;
         $fileSystemMock->services = [
-            'PostService.php' => '<?php'
+            'PostService.php' => $this->mockPhpFileContent(),
         ];
         $fileSystemMock->controllers = [];
 
@@ -26,11 +26,11 @@ trait ControllerGeneratorMockTrait
     {
         $fileSystemMock = new FileSystemMock;
         $fileSystemMock->services = [
-            'PostService.php' => '<?php'
+            'PostService.php' => $this->mockPhpFileContent(),
         ];
         $fileSystemMock->controllers = [];
         $fileSystemMock->routes = [
-            'api.php' => '<?php'
+            'api.php' => $this->mockPhpFileContent(),
         ];
 
         $fileSystemMock->setStructure();

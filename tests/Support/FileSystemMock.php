@@ -22,6 +22,7 @@ class FileSystemMock {
 
         if (!is_null($this->novaModels)) {
             $structure['app']['Nova'] = [];
+
             foreach ($this->novaModels as $novaModel => $content) {
                 $structure['app']['Nova'][$novaModel] = $content;
             }

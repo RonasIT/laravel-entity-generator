@@ -72,18 +72,18 @@ trait NovaTestGeneratorMockTrait
         $fileSystemMock = new FileSystemMock;
 
         $fileSystemMock->novaActions = [
-            'PublishPostAction.php' => '<?php',
-            'ArchivePostAction.php' => '<?php',
-            'BlockCommentAction.php' => '<?php',
+            'PublishPostAction.php' => $this->mockPhpFileContent(),
+            'ArchivePostAction.php' => $this->mockPhpFileContent(),
+            'BlockCommentAction.php' => $this->mockPhpFileContent(),
             'UnPublishPostAction.txt' => 'text',
         ];
 
         $fileSystemMock->novaModels = [
-            'Post.php' => '<?php'
+            'Post.php' => $this->mockPhpFileContent(),
         ];
 
         $fileSystemMock->models = [
-            'Post.php' => '<?php'
+            'Post.php' => $this->mockPhpFileContent(),
         ];
 
         $fileSystemMock->testFixtures = [

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Generators\NovaResourceGenerator;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 
@@ -15,7 +16,7 @@ class NovaTestGeneratorTest extends TestCase
 
     public function testCreateNovaTestsResourceNotExists()
     {
-        $this->mockClassExistsFunction();
+        $this->mockNovaServiceProviderExists();
 
         $this->mockClass(NovaTestGenerator::class, [
             $this->classExistsMethodCall(['nova', 'PostNovaResource'], false),
@@ -33,7 +34,7 @@ class NovaTestGeneratorTest extends TestCase
 
     public function testCreateNovaTestAlreadyExists()
     {
-        $this->mockClassExistsFunction();
+        $this->mockNovaServiceProviderExists();
 
         $this->expectException(ClassAlreadyExistsException::class);
         $this->expectExceptionMessage("Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.");
@@ -50,7 +51,7 @@ class NovaTestGeneratorTest extends TestCase
 
     public function testCreate()
     {
-        $this->mockClassExistsFunction();
+        $this->mockNovaServiceProviderExists();
 
         $this->mockFilesystem();
         $this->mockNovaResourceTestGenerator();
@@ -72,12 +73,14 @@ class NovaTestGeneratorTest extends TestCase
     {
         Event::fake();
 
-        $this->mockCheckingNovaPackageExistence();
+        $this->mockNovaServiceProviderExists(false);
 
         app(NovaTestGenerator::class)
             ->setModel('Post')
             ->generate();
 
-        Event::assertDispatched(SuccessCreateMessage::class);
+        Event::assertDispatched(SuccessCreateMessage::class, function ($event) {
+            return $event->message === 'Nova is not installed and NovaTest is skipped';
+        });
     }
 }
