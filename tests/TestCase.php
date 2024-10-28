@@ -4,25 +4,65 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use org\bovigo\vfs\vfsStream;
+use RonasIT\Support\EntityGeneratorServiceProvider;
 use RonasIT\Support\Traits\FixturesTrait;
 
 class TestCase extends BaseTestCase
 {
-    use FixturesTrait, InteractsWithViews;
+    use FixturesTrait;
+    use InteractsWithViews;
 
-    protected $globalExportMode = false;
-    protected $generatedFileBasePath;
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockConfigurations();
+
+        vfsStream::setup();
+
+        $this->generatedFileBasePath = vfsStream::url('root');
+
+        $this->app->setBasePath($this->generatedFileBasePath);
+    }
+
+    protected bool $globalExportMode = false;
+    protected string $generatedFileBasePath;
+
+    public function getFixturePath(string $fixtureName): string
+    {
+        $class = get_class($this);
+        $explodedClass = explode('\\', $class);
+        $className = Arr::last($explodedClass);
+
+        return getcwd() . "/tests/fixtures/{$className}/{$fixtureName}";
+    }
 
     public function rollbackToDefaultBasePath(): void
     {
         $this->app->setBasePath(getcwd());
     }
 
-    protected function getEnvironmentSetUp($app)
+    public function mockConfigurations(): void
     {
-        $app->useEnvironmentPath(__DIR__.'/..');
+        config([
+            'entity-generator' => include('config/entity-generator.php'),
+        ]);
+    }
+
+    protected function getPackageProviders($app): array
+    {
+        return [
+            EntityGeneratorServiceProvider::class
+        ];
+    }
+
+    protected function getEnvironmentSetUp($app): void
+    {
+        $app->useEnvironmentPath(__DIR__ . '/..');
         $app->bootstrapWith([LoadEnvironmentVariables::class]);
     }
 

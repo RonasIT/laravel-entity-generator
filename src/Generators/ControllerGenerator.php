@@ -15,7 +15,7 @@ class ControllerGenerator extends EntityGenerator
             $this->throwFailureException(
                 ClassAlreadyExistsException::class,
                 "Cannot create {$this->model}Controller cause {$this->model}Controller already exists.",
-                "Remove {$this->model}Controller."
+                "Remove {$this->model}Controller.",
             );
 
         }
@@ -24,7 +24,7 @@ class ControllerGenerator extends EntityGenerator
             $this->throwFailureException(
                 ClassNotExistsException::class,
                 "Cannot create {$this->model}Service cause {$this->model}Service does not exists.",
-                "Create a {$this->model}Service by himself."
+                "Create a {$this->model}Service by himself.",
             );
         }
 
@@ -57,7 +57,7 @@ class ControllerGenerator extends EntityGenerator
             $this->throwFailureException(
                 FileNotFoundException::class,
                 "Not found file with routes.",
-                "Create a routes file on path: '{$routesPath}'."
+                "Create a routes file on path: '{$routesPath}'.",
             );
         }
 

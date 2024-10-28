@@ -93,7 +93,7 @@ abstract class EntityGenerator
         $fullPath = base_path($path);
 
         if (!file_exists($fullPath)) {
-            mkdir_recursively($fullPath);
+            mkdir($fullPath, 0777, true);
         }
 
         return implode('\\', $namespace);
@@ -126,7 +126,7 @@ abstract class EntityGenerator
         }
 
         if (!file_exists($entitiesPath)) {
-            mkdir_recursively($entitiesPath);
+            mkdir($entitiesPath, 0777, true);
         }
 
         return file_put_contents($classPath, $content);
