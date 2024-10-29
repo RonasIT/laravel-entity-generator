@@ -72,8 +72,6 @@ class ControllerGeneratorTest extends TestCase
             ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
 
-        $this->rollbackToDefaultBasePath();
-
         $this->assertGeneratedFileEquals('created_controller.php', 'app/Http/Controllers/PostController.php');
         $this->assertGeneratedFileEquals('api.php', 'routes/api.php');
 

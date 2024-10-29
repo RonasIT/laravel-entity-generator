@@ -79,8 +79,6 @@ class NovaResourceGeneratorTest extends TestCase
             ->setFields($fields)
             ->generate();
 
-        $this->rollbackToDefaultBasePath();
-
         $this->assertGeneratedFileEquals('created_resource.php', 'app/Nova/PostResource.php');
 
         Event::assertDispatched(SuccessCreateMessage::class);

@@ -41,11 +41,6 @@ class TestCase extends BaseTestCase
         return getcwd() . "/tests/fixtures/{$className}/{$fixtureName}";
     }
 
-    public function rollbackToDefaultBasePath(): void
-    {
-        $this->app->setBasePath(getcwd());
-    }
-
     public function mockConfigurations(): void
     {
         config([

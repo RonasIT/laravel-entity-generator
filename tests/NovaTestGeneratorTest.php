@@ -60,8 +60,6 @@ class NovaTestGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->rollbackToDefaultBasePath();
-
         $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaPostTest.php');
         $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaPostTest/nova_post_dump.sql');
         $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/NovaPostTest/create_post_request.json');
