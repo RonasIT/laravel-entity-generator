@@ -3,7 +3,7 @@ namespace App\Tests;
 
 use App\Models\{{$entity}};
 use RonasIT\Support\Tests\ModelTestState;
-use RonasIT\Support\Tests\NovaTestTraitTest;
+use RonasIT\Support\Traits\NovaTestTrait;
 @if($shouldUseStatus)
 use Symfony\Component\HttpFoundation\Response;
 @endif
@@ -29,7 +29,7 @@ class Nova{{$entity}}Test extends TestCase
     {
         $data = $this->getJsonFixture('create_{{$snake_entity}}_request.json');
 
-        $response = $this->novaActingAs(self::$user)->novaCreateResource({{$entity}}::class, $data);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall({{$entity}}::class, $data);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_CREATED);
@@ -45,7 +45,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testCreateNoAuth(): void
     {
-        $response = $this->novaCreateResource(Card::class);
+        $response = $this->novaCreateResourceAPICall({{$entity}}::class);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -58,7 +58,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testCreateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaCreateResource({{$entity}}::class);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall({{$entity}}::class);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -76,7 +76,7 @@ class Nova{{$entity}}Test extends TestCase
     {
         $data = $this->getJsonFixture('update_{{$snake_entity}}_request.json');
 
-        $response = $this->novaActingAs(self::$user)->novaUpdateResource({{$entity}}::class, 1, $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall({{$entity}}::class, 1, $data);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NO_CONTENT);
@@ -114,7 +114,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaUpdateResource({{$entity}}::class, 4);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall({{$entity}}::class, 4);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -142,7 +142,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResource(
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(
             resourceClass: {{$entity}}::class,
             resourceIds: [1, 2],
         );
@@ -159,7 +159,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResource(
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(
             resourceClass: {{$entity}}::class,
             resourceIds: [0],
         );
@@ -173,7 +173,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->novaDeleteResource(
+        $response = $this->novaDeleteResourceAPICall(
             resourceClass: {{$entity}}::class,
             resourceIds: [1, 2],
         );
@@ -187,7 +187,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testGet(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResource({{$entity}}::class, 1);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall({{$entity}}::class, 1);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -201,7 +201,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testGetNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResource({{$entity}}::class, 0);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall({{$entity}}::class, 0);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
@@ -212,7 +212,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testGetNoAuth(): void
     {
-        $response = $this->novaGetResource({{$entity}}::class, 1);
+        $response = $this->novaGetResourceAPICall({{$entity}}::class, 1);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -223,7 +223,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->novaSearchResource(
+        $response = $this->novaSearchResourceAPICall(
             resourceClass: {{$entity}}::class,
             request: [
                 'orderBy' => 'id',
@@ -240,7 +240,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testGetFieldsVisibleOnCreate(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetCreationFields({{$entity}}::class);
+        $response = $this->novaActingAs(self::$user)->novaGetCreationFieldsAPICall({{$entity}}::class);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -303,7 +303,7 @@ class Nova{{$entity}}Test extends TestCase
      */
     public function testGet{{$entity}}Actions(array $resources, string $responseFixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetActions({{$entity}}::class, $resources);
+        $response = $this->novaActingAs(self::$user)->novaGetActionsAPICall({{$entity}}::class, $resources);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -334,7 +334,7 @@ class Nova{{$entity}}Test extends TestCase
      */
     public function testFilter{{$entity}}(array $request, string $responseFixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaSearchResource({{$entity}}::class, $request);
+        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall({{$entity}}::class, $request);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);

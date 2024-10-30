@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use App\Models\WelcomeBonus;
 use RonasIT\Support\Tests\ModelTestState;
-use RonasIT\Support\Tests\NovaTestTraitTest;
+use RonasIT\Support\Traits\NovaTestTrait;
 
 class NovaWelcomeBonusTest extends TestCase
 {
@@ -27,7 +27,7 @@ class NovaWelcomeBonusTest extends TestCase
     {
         $data = $this->getJsonFixture('create_welcome_bonus_request.json');
 
-        $response = $this->novaActingAs(self::$user)->novaCreateResource(WelcomeBonus::class, $data);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(WelcomeBonus::class, $data);
 
         $response->assertCreated();
 
@@ -39,7 +39,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testCreateNoAuth(): void
     {
-        $response = $this->novaCreateResource(Card::class);
+        $response = $this->novaCreateResourceAPICall(WelcomeBonus::class);
 
         $response->assertUnauthorized();
 
@@ -48,7 +48,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testCreateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaCreateResource(WelcomeBonus::class);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(WelcomeBonus::class);
 
         $response->assertUnprocessable();
 
@@ -62,7 +62,7 @@ class NovaWelcomeBonusTest extends TestCase
     {
         $data = $this->getJsonFixture('update_welcome_bonus_request.json');
 
-        $response = $this->novaActingAs(self::$user)->novaUpdateResource(WelcomeBonus::class, 1, $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonus::class, 1, $data);
 
         $response->assertNoContent();
 
@@ -88,7 +88,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaUpdateResource(WelcomeBonus::class, 4);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonus::class, 4);
 
         $response->assertUnprocessable();
 
@@ -108,7 +108,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResource(
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(
             resourceClass: WelcomeBonus::class,
             resourceIds: [1, 2],
         );
@@ -121,7 +121,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResource(
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(
             resourceClass: WelcomeBonus::class,
             resourceIds: [0],
         );
@@ -131,7 +131,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->novaDeleteResource(
+        $response = $this->novaDeleteResourceAPICall(
             resourceClass: WelcomeBonus::class,
             resourceIds: [1, 2],
         );
@@ -141,7 +141,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testGet(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResource(WelcomeBonus::class, 1);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(WelcomeBonus::class, 1);
 
         $response->assertOk();
 
@@ -151,21 +151,21 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testGetNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResource(WelcomeBonus::class, 0);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(WelcomeBonus::class, 0);
 
         $response->assertNotFound();
     }
 
     public function testGetNoAuth(): void
     {
-        $response = $this->novaGetResource(WelcomeBonus::class, 1);
+        $response = $this->novaGetResourceAPICall(WelcomeBonus::class, 1);
 
         $response->assertUnauthorized();
     }
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->novaSearchResource(
+        $response = $this->novaSearchResourceAPICall(
             resourceClass: WelcomeBonus::class,
             request: [
                 'orderBy' => 'id',
@@ -178,7 +178,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testGetFieldsVisibleOnCreate(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetCreationFields(WelcomeBonus::class);
+        $response = $this->novaActingAs(self::$user)->novaGetCreationFieldsAPICall(WelcomeBonus::class);
 
         $response->assertOk();
 
@@ -240,7 +240,7 @@ class NovaWelcomeBonusTest extends TestCase
      */
     public function testGetWelcomeBonusActions(array $resources, string $responseFixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetActions(WelcomeBonus::class, $resources);
+        $response = $this->novaActingAs(self::$user)->novaGetActionsAPICall(WelcomeBonus::class, $resources);
 
         $response->assertOk();
 
@@ -271,7 +271,7 @@ class NovaWelcomeBonusTest extends TestCase
      */
     public function testFilterWelcomeBonus(array $request, string $responseFixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaSearchResource(WelcomeBonus::class, $request);
+        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(WelcomeBonus::class, $request);
 
         $response->assertOk();
 
