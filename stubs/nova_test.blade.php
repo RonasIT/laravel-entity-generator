@@ -92,7 +92,7 @@ class Nova{{$entity}}Test extends TestCase
     {
         $data = $this->getJsonFixture('update_{{$snake_entity}}_request.json');
 
-        $response = $this->novaActingAs(self::$user)->novaUpdateResource({{$entity}}::class, 0, $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall({{$entity}}::class, 0, $data);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
@@ -103,7 +103,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testUpdateNoAuth(): void
     {
-        $response = $this->novaUpdateResource({{$entity}}::class, 1);
+        $response = $this->novaUpdateResourceAPICall({{$entity}}::class, 1);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
@@ -128,7 +128,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testGetUpdatableFields(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetUpdatableFields({{$entity}}::class, 1);
+        $response = $this->novaActingAs(self::$user)->novaGetUpdatableFieldsAPICall({{$entity}}::class, 1);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -270,9 +270,9 @@ class Nova{{$entity}}Test extends TestCase
     /**
      * @dataProvider getRun{{$entity}}ActionsData
      */
-    public function testRun{{$entity}}Actions($action, $request, ${{$lower_entities}}StateFixture): void
+    public function testRun{{$entity}}Actions($action, $request, $state): void
     {
-        $response = $this->novaActingAs(self::$user)->json('post', "/nova-api/{{$url_path}}/action?action={$action}", $request);
+        $response = $this->novaActingAs(self::$user)->novaRunActionAPICall({{$entity}}::class, $action, $request);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -283,7 +283,7 @@ class Nova{{$entity}}Test extends TestCase
         $this->assertEmpty($response->getContent());
 
         // TODO: Need to remove after first successful start
-        self::${{$dromedary_entity}}State->assertChangesEqualsFixture(${{$lower_entities}}StateFixture, true);
+        self::${{$dromedary_entity}}State->assertChangesEqualsFixture($state, true);
     }
 
     public function get{{$entity}}ActionsData(): array
