@@ -165,13 +165,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->novaSearchResourceAPICall(
-            resourceClass: WelcomeBonus::class,
-            request: [
-                'orderBy' => 'id',
-                'orderByDirection' => 'asc',
-            ],
-        );
+        $response = $this->novaSearchResourceAPICall(WelcomeBonus::class);
 
         $response->assertUnauthorized();
     }
