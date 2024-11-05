@@ -223,13 +223,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->novaSearchResourceAPICall(
-            resourceClass: {{$entity}}::class,
-            request: [
-                'orderBy' => 'id',
-                'orderByDirection' => 'asc',
-            ],
-        );
+        $response = $this->novaSearchResourceAPICall({{$entity}}::class);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
