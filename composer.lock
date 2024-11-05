@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bf4555046359d1945ef756735d1ff575",
+    "content-hash": "a82b7377b826040ff9547a8cc13cf241",
     "packages": [
         {
             "name": "brick/math",
@@ -4345,16 +4345,16 @@
         },
         {
             "name": "ronasit/laravel-helpers",
-            "version": "dev-modify-nova-test-trait",
+            "version": "3.0.1-beta",
             "source": {
                 "type": "git",
                 "url": "https://github.com/RonasIT/laravel-helpers.git",
-                "reference": "0d1a30ed5d86b4cda2d1ce29004eafbbe03991bc"
+                "reference": "5bf2992029c1f71269d0fddd036a102822399925"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RonasIT/laravel-helpers/zipball/0d1a30ed5d86b4cda2d1ce29004eafbbe03991bc",
-                "reference": "0d1a30ed5d86b4cda2d1ce29004eafbbe03991bc",
+                "url": "https://api.github.com/repos/RonasIT/laravel-helpers/zipball/5bf2992029c1f71269d0fddd036a102822399925",
+                "reference": "5bf2992029c1f71269d0fddd036a102822399925",
                 "shasum": ""
             },
             "require": {
@@ -4421,9 +4421,9 @@
             ],
             "support": {
                 "issues": "https://github.com/RonasIT/laravel-helpers/issues",
-                "source": "https://github.com/RonasIT/laravel-helpers/tree/modify-nova-test-trait"
+                "source": "https://github.com/RonasIT/laravel-helpers/tree/3.0.1-beta"
             },
-            "time": "2024-10-30T07:37:59+00:00"
+            "time": "2024-11-04T10:52:30+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -10127,7 +10127,7 @@
     "aliases": [],
     "minimum-stability": "beta",
     "stability-flags": {
-        "ronasit/laravel-helpers": 20
+        "ronasit/laravel-helpers": 10
     },
     "prefer-stable": false,
     "prefer-lowest": false,
