@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests;
 
-use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
