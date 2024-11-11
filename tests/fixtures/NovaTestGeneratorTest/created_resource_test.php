@@ -108,10 +108,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(
-            resourceClass: WelcomeBonus::class,
-            resourceIds: [1, 2],
-        );
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(WelcomeBonus::class, [1, 2]);
 
         $response->assertOk();
 
@@ -121,20 +118,14 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(
-            resourceClass: WelcomeBonus::class,
-            resourceIds: [0],
-        );
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(WelcomeBonus::class, [0]);
 
         $response->assertNotFound();
     }
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->novaDeleteResourceAPICall(
-            resourceClass: WelcomeBonus::class,
-            resourceIds: [1, 2],
-        );
+        $response = $this->novaDeleteResourceAPICall(WelcomeBonus::class, [1, 2]);
 
         $response->assertUnauthorized();
     }

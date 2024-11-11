@@ -142,10 +142,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(
-            resourceClass: {{$entity}}::class,
-            resourceIds: [1, 2],
-        );
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall({{$entity}}::class, [1, 2]);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_OK);
@@ -159,10 +156,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(
-            resourceClass: {{$entity}}::class,
-            resourceIds: [0],
-        );
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall({{$entity}}::class, [0]);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_NOT_FOUND);
@@ -173,10 +167,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->novaDeleteResourceAPICall(
-            resourceClass: {{$entity}}::class,
-            resourceIds: [1, 2],
-        );
+        $response = $this->novaDeleteResourceAPICall({{$entity}}::class, [1, 2]);
 
 @if($shouldUseStatus)
         $response->assertStatus(Response::HTTP_UNAUTHORIZED);
