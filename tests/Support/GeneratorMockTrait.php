@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests\Support;
 
+use Illuminate\Support\Facades\Event;
 use Laravel\Nova\NovaServiceProvider;
 
 trait GeneratorMockTrait
@@ -39,5 +40,10 @@ trait GeneratorMockTrait
     public function mockPhpFileContent(): string
     {
         return '<?php';
+    }
+
+    public function assertGeneratorEventPushed(string $className, string $message): void
+    {
+        Event::assertDispatched($className, fn ($event) => $event->message === $message);
     }
 }

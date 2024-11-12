@@ -16,28 +16,13 @@ trait NovaTestGeneratorMockTrait
     {
         $this->mockClass(NovaTestGenerator::class, [
             [
-                'function' => 'getModelFields',
-                'arguments' => ['Post'],
-                'result' => ['title', 'name']
-            ],
-            [
-                'function' => 'getModelFields',
-                'arguments' => ['Post'],
-                'result' => ['title', 'name']
-            ],
-            [
-                'function' => 'getModelFields',
-                'arguments' => ['Post'],
-                'result' => ['title', 'name']
-            ],
-            [
                 'function' => 'getMockModel',
-                'arguments' => ['Post'],
+                'arguments' => ['WelcomeBonus'],
                 'result' => ['title' => 'some title', 'name' => 'some name']
             ],
             [
                 'function' => 'getMockModel',
-                'arguments' => ['Post'],
+                'arguments' => ['WelcomeBonus'],
                 'result' => ['title' => 'some title', 'name' => 'some name']
             ],
             [
@@ -79,15 +64,15 @@ trait NovaTestGeneratorMockTrait
         ];
 
         $fileSystemMock->novaModels = [
-            'Post.php' => $this->mockPhpFileContent(),
+            'WelcomeBonus.php' => $this->mockPhpFileContent(),
         ];
 
         $fileSystemMock->models = [
-            'Post.php' => $this->mockPhpFileContent(),
+            'WelcomeBonus.php' => $this->mockPhpFileContent(),
         ];
 
         $fileSystemMock->testFixtures = [
-            'NovaPostTest' => []
+            'NovaWelcomeBonusTest' => []
         ];
 
         $fileSystemMock->setStructure();

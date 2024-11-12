@@ -37,7 +37,8 @@
   "autoload-dev": {
     "psr-4": {
       "RonasIT\\Support\\Tests\\": "tests/",
-      "RonasIT\\Support\\Tests\\Support\\": "tests/Support/"
+      "RonasIT\\Support\\Tests\\Support\\": "tests/Support/",
+      "App\\Models\\": "tests/Support/Models/"
     },
     "files": [
       "tests/TestCase.php"

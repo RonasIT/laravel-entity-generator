@@ -16,6 +16,9 @@ class TestCase extends BaseTestCase
     use FixturesTrait;
     use InteractsWithViews;
 
+    protected bool $globalExportMode = false;
+    protected string $generatedFileBasePath;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -28,9 +31,6 @@ class TestCase extends BaseTestCase
 
         $this->app->setBasePath($this->generatedFileBasePath);
     }
-
-    protected bool $globalExportMode = false;
-    protected string $generatedFileBasePath;
 
     public function getFixturePath(string $fixtureName): string
     {

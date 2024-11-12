@@ -29,9 +29,10 @@ class NovaResourceGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        Event::assertDispatched(SuccessCreateMessage::class, function ($event) {
-            return $event->message === 'Nova is not installed and NovaResource is skipped';
-        });
+        $this->assertGeneratorEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Nova is not installed and NovaResource is skipped',
+        );
     }
 
     public function testCreateNovaResourceWithMissingModel()

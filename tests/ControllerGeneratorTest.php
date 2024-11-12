@@ -63,7 +63,7 @@ class ControllerGeneratorTest extends TestCase
             ->generate();
     }
 
-    public function testCreate()
+    public function testSuccess()
     {
         $this->mockFilesystem();
 
