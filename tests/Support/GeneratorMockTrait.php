@@ -41,9 +41,4 @@ trait GeneratorMockTrait
     {
         return '<?php';
     }
-
-    public function assertGeneratorEventPushed(string $className, string $message): void
-    {
-        Event::assertDispatched($className, fn ($event) => $event->message === $message);
-    }
 }

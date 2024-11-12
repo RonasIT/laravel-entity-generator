@@ -5,6 +5,7 @@ namespace RonasIT\Support\Tests;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use org\bovigo\vfs\vfsStream;
@@ -84,5 +85,20 @@ class TestCase extends BaseTestCase
     protected function assertGenerateFileExists(string $path): void
     {
         $this->assertFileExists("{$this->generatedFileBasePath}/{$path}");
+    }
+
+    protected function assertEventPushed(string $className, string $message): void
+    {
+        Event::assertDispatched(
+            event: $className,
+            callback: fn ($event) => $event->message === $message,
+        );
+    }
+
+    protected function assertEventPushedChain(array $events): void
+    {
+        foreach ($events as $className => $message) {
+            $this->assertEventPushed($className, $message);
+        }
     }
 }

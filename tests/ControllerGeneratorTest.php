@@ -75,16 +75,13 @@ class ControllerGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('created_controller.php', 'app/Http/Controllers/PostController.php');
         $this->assertGeneratedFileEquals('api.php', 'routes/api.php');
 
-        Event::assertDispatchedTimes(SuccessCreateMessage::class, 6);
-        Event::assertDispatched(SuccessCreateMessage::class, function ($event) {
-            return in_array($event->message, [
-                "Created a new Route: Route::post('posts', [PostController::class, 'create']);",
-                "Created a new Route: Route::put('posts/{id}', [PostController::class, 'update']);",
-                "Created a new Route: Route::delete('posts/{id}', [PostController::class, 'delete']);",
-                "Created a new Route: Route::get('posts/{id}', [PostController::class, 'get']);",
-                "Created a new Route: Route::get('posts', [PostController::class, 'search']);",
-                "Created a new Controller: PostController",
-            ]);
-        });
+        $this->assertEventPushedChain([
+            SuccessCreateMessage::class => "Created a new Route: Route::post('posts', [PostController::class, 'create']);",
+            SuccessCreateMessage::class => "Created a new Route: Route::put('posts/{id}', [PostController::class, 'update']);",
+            SuccessCreateMessage::class => "Created a new Route: Route::delete('posts/{id}', [PostController::class, 'delete']);",
+            SuccessCreateMessage::class => "Created a new Route: Route::get('posts/{id}', [PostController::class, 'get']);",
+            SuccessCreateMessage::class => "Created a new Route: Route::get('posts', [PostController::class, 'search']);",
+            SuccessCreateMessage::class => "Created a new Controller: PostController",
+        ]);
     }
 }

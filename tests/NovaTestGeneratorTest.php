@@ -76,7 +76,7 @@ class NovaTestGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->assertGeneratorEventPushed(
+        $this->assertEventPushed(
             className: SuccessCreateMessage::class,
             message: 'Nova is not installed and NovaTest is skipped',
         );

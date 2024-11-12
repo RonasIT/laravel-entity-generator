@@ -29,7 +29,7 @@ class NovaResourceGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->assertGeneratorEventPushed(
+        $this->assertEventPushed(
             className: SuccessCreateMessage::class,
             message: 'Nova is not installed and NovaResource is skipped',
         );
@@ -82,7 +82,10 @@ class NovaResourceGeneratorTest extends TestCase
 
         $this->assertGeneratedFileEquals('created_resource.php', 'app/Nova/PostResource.php');
 
-        Event::assertDispatched(SuccessCreateMessage::class);
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Nova Resource: PostResource',
+        );
     }
 
     public function testGetModelFieldsFromDatabase()

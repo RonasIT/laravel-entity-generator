@@ -54,7 +54,7 @@ class SeederGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->assertGeneratorEventPushed(
+        $this->assertEventPushed(
             className: WarningEvent::class,
             message: "You are using the deprecated value for 'entity-generator.stubs.database_empty_seeder' config. Please use 'entity-generator::database_empty_seeder'.",
         );
