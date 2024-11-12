@@ -101,4 +101,10 @@ class TestCase extends BaseTestCase
             $this->assertEventPushed($className, $message);
         }
     }
+
+    protected function assertExceptionThrowed(string $className, string $message): void
+    {
+        $this->expectException($className);
+        $this->expectExceptionMessage($message);
+    }
 }

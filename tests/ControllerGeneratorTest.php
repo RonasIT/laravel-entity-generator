@@ -27,8 +27,10 @@ class ControllerGeneratorTest extends TestCase
             $this->classExistsMethodCall(['controllers', 'PostController'])
         ]);
 
-        $this->expectException(ClassAlreadyExistsException::class);
-        $this->expectExceptionMessage('Cannot create PostController cause PostController already exists. Remove PostController.');
+        $this->assertExceptionThrowed(
+            className: ClassAlreadyExistsException::class,
+            message: 'Cannot create PostController cause PostController already exists. Remove PostController.',
+        );
 
         app(ControllerGenerator::class)
             ->setModel('Post')
@@ -42,8 +44,10 @@ class ControllerGeneratorTest extends TestCase
             $this->classExistsMethodCall(['services', 'PostService'], false)
         ]);
 
-        $this->expectException(ClassNotExistsException::class);
-        $this->expectExceptionMessage('Cannot create PostService cause PostService does not exists. Create a PostService by himself.');
+        $this->assertExceptionThrowed(
+            className: ClassNotExistsException::class,
+            message: 'Cannot create PostService cause PostService does not exists. Create a PostService by himself.',
+        );
 
         app(ControllerGenerator::class)
             ->setModel('Post')
@@ -54,8 +58,10 @@ class ControllerGeneratorTest extends TestCase
     {
         $this->mockFilesystemWithoutRoutesFile();
 
-        $this->expectException(FileNotFoundException::class);
-        $this->expectExceptionMessage("Not found file with routes. Create a routes file on path: 'vfs://root/routes/api.php'");
+        $this->assertExceptionThrowed(
+            className: FileNotFoundException::class,
+            message: "Not found file with routes. Create a routes file on path: 'vfs://root/routes/api.php'",
+        );
 
         app(ControllerGenerator::class)
             ->setModel('Post')

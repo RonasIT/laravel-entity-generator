@@ -57,8 +57,10 @@ class NovaResourceGeneratorTest extends TestCase
             $this->classExistsMethodCall(['nova', 'PostResource']),
         ]);
 
-        $this->expectException(ClassAlreadyExistsException::class);
-        $this->expectExceptionMessage("Cannot create PostResource cause PostResource already exists. Remove PostResource.");
+        $this->assertExceptionThrowed(
+            className: ClassAlreadyExistsException::class,
+            message: 'Cannot create PostResource cause PostResource already exists. Remove PostResource.',
+        );
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
