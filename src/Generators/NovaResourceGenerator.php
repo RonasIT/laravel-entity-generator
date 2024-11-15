@@ -112,7 +112,7 @@ class NovaResourceGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getFieldsForCreation(): array
+    public function getFieldsForCreation(): array
     {
         if ($this->commandFieldsExists()) {
             return $this->getFieldsFromCommandLineArguments();

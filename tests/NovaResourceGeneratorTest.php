@@ -19,10 +19,15 @@ class NovaResourceGeneratorTest extends TestCase
 {
     use NovaResourceGeneratorMockTrait;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Event::fake();
+    }
+
     public function testCreateWithMissingNovaPackage()
     {
-        Event::fake();
-
         $this->mockNovaServiceProviderExists(false);
 
         app(NovaResourceGenerator::class)
@@ -67,10 +72,8 @@ class NovaResourceGeneratorTest extends TestCase
             ->generate();
     }
 
-    public function testCreate()
+    public function testSuccess()
     {
-        Event::fake();
-
         $this->mockNovaServiceProviderExists();
 
         $this->mockFilesystem();
@@ -90,41 +93,27 @@ class NovaResourceGeneratorTest extends TestCase
         );
     }
 
-    public function testGetModelFieldsFromDatabase()
+    public function testSuccessWithoutCommandLineFields()
     {
+        $this->mockNovaServiceProviderExists();
+
         $this->mockGettingModelInstance();
 
-        $reflectionClass = new ReflectionClass(NovaResourceGenerator::class);
-        $method = $reflectionClass->getMethod('getFieldsForCreation');
-        $method->setAccessible(true);
+        $this->mockFilesystem();
 
-        $generator = (new NovaResourceGenerator)
+        app(NovaResourceGenerator::class)
+            ->setModel('Post')
             ->setFields([])
-            ->setModel('Post');
+            ->generate();
 
-        $fields = $method->invokeArgs($generator, []);
+        $this->assertGeneratedFileEquals(
+            fixtureName: 'created_resource_without_command_line_fields.php',
+            filePath: 'app/Nova/PostResource.php',
+        );
 
-        $this->assertEquals([
-            [
-                new DatabaseNovaField(new Column('id', new IntegerType)),
-                new DatabaseNovaField(new Column('title', new StringType)),
-                new DatabaseNovaField(new Column('created_at', new DatetimeType)),
-            ],
-            [
-                'integer' => 'Number',
-                'smallint' => 'Number',
-                'bigint' => 'Number',
-                'float' => 'Number',
-                'decimal' => 'Number',
-                'string' => 'Text',
-                'text' => 'Text',
-                'guid' => 'Text',
-                'json' => 'Text',
-                'date' => 'Date',
-                'datetime' => 'DateTime',
-                'datetimetz' => 'DateTime',
-                'boolean' => 'Boolean',
-            ]
-        ], $fields);
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Nova Resource: PostResource',
+        );
     }
 }

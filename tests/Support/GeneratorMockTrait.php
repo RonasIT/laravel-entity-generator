@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests\Support;
 
-use Illuminate\Support\Facades\Event;
 use Laravel\Nova\NovaServiceProvider;
 
 trait GeneratorMockTrait

@@ -37,22 +37,22 @@ class NovaTestGeneratorTest extends TestCase
     {
         $this->mockNovaServiceProviderExists();
 
-        $this->assertExceptionThrowed(
-            className: ClassAlreadyExistsException::class,
-            message: "Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.",
-        );
-
         $this->mockClass(NovaTestGenerator::class, [
             $this->classExistsMethodCall(['nova', 'PostNovaResource']),
             $this->classExistsMethodCall(['nova', 'NovaPostTest'])
         ]);
+
+        $this->assertExceptionThrowed(
+            className: ClassAlreadyExistsException::class,
+            message: "Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.",
+        );
 
         app(NovaTestGenerator::class)
             ->setModel('Post')
             ->generate();
     }
 
-    public function testCreate()
+    public function testSuccess()
     {
         $this->mockNovaServiceProviderExists();
 

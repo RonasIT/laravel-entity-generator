@@ -9,6 +9,11 @@ class WelcomeBonus extends Model
 {
     use ModelTrait;
 
+    public function getConnectionName(): string
+    {
+        return 'pgsql';
+    }
+
     protected $fillable = [
         'title',
         'name',
