@@ -57,7 +57,7 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockNovaServiceProviderExists();
 
         $this->mockFilesystem();
-        $this->mockNovaResourceTestGenerator();
+        $this->mockNovaRequestClassCall();
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')

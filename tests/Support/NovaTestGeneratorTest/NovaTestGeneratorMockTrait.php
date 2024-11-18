@@ -12,7 +12,7 @@ trait NovaTestGeneratorMockTrait
     use GeneratorMockTrait;
     use MockTrait;
 
-    public function mockNovaResourceTestGenerator(): void
+    public function mockNovaRequestClassCall(): void
     {
         $mock = Mockery::mock('alias:Laravel\Nova\Http\Requests\NovaRequest');
 
