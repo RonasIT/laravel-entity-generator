@@ -13,7 +13,7 @@ class NovaTestGeneratorTest extends TestCase
 {
     use NovaTestGeneratorMockTrait;
 
-    public function testCreateNovaTestsResourceNotExists()
+    public function testGenerateResourceNotExists()
     {
         $this->mockNovaServiceProviderExists();
 
@@ -33,7 +33,7 @@ class NovaTestGeneratorTest extends TestCase
             ->generate();
     }
 
-    public function testCreateNovaTestAlreadyExists()
+    public function testGenerateNovaTestAlreadyExists()
     {
         $this->mockNovaServiceProviderExists();
 
@@ -70,7 +70,7 @@ class NovaTestGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/update_welcome_bonus_request.json');
     }
 
-    public function testCreateWithMissingNovaPackage()
+    public function testGenerateNovaPackageNotInstall()
     {
         Event::fake();
 

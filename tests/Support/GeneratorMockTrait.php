@@ -17,11 +17,6 @@ trait GeneratorMockTrait
         ]);
     }
 
-    public function mockCheckingNovaPackageExistence(string $className, bool $result = false): void
-    {
-        $this->mockClassExistsFunction($className, $result);
-    }
-
     public function mockNovaServiceProviderExists(bool $result = true): void
     {
         $this->mockClassExistsFunction(NovaServiceProvider::class, $result);

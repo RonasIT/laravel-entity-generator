@@ -5,18 +5,19 @@ namespace RonasIT\Support\Tests\Support;
 use Illuminate\Support\Arr;
 use org\bovigo\vfs\vfsStream;
 
-class FileSystemMock {
-    public $novaModels = null;
-    public $novaActions = null;
-    public $models = null;
-    public $controllers = null;
-    public $services = null;
-    public $repositories = null;
-    public $testFixtures = null;
-    public $testClasses = null;
-    public $routes = null;
+class FileSystemMock
+{
+    public ?array $novaModels = null;
+    public ?array $novaActions = null;
+    public ?array $models = null;
+    public ?array $controllers = null;
+    public ?array $services = null;
+    public ?array $repositories = null;
+    public ?array $testFixtures = null;
+    public ?array $testClasses = null;
+    public ?array $routes = null;
 
-    public function setStructure()
+    public function setStructure(): void
     {
         $structure = ['app' => []];
 

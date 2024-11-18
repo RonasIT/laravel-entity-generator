@@ -184,6 +184,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $hasFactory = method_exists($modelClass, 'factory') && $this->classExists('factory', "{$model}Factory");
         $factory = ($hasFactory) ? $modelClass::factory() : factory($modelClass);
 
+        dd($factory);
         return $factory
             ->make()
             ->toArray();

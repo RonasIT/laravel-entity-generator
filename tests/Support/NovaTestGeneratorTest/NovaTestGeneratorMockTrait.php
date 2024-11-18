@@ -2,7 +2,7 @@
 
 namespace RonasIT\Support\Tests\Support\NovaTestGeneratorTest;
 
-use RonasIT\Support\Generators\NovaTestGenerator;
+use Mockery;
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 use RonasIT\Support\Traits\MockTrait;
@@ -14,42 +14,9 @@ trait NovaTestGeneratorMockTrait
 
     public function mockNovaResourceTestGenerator(): void
     {
-        $this->mockClass(NovaTestGenerator::class, [
-            [
-                'function' => 'getMockModel',
-                'arguments' => ['WelcomeBonus'],
-                'result' => ['title' => 'some title', 'name' => 'some name']
-            ],
-            [
-                'function' => 'getMockModel',
-                'arguments' => ['WelcomeBonus'],
-                'result' => ['title' => 'some title', 'name' => 'some name']
-            ],
-            [
-                'function' => 'loadNovaActions',
-                'arguments' => [],
-                'result' => [
-                    new PublishPostAction,
-                    new UnPublishPostAction,
-                    new UnPublishPostAction,
-                ]
-            ],
-            [
-                'function' => 'loadNovaFields',
-                'arguments' => [],
-                'result' => [
-                    new TextField,
-                    new DateField,
-                ]
-            ],
-            [
-                'function' => 'loadNovaFilters',
-                'arguments' => [],
-                'result' => [
-                    new CreatedAtFilter,
-                ]
-            ],
-        ]);
+        $mock = Mockery::mock('alias:Laravel\Nova\Http\Requests\NovaRequest');
+
+        $this->app->instance('Laravel\Nova\Http\Requests\NovaRequest', $mock);
     }
 
     public function mockFilesystem(): void
@@ -64,7 +31,7 @@ trait NovaTestGeneratorMockTrait
         ];
 
         $fileSystemMock->novaModels = [
-            'WelcomeBonus.php' => $this->mockPhpFileContent(),
+            'WelcomeBonusResource.php' => $this->mockPhpFileContent(),
         ];
 
         $fileSystemMock->models = [

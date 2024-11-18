@@ -2,17 +2,11 @@
 
 namespace RonasIT\Support\Tests;
 
-use Doctrine\DBAL\Schema\Column;
-use Doctrine\DBAL\Types\DateTimeType;
-use Doctrine\DBAL\Types\IntegerType;
-use Doctrine\DBAL\Types\StringType;
 use Illuminate\Support\Facades\Event;
-use ReflectionClass;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaResourceGenerator;
-use RonasIT\Support\Support\DatabaseNovaField;
 use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\NovaResourceGeneratorMockTrait;
 
 class NovaResourceGeneratorTest extends TestCase
@@ -44,9 +38,11 @@ class NovaResourceGeneratorTest extends TestCase
     {
         $this->mockNovaServiceProviderExists();
 
-        $this->expectException(ClassNotExistsException::class);
-        $this->expectExceptionMessage('Cannot create Post Nova resource cause Post Model does not exists. '
-            . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'");
+        $this->assertExceptionThrowed(
+            className: ClassNotExistsException::class,
+            message: 'Cannot create Post Nova resource cause Post Model does not exists. '
+            . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'"
+        );
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
