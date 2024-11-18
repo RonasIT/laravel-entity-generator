@@ -63,10 +63,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
     {
         $actions = $this->loadNovaActions();
 
-        if (empty($actions)) {
-            return [];
-        }
-
         $actions = array_unique(array_map(function ($action) {
             return get_class($action);
         }, $actions));

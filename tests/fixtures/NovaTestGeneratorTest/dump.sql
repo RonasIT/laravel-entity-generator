@@ -1,3 +1,3 @@
-INSERT INTO welcome_bonuses(title, name, created_at, updated_at) VALUES
-  ('some title', 'some name', '2016-10-20 11:05:00', '2016-10-20 11:05:00');
+INSERT INTO welcome_bonuses(id, title, name, created_at, updated_at) VALUES
+  (1, 1, 1, '2016-10-20 11:05:00', '2016-10-20 11:05:00');
 

@@ -52,7 +52,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $fixturePath = $this->getFixturesPath();
 
         if (!file_exists($fixturePath)) {
-            mkdir_recursively($fixturePath);
+            mkdir($fixturePath, 0777, true);
         }
 
         $dumpName = $this->getDumpName();

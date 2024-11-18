@@ -20,7 +20,6 @@ class SeederGeneratorTest extends TestCase
 
     public function testCreateSeeder()
     {
-        $this->mockViewsNamespace();
         $this->mockFilesystem();
 
         app(SeederGenerator::class)
@@ -33,15 +32,12 @@ class SeederGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->rollbackToDefaultBasePath();
-
         $this->assertGeneratedFileEquals('database_seeder.php', 'database/seeders/DatabaseSeeder.php');
         $this->assertGeneratedFileEquals('post_seeder.php', 'database/seeders/PostSeeder.php');
     }
 
     public function testCreateSeederWithOldConfig()
     {
-        $this->mockViewsNamespace();
         $this->mockFilesystem();
 
         config([
@@ -58,10 +54,9 @@ class SeederGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->rollbackToDefaultBasePath();
-
-        Event::assertDispatched(WarningEvent::class, function ($event) {
-            return $event->message === "You are using the deprecated value for 'entity-generator.stubs.database_empty_seeder' config. Please use 'entity-generator::database_empty_seeder'.";
-        });
+        $this->assertEventPushed(
+            className: WarningEvent::class,
+            message: "You are using the deprecated value for 'entity-generator.stubs.database_empty_seeder' config. Please use 'entity-generator::database_empty_seeder'.",
+        );
     }
 }
