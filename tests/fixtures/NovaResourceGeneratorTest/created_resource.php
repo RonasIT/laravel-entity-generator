@@ -1,15 +1,16 @@
-namespace {{$namespace}};
+<?php
 
-@inject('str', 'Illuminate\Support\Str')
-use {{$modelNamespace}}\{{$model}};
+namespace App\Nova;
+
+use App\Models\Post;
 use Illuminate\Http\Request;
-@foreach($types as $fieldType)
-use Laravel\Nova\Fields\{{$fieldType}};
-@endforeach
+use Laravel\Nova\Fields\Boolean;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\ID;
 
-class {{$model}}Resource extends Resource
+class PostResource extends Resource
 {
-    public static $model = {{$model}}::class;
+    public static $model = Post::class;
 
     //TODO change field for the title if it required
     public static $title = 'name';
@@ -19,20 +20,22 @@ class {{$model}}Resource extends Resource
 
     public static function label(): string
     {
-        return '{{Str::plural($model)}}';
+        return 'Posts';
     }
 
     public function fields(Request $request): array
     {
         return [
-@foreach($fields as $fieldName => $fieldOptions)
-@php($name = ctype_upper($fieldName) ? $fieldName : Str::headline($fieldName))
-            {{$fieldOptions['type']}}::make('{{$name}}')
-@if($fieldOptions['is_required'])
-                ->required()
-@endif
+            Boolean::make('Is Published')
                 ->sortable(),
-@endforeach
+            Text::make('Title')
+                ->required()
+                ->sortable(),
+            Text::make('Body')
+                ->required()
+                ->sortable(),
+            ID::make('Id')
+                ->sortable(),
         ];
     }
 
