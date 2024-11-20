@@ -64,9 +64,11 @@ class MigrationGeneratorTest extends TestCase
     {
         putenv('DB_CONNECTION=mysql');
 
-        $generator = app(MigrationGenerator::class);
+        $generatorClassName = MigrationGenerator::class;
 
-        $reflectionClass = new ReflectionClass(MigrationGenerator::class);
+        $generator = app($generatorClassName);
+
+        $reflectionClass = new ReflectionClass($generatorClassName);
         $jsonLineMethod = $reflectionClass->getMethod('getJsonLine');
         $requiredLineMethod = $reflectionClass->getMethod('getRequiredLine');
 
