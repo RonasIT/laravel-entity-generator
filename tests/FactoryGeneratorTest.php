@@ -101,7 +101,7 @@ class FactoryGeneratorTest extends TestCase
             . "Please create it and after thar you can run this command with flag '--only-tests'.");
 
         $this->mockConfigurations();
-        $this->mockGeneratorForMissingRevertedRelationModelFactory();
+        $this->getMockGeneratorForMissingRevertedRelationModelFactory();
         $this->mockFilesystemForMissingRevertedRelationModelFactory();
 
         app(FactoryGenerator::class)

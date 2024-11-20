@@ -40,7 +40,7 @@ trait FactoryMockTrait
         ]);
     }
 
-    public function mockGeneratorForMissingRevertedRelationModelFactory(): void
+    public function getMockGeneratorForMissingRevertedRelationModelFactory(): void
     {
         $this->mockClass(FactoryGenerator::class, [
             [
@@ -149,7 +149,7 @@ trait FactoryMockTrait
             'entity-generator.paths' => [
                 'models' => 'app/Models',
                 'factory' => 'database/factories/ModelFactory.php',
-            ]
+            ],
         ]);
     }
 
@@ -162,7 +162,7 @@ trait FactoryMockTrait
             'entity-generator.paths' => [
                 'models' => 'app/Models',
                 'factory' => 'database/factories',
-            ]
+            ],
         ]);
     }
 
@@ -174,13 +174,13 @@ trait FactoryMockTrait
                     'PostService.php' => '<?php'
                 ],
                 'Controllers' => [],
-                'Models' => []
+                'Models' => [],
             ],
             'database' => [
                 'factories' => [
-                    'ModelFactory.php' => '<?php'
-                ]
-            ]
+                    'ModelFactory.php' => '<?php',
+                ],
+            ],
         ];
 
         vfsStream::create($structure);
@@ -199,14 +199,14 @@ trait FactoryMockTrait
                 'Controllers' => [],
                 'Models' => [
                     'Post.php' => file_get_contents($postModelFileName),
-                    'User.php' => '<?php'
-                ]
+                    'User.php' => '<?php',
+                ],
             ],
             'database' => [
                 'factories' => [
                     'ModelFactory.php' => '<?php',
-                ]
-            ]
+                ],
+            ],
         ];
 
         vfsStream::create($structure);
@@ -217,19 +217,19 @@ trait FactoryMockTrait
         $structure = [
             'app' => [
                 'Services' => [
-                    'PostService.php' => '<?php'
+                    'PostService.php' => '<?php',
                 ],
                 'Controllers' => [],
                 'Models' => [
                     'Post.php' => '<?php',
-                    'User.php' => '<?php'
+                    'User.php' => '<?php',
                 ]
             ],
             'database' => [
                 'factories' => [
-                    'ModelFactory.php' => file_get_contents(getcwd().'/tests/Support/Factory/ModelFactory.php'),
-                ]
-            ]
+                    'ModelFactory.php' => file_get_contents(getcwd() . '/tests/Support/Factory/ModelFactory.php'),
+                ],
+            ],
         ];
 
         vfsStream::create($structure);
@@ -240,11 +240,11 @@ trait FactoryMockTrait
         $structure = [
             'app' => [
                 'Models' => [
-                    'Post.php' => file_get_contents(getcwd().'/tests/Support/Factory/Post.php'),
-                    'User.php' => '<?php'
-                ]
+                    'Post.php' => file_get_contents(getcwd() . '/tests/Support/Factory/Post.php'),
+                    'User.php' => '<?php',
+                ],
             ],
-            'database' => []
+            'database' => [],
         ];
 
         vfsStream::create($structure);
@@ -255,13 +255,13 @@ trait FactoryMockTrait
         $structure = [
             'app' => [
                 'Models' => [
-                    'Post.php' => file_get_contents(getcwd().'/tests/Support/Factory/Post.php'),
-                    'User.php' => '<?php'
-                ]
+                    'Post.php' => file_get_contents(getcwd() . '/tests/Support/Factory/Post.php'),
+                    'User.php' => '<?php',
+                ],
             ],
             'database' => [
-                'factories' => []
-            ]
+                'factories' => [],
+            ],
         ];
 
         vfsStream::create($structure);
