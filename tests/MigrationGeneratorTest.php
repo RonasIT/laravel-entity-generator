@@ -26,11 +26,10 @@ class MigrationGeneratorTest extends TestCase
 
     public function testSetUnknownFieldType()
     {
-        $this->mockViewsNamespace();
         $this->setupConfigurations();
 
         $this->expectException(UnknownFieldTypeException::class);
-        $this->expectErrorMessage('Unknown field type unknown-type in MigrationGenerator.');
+        $this->expectExceptionMessage('Unknown field type unknown-type in MigrationGenerator.');
 
         app(MigrationGenerator::class)
             ->setModel('Post')
@@ -52,7 +51,6 @@ class MigrationGeneratorTest extends TestCase
         Carbon::setTestNow('2022-02-02');
 
         $this->mockFilesystem();
-        $this->mockViewsNamespace();
         $this->setupConfigurations();
 
         app(MigrationGenerator::class)
@@ -70,8 +68,6 @@ class MigrationGeneratorTest extends TestCase
                 'timestamp' => ['created_at']
             ])
             ->generate();
-
-        $this->rollbackToDefaultBasePath();
 
         $this->assertGeneratedFileEquals('migrations.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
     }
