@@ -5,12 +5,13 @@ namespace RonasIT\Support\Generators;
 use Faker\Generator as Faker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
+use RonasIT\Support\Exceptions\FakerMethodNotFoundException;
 use RonasIT\Support\Exceptions\ModelFactoryNotFound;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ModelFactoryNotFoundedException;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use Exception;
 
 class FactoryGenerator extends EntityGenerator
 {
@@ -26,21 +27,30 @@ class FactoryGenerator extends EntityGenerator
         'json' => '[]',
     ];
 
+    public function generate(): void
+    {
+        $createMessage = ($this->allowedToCreateFactoryInSeparateClass())
+            ? $this->generateSeparateClass()
+            : $this->generateToGenericClass();
+
+        event(new SuccessCreateMessage($createMessage));
+    }
+
     protected function generateSeparateClass(): string
     {
         if (!$this->classExists('models', $this->model)) {
             $this->throwFailureException(
-                ClassNotExistsException::class,
-                "Cannot create {$this->model}Factory cause {$this->model} Model does not exists.",
-                "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'."
+                exceptionClass: ClassNotExistsException::class,
+                failureMessage: "Cannot create {$this->model}Factory cause {$this->model} Model does not exists.",
+                recommendedMessage: "Create a {$this->model} Model by itself or run command 'php artisan make:entity {$this->model} --only-model'."
             );
         }
 
         if ($this->classExists('factory', "{$this->model}Factory")) {
             $this->throwFailureException(
-                ClassAlreadyExistsException::class,
-                "Cannot create {$this->model}Factory cause {$this->model}Factory already exists.",
-                "Remove {$this->model}Factory."
+                exceptionClass: ClassAlreadyExistsException::class,
+                failureMessage: "Cannot create {$this->model}Factory cause {$this->model}Factory already exists.",
+                recommendedMessage: "Remove {$this->model}Factory."
             );
         }
 
@@ -74,7 +84,7 @@ class FactoryGenerator extends EntityGenerator
 
             $createMessage = "Created a new Test factory for {$this->model} model in '{$this->paths['factory']}'";
 
-            file_put_contents($this->paths['factory'], $content, FILE_APPEND);
+            file_put_contents(base_path($this->paths['factory']), $content, FILE_APPEND);
 
             $this->prepareRelatedFactories();
         } else {
@@ -84,13 +94,9 @@ class FactoryGenerator extends EntityGenerator
         return $createMessage;
     }
 
-    public function generate(): void
+    protected function allowedToCreateFactoryInSeparateClass(): bool
     {
-        $createMessage = (version_compare(app()->version(), '8', '>='))
-            ? $this->generateSeparateClass()
-            : $this->generateToGenericClass();
-
-        event(new SuccessCreateMessage($createMessage));
+        return version_compare(app()->version(), '8', '>=');
     }
 
     protected function prepareEmptyFactory(): void
@@ -102,28 +108,31 @@ class FactoryGenerator extends EntityGenerator
 
         list($basePath, $databaseFactoryDir) = extract_last_part(config('entity-generator.paths.factory'), '/');
 
+        $databaseFactoryDir = base_path($databaseFactoryDir);
+
         if (!is_dir($databaseFactoryDir)) {
             mkdir($databaseFactoryDir);
         }
 
-        file_put_contents($this->paths['factory'], $content);
+        file_put_contents(base_path($this->paths['factory']), $content);
     }
 
     protected function checkExistRelatedModelsFactories(): bool
     {
-        $modelFactoryContent = file_get_contents($this->paths['factory']);
+        $modelFactoryContent = file_get_contents(base_path($this->paths['factory']));
         $relatedModels = $this->getRelatedModels($this->model);
         $modelNamespace = $this->getOrCreateNamespace('models');
 
         foreach ($relatedModels as $relatedModel) {
             $relatedFactoryClass = "{$modelNamespace}\\$relatedModel::class";
-            $existModelFactory = strpos($modelFactoryContent, $relatedFactoryClass);
+            $existModelFactory = Str::contains($modelFactoryContent, $relatedFactoryClass);
 
             if (!$existModelFactory) {
                 $this->throwFailureException(
-                    ModelFactoryNotFoundedException::class,
-                    "Not found $relatedModel factory for $relatedModel model in '{$this->paths['factory']}",
-                    "Please declare a factory for $relatedModel model on '{$this->paths['factory']}' path and run your command with option '--only-tests'."
+                    exceptionClass: ModelFactoryNotFoundedException::class,
+                    failureMessage: "Not found {$relatedModel} factory for {$relatedModel} model in '{$this->paths['factory']}.",
+                    recommendedMessage: "Please declare a factory for {$relatedModel} model on '{$this->paths['factory']}' "
+                    . "path and run your command with option '--only-tests'."
                 );
             }
         }
@@ -146,25 +155,27 @@ class FactoryGenerator extends EntityGenerator
             return self::CUSTOM_METHODS[$field['type']];
         }
 
-        $message = $field['type'] . 'not found in CUSTOM_METHODS variable CUSTOM_METHODS = ' . self::CUSTOM_METHODS;
-        throw new Exception($message);
+        $message = "Cannot generate fake data for unsupported {$field['type']} field type. "
+            . "Supported custom field types are " . implode(', ', array_keys(self::CUSTOM_METHODS));
+
+        throw new FakerMethodNotFoundException($message);
     }
 
     protected function prepareRelatedFactories(): void
     {
         $relations = array_merge(
             $this->relations['hasOne'],
-            $this->relations['hasMany']
+            $this->relations['hasMany'],
         );
 
         foreach ($relations as $relation) {
-            $modelFactoryContent = file_get_contents($this->paths['factory']);
+            $modelFactoryContent = file_get_contents(base_path($this->paths['factory']));
 
             if (!Str::contains($modelFactoryContent, $this->getModelClass($relation))) {
                 $this->throwFailureException(
-                    ModelFactoryNotFound::class,
-                    "Model factory for mode {$relation} not found.",
-                    "Please create it and after thar you can run this command with flag '--only-tests'."
+                    exceptionClass: ModelFactoryNotFound::class,
+                    failureMessage: "Model factory for model {$relation} not found.",
+                    recommendedMessage: "Please create it and after thar you can run this command with flag '--only-tests'."
                 );
             }
 
@@ -180,7 +191,7 @@ class FactoryGenerator extends EntityGenerator
                 $modelFactoryContent = str_replace($match, $match . $newField, $modelFactoryContent);
             }
 
-            file_put_contents($this->paths['factory'], $modelFactoryContent);
+            file_put_contents(base_path($this->paths['factory']), $modelFactoryContent);
         }
     }
 
@@ -193,24 +204,27 @@ class FactoryGenerator extends EntityGenerator
             return 1;
         }
 
-        if (property_exists($faker, $field['name'])) {
-            return "\$faker-\>{$field['name']}";
+        try {
+            $faker->{$field['name']};
+            $hasFormatter = true;
+        } catch (InvalidArgumentException $e) {
+            $hasFormatter = false;
         }
 
-        if (method_exists($faker, $field['name'])) {
-            return "\$faker-\>{$field['name']}()";
+        if ($hasFormatter) {
+            return "\$faker->{$field['name']}";
         }
 
         return self::getFakerMethod($field);
     }
 
-    protected function checkExistModelFactory(): int
+    protected function checkExistModelFactory(): bool
     {
-        $modelFactoryContent = file_get_contents($this->paths['factory']);
+        $modelFactoryContent = file_get_contents(base_path($this->paths['factory']));
         $modelNamespace = $this->getOrCreateNamespace('models');
         $factoryClass = "{$modelNamespace}\\$this->model::class";
 
-        return strpos($modelFactoryContent, $factoryClass);
+        return Str::contains($modelFactoryContent, $factoryClass);
     }
 
     protected function prepareFields(): array
@@ -219,11 +233,9 @@ class FactoryGenerator extends EntityGenerator
 
         foreach ($this->fields as $type => $fields) {
             foreach ($fields as $field) {
-                $explodedType = explode('-', $type);
-
                 $result[] = [
                     'name' => $field,
-                    'type' => head($explodedType)
+                    'type' => Str::before($type, '-'),
                 ];
             }
         }
@@ -261,9 +273,10 @@ class FactoryGenerator extends EntityGenerator
 
         if (!$this->classExists('models', $model)) {
             $this->throwFailureException(
-                ClassNotExistsException::class,
-                "Cannot create {$model} Model cause {$model} Model does not exists.",
-                "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'."
+                exceptionClass: ClassNotExistsException::class,
+                failureMessage: "Cannot get {$model} Model class content cause {$model} Model does not exists.",
+                recommendedMessage: "Create a {$model} Model by itself or run command "
+                . "'php artisan make:entity {$model} --only-model'."
             );
         }
 
