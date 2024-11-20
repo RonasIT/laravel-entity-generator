@@ -171,7 +171,7 @@ trait FactoryMockTrait
         $structure = [
             'app' => [
                 'Services' => [
-                    'PostService.php' => '<?php'
+                    'PostService.php' => '<?php',
                 ],
                 'Controllers' => [],
                 'Models' => [],
@@ -194,7 +194,7 @@ trait FactoryMockTrait
         $structure = [
             'app' => [
                 'Services' => [
-                    'PostService.php' => '<?php'
+                    'PostService.php' => '<?php',
                 ],
                 'Controllers' => [],
                 'Models' => [
