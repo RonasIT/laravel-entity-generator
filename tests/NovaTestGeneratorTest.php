@@ -2,100 +2,87 @@
 
 namespace RonasIT\Support\Tests;
 
-use org\bovigo\vfs\vfsStream;
+use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Tests\Support\NovaTest\NovaTestMockTrait;
+use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 
 class NovaTestGeneratorTest extends TestCase
 {
-    use NovaTestMockTrait;
+    use NovaTestGeneratorMockTrait;
 
-    public function setUp(): void
+    public function testGenerateResourceNotExists()
     {
-        parent::setUp();
+        $this->mockNovaServiceProviderExists();
 
-        vfsStream::setup();
+        $this->mockClass(NovaTestGenerator::class, [
+            $this->classExistsMethodCall(['nova', 'PostNovaResource'], false),
+            $this->classExistsMethodCall(['nova', 'PostResource'], false),
+            $this->classExistsMethodCall(['nova', 'Post'], false),
+        ]);
 
-        $this->generatedFileBasePath = vfsStream::url('root');
+        $this->assertExceptionThrowed(
+            className: ClassNotExistsException::class,
+            message: 'Cannot create NovaPostTest cause Post Nova resource does not exist. Create Post Nova resource.',
+        );
 
-        $this->app->setBasePath($this->generatedFileBasePath);
+        app(NovaTestGenerator::class)
+            ->setModel('Post')
+            ->generate();
     }
 
-    public function testCreateNovaTestsResourceNotExists()
+    public function testGenerateNovaTestAlreadyExists()
     {
-        $mock = $this->mockClassExistsFunction();
+        $this->mockNovaServiceProviderExists();
 
-        $this->expectException(ClassNotExistsException::class);
-        $this->expectErrorMessage("Cannot create NovaPostTest cause Post Nova resource does not exist. Create Post Nova resource.");
+        $this->mockClass(NovaTestGenerator::class, [
+            $this->classExistsMethodCall(['nova', 'PostNovaResource']),
+            $this->classExistsMethodCall(['nova', 'NovaPostTest'])
+        ]);
 
-        $this->mockTestGeneratorForNonExistingNovaResource();
+        $this->assertExceptionThrowed(
+            className: ClassAlreadyExistsException::class,
+            message: "Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.",
+        );
 
-        try {
-            app(NovaTestGenerator::class)
-                ->setModel('Post')
-                ->generate();
-        } finally {
-            $mock->disable();
-        }
+        app(NovaTestGenerator::class)
+            ->setModel('Post')
+            ->generate();
     }
 
-    public function testCreateNovaTestAlreadyExists()
+    public function testSuccess()
     {
-        $this->setupConfigurations();
-
-        $mock = $this->mockClassExistsFunction();
-
-        $this->expectException(ClassAlreadyExistsException::class);
-        $this->expectErrorMessage("Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.");
-
-        $this->mockGeneratorForExistingNovaTest();
-
-        try {
-            app(NovaTestGenerator::class)
-                ->setModel('Post')
-                ->generate();
-        } finally {
-            $mock->disable();
-        }
-    }
-
-    public function testCreate()
-    {
-        $functionMock = $this->mockClassExistsFunction();
+        $this->mockNovaServiceProviderExists();
 
         $this->mockFilesystem();
-        $this->setupConfigurations();
-        $this->mockViewsNamespace();
-        $this->mockNovaResourceTestGenerator();
+        $this->mockNovaRequestClassCall();
 
         app(NovaTestGenerator::class)
-            ->setModel('Post')
+            ->setModel('WelcomeBonus')
             ->generate();
 
-        $this->rollbackToDefaultBasePath();
-
-        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaPostTest.php');
-        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaPostTest/dump.sql');
-        $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/NovaPostTest/create_post_request.json');
-        $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/NovaPostTest/create_post_response.json');
-        $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/NovaPostTest/update_post_request.json');
-
-        $functionMock->disable();
+        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaWelcomeBonusTest.php');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusTest/nova_welcome_bonus_dump.sql');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_request.json');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_response.json');
+        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/update_welcome_bonus_request.json');
     }
 
-    public function testCreateWithMissingNovaPackage()
+    public function testGenerateNovaPackageNotInstall()
     {
-        $this->expectsEvents([SuccessCreateMessage::class]);
+        Event::fake();
 
-        $functionMock = $this->mockCheckingNonExistentNovaPackageExistence();
+        $this->mockNovaServiceProviderExists(false);
 
         app(NovaTestGenerator::class)
             ->setModel('Post')
             ->generate();
 
-        $functionMock->disable();
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Nova is not installed and NovaTest is skipped',
+        );
     }
 }

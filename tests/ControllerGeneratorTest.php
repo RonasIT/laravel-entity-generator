@@ -3,35 +3,34 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use org\bovigo\vfs\vfsStream;
+use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\ControllerGenerator;
-use RonasIT\Support\Tests\Support\Controller\ControllerMockTrait;
+use RonasIT\Support\Tests\Support\ControllerGeneratorTest\ControllerGeneratorMockTrait;
 
 class ControllerGeneratorTest extends TestCase
 {
-    use ControllerMockTrait;
+    use ControllerGeneratorMockTrait;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        vfsStream::setup();
-
-        $this->generatedFileBasePath = vfsStream::url('root');
-
-        $this->app->setBasePath($this->generatedFileBasePath);
+        Event::fake();
     }
 
     public function testControllerAlreadyExists()
     {
-        $this->getFiredEvents([SuccessCreateMessage::class]);
-        $this->expectException(ClassAlreadyExistsException::class);
-        $this->expectErrorMessage('Cannot create PostController cause PostController already exists. Remove PostController.');
+        $this->mockClass(ControllerGenerator::class, [
+            $this->classExistsMethodCall(['controllers', 'PostController'])
+        ]);
 
-        $this->mockControllerGeneratorForExistingController();
+        $this->assertExceptionThrowed(
+            className: ClassAlreadyExistsException::class,
+            message: 'Cannot create PostController cause PostController already exists. Remove PostController.',
+        );
 
         app(ControllerGenerator::class)
             ->setModel('Post')
@@ -40,11 +39,15 @@ class ControllerGeneratorTest extends TestCase
 
     public function testModelServiceNotExists()
     {
-        $this->getFiredEvents([SuccessCreateMessage::class]);
-        $this->expectException(ClassNotExistsException::class);
-        $this->expectErrorMessage('Cannot create PostService cause PostService does not exists. Create a PostService by himself.');
+        $this->mockClass(ControllerGenerator::class, [
+            $this->classExistsMethodCall(['controllers', 'PostController'], false),
+            $this->classExistsMethodCall(['services', 'PostService'], false)
+        ]);
 
-        $this->mockControllerGeneratorForNotExistingService();
+        $this->assertExceptionThrowed(
+            className: ClassNotExistsException::class,
+            message: 'Cannot create PostService cause PostService does not exists. Create a PostService by himself.',
+        );
 
         app(ControllerGenerator::class)
             ->setModel('Post')
@@ -53,12 +56,12 @@ class ControllerGeneratorTest extends TestCase
 
     public function testRouteFileNotExists()
     {
-        $this->expectException(FileNotFoundException::class);
-        $this->expectErrorMessage("Not found file with routes. Create a routes file on path: 'vfs://root/routes/api.php'");
-
         $this->mockFilesystemWithoutRoutesFile();
-        $this->mockConfigurations();
-        $this->mockViewsNamespace();
+
+        $this->assertExceptionThrowed(
+            className: FileNotFoundException::class,
+            message: "Not found file with routes. Create a routes file on path: 'vfs://root/routes/api.php'",
+        );
 
         app(ControllerGenerator::class)
             ->setModel('Post')
@@ -66,44 +69,25 @@ class ControllerGeneratorTest extends TestCase
             ->generate();
     }
 
-    public function testCreate()
+    public function testSuccess()
     {
-        $this->expectsEvents(SuccessCreateMessage::class);
-
         $this->mockFilesystem();
-        $this->mockConfigurations();
-        $this->mockViewsNamespace();
 
         app(ControllerGenerator::class)
             ->setModel('Post')
             ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
 
-        $this->rollbackToDefaultBasePath();
-
-        $this->assertGeneratedFileEquals('created_controller.php', 'app/Controllers/PostController.php');
+        $this->assertGeneratedFileEquals('created_controller.php', 'app/Http/Controllers/PostController.php');
         $this->assertGeneratedFileEquals('api.php', 'routes/api.php');
 
-        $this->removeRecursivelyGeneratedFolders(getcwd() . '/vfs:');
-        $this->removeRecursivelyGeneratedFolders(getcwd() . '/tests/vfs:');
-    }
-
-    protected function removeRecursivelyGeneratedFolders(string $path): void
-    {
-        $dirs = glob($path . '/*');
-
-        foreach($dirs as $dir) {
-            $scan = glob(rtrim($dir, '/').'/*');
-
-            foreach($scan as $nestedDirPath) {
-                $this->removeRecursivelyGeneratedFolders($nestedDirPath);
-            }
-
-            rmdir($dir);
-        }
-
-        if (file_exists($path)) {
-            rmdir($path);
-        }
+        $this->assertEventPushedChain([
+            SuccessCreateMessage::class => "Created a new Route: Route::post('posts', [PostController::class, 'create']);",
+            SuccessCreateMessage::class => "Created a new Route: Route::put('posts/{id}', [PostController::class, 'update']);",
+            SuccessCreateMessage::class => "Created a new Route: Route::delete('posts/{id}', [PostController::class, 'delete']);",
+            SuccessCreateMessage::class => "Created a new Route: Route::get('posts/{id}', [PostController::class, 'get']);",
+            SuccessCreateMessage::class => "Created a new Route: Route::get('posts', [PostController::class, 'search']);",
+            SuccessCreateMessage::class => "Created a new Controller: PostController",
+        ]);
     }
 }

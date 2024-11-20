@@ -12,18 +12,18 @@ use RonasIT\Support\Exceptions\ClassNotExistsException;
 
 abstract class AbstractTestsGenerator extends EntityGenerator
 {
-    protected $fakerProperties = [];
-    protected $getFields = [];
-    protected $withAuth = false;
+    protected array $fakerProperties = [];
+    protected array $getFields = [];
+    protected bool $withAuth = false;
 
-    const FIXTURE_TYPES = [
+    const array FIXTURE_TYPES = [
         'create' => ['request', 'response'],
         'update' => ['request'],
     ];
 
-    const EMPTY_GUARDED_FIELD = '*';
-    const UPDATED_AT = 'updated_at';
-    const CREATED_AT = 'created_at';
+    const string EMPTY_GUARDED_FIELD = '*';
+    const string UPDATED_AT = 'updated_at';
+    const string CREATED_AT = 'created_at';
 
     public function generate(): void
     {
@@ -52,13 +52,20 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $fixturePath = $this->getFixturesPath();
 
         if (!file_exists($fixturePath)) {
-            mkdir_recursively($fixturePath);
+            mkdir($fixturePath, 0777, true);
         }
 
-        file_put_contents($this->getFixturesPath('dump.sql'), $content);
+        $dumpName = $this->getDumpName();
+
+        file_put_contents($this->getFixturesPath($dumpName), $content);
 
         event(new SuccessCreateMessage("Created a new Test dump on path: "
-            . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/dump.sql"));
+            . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$dumpName}"));
+    }
+
+    protected function getDumpName(): string
+    {
+        return 'dump.sql';
     }
 
     protected function getInserts(): array
@@ -277,7 +284,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         return array_diff($fields, [
             self::EMPTY_GUARDED_FIELD,
             self::CREATED_AT,
-            self::UPDATED_AT
+            self::UPDATED_AT,
         ]);
     }
 }

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controllers;
+namespace App\Http\Controllers;
 
 use App\Http\Resources\PostsCollectionResource;
-use App\Requests\Posts\CreatePostRequest;
-use App\Requests\Posts\DeletePostRequest;
-use App\Requests\Posts\GetPostRequest;
-use App\Requests\Posts\SearchPostsRequest;
-use App\Requests\Posts\UpdatePostRequest;
+use App\Http\Requests\Posts\CreatePostRequest;
+use App\Http\Requests\Posts\DeletePostRequest;
+use App\Http\Requests\Posts\GetPostRequest;
+use App\Http\Requests\Posts\SearchPostsRequest;
+use App\Http\Requests\Posts\UpdatePostRequest;
 use App\Http\Resources\PostResource;
 use App\Services\PostService;
 use Symfony\Component\HttpFoundation\Response;
