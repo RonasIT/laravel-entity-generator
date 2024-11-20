@@ -10,24 +10,24 @@
     }
   ],
   "require": {
-    "php": ">=7.1.3",
-    "laravel/framework": ">=5.7.0",
-    "ronasit/laravel-helpers": ">=2.5",
-    "laravel/legacy-factories": ">=1.3.0",
-    "ext-json": "*"
+    "php": "^8.3",
+    "laravel/framework": "^11.31.0",
+    "ronasit/laravel-helpers": "^3.0.1-beta",
+    "laravel/legacy-factories": ">=1.4.0",
+    "ext-json": "*",
+    "doctrine/dbal": "^4.2"
   },
   "require-dev": {
-    "fzaninotto/faker": "~1.4",
-    "php-coveralls/php-coveralls": "^2.5",
-    "mockery/mockery": "^1.4",
-    "phpunit/phpunit": "^8.0",
-    "mikey179/vfsstream": "^1.6.11",
-    "php-mock/php-mock": "^2.4.1",
-    "orchestra/testbench": "^6.25"
+    "fakerphp/faker": "^1.24.0",
+    "mockery/mockery": "^1.6.12",
+    "phpunit/phpunit": "^10.5.38",
+    "php-coveralls/php-coveralls": "^2.7",
+    "orchestra/testbench": "^9.5.2",
+    "mikey179/vfsstream": "^1.6.12",
+    "php-mock/php-mock": "^2.5"
   },
   "autoload": {
     "psr-4": {
-      "RonasIT\\Support\\Tests\\": "tests/",
       "RonasIT\\Support\\": "src/"
     },
     "files": [
@@ -35,6 +35,12 @@
     ]
   },
   "autoload-dev": {
+    "psr-4": {
+      "RonasIT\\Support\\Tests\\": "tests/",
+      "RonasIT\\Support\\Tests\\Support\\": "tests/Support/",
+      "App\\Models\\": "tests/Support/Models/",
+      "App\\Nova\\": "tests/Support/Nova/"
+    },
     "files": [
       "tests/TestCase.php"
     ]

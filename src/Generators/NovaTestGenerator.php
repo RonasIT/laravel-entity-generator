@@ -11,10 +11,12 @@ use RonasIT\Support\Exceptions\ClassNotExistsException;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
+    protected $novaModelName;
+
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
-            if (!$this->classExists('nova', $this->model)) {
+            if (!$this->doesNovaResourceExists()) {
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create Nova{$this->model}Test cause {$this->model} Nova resource does not exist.",
@@ -42,10 +44,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $filters = $this->collectFilters();
 
         $fileContent = $this->getStub('nova_test', [
-            'url_path' => $this->getPluralName(Str::kebab($this->model)),
+            'url_path' => Str::kebab($this->model) . '-resources',
             'entity' => $this->model,
             'entities' => $this->getPluralName($this->model),
-            'lower_entity' => Str::snake($this->model),
+            'snake_entity' => Str::snake($this->model),
+            'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
@@ -68,7 +71,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             $actionClass = class_basename($action);
 
             return [
-                'url' => Str::kebab($actionClass),
+                'className' => $actionClass,
                 'fixture' => Str::snake($actionClass),
             ];
         }, $actions);
@@ -76,17 +79,17 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function loadNovaActions()
     {
-        return app("\\App\\Nova\\{$this->model}")->actions(new NovaRequest());
+        return app("\\App\\Nova\\{$this->novaModelName}")->actions(new NovaRequest());
     }
 
     protected function loadNovaFields()
     {
-        return app("\\App\\Nova\\{$this->model}")->fields(new NovaRequest());
+        return app("\\App\\Nova\\{$this->novaModelName}")->fields(new NovaRequest());
     }
 
     protected function loadNovaFilters()
     {
-        return app("\\App\\Nova\\{$this->model}")->filters(new NovaRequest());
+        return app("\\App\\Nova\\{$this->novaModelName}")->filters(new NovaRequest());
     }
 
     public function getTestClassName(): string
@@ -99,7 +102,26 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return true;
     }
 
-    protected function collectFilters()
+    protected function doesNovaResourceExists(): bool
+    {
+        $possibleNovaModelNames = [
+            "{$this->model}NovaResource",
+            "{$this->model}Resource",
+            $this->model
+        ];
+
+        foreach ($possibleNovaModelNames as $modelName) {
+            if ($this->classExists('nova', $modelName)) {
+                $this->novaModelName = $modelName;
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function collectFilters(): array
     {
         $filtersFromFields = $this->getFiltersFromFields();
         $filters = $this->getFilters();
@@ -145,5 +167,12 @@ class NovaTestGenerator extends AbstractTestsGenerator
         }
 
         return $filters;
+    }
+
+    protected function getDumpName(): string
+    {
+        $modelName = Str::snake($this->model);
+
+        return "nova_{$modelName}_dump.sql";
     }
 }

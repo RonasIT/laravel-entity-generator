@@ -1,6 +1,6 @@
 <?php
 
-use App\Controllers\PostController;
+use App\Http\Controllers\PostController;
 
 
 Route::post('posts', [PostController::class, 'create']);
