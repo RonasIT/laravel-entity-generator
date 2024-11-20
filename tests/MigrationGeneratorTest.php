@@ -29,7 +29,7 @@ class MigrationGeneratorTest extends TestCase
             ])
             ->setFields([
                 'integer-required' => ['media_id', 'user_id'],
-                'unknown-type' => ['title']
+                'unknown-type' => ['title'],
             ])
             ->generate();
     }
@@ -53,7 +53,7 @@ class MigrationGeneratorTest extends TestCase
                 'integer-required' => ['media_id', 'user_id'],
                 'string' => ['title', 'body'],
                 'json' => ['meta'],
-                'timestamp' => ['created_at']
+                'timestamp' => ['created_at'],
             ])
             ->generate();
 
