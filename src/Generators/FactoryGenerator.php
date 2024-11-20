@@ -27,6 +27,15 @@ class FactoryGenerator extends EntityGenerator
         'json' => '[]',
     ];
 
+    public function generate(): void
+    {
+        $createMessage = ($this->allowedToCreateFactoryInSeparateClass())
+            ? $this->generateSeparateClass()
+            : $this->generateToGenericClass();
+
+        event(new SuccessCreateMessage($createMessage));
+    }
+
     protected function generateSeparateClass(): string
     {
         if (!$this->classExists('models', $this->model)) {
@@ -85,15 +94,6 @@ class FactoryGenerator extends EntityGenerator
         return $createMessage;
     }
 
-    public function generate(): void
-    {
-        $createMessage = ($this->allowedToCreateFactoryInSeparateClass())
-            ? $this->generateSeparateClass()
-            : $this->generateToGenericClass();
-
-        event(new SuccessCreateMessage($createMessage));
-    }
-
     protected function allowedToCreateFactoryInSeparateClass(): bool
     {
         return version_compare(app()->version(), '8', '>=');
@@ -125,12 +125,12 @@ class FactoryGenerator extends EntityGenerator
 
         foreach ($relatedModels as $relatedModel) {
             $relatedFactoryClass = "{$modelNamespace}\\$relatedModel::class";
-            $existModelFactory = strpos($modelFactoryContent, $relatedFactoryClass);
+            $existModelFactory = (strpos($modelFactoryContent, $relatedFactoryClass) !== false);
 
             if (!$existModelFactory) {
                 $this->throwFailureException(
                     ModelFactoryNotFoundedException::class,
-                    "Not found {$relatedModel} factory for {$relatedModel} model in '{$this->paths['factory']}",
+                    "Not found {$relatedModel} factory for {$relatedModel} model in '{$this->paths['factory']}.",
                     "Please declare a factory for {$relatedModel} model on '{$this->paths['factory']}' "
                     . "path and run your command with option '--only-tests'."
                 );
@@ -165,7 +165,7 @@ class FactoryGenerator extends EntityGenerator
     {
         $relations = array_merge(
             $this->relations['hasOne'],
-            $this->relations['hasMany']
+            $this->relations['hasMany'],
         );
 
         foreach ($relations as $relation) {
@@ -218,13 +218,13 @@ class FactoryGenerator extends EntityGenerator
         return self::getFakerMethod($field);
     }
 
-    protected function checkExistModelFactory(): int
+    protected function checkExistModelFactory(): bool
     {
         $modelFactoryContent = file_get_contents(base_path($this->paths['factory']));
         $modelNamespace = $this->getOrCreateNamespace('models');
         $factoryClass = "{$modelNamespace}\\$this->model::class";
 
-        return strpos($modelFactoryContent, $factoryClass);
+        return (strpos($modelFactoryContent, $factoryClass) !== false);
     }
 
     protected function prepareFields(): array

@@ -4,8 +4,8 @@ namespace RonasIT\Support\Tests\Support\Factory;
 
 class ModelWithRelations
 {
-    public function user()
+    public function Post()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Post::class);
     }
 }
