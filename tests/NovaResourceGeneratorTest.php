@@ -38,7 +38,7 @@ class NovaResourceGeneratorTest extends TestCase
     {
         $this->mockNovaServiceProviderExists();
 
-        $this->assertExceptionThrowed(
+        $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
             message: 'Cannot create Post Nova resource cause Post Model does not exists. '
             . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'"
@@ -58,7 +58,7 @@ class NovaResourceGeneratorTest extends TestCase
             $this->classExistsMethodCall(['nova', 'PostResource']),
         ]);
 
-        $this->assertExceptionThrowed(
+        $this->assertExceptionThrew(
             className: ClassAlreadyExistsException::class,
             message: 'Cannot create PostResource cause PostResource already exists. Remove PostResource.',
         );

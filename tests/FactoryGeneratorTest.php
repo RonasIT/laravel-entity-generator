@@ -2,8 +2,8 @@
 
 namespace RonasIT\Support\Tests;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\View\ViewException;
-use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -16,22 +16,12 @@ class FactoryGeneratorTest extends TestCase
 {
     use FactoryMockTrait;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        vfsStream::setup();
-
-        $this->generatedFileBasePath = vfsStream::url('root');
-
-        $this->app->setBasePath($this->generatedFileBasePath);
-    }
-
     public function testModelNotExists()
     {
-        $this->getFiredEvents([SuccessCreateMessage::class]);
+        Event::fake();
+
         $this->expectException(ClassNotExistsException::class);
-        $this->expectErrorMessage("Cannot create PostFactory cause Post Model does not exists. "
+        $this->expectExceptionMessage("Cannot create PostFactory cause Post Model does not exists. "
             . "Create a Post Model by itself or run command 'php artisan make:entity Post --only-model'.");
 
         $this->getFactoryGeneratorMockForMissingModel();
@@ -39,120 +29,112 @@ class FactoryGeneratorTest extends TestCase
         app(FactoryGenerator::class)
             ->setModel('Post')
             ->generate();
+
+        Event::assertDispatched(SuccessCreateMessage::class);
     }
 
     public function testFactoryClassExists()
     {
-        $this->getFiredEvents([SuccessCreateMessage::class]);
+        Event::fake();
+
         $this->expectException(ClassAlreadyExistsException::class);
-        $this->expectErrorMessage("Cannot create PostFactory cause PostFactory already exists. Remove PostFactory.");
+        $this->expectExceptionMessage("Cannot create PostFactory cause PostFactory already exists. Remove PostFactory.");
 
         $this->getFactoryGeneratorMockForExistingFactory();
 
         app(FactoryGenerator::class)
             ->setModel('Post')
             ->generate();
+
+        Event::assertDispatched(SuccessCreateMessage::class);
     }
 
     public function testCannotGetContentForGenericFactory()
     {
-        $this->getFiredEvents([SuccessCreateMessage::class]);
+        Event::fake();
+
         $this->expectException(ClassNotExistsException::class);
-        $this->expectErrorMessage("Cannot get Post Model class content cause Post Model does not exists. "
+        $this->expectExceptionMessage("Cannot get Post Model class content cause Post Model does not exists. "
             . "Create a Post Model by itself or run command 'php artisan make:entity Post --only-model'.");
 
-        $funMock = $this->getMockForFileExists();
+        $this->mockForFileExists('database/factories/ModelFactory.php');
 
         $this->mockConfigurations();
         $this->mockFilesystem();
         $this->mockFactoryGenerator();
 
-        try {
-            app(FactoryGenerator::class)
-                ->setModel('Post')
-                ->generate();
-        } finally {
-            $funMock->disable();
-        }
+        app(FactoryGenerator::class)
+           ->setModel('Post')
+           ->generate();
+
+        Event::assertDispatched(SuccessCreateMessage::class);
     }
 
     public function testRelatedModelWithoutFactory()
     {
-        $mock = $this->getMockForFileExists();
+        Event::fake();
 
-        $this->getFiredEvents([SuccessCreateMessage::class]);
         $this->expectException(ModelFactoryNotFoundedException::class);
-        $this->expectErrorMessage("Not found User factory for User model in 'database/factories/ModelFactory.php "
-            . "Please declare a factory for User model on 'database/factories/ModelFactory.php' path and run your command with option '--only-tests'.");
+        $this->expectExceptionMessage("Not found Post factory for Post model in 'database/factories/ModelFactory.php. "
+            . "Please declare a factory for Post model on 'database/factories/ModelFactory.php' "
+            . "path and run your command with option '--only-tests'.");
 
         $this->mockConfigurations();
         $this->mockFilesystemForNonExistingRelatedModelFactory();
         $this->mockFactoryGeneratorForMissingRelatedModelFactory();
 
-        try {
-            app(FactoryGenerator::class)
-                ->setModel('Post')
-                ->setFields([
-                    'integer-required' => ['author_id'],
-                    'string' => ['title']
-                ])
-                ->generate();
-        } finally {
-            $mock->disable();
-        }
+        app(FactoryGenerator::class)
+            ->setModel('Post')
+            ->setFields([
+                'integer-required' => ['author_id'],
+                'string' => ['title'],
+            ])
+            ->generate();
+
+        Event::assertDispatched(SuccessCreateMessage::class);
     }
 
     public function testRevertedModelFactoryNotExists()
     {
         $this->expectException(ModelFactoryNotFound::class);
-        $this->expectErrorMessage("Model factory for model comment not found. "
+        $this->expectExceptionMessage("Model factory for model comment not found. "
             . "Please create it and after thar you can run this command with flag '--only-tests'.");
 
-        $mock = $this->getMockForFileExists();
-
         $this->mockConfigurations();
-        $this->mockViewsNamespace();
-        $this->mockGeneratorForMissingRevertedRelationModelFactory();
+        $this->getMockGeneratorForMissingRevertedRelationModelFactory();
         $this->mockFilesystemForMissingRevertedRelationModelFactory();
 
-        try {
-            app(FactoryGenerator::class)
-                ->setRelations([
-                    'hasOne' => ['comment'],
-                    'hasMany' => ['comment'],
-                    'belongsTo' => ['user']
-                ])
-                ->setModel('Post')
-                ->generate();
-        } finally {
-            $mock->disable();
-        }
+        app(FactoryGenerator::class)
+            ->setRelations([
+                'hasOne' => ['comment'],
+                'hasMany' => ['comment'],
+                'belongsTo' => ['user'],
+            ])
+            ->setModel('Post')
+            ->generate();
     }
 
     public function testAlreadyExistsFactory()
     {
-        $this->expectsEvents([SuccessCreateMessage::class]);
+        Event::fake();
 
         $this->mockConfigurations();
         $this->mockFactoryGeneratorForAlreadyExistsFactory();
 
-        $mock = $this->getMockForFileExists();
+        $this->mockForFileExists('database/factories/ModelFactory.php');
 
-        try {
-            app(FactoryGenerator::class)
-                ->setModel('Post')
-                ->generate();
-        } finally {
-            $mock->disable();
-        }
+        app(FactoryGenerator::class)
+            ->setModel('Post')
+            ->generate();
+
+        Event::assertDispatched(SuccessCreateMessage::class);
     }
 
     public function testCreateGenericFactory()
     {
-        $this->expectsEvents([SuccessCreateMessage::class]);
+        Event::fake();
 
         $this->mockConfigurations();
-        $this->mockViewsNamespace();
         $this->mockFilesystemForGenericStyleCreation();
         $this->mockFactoryGeneratorForGenericTypeCreation();
 
@@ -165,25 +147,24 @@ class FactoryGeneratorTest extends TestCase
             ->setRelations([
                 'hasOne' => ['User'],
                 'hasMany' => [],
-                'belongsTo' => ['user']
+                'belongsTo' => ['user'],
             ])
             ->setModel('Post')
             ->generate();
 
-        $this->rollbackToDefaultBasePath();
+        $this->assertGeneratedFileEquals('model_factory.php', '/database/factories/ModelFactory.php');
 
-        $this->assertGeneratedFileEquals('model_factory.php', '/database/factories/ModelFactory.php', true);
+        Event::assertDispatched(SuccessCreateMessage::class);
     }
 
     public function testProcessUnknownFieldType()
     {
         $this->mockConfigurations();
-        $this->mockViewsNamespace();
         $this->mockFilesystemForGenericStyleCreation();
         $this->mockFactoryGeneratorForGenericTypeCreation();
 
         $this->expectException(ViewException::class);
-        $this->expectErrorMessage("Cannot generate fake data for unsupported another_type field type. "
+        $this->expectExceptionMessage("Cannot generate fake data for unsupported another_type field type. "
             . "Supported custom field types are json");
 
         app(FactoryGenerator::class)
@@ -193,18 +174,18 @@ class FactoryGeneratorTest extends TestCase
             ->setRelations([
                 'hasOne' => [],
                 'hasMany' => [],
-                'belongsTo' => []
+                'belongsTo' => [],
             ])
             ->setModel('Post')
             ->generate();
+
     }
 
     public function testCreateClassStyleFactory()
     {
-        $this->expectsEvents([SuccessCreateMessage::class]);
+        Event::fake();
 
         $this->mockConfigurationsForClassStyleFactory();
-        $this->mockViewsNamespace();
         $this->mockFilesystemForClassStyleFactoryCreation();
         $this->mockFactoryGeneratorForClassTypeCreation();
 
@@ -215,15 +196,15 @@ class FactoryGeneratorTest extends TestCase
                 'json' => ['json_text'],
             ])
             ->setRelations([
-                'hasOne' => ['User'],
+                'hasOne' => ['user'],
                 'hasMany' => [],
-                'belongsTo' => ['user']
+                'belongsTo' => ['user'],
             ])
             ->setModel('Post')
             ->generate();
 
-        $this->rollbackToDefaultBasePath();
+        $this->assertGeneratedFileEquals('post_factory.php', '/database/factories/PostFactory.php');
 
-        $this->assertGeneratedFileEquals('post_factory.php', '/database/factories/PostFactory.php', true);
+        Event::assertDispatched(SuccessCreateMessage::class);
     }
 }
