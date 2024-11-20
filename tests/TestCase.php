@@ -8,7 +8,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
-use phpmock\Mock;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\EntityGeneratorServiceProvider;
 use RonasIT\Support\Traits\FixturesTrait;
@@ -41,18 +40,6 @@ class TestCase extends BaseTestCase
         $className = Arr::last($explodedClass);
 
         return getcwd() . "/tests/fixtures/{$className}/{$fixtureName}";
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-        Mock::disableAll();
-    }
-
-    public function rollbackToDefaultBasePath(): void
-    {
-        $this->app->setBasePath(getcwd());
     }
 
     public function mockConfigurations(): void

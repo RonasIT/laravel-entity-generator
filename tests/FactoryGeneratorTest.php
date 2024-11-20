@@ -152,8 +152,6 @@ class FactoryGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->rollbackToDefaultBasePath();
-
         $this->assertGeneratedFileEquals('model_factory.php', '/database/factories/ModelFactory.php');
 
         Event::assertDispatched(SuccessCreateMessage::class);
@@ -204,8 +202,6 @@ class FactoryGeneratorTest extends TestCase
             ])
             ->setModel('Post')
             ->generate();
-
-        $this->rollbackToDefaultBasePath();
 
         $this->assertGeneratedFileEquals('post_factory.php', '/database/factories/PostFactory.php');
 
