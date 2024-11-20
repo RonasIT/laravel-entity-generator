@@ -71,7 +71,6 @@ class FactoryGeneratorTest extends TestCase
 
         $this->mockForFileExists([
             'database/factories/ModelFactory.php',
-            'vfs://root/app/Models',
         ]);
 
         $this->mockConfigurations();
