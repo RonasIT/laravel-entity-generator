@@ -1,7 +1,7 @@
 namespace {{$namespace}};
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use {{$model_namespace}}\{{$entity}}
+use {{$model_namespace}}\{{$entity}};
 
 /**
   *@property {{$entity}} $resource
