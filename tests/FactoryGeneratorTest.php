@@ -4,7 +4,6 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\ViewException;
-use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -16,17 +15,6 @@ use RonasIT\Support\Tests\Support\Factory\FactoryMockTrait;
 class FactoryGeneratorTest extends TestCase
 {
     use FactoryMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        vfsStream::setup();
-
-        $this->generatedFileBasePath = vfsStream::url('root');
-
-        $this->app->setBasePath($this->generatedFileBasePath);
-    }
 
     public function testModelNotExists()
     {
@@ -69,9 +57,7 @@ class FactoryGeneratorTest extends TestCase
         $this->expectExceptionMessage("Cannot get Post Model class content cause Post Model does not exists. "
             . "Create a Post Model by itself or run command 'php artisan make:entity Post --only-model'.");
 
-        $this->mockForFileExists([
-            'database/factories/ModelFactory.php',
-        ]);
+        $this->mockForFileExists('database/factories/ModelFactory.php');
 
         $this->mockConfigurations();
         $this->mockFilesystem();
@@ -122,7 +108,7 @@ class FactoryGeneratorTest extends TestCase
             ->setRelations([
                 'hasOne' => ['comment'],
                 'hasMany' => ['comment'],
-                'belongsTo' => ['user']
+                'belongsTo' => ['user'],
             ])
             ->setModel('Post')
             ->generate();
@@ -135,9 +121,7 @@ class FactoryGeneratorTest extends TestCase
         $this->mockConfigurations();
         $this->mockFactoryGeneratorForAlreadyExistsFactory();
 
-        $this->mockForFileExists([
-            'database/factories/ModelFactory.php',
-        ]);
+        $this->mockForFileExists('database/factories/ModelFactory.php');
 
         app(FactoryGenerator::class)
             ->setModel('Post')
@@ -163,7 +147,7 @@ class FactoryGeneratorTest extends TestCase
             ->setRelations([
                 'hasOne' => ['User'],
                 'hasMany' => [],
-                'belongsTo' => ['user']
+                'belongsTo' => ['user'],
             ])
             ->setModel('Post')
             ->generate();
@@ -192,7 +176,7 @@ class FactoryGeneratorTest extends TestCase
             ->setRelations([
                 'hasOne' => [],
                 'hasMany' => [],
-                'belongsTo' => []
+                'belongsTo' => [],
             ])
             ->setModel('Post')
             ->generate();
@@ -214,9 +198,9 @@ class FactoryGeneratorTest extends TestCase
                 'json' => ['json_text'],
             ])
             ->setRelations([
-                'hasOne' => ['User'],
+                'hasOne' => ['user'],
                 'hasMany' => [],
-                'belongsTo' => ['user']
+                'belongsTo' => ['user'],
             ])
             ->setModel('Post')
             ->generate();

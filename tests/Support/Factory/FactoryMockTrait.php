@@ -126,15 +126,17 @@ trait FactoryMockTrait
         ]);
     }
 
-    public function mockForFileExists(array $arguments, bool $result = true): void
+    public function mockForFileExists(string $filePath, bool $result = true): void
     {
         $this->mockNativeFunction(
             namespace: '\\RonasIT\\Support\\Generators',
-            callChain: Arr::map($arguments, fn ($argument) => [
-                'function' => 'file_exists',
-                'arguments' => Arr::wrap($argument),
-                'result' => $result,
-            ])
+            callChain: [
+                [
+                    'function' => 'file_exists',
+                    'arguments' => Arr::wrap($filePath),
+                    'result' => $result,
+                ],
+            ],
         );
     }
 
