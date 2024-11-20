@@ -40,17 +40,17 @@ class FactoryGenerator extends EntityGenerator
     {
         if (!$this->classExists('models', $this->model)) {
             $this->throwFailureException(
-                ClassNotExistsException::class,
-                "Cannot create {$this->model}Factory cause {$this->model} Model does not exists.",
-                "Create a {$this->model} Model by itself or run command 'php artisan make:entity {$this->model} --only-model'."
+                exceptionClass: ClassNotExistsException::class,
+                failureMessage: "Cannot create {$this->model}Factory cause {$this->model} Model does not exists.",
+                recommendedMessage: "Create a {$this->model} Model by itself or run command 'php artisan make:entity {$this->model} --only-model'."
             );
         }
 
         if ($this->classExists('factory', "{$this->model}Factory")) {
             $this->throwFailureException(
-                ClassAlreadyExistsException::class,
-                "Cannot create {$this->model}Factory cause {$this->model}Factory already exists.",
-                "Remove {$this->model}Factory."
+                exceptionClass: ClassAlreadyExistsException::class,
+                failureMessage: "Cannot create {$this->model}Factory cause {$this->model}Factory already exists.",
+                recommendedMessage: "Remove {$this->model}Factory."
             );
         }
 
@@ -125,13 +125,13 @@ class FactoryGenerator extends EntityGenerator
 
         foreach ($relatedModels as $relatedModel) {
             $relatedFactoryClass = "{$modelNamespace}\\$relatedModel::class";
-            $existModelFactory = (strpos($modelFactoryContent, $relatedFactoryClass) !== false);
+            $existModelFactory = Str::contains($modelFactoryContent, $relatedFactoryClass);
 
             if (!$existModelFactory) {
                 $this->throwFailureException(
-                    ModelFactoryNotFoundedException::class,
-                    "Not found {$relatedModel} factory for {$relatedModel} model in '{$this->paths['factory']}.",
-                    "Please declare a factory for {$relatedModel} model on '{$this->paths['factory']}' "
+                    exceptionClass: ModelFactoryNotFoundedException::class,
+                    failureMessage: "Not found {$relatedModel} factory for {$relatedModel} model in '{$this->paths['factory']}.",
+                    recommendedMessage: "Please declare a factory for {$relatedModel} model on '{$this->paths['factory']}' "
                     . "path and run your command with option '--only-tests'."
                 );
             }
@@ -173,9 +173,9 @@ class FactoryGenerator extends EntityGenerator
 
             if (!Str::contains($modelFactoryContent, $this->getModelClass($relation))) {
                 $this->throwFailureException(
-                    ModelFactoryNotFound::class,
-                    "Model factory for model {$relation} not found.",
-                    "Please create it and after thar you can run this command with flag '--only-tests'."
+                    exceptionClass: ModelFactoryNotFound::class,
+                    failureMessage: "Model factory for model {$relation} not found.",
+                    recommendedMessage: "Please create it and after thar you can run this command with flag '--only-tests'."
                 );
             }
 
@@ -224,7 +224,7 @@ class FactoryGenerator extends EntityGenerator
         $modelNamespace = $this->getOrCreateNamespace('models');
         $factoryClass = "{$modelNamespace}\\$this->model::class";
 
-        return (strpos($modelFactoryContent, $factoryClass) !== false);
+        return Str::contains($modelFactoryContent, $factoryClass);
     }
 
     protected function prepareFields(): array
@@ -233,11 +233,9 @@ class FactoryGenerator extends EntityGenerator
 
         foreach ($this->fields as $type => $fields) {
             foreach ($fields as $field) {
-                $explodedType = explode('-', $type);
-
                 $result[] = [
                     'name' => $field,
-                    'type' => head($explodedType)
+                    'type' => Str::before($type, '-'),
                 ];
             }
         }
@@ -275,9 +273,10 @@ class FactoryGenerator extends EntityGenerator
 
         if (!$this->classExists('models', $model)) {
             $this->throwFailureException(
-                ClassNotExistsException::class,
-                "Cannot get {$model} Model class content cause {$model} Model does not exists.",
-                "Create a {$model} Model by itself or run command 'php artisan make:entity {$model} --only-model'."
+                exceptionClass: ClassNotExistsException::class,
+                failureMessage: "Cannot get {$model} Model class content cause {$model} Model does not exists.",
+                recommendedMessage: "Create a {$model} Model by itself or run command "
+                . "'php artisan make:entity {$model} --only-model'."
             );
         }
 
