@@ -10,18 +10,18 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ModelGenerator extends EntityGenerator
 {
-    CONST PLURAL_NUMBER_REQUIRED = [
+    protected const array PLURAL_NUMBER_REQUIRED = [
         'belongsToMany',
-        'hasMany'
+        'hasMany',
     ];
 
     public function generate(): void
     {
         if ($this->classExists('models', $this->model)) {
             $this->throwFailureException(
-                ClassAlreadyExistsException::class,
-                "Cannot create {$this->model} Model cause {$this->model} Model already exists.",
-                "Remove {$this->model} Model."
+                exceptionClass: ClassAlreadyExistsException::class,
+                failureMessage: "Cannot create {$this->model} Model cause {$this->model} Model already exists.",
+                recommendedMessage: "Remove {$this->model} Model.",
             );
         }
 
@@ -40,7 +40,7 @@ class ModelGenerator extends EntityGenerator
             'fields' => Arr::collapse($this->fields),
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
-            'namespace' => $this->getOrCreateNamespace('models')
+            'namespace' => $this->getOrCreateNamespace('models'),
         ]);
     }
 
@@ -68,7 +68,7 @@ class ModelGenerator extends EntityGenerator
                 $newRelation = $this->getStub('relation', [
                     'name' => $this->getRelationName($this->model, $types[$type]),
                     'type' => $types[$type],
-                    'entity' => $this->model
+                    'entity' => $this->model,
                 ]);
 
                 $fixedContent = preg_replace('/\}$/', "\n    {$newRelation}\n}", $content);
@@ -78,9 +78,9 @@ class ModelGenerator extends EntityGenerator
         }
     }
 
-    public function getModelContent($model): string
+    public function getModelContent(string $model): string
     {
-        $modelPath = base_path($this->paths['models'] . "/{$model}.php");
+        $modelPath = base_path("{$this->paths['models']}/{$model}.php");
 
         return file_get_contents($modelPath);
     }
@@ -95,7 +95,7 @@ class ModelGenerator extends EntityGenerator
                     $result[] = [
                         'name' => $this->getRelationName($relation, $type),
                         'type' => $type,
-                        'entity' => $relation
+                        'entity' => $relation,
                     ];
                 }
             }
@@ -104,7 +104,7 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getCasts($fields): array
+    protected function getCasts(array $fields): array
     {
         $casts = [
             'boolean-required' => 'boolean',
@@ -127,7 +127,7 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    private function getRelationName($relation, $type): string
+    private function getRelationName(string $relation, string $type): string
     {
         $relationName = Str::snake($relation);
 
