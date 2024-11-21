@@ -2,12 +2,14 @@
 
 namespace RonasIT\Support\Tests;
 
+use App\Models\WelcomeBonus;
 use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
+use Laravel\Nova\NovaServiceProvider;
 
 class NovaTestGeneratorTest extends TestCase
 {
@@ -54,7 +56,14 @@ class NovaTestGeneratorTest extends TestCase
 
     public function testSuccess()
     {
-        $this->mockNovaServiceProviderExists();
+        $this->mockClassExistsFunction(
+            [
+                'class' => NovaServiceProvider::class,
+            ],
+            [
+                'class' => WelcomeBonus::class,
+            ],
+        );
 
         $this->mockFilesystem();
         $this->mockNovaRequestClassCall();

@@ -250,7 +250,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     {
         $class = $this->getModelClass($model);
 
-        if (!class_exists($this->getModelClass($model))) {
+        if (!class_exists($class)) {
             $this->throwFailureException(
                 ClassNotExistsException::class,
                 "Cannot create {$model} Model cause {$model} Model does not exists.",
