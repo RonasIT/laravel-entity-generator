@@ -5,6 +5,7 @@ namespace RonasIT\Support\Generators;
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ModelFactoryNotFound;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -274,6 +275,8 @@ class FactoryGenerator extends EntityGenerator
 
         $relatedModels = [];
 
+        DB::beginTransaction();
+
         foreach ($methods as $method) {
             try {
                 $methodName = $method->getName();
@@ -291,6 +294,8 @@ class FactoryGenerator extends EntityGenerator
 
             $relatedModels[] = class_basename($relationModel);
         }
+
+        DB::rollBack();
 
         return $relatedModels;
     }

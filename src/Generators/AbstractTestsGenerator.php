@@ -6,6 +6,7 @@ use DateTime;
 use Illuminate\Database\Eloquent\Factory as LegacyFactories;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
@@ -270,6 +271,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
         $relatedModels = [];
 
+        DB::beginTransaction();
+
         foreach ($methods as $method) {
             try {
                 $methodName = $method->getName();
@@ -287,6 +290,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
             $relatedModels[] = class_basename($relationModel);
         }
+
+        DB::rollBack();
 
         return $relatedModels;
     }
