@@ -10,6 +10,7 @@ use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 use Laravel\Nova\NovaServiceProvider;
+use Mockery;
 
 class NovaTestGeneratorTest extends TestCase
 {
@@ -56,6 +57,11 @@ class NovaTestGeneratorTest extends TestCase
 
     public function testSuccess()
     {
+        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
+        $mock
+            ->shouldReceive('beginTransaction', 'rollBack')
+            ->once();
+
         $this->mockClassExistsFunction(
             [
                 'class' => NovaServiceProvider::class,

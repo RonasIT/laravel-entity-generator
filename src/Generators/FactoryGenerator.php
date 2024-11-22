@@ -267,11 +267,7 @@ class FactoryGenerator extends EntityGenerator
 
         $publicMethods = (new ReflectionClass($class))->getMethods(ReflectionMethod::IS_PUBLIC);
 
-        $methods = array_filter($publicMethods, fn ($method) =>
-            $method->class === $class
-            && !$method->getParameters()
-            && $method->getName() !== 'getRelationships'
-        );
+        $methods = array_filter($publicMethods, fn ($method) => $method->class === $class && !$method->getParameters());
 
         $relatedModels = [];
 
