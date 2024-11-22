@@ -251,7 +251,7 @@ class FactoryGenerator extends EntityGenerator
         return "{$modelNamespace}\\{$model}";
     }
 
-    protected function getRelatedModels($model): array
+    protected function getRelatedModels(string $model): array
     {
         $class = $this->getModelClass($model);
 

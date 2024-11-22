@@ -247,7 +247,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         return array_unique($models);
     }
 
-    protected function getRelatedModels($model): array
+    protected function getRelatedModels(string $model): array
     {
         $class = $this->getModelClass($model);
 
