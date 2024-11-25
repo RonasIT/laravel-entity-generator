@@ -18,11 +18,11 @@ class TranslationsGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        if (!file_exists($this->translationPath)) {
+        if (!file_exists($this->translationPath) && $this->checkStubExists('validation')) {
             $this->createTranslate();
         }
         
-        if ($this->isTranslationMissed('validation.exceptions.not_found')) {
+        if ($this->isTranslationMissed('validation.exceptions.not_found') && $this->checkStubExists('translation_not_found')) {
             $this->appendNotFoundException();
         }
     }

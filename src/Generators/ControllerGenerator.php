@@ -28,6 +28,10 @@ class ControllerGenerator extends EntityGenerator
             );
         }
 
+        if (!$this->checkStubExists('controller')) {
+            return;
+        }
+
         $controllerContent = $this->getControllerContent($this->model);
 
         $this->saveClass('controllers', "{$this->model}Controller", $controllerContent);
@@ -61,8 +65,10 @@ class ControllerGenerator extends EntityGenerator
             );
         }
 
-        $this->addUseController($routesPath);
-        $this->addRoutes($routesPath);
+        if ($this->checkStubExists('routes') && $this->checkStubExists('use_routes')) {
+            $this->addUseController($routesPath);
+            $this->addRoutes($routesPath);
+        }
     }
 
     protected function addRoutes($routesPath): string

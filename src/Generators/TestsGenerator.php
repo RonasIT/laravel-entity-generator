@@ -50,6 +50,10 @@ class TestsGenerator extends AbstractTestsGenerator
 
     protected function generateTests(): void
     {
+        if (!$this->checkStubExists('test')) {
+            return;
+        }
+
         $content = $this->getStub('test', [
             'entity' => $this->model,
             'databaseTableName' => $this->getTableName($this->model),

@@ -70,6 +70,10 @@ class NovaResourceGenerator extends EntityGenerator
                 );
             }
 
+            if (!$this->checkStubExists('nova_resource')) {
+                return;
+            }
+
             $novaFields = $this->prepareNovaFields();
 
             $fileContent = $this->getStub('nova_resource', [

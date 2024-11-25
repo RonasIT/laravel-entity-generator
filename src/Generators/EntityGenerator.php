@@ -5,6 +5,7 @@ namespace RonasIT\Support\Generators;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use RonasIT\Support\Events\WarningEvent;
 
 /**
  * @property Filesystem $fs
@@ -139,6 +140,25 @@ abstract class EntityGenerator
         $data['options'] = $this->crudOptions;
 
         return view($stubPath)->with($data)->render();
+    }
+
+    protected function checkStubExists(string $stub): bool
+    {
+        $config = "entity-generator.stubs.{$stub}";
+
+        $stubPath = config($config);
+
+        if (!view()->exists($stubPath)) {
+            $generationType = Str::replace('_', ' ', $stub);
+
+            $message = "Generation of {$generationType} has been skipped cause the view {$stubPath} from the config {$config} is not exists. Please check that config has the correct view name value.";
+
+            event(new WarningEvent($message));
+
+            return false;
+        }
+
+        return true;
     }
 
     protected function getTableName($entityName, $delimiter = '_'): string

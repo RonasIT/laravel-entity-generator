@@ -57,40 +57,46 @@ class FactoryGenerator extends EntityGenerator
 
     protected function generateToGenericClass(): string
     {
-        if (!file_exists($this->paths['factory'])) {
-            $this->prepareEmptyFactory();
-        }
+        $stubPath = config("entity-generator.stubs.legacy_factory");
 
-        if (!$this->checkExistModelFactory() && $this->checkExistRelatedModelsFactories()) {
-            $stubPath = config("entity-generator.stubs.legacy_factory");
+        $content = view($stubPath)->with([
+            'entity' => $this->model,
+            'fields' => $this->prepareFields(),
+            'modelsNamespace' => $this->getOrCreateNamespace('models')
+        ])->render();
 
-            $content = view($stubPath)->with([
-                'entity' => $this->model,
-                'fields' => $this->prepareFields(),
-                'modelsNamespace' => $this->getOrCreateNamespace('models')
-            ])->render();
+        $content = "\n\n" . $content;
 
-            $content = "\n\n" . $content;
+        file_put_contents($this->paths['factory'], $content, FILE_APPEND);
 
-            $createMessage = "Created a new Test factory for {$this->model} model in '{$this->paths['factory']}'";
+        $this->prepareRelatedFactories();
 
-            file_put_contents($this->paths['factory'], $content, FILE_APPEND);
-
-            $this->prepareRelatedFactories();
-        } else {
-            $createMessage = "Factory for {$this->model} model has already created, so new factory not necessary create.";
-        }
-
-        return $createMessage;
+        return "Created a new Test factory for {$this->model} model in '{$this->paths['factory']}'";
     }
 
     public function generate(): void
     {
-        $createMessage = (version_compare(app()->version(), '8', '>='))
-            ? $this->generateSeparateClass()
-            : $this->generateToGenericClass();
+        $isActualVersion = (version_compare(app()->version(), '8', '>='));
 
-        event(new SuccessCreateMessage($createMessage));
+        if ($isActualVersion && $this->checkStubExists('factory')) {
+            event(new SuccessCreateMessage($this->generateSeparateClass()));
+        } else if (!$isActualVersion) {
+            if (!file_exists($this->paths['factory']) && $this->checkStubExists('legacy_empty_factory')) {
+                $this->prepareEmptyFactory();
+            }
+
+            if (!$this->checkExistModelFactory() && $this->checkExistRelatedModelsFactories()) {
+                if (!$this->checkStubExists('legacy_factory')) {
+                    return;
+                }
+
+                $createMessage = $this->generateToGenericClass();
+            } else {
+                $createMessage = "Factory for {$this->model} model has already created, so new factory not necessary create.";
+            }
+
+            event(new SuccessCreateMessage($createMessage));
+        }
     }
 
     protected function prepareEmptyFactory(): void

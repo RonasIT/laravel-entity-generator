@@ -17,6 +17,10 @@ class RepositoryGenerator extends EntityGenerator
             );
         }
 
+        if (!$this->checkStubExists('repository')) {
+            return;
+        }
+
         $repositoryContent = $this->getStub('repository', [
             'entity' => $this->model,
             'namespace' => $this->getOrCreateNamespace('repositories'),

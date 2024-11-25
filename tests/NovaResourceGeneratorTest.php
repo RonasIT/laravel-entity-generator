@@ -4,6 +4,7 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaResourceGenerator;
@@ -66,6 +67,29 @@ class NovaResourceGeneratorTest extends TestCase
         app(NovaResourceGenerator::class)
             ->setModel('Post')
             ->generate();
+    }
+
+    public function testNovaResourceStubNotExist()
+    {
+        $this->mockNovaServiceProviderExists();
+
+        $this->mockFilesystem();
+
+        $fields = $this->getJsonFixture('command_line_fields.json');
+
+        config(['entity-generator.stubs.nova_resource' => 'incorrect_stub']);
+
+        app(NovaResourceGenerator::class)
+            ->setModel('Post')
+            ->setFields($fields)
+            ->generate();
+
+        $this->assertFileDoesNotExist('app/Nova/PostResource.php');
+
+        $this->assertEventPushed(
+            className: WarningEvent::class,
+            message: 'Generation of nova resource has been skipped cause the view incorrect_stub from the config entity-generator.stubs.nova_resource is not exists. Please check that config has the correct view name value.',
+        );
     }
 
     public function testSuccess()
