@@ -164,23 +164,23 @@ abstract class EntityGenerator
         throw new $exceptionClass("{$failureMessage} {$recommendedMessage}");
     }
 
-    protected function getRelatedModels(string $model, string $classType): array
+    protected function getRelatedModels(string $model, string $creatableClass): array
     {
-        $class = $this->getModelClass($model);
+        $modelClass = $this->getModelClass($model);
 
-        if (!class_exists($class)) {
+        if (!class_exists($modelClass)) {
             $this->throwFailureException(
                 ClassNotExistsException::class,
-                "Cannot create {$model}{$classType} cause {$model} Model does not exists.",
+                "Cannot create {$creatableClass} cause {$model} Model does not exists.",
                 "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'."
             );
         }
 
-        $instance = new $class();
+        $instance = new $modelClass();
 
-        $publicMethods = (new ReflectionClass($class))->getMethods(ReflectionMethod::IS_PUBLIC);
+        $publicMethods = (new ReflectionClass($modelClass))->getMethods(ReflectionMethod::IS_PUBLIC);
 
-        $methods = array_filter($publicMethods, fn ($method) => $method->class === $class && !$method->getParameters());
+        $methods = array_filter($publicMethods, fn ($method) => $method->class === $modelClass && !$method->getParameters());
 
         $relatedModels = [];
 

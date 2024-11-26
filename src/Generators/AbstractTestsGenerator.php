@@ -218,7 +218,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected function buildRelationsTree($models): array
     {
         foreach ($models as $model) {
-            $relations = $this->getRelatedModels($model, 'Test');
+            $relations = $this->getRelatedModels($model, $this->getTestClassName());
             $relationsWithFactories = $this->getModelsWithFactories($relations);
 
             if (empty($relationsWithFactories)) {

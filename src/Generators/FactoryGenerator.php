@@ -112,7 +112,7 @@ class FactoryGenerator extends EntityGenerator
     protected function checkExistRelatedModelsFactories(): bool
     {
         $modelFactoryContent = file_get_contents($this->paths['factory']);
-        $relatedModels = $this->getRelatedModels($this->model, 'Factory');
+        $relatedModels = $this->getRelatedModels($this->model, "{$this->model}Factory");
         $modelNamespace = $this->getOrCreateNamespace('models');
 
         foreach ($relatedModels as $relatedModel) {
