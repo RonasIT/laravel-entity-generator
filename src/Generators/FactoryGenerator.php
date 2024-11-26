@@ -76,7 +76,7 @@ class FactoryGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        $isActualVersion = (version_compare(app()->version(), '8', '>='));
+        $isActualVersion = version_compare(app()->version(), '8', '>=');
 
         if ($isActualVersion && $this->checkStubExists('factory')) {
             event(new SuccessCreateMessage($this->generateSeparateClass()));
