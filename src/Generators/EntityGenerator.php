@@ -170,9 +170,9 @@ abstract class EntityGenerator
 
         if (!class_exists($modelClass)) {
             $this->throwFailureException(
-                ClassNotExistsException::class,
-                "Cannot create {$creatableClass} cause {$model} Model does not exists.",
-                "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'."
+                exceptionClass: ClassNotExistsException::class,
+                failureMessage: "Cannot create {$creatableClass} cause {$model} Model does not exists.",
+                recommendedMessage: "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'.",
             );
         }
 
