@@ -3,9 +3,7 @@
 namespace RonasIT\Support\Generators;
 
 use Faker\Generator as Faker;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ModelFactoryNotFound;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -13,9 +11,6 @@ use RonasIT\Support\Exceptions\ModelFactoryNotFoundedException;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use Exception;
-use ReflectionClass;
-use ReflectionMethod;
-use Throwable;
 
 class FactoryGenerator extends EntityGenerator
 {
@@ -117,7 +112,7 @@ class FactoryGenerator extends EntityGenerator
     protected function checkExistRelatedModelsFactories(): bool
     {
         $modelFactoryContent = file_get_contents($this->paths['factory']);
-        $relatedModels = $this->getRelatedModels($this->model);
+        $relatedModels = $this->getRelatedModels($this->model, 'Factory');
         $modelNamespace = $this->getOrCreateNamespace('models');
 
         foreach ($relatedModels as $relatedModel) {
@@ -249,50 +244,5 @@ class FactoryGenerator extends EntityGenerator
         $modelNamespace = $this->getOrCreateNamespace('models');
 
         return "{$modelNamespace}\\{$model}";
-    }
-
-    protected function getRelatedModels(string $model): array
-    {
-        $class = $this->getModelClass($model);
-
-        if (!class_exists($class)) {
-            $this->throwFailureException(
-                ClassNotExistsException::class,
-                "Cannot create {$model} Model cause {$model} Model does not exists.",
-                "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'."
-            );
-        }
-
-        $instance = new $class();
-
-        $publicMethods = (new ReflectionClass($class))->getMethods(ReflectionMethod::IS_PUBLIC);
-
-        $methods = array_filter($publicMethods, fn ($method) => $method->class === $class && !$method->getParameters());
-
-        $relatedModels = [];
-
-        DB::beginTransaction();
-
-        foreach ($methods as $method) {
-            try {
-                $methodName = $method->getName();
-
-                $methodReturn = $instance->$methodName();
-
-                if (!$methodReturn instanceof BelongsTo) {
-                    continue;
-                }
-            } catch (Throwable) {
-                continue;
-            }
-
-            $relationModel = get_class($methodReturn->getRelated());
-
-            $relatedModels[] = class_basename($relationModel);
-        }
-
-        DB::rollBack();
-
-        return $relatedModels;
     }
 }

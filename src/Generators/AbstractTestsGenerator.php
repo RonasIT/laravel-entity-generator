@@ -224,7 +224,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected function buildRelationsTree($models): array
     {
         foreach ($models as $model) {
-            $relations = $this->getRelatedModels($model);
+            $relations = $this->getRelatedModels($model, 'Test');
             $relationsWithFactories = $this->getModelsWithFactories($relations);
 
             if (empty($relationsWithFactories)) {
@@ -245,51 +245,6 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         }
 
         return array_unique($models);
-    }
-
-    protected function getRelatedModels(string $model): array
-    {
-        $class = $this->getModelClass($model);
-
-        if (!class_exists($class)) {
-            $this->throwFailureException(
-                ClassNotExistsException::class,
-                "Cannot create {$model} Model cause {$model} Model does not exists.",
-                "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'."
-            );
-        }
-
-        $instance = new $class();
-
-        $publicMethods = (new ReflectionClass($class))->getMethods(ReflectionMethod::IS_PUBLIC);
-
-        $methods = array_filter($publicMethods, fn ($method) => $method->class === $class && !$method->getParameters());
-
-        $relatedModels = [];
-
-        DB::beginTransaction();
-
-        foreach ($methods as $method) {
-            try {
-                $methodName = $method->getName();
-
-                $methodReturn = $instance->$methodName();
-
-                if (!$methodReturn instanceof BelongsTo) {
-                    continue;
-                }
-            } catch (Throwable) {
-                continue;
-            }
-
-            $relationModel = get_class($methodReturn->getRelated());
-
-            $relatedModels[] = class_basename($relationModel);
-        }
-
-        DB::rollBack();
-
-        return $relatedModels;
     }
 
     protected function canGenerateUserData(): bool
