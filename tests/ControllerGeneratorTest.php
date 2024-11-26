@@ -48,7 +48,7 @@ class ControllerGeneratorTest extends TestCase
 
         $this->assertExceptionThrowed(
             className: ClassNotExistsException::class,
-            message: 'Cannot create PostService cause PostService does not exists. Create a PostService by himself.',
+            message: 'Cannot create PostController cause PostService does not exists. Create a PostService by himself.',
         );
 
         app(ControllerGenerator::class)
