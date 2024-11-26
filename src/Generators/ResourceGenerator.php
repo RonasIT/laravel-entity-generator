@@ -11,7 +11,10 @@ class ResourceGenerator extends EntityGenerator
     {
         if ($this->checkStubExists('resource')) {
             $this->generateResource();
-            $this->generateCollectionResource();
+
+            if ($this->checkStubExists('collection_resource')) {
+                $this->generateCollectionResource();
+            }
         }
     }
 
