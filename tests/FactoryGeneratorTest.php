@@ -16,25 +16,37 @@ class FactoryGeneratorTest extends TestCase
 
     public function testModelNotExists()
     {
-        $this->expectException(ClassNotExistsException::class);
-        $this->expectExceptionMessage("Cannot create PostFactory cause Post Model does not exists. "
-            . "Create a Post Model by itself or run command 'php artisan make:entity Post --only-model'.");
+        Event::fake();
+
+        $this->assertExceptionThrew(
+            className: ClassNotExistsException::class,
+            message: "Cannot create PostFactory cause Post Model does not exists. "
+            . "Create a Post Model by itself or run command 'php artisan make:entity Post --only-model'."
+        );
 
         app(FactoryGenerator::class)
             ->setModel('Post')
             ->generate();
+
+        Event::assertNothingDispatched();
     }
 
     public function testFactoryClassExists()
     {
-        $this->expectException(ClassAlreadyExistsException::class);
-        $this->expectExceptionMessage("Cannot create PostFactory cause PostFactory already exists. Remove PostFactory.");
+        Event::fake();
+
+        $this->assertExceptionThrew(
+            className: ClassAlreadyExistsException::class,
+            message: "Cannot create PostFactory cause PostFactory already exists. Remove PostFactory.",
+        );
 
         $this->getFactoryGeneratorMockForExistingFactory();
 
         app(FactoryGenerator::class)
             ->setModel('Post')
             ->generate();
+
+        Event::assertNothingDispatched();
     }
 
     public function testProcessUnknownFieldType()
