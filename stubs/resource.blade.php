@@ -4,7 +4,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use {{$model_namespace}}\{{$entity}};
 
 /**
-  * @property {{$entity}} $resource
+ * @property {{$entity}} $resource
  */
 class {{$entity}}Resource extends JsonResource
 {
