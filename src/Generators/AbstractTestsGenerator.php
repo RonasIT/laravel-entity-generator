@@ -90,14 +90,11 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         }, $this->buildRelationsTree($arrayModels));
     }
 
-    protected function isFactoryExists($modelName): bool
+    protected function isFactoryExists(string $modelName): bool
     {
-        $factory = app(LegacyFactories::class);
         $modelClass = $this->getModelClass($modelName);
 
-        $isNewStyleFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
-
-        return $isNewStyleFactoryExists || !empty($factory[$this->getModelClass($modelName)]);
+        return $this->classExists('factories', "{$modelName}Factory") && method_exists($modelClass, 'factory');
     }
 
     protected function isMethodExists($modelName, $method): bool
@@ -176,13 +173,14 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function getMockModel($model): array
     {
-        if (!$this->isFactoryExists($model)) {
+        $hasFactory = $this->isFactoryExists($model);
+
+        if (!$hasFactory) {
             return [];
         }
 
         $modelClass = $this->getModelClass($model);
-        $hasFactory = method_exists($modelClass, 'factory') && $this->classExists('factory', "{$model}Factory");
-        $factory = ($hasFactory) ? $modelClass::factory() : factory($modelClass);
+        $factory = $modelClass::factory();
 
         return $factory
             ->make()

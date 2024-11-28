@@ -16,7 +16,7 @@ return [
         'repositories' => 'app/Repositories',
         'tests' => 'tests',
         'routes' => 'routes/api.php',
-        'factory' => 'database/factories/ModelFactory.php',
+        'factories' => 'database/factories',
         'translations' => 'resources/lang/en/validation.php',
         'resources' => 'app/Http/Resources',
         'nova' => 'app/Nova',

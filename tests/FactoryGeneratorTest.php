@@ -45,7 +45,7 @@ class FactoryGeneratorTest extends TestCase
 
         $this->mockFactoryGenerator(
             $this->classExistsMethodCall(['models', 'Post']),
-            $this->classExistsMethodCall(['factory', 'PostFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
         );
 
         app(FactoryGenerator::class)

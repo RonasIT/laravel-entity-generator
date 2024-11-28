@@ -35,7 +35,7 @@ class FactoryGenerator extends EntityGenerator
             );
         }
 
-        if ($this->classExists('factory', "{$this->model}Factory")) {
+        if ($this->classExists('factories', "{$this->model}Factory")) {
             $this->throwFailureException(
                 exceptionClass: ClassAlreadyExistsException::class,
                 failureMessage: "Cannot create {$this->model}Factory cause {$this->model}Factory already exists.",
@@ -44,12 +44,12 @@ class FactoryGenerator extends EntityGenerator
         }
 
         $factoryContent = $this->getStub('factory', [
-            'namespace' => $this->getOrCreateNamespace('factory'),
+            'namespace' => $this->getOrCreateNamespace('factories'),
             'entity' => $this->model,
             'fields' => $this->prepareFields(),
         ]);
 
-        $this->saveClass('factory', "{$this->model}Factory", $factoryContent);
+        $this->saveClass('factories', "{$this->model}Factory", $factoryContent);
 
         event(new SuccessCreateMessage("Created a new Factory: {$this->model}Factory"));
     }

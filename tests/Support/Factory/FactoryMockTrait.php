@@ -21,7 +21,7 @@ trait FactoryMockTrait
         config([
             'entity-generator.paths' => [
                 'models' => 'app/Models',
-                'factory' => 'database/factories',
+                'factories' => 'database/factories',
             ],
         ]);
     }

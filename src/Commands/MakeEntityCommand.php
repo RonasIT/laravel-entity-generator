@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Commands;
 
-use Closure;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
@@ -217,10 +216,9 @@ class MakeEntityCommand extends Command
         }
 
         $factories = 'database/factories';
-        $factories = (version_compare(app()->version(), '8', '>=')) ? $factories : "{$factories}/ModelFactory.php";
 
-        if ($newConfig['paths.factory'] !== $factories) {
-            $newConfig['paths.factory'] = $factories;
+        if ($newConfig['paths.factories'] !== $factories) {
+            $newConfig['paths.factories'] = $factories;
         }
 
         $differences = array_diff_key($newConfig, $flattenedProjectConfigs);
