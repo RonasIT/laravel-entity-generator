@@ -24,7 +24,7 @@ class ControllerGeneratorTest extends TestCase
     public function testControllerAlreadyExists()
     {
         $this->mockClass(ControllerGenerator::class, [
-            $this->classExistsMethodCall(['controllers', 'PostController'])
+            $this->classExistsMethodCall(['controllers', 'PostController']),
         ]);
 
         $this->assertExceptionThrew(
@@ -41,7 +41,7 @@ class ControllerGeneratorTest extends TestCase
     {
         $this->mockClass(ControllerGenerator::class, [
             $this->classExistsMethodCall(['controllers', 'PostController'], false),
-            $this->classExistsMethodCall(['services', 'PostService'], false)
+            $this->classExistsMethodCall(['services', 'PostService'], false),
         ]);
 
         $this->assertExceptionThrew(

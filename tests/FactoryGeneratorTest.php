@@ -26,7 +26,7 @@ class FactoryGeneratorTest extends TestCase
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
             message: "Cannot create PostFactory cause Post Model does not exists. "
-            . "Create a Post Model by itself or run command 'php artisan make:entity Post --only-model'."
+            . "Create a Post Model by itself or run command 'php artisan make:entity Post --only-model'.",
         );
 
         app(FactoryGenerator::class)
