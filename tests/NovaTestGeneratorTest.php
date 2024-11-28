@@ -62,13 +62,9 @@ class NovaTestGeneratorTest extends TestCase
             ->shouldReceive('beginTransaction', 'rollBack')
             ->once();
 
-        $this->mockClassExistsFunction(
-            [
-                'class' => NovaServiceProvider::class,
-            ],
-            [
-                'class' => WelcomeBonus::class,
-            ],
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
+            $this->nativeClassExistsMethodCall([WelcomeBonus::class, true]),
         );
 
         $this->mockFilesystem();
