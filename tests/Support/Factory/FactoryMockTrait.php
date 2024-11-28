@@ -11,20 +11,9 @@ trait FactoryMockTrait
 {
     use GeneratorMockTrait, MockTrait;
 
-    public function getFactoryGeneratorMockForExistingFactory(): void
+    public function mockFactoryGenerator(...$functionCalls): void
     {
-        $this->mockClass(FactoryGenerator::class, [
-            [
-                'function' => 'classExists',
-                'arguments' => ['models', 'Post'],
-                'result' => true,
-            ],
-            [
-                'function' => 'classExists',
-                'arguments' => ['factory', 'PostFactory'],
-                'result' => true,
-            ],
-        ]);
+        $this->mockClass(FactoryGenerator::class, $functionCalls);
     }
 
     public function mockConfigurations(): void
@@ -42,8 +31,8 @@ trait FactoryMockTrait
         $structure = [
             'app' => [
                 'Models' => [
-                    'Post.php' => file_get_contents(getcwd() . '/tests/Support/Factory/Post.php'),
-                    'User.php' => '<?php',
+                    'Post.php' => $this->mockPhpFileContent(),
+                    'User.php' => $this->mockPhpFileContent(),
                 ],
             ],
             'database' => [

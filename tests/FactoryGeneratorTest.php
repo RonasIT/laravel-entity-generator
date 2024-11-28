@@ -14,10 +14,15 @@ class FactoryGeneratorTest extends TestCase
 {
     use FactoryMockTrait;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Event::fake();
+    }
+
     public function testModelNotExists()
     {
-        Event::fake();
-
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
             message: "Cannot create PostFactory cause Post Model does not exists. "
@@ -33,14 +38,15 @@ class FactoryGeneratorTest extends TestCase
 
     public function testFactoryClassExists()
     {
-        Event::fake();
-
         $this->assertExceptionThrew(
             className: ClassAlreadyExistsException::class,
             message: "Cannot create PostFactory cause PostFactory already exists. Remove PostFactory.",
         );
 
-        $this->getFactoryGeneratorMockForExistingFactory();
+        $this->mockFactoryGenerator(
+            $this->classExistsMethodCall(['models', 'Post']),
+            $this->classExistsMethodCall(['factory', 'PostFactory']),
+        );
 
         app(FactoryGenerator::class)
             ->setModel('Post')
@@ -54,9 +60,11 @@ class FactoryGeneratorTest extends TestCase
         $this->mockConfigurations();
         $this->mockFilesystem();
 
-        $this->expectException(ViewException::class);
-        $this->expectExceptionMessage("Cannot generate fake data for unsupported another_type field type. "
-            . "Supported custom field types are json");
+        $this->assertExceptionThrew(
+            className: ViewException::class,
+            message: "Cannot generate fake data for unsupported another_type field type. "
+            . "Supported custom field types are json",
+        );
 
         app(FactoryGenerator::class)
             ->setFields([
@@ -74,8 +82,6 @@ class FactoryGeneratorTest extends TestCase
 
     public function testCreateSuccess()
     {
-        Event::fake();
-
         $this->mockConfigurations();
         $this->mockFilesystem();
 
