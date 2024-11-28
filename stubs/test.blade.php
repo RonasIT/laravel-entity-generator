@@ -10,7 +10,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class {{$entity}}Test extends TestCase
 {
 @if ($withAuth)
-    protected $user;
+    protected static User $user;
 
 @endif
     public function setUp() : void
@@ -18,7 +18,7 @@ class {{$entity}}Test extends TestCase
         parent::setUp();
 @if ($withAuth)
 
-        $this->user = User::find(1);
+        self::$user ??= User::find(1);
 @endif
     }
 
@@ -30,7 +30,7 @@ class {{$entity}}Test extends TestCase
 @if (!$withAuth)
         $response = $this->json('post', '/{{$entities}}', $data);
 @else
-        $response = $this->actingAs($this->user)->json('post', '/{{$entities}}', $data);
+        $response = $this->actingAs(self::$user)->json('post', '/{{$entities}}', $data);
 @endif
 
         $response->assertCreated();
@@ -60,7 +60,7 @@ class {{$entity}}Test extends TestCase
 @if (!$withAuth)
         $response = $this->json('put', '/{{$entities}}/1', $data);
 @else
-        $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/1', $data);
+        $response = $this->actingAs(self::$user)->json('put', '/{{$entities}}/1', $data);
 @endif
 
         $response->assertNoContent();
@@ -75,7 +75,7 @@ class {{$entity}}Test extends TestCase
 @if (!$withAuth)
         $response = $this->json('put', '/{{$entities}}/0', $data);
 @else
-        $response = $this->actingAs($this->user)->json('put', '/{{$entities}}/0', $data);
+        $response = $this->actingAs(self::$user)->json('put', '/{{$entities}}/0', $data);
 @endif
 
         $response->assertNotFound();
@@ -99,7 +99,7 @@ class {{$entity}}Test extends TestCase
 @if (!$withAuth)
         $response = $this->json('delete', '/{{$entities}}/1');
 @else
-        $response = $this->actingAs($this->user)->json('delete', '/{{$entities}}/1');
+        $response = $this->actingAs(self::$user)->json('delete', '/{{$entities}}/1');
 @endif
 
         $response->assertNoContent();
@@ -114,7 +114,7 @@ class {{$entity}}Test extends TestCase
 @if (!$withAuth)
         $response = $this->json('delete', '/{{$entities}}/0');
 @else
-        $response = $this->actingAs($this->user)->json('delete', '/{{$entities}}/0');
+        $response = $this->actingAs(self::$user)->json('delete', '/{{$entities}}/0');
 @endif
 
         $response->assertNotFound();
@@ -140,7 +140,7 @@ class {{$entity}}Test extends TestCase
 @if (!$withAuth)
         $response = $this->json('get', '/{{$entities}}/1');
 @else
-        $response = $this->actingAs($this->user)->json('get', '/{{$entities}}/1');
+        $response = $this->actingAs(self::$user)->json('get', '/{{$entities}}/1');
 @endif
 
         $response->assertOk();
@@ -156,7 +156,7 @@ class {{$entity}}Test extends TestCase
 @if (!$withAuth)
         $response = $this->json('get', '/{{$entities}}/0');
 @else
-        $response = $this->actingAs($this->user)->json('get', '/{{$entities}}/0');
+        $response = $this->actingAs(self::$user)->json('get', '/{{$entities}}/0');
 @endif
 
         $response->assertNotFound();
