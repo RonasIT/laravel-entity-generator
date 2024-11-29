@@ -2,7 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
-use App\Models\WelcomeBonus;
+use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -57,6 +57,10 @@ class NovaTestGeneratorTest extends TestCase
 
     public function testSuccess()
     {
+        config([
+            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+        ]);
+
         $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
         $mock
             ->shouldReceive('beginTransaction', 'rollBack')
