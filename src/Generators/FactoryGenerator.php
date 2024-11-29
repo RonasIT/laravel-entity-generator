@@ -238,11 +238,4 @@ class FactoryGenerator extends EntityGenerator
 
         return "/{$modelNamespace}.*{$return}/sU";
     }
-
-    protected function getModelClass($model): string
-    {
-        $modelNamespace = $this->getOrCreateNamespace('models');
-
-        return "{$modelNamespace}\\{$model}";
-    }
 }

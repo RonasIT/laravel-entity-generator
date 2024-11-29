@@ -161,13 +161,6 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getModelClass($model): string
-    {
-        $path = "{$this->paths['models']}/{$model}";
-
-        return Str::ucfirst(str_replace('/', '\\', trim($path, '/')));
-    }
-
     protected function getModelFields($model): array
     {
         $modelClass = $this->getModelClass($model);

@@ -208,4 +208,11 @@ abstract class EntityGenerator
 
         return $relatedModels;
     }
+
+    protected function getModelClass(string $model): string
+    {
+        $modelNamespace = $this->getOrCreateNamespace('models');
+
+        return "{$modelNamespace}\\{$model}";
+    }
 }
