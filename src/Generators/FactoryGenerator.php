@@ -112,7 +112,7 @@ class FactoryGenerator extends EntityGenerator
     protected function checkExistRelatedModelsFactories(): bool
     {
         $modelFactoryContent = file_get_contents($this->paths['factory']);
-        $relatedModels = $this->getRelatedModels($this->model);
+        $relatedModels = $this->getRelatedModels($this->model, "{$this->model}Factory");
         $modelNamespace = $this->getOrCreateNamespace('models');
 
         foreach ($relatedModels as $relatedModel) {
@@ -237,36 +237,5 @@ class FactoryGenerator extends EntityGenerator
         $return = "return \\[";
 
         return "/{$modelNamespace}.*{$return}/sU";
-    }
-
-    protected function getModelClass($model): string
-    {
-        $modelNamespace = $this->getOrCreateNamespace('models');
-
-        return "{$modelNamespace}\\{$model}";
-    }
-
-    protected function getRelatedModels($model)
-    {
-        $content = $this->getModelClassContent($model);
-
-        preg_match_all('/(?<=belongsTo\().*(?=::class)/', $content, $matches);
-
-        return head($matches);
-    }
-
-    protected function getModelClassContent($model): string
-    {
-        $path = base_path("{$this->paths['models']}/{$model}.php");
-
-        if (!$this->classExists('models', $model)) {
-            $this->throwFailureException(
-                ClassNotExistsException::class,
-                "Cannot create {$model} Model cause {$model} Model does not exists.",
-                "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'."
-            );
-        }
-
-        return file_get_contents($path);
     }
 }
