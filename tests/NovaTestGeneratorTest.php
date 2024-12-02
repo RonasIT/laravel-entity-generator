@@ -26,7 +26,7 @@ class NovaTestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['nova', 'Post'], false),
         ]);
 
-        $this->assertExceptionThrowed(
+        $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
             message: 'Cannot create NovaPostTest cause Post Nova resource does not exist. Create Post Nova resource.',
         );
@@ -45,7 +45,7 @@ class NovaTestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['nova', 'NovaPostTest'])
         ]);
 
-        $this->assertExceptionThrowed(
+        $this->assertExceptionThrew(
             className: ClassAlreadyExistsException::class,
             message: "Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.",
         );
