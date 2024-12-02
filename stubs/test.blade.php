@@ -1,6 +1,10 @@
 @php($shouldUseStatus = version_compare(app()->version(), '7', '<'))
 namespace App\Tests;
 
+@if (!empty(array_intersect($options, ['C', 'U', 'D'])))
+use RonasIT\Support\Tests\ModelTestState;
+use {{$modelsNamespace}}\{{$entity}};
+@endif
 @if ($withAuth)
 use {{$modelsNamespace}}\User;
 @endif
@@ -14,12 +18,20 @@ class {{$entity}}Test extends TestCase
     protected $user;
 
 @endif
+@if (!empty(array_intersect($options, ['C', 'U', 'D'])))
+    protected static ModelTestState ${{\Illuminate\Support\Str::camel($entity)}}State;
+
+@endif
     public function setUp() : void
     {
         parent::setUp();
 @if ($withAuth)
 
         $this->user = User::find(1);
+@endif
+@if (!empty(array_intersect($options, ['C', 'U', 'D'])))
+
+        self::${{\Illuminate\Support\Str::camel($entity)}}State ??= new ModelTestState({{$entity}}::class);
 @endif
     }
 
@@ -41,7 +53,7 @@ class {{$entity}}Test extends TestCase
 @endif
         $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json', $response->json());
 
-        $this->assertDatabaseHas('{{$databaseTableName}}', $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json'));
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json');
     }
 
 @if ($withAuth)
@@ -77,7 +89,7 @@ class {{$entity}}Test extends TestCase
         $response->assertNoContent();
 @endif
 
-        $this->assertDatabaseHas('{{$databaseTableName}}', $data);
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_response.json');
     }
 
     public function testUpdateNotExists()
@@ -127,9 +139,7 @@ class {{$entity}}Test extends TestCase
 @else
         $response->assertNoContent();
 @endif
-        $this->assertDatabaseMissing('{{$databaseTableName}}', [
-            'id' => 1
-        ]);
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('delete_{{\Illuminate\Support\Str::snake($entity)}}_response.json');
     }
 
     public function testDeleteNotExists()
@@ -146,9 +156,7 @@ class {{$entity}}Test extends TestCase
         $response->assertNotFound();
 @endif
 
-        $this->assertDatabaseMissing('{{$databaseTableName}}', [
-            'id' => 0
-        ]);
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertNotChanged();
     }
 
 @if ($withAuth)
