@@ -188,20 +188,16 @@ abstract class EntityGenerator
 
         foreach ($methods as $method) {
             try {
-                $methodName = $method->getName();
+                $result = call_user_func([$instance, $method->getName()]);
 
-                $methodReturn = $instance->$methodName();
-
-                if (!$methodReturn instanceof BelongsTo) {
+                if (!$result instanceof BelongsTo) {
                     continue;
                 }
             } catch (Throwable) {
                 continue;
             }
 
-            $relationModel = get_class($methodReturn->getRelated());
-
-            $relatedModels[] = class_basename($relationModel);
+            $relatedModels[] = class_basename(get_class($result->getRelated()));
         }
 
         DB::rollBack();
