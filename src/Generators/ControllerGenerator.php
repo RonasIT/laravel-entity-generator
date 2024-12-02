@@ -28,7 +28,7 @@ class ControllerGenerator extends EntityGenerator
             );
         }
 
-        if (!$this->checkStubExists('controller')) {
+        if (!$this->isStubExists('controller')) {
             return;
         }
 
@@ -65,7 +65,7 @@ class ControllerGenerator extends EntityGenerator
             );
         }
 
-        if ($this->checkStubExists('routes') && $this->checkStubExists('use_routes')) {
+        if ($this->isStubExists('routes') && $this->isStubExists('use_routes')) {
             $this->addUseController($routesPath);
             $this->addRoutes($routesPath);
         }

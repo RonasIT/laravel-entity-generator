@@ -40,9 +40,7 @@ class SeederGeneratorTest extends TestCase
     {
         $this->mockFilesystem();
 
-        config([
-            'entity-generator.stubs.database_empty_seeder' => 'entity-generator::database_seed_empty',
-        ]);
+        config(['entity-generator.stubs.database_empty_seeder' => 'entity-generator::database_seed_empty']);
 
         app(SeederGenerator::class)
             ->setRelations([
@@ -67,9 +65,7 @@ class SeederGeneratorTest extends TestCase
     {
         $this->mockFilesystem();
 
-        config([
-            'entity-generator.stubs.seeder' => 'incorrect_stub',
-        ]);
+        config(['entity-generator.stubs.seeder' => 'incorrect_stub']);
 
         app(SeederGenerator::class)
             ->setRelations([

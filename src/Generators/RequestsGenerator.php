@@ -27,7 +27,7 @@ class RequestsGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        if (!$this->checkStubExists('request')) {
+        if (!$this->isStubExists('request')) {
             return;
         }
 

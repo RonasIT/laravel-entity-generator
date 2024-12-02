@@ -17,7 +17,7 @@ class RepositoryGenerator extends EntityGenerator
             );
         }
 
-        if (!$this->checkStubExists('repository')) {
+        if (!$this->isStubExists('repository')) {
             return;
         }
 

@@ -78,15 +78,15 @@ class FactoryGenerator extends EntityGenerator
     {
         $isActualVersion = version_compare(app()->version(), '8', '>=');
 
-        if ($isActualVersion && $this->checkStubExists('factory')) {
+        if ($isActualVersion && $this->isStubExists('factory')) {
             event(new SuccessCreateMessage($this->generateSeparateClass()));
         } else if (!$isActualVersion) {
-            if (!file_exists($this->paths['factory']) && $this->checkStubExists('legacy_empty_factory')) {
+            if (!file_exists($this->paths['factory']) && $this->isStubExists('legacy_empty_factory')) {
                 $this->prepareEmptyFactory();
             }
 
             if (!$this->checkExistModelFactory() && $this->checkExistRelatedModelsFactories()) {
-                if (!$this->checkStubExists('legacy_factory')) {
+                if (!$this->isStubExists('legacy_factory')) {
                     return;
                 }
 

@@ -40,7 +40,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     public function generateTests(): void
     {
-        if (!$this->checkStubExists('nova_test')) {
+        if (!$this->isStubExists('nova_test')) {
             return;
         }
 

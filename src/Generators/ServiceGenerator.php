@@ -36,7 +36,7 @@ class ServiceGenerator extends EntityGenerator
             }
         }
 
-        if (!$this->checkStubExists($stub)) {
+        if (!$this->isStubExists($stub)) {
             return;
         }
 

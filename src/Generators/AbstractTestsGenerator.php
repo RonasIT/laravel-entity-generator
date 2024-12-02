@@ -45,7 +45,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function createDump(): void
     {
-        if (!$this->checkStubExists('dump')) {
+        if (!$this->isStubExists('dump')) {
             return;
         }
 

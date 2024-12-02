@@ -50,7 +50,7 @@ class TestsGenerator extends AbstractTestsGenerator
 
     protected function generateTests(): void
     {
-        if (!$this->checkStubExists('test')) {
+        if (!$this->isStubExists('test')) {
             return;
         }
 

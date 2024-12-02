@@ -25,7 +25,7 @@ class ModelGenerator extends EntityGenerator
             );
         }
 
-        if ($this->checkStubExists('model') && ($this->checkStubExists('relation') || empty($this->relations))) {
+        if ($this->isStubExists('model') && ($this->isStubExists('relation') || empty($this->relations))) {
             $this->prepareRelatedModels();
             $modelContent = $this->getNewModelContent();
 

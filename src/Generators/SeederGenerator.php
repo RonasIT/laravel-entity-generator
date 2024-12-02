@@ -22,9 +22,7 @@ class SeederGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        $entitySeeder = (version_compare(app()->version(), '8', '>=')) ? 'seeder' : 'legacy_seeder';
-
-        if (!$this->checkStubExists($entitySeeder) || !$this->checkStubExists('database_empty_seeder')) {
+        if (!$this->isStubExists('seeder') || !$this->isStubExists('database_empty_seeder')) {
             return;
         }
 
@@ -42,7 +40,7 @@ class SeederGenerator extends EntityGenerator
             $this->createDatabaseSeeder();
         }
 
-        $this->createEntitySeeder($entitySeeder);
+        $this->createEntitySeeder();
 
         $this->appendSeederToList();
     }
@@ -60,9 +58,9 @@ class SeederGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function createEntitySeeder(string $entitySeeder): void
+    protected function createEntitySeeder(): void
     {
-        $content = "<?php \n\n" . $this->getStub($entitySeeder, [
+        $content = "<?php \n\n" . $this->getStub('seeder', [
             'entity' => $this->model,
             'relations' => $this->relations,
             'namespace' => $this->getOrCreateNamespace('seeders'),
