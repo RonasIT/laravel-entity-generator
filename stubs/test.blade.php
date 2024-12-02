@@ -1,6 +1,6 @@
 namespace App\Tests;
 
-@if (!empty(array_intersect($options, ['C', 'U', 'D'])))
+@if ($hasModificationEndpoints)
 use RonasIT\Support\Tests\ModelTestState;
 use {{$modelsNamespace}}\{{$entity}};
 @endif
@@ -17,7 +17,7 @@ class {{$entity}}Test extends TestCase
     protected static User $user;
 
 @endif
-@if (!empty(array_intersect($options, ['C', 'U', 'D'])))
+@if ($hasModificationEndpoints)
     protected static ModelTestState ${{\Illuminate\Support\Str::camel($entity)}}State;
 
 @endif
@@ -28,7 +28,7 @@ class {{$entity}}Test extends TestCase
 
         self::$user ??= User::find(1);
 @endif
-@if (!empty(array_intersect($options, ['C', 'U', 'D'])))
+@if ($hasModificationEndpoints)
 
         self::${{\Illuminate\Support\Str::camel($entity)}}State ??= new ModelTestState({{$entity}}::class);
 @endif
