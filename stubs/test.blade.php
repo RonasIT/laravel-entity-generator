@@ -49,7 +49,7 @@ class {{$entity}}Test extends TestCase
 
         $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json', $response->json());
 
-        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json');
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_state.json');
     }
 
 @if ($withAuth)
@@ -77,7 +77,7 @@ class {{$entity}}Test extends TestCase
 
         $response->assertNoContent();
 
-        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_response.json');
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_state.json');
     }
 
     public function testUpdateNotExists()
@@ -116,7 +116,7 @@ class {{$entity}}Test extends TestCase
 
         $response->assertNoContent();
 
-        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('delete_{{\Illuminate\Support\Str::snake($entity)}}_response.json');
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('delete_{{\Illuminate\Support\Str::snake($entity)}}_state.json');
     }
 
     public function testDeleteNotExists()

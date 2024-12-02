@@ -17,8 +17,9 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected bool $withAuth = false;
 
     const array FIXTURE_TYPES = [
-        'create' => ['request', 'response'],
-        'update' => ['request'],
+        'create' => ['request', 'response', 'state'],
+        'update' => ['request', 'state'],
+        'delete' => ['state'],
     ];
 
     const string EMPTY_GUARDED_FIELD = '*';
@@ -193,6 +194,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     {
         $object = $this->getFixtureValuesList($this->model);
         $entity = Str::snake($this->model);
+
+        dd($object, self::FIXTURE_TYPES);
 
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
             if ($this->isFixtureNeeded($type)) {
