@@ -113,4 +113,12 @@ class FactoryGenerator extends EntityGenerator
 
         return $result;
     }
+
+    protected function getFactoryPattern($model): string
+    {
+        $modelNamespace = "App\\\\Models\\\\" . $model;
+        $return = "return \\[";
+
+        return "/{$modelNamespace}.*{$return}/sU";
+    }
 }

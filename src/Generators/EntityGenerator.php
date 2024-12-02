@@ -2,9 +2,15 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use RonasIT\Support\Exceptions\ClassNotExistsException;
+use Throwable;
+use ReflectionMethod;
+use ReflectionClass;
 
 /**
  * @property Filesystem $fs
@@ -156,5 +162,53 @@ abstract class EntityGenerator
     protected function throwFailureException($exceptionClass, $failureMessage, $recommendedMessage): void
     {
         throw new $exceptionClass("{$failureMessage} {$recommendedMessage}");
+    }
+
+    protected function getRelatedModels(string $model, string $creatableClass): array
+    {
+        $modelClass = $this->getModelClass($model);
+
+        if (!class_exists($modelClass)) {
+            $this->throwFailureException(
+                exceptionClass: ClassNotExistsException::class,
+                failureMessage: "Cannot create {$creatableClass} cause {$model} Model does not exists.",
+                recommendedMessage: "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'.",
+            );
+        }
+
+        $instance = new $modelClass();
+
+        $publicMethods = (new ReflectionClass($modelClass))->getMethods(ReflectionMethod::IS_PUBLIC);
+
+        $methods = array_filter($publicMethods, fn ($method) => $method->class === $modelClass && !$method->getParameters());
+
+        $relatedModels = [];
+
+        DB::beginTransaction();
+
+        foreach ($methods as $method) {
+            try {
+                $result = call_user_func([$instance, $method->getName()]);
+
+                if (!$result instanceof BelongsTo) {
+                    continue;
+                }
+            } catch (Throwable) {
+                continue;
+            }
+
+            $relatedModels[] = class_basename(get_class($result->getRelated()));
+        }
+
+        DB::rollBack();
+
+        return $relatedModels;
+    }
+
+    protected function getModelClass(string $model): string
+    {
+        $modelNamespace = $this->getOrCreateNamespace('models');
+
+        return "{$modelNamespace}\\{$model}";
     }
 }
