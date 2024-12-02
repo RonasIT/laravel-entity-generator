@@ -17,9 +17,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected bool $withAuth = false;
 
     const array FIXTURE_TYPES = [
-        'create' => ['request', 'response', 'state'],
-        'update' => ['request', 'state'],
-        'delete' => ['state'],
+        'create' => ['request', 'response'],
+        'update' => ['request'],
     ];
 
     const string EMPTY_GUARDED_FIELD = '*';
