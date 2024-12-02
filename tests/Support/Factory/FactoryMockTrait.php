@@ -11,7 +11,7 @@ trait FactoryMockTrait
 {
     use GeneratorMockTrait, MockTrait;
 
-    public function mockFactoryGenerator(...$functionCalls): void
+    public function mockFactoryGenerator(array ...$functionCalls): void
     {
         $this->mockClass(FactoryGenerator::class, $functionCalls);
     }
