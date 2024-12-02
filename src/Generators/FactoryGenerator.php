@@ -5,6 +5,7 @@ namespace RonasIT\Support\Generators;
 use Faker\Generator as Faker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use RonasIT\Support\Exceptions\FakerMethodNotFoundException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -40,6 +41,10 @@ class FactoryGenerator extends EntityGenerator
                 failureMessage: "Cannot create {$this->model}Factory cause {$this->model}Factory already exists.",
                 recommendedMessage: "Remove {$this->model}Factory.",
             );
+        }
+
+        if (!$this->isStubExists('factory')) {
+            return;
         }
 
         $factoryContent = $this->getStub('factory', [

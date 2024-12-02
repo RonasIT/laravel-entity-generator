@@ -60,12 +60,23 @@ class NovaTestGeneratorTest extends TestCase
     {
         Event::fake();
 
-        $this->mockNovaServiceProviderExists();
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
+            $this->nativeClassExistsMethodCall([WelcomeBonus::class, true]),
+        );
 
         $this->mockFilesystem();
         $this->mockNovaRequestClassCall();
 
-        config(['entity-generator.stubs.nova_test' => 'incorrect_stub']);
+        config([
+            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+            'entity-generator.stubs.nova_test' => 'incorrect_stub',
+        ]);
+
+        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
+        $mock
+            ->shouldReceive('beginTransaction', 'rollBack')
+            ->once();
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')
@@ -92,7 +103,10 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockFilesystem();
         $this->mockNovaRequestClassCall();
 
-        config(['entity-generator.stubs.dump' => 'incorrect_stub']);
+        config([
+            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+            'entity-generator.stubs.dump' => 'incorrect_stub',
+        ]);
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')
