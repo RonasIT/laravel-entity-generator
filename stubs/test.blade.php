@@ -1,5 +1,9 @@
 namespace App\Tests;
 
+@if ($hasModificationEndpoints)
+use RonasIT\Support\Tests\ModelTestState;
+use {{$modelsNamespace}}\{{$entity}};
+@endif
 @if ($withAuth)
 use {{$modelsNamespace}}\User;
 @endif
@@ -13,12 +17,20 @@ class {{$entity}}Test extends TestCase
     protected static User $user;
 
 @endif
+@if ($hasModificationEndpoints)
+    protected static ModelTestState ${{\Illuminate\Support\Str::camel($entity)}}State;
+
+@endif
     public function setUp() : void
     {
         parent::setUp();
 @if ($withAuth)
 
         self::$user ??= User::find(1);
+@endif
+@if ($hasModificationEndpoints)
+
+        self::${{\Illuminate\Support\Str::camel($entity)}}State ??= new ModelTestState({{$entity}}::class);
 @endif
     }
 
@@ -37,7 +49,8 @@ class {{$entity}}Test extends TestCase
 
         $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json', $response->json());
 
-        $this->assertDatabaseHas('{{$databaseTableName}}', $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json'));
+        // TODO: Need to remove last argument after first successful start
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_state.json', true);
     }
 
 @if ($withAuth)
@@ -65,7 +78,8 @@ class {{$entity}}Test extends TestCase
 
         $response->assertNoContent();
 
-        $this->assertDatabaseHas('{{$databaseTableName}}', $data);
+        // TODO: Need to remove last argument after first successful start
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_state.json', true);
     }
 
     public function testUpdateNotExists()
@@ -104,9 +118,8 @@ class {{$entity}}Test extends TestCase
 
         $response->assertNoContent();
 
-        $this->assertDatabaseMissing('{{$databaseTableName}}', [
-            'id' => 1
-        ]);
+        // TODO: Need to remove last argument after first successful start
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('delete_{{\Illuminate\Support\Str::snake($entity)}}_state.json', true);
     }
 
     public function testDeleteNotExists()
@@ -119,9 +132,7 @@ class {{$entity}}Test extends TestCase
 
         $response->assertNotFound();
 
-        $this->assertDatabaseMissing('{{$databaseTableName}}', [
-            'id' => 0
-        ]);
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertNotChanged();
     }
 
 @if ($withAuth)
