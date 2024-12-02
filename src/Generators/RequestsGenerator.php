@@ -124,10 +124,14 @@ class RequestsGenerator extends EntityGenerator
             'timestamp', 'timestamp-required', 'string-required', 'integer-required', 'boolean-required'
         ]);
 
-        $parameters['boolean'] = array_merge($this->fields['boolean-required'], ['desc']);
+        $parameters['boolean'] = array_merge($this->fields['boolean-required'], [
+            'desc',
+            'all',
+        ]);
 
         $parameters['integer'] = array_merge($this->fields['integer'], [
-            'page', 'per_page', 'all',
+            'page',
+            'per_page',
         ]);
 
         $parameters['array'] = ['with'];

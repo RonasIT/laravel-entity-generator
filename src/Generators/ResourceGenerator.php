@@ -53,7 +53,8 @@ class ResourceGenerator extends EntityGenerator
 
         $resourceContent = $this->getStub('resource', [
             'entity' => $this->model,
-            'namespace' => $this->getOrCreateNamespace('resources')
+            'namespace' => $this->getOrCreateNamespace('resources'),
+            'model_namespace' => $this->getOrCreateNamespace('models'),
         ]);
 
         $this->saveClass('resources', "{$this->model}Resource", $resourceContent);

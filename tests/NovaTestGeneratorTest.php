@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
+use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -9,6 +10,8 @@ use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
+use Laravel\Nova\NovaServiceProvider;
+use Mockery;
 
 class NovaTestGeneratorTest extends TestCase
 {
@@ -24,7 +27,7 @@ class NovaTestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['nova', 'Post'], false),
         ]);
 
-        $this->assertExceptionThrowed(
+        $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
             message: 'Cannot create NovaPostTest cause Post Nova resource does not exist. Create Post Nova resource.',
         );
@@ -43,7 +46,7 @@ class NovaTestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['nova', 'NovaPostTest'])
         ]);
 
-        $this->assertExceptionThrowed(
+        $this->assertExceptionThrew(
             className: ClassAlreadyExistsException::class,
             message: "Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.",
         );
@@ -109,7 +112,19 @@ class NovaTestGeneratorTest extends TestCase
 
     public function testSuccess()
     {
-        $this->mockNovaServiceProviderExists();
+        config([
+            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+        ]);
+
+        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
+        $mock
+            ->shouldReceive('beginTransaction', 'rollBack')
+            ->once();
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
+            $this->nativeClassExistsMethodCall([WelcomeBonus::class, true]),
+        );
 
         $this->mockFilesystem();
         $this->mockNovaRequestClassCall();
