@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Generators;
 
 use DateTime;
-use Illuminate\Database\Eloquent\Factory as LegacyFactories;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
