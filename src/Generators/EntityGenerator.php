@@ -7,6 +7,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use Throwable;
 use ReflectionMethod;
@@ -210,5 +211,24 @@ abstract class EntityGenerator
         $modelNamespace = $this->getOrCreateNamespace('models');
 
         return "{$modelNamespace}\\{$model}";
+    }
+
+    protected function isStubExists(string $stubName): bool
+    {
+        $config = "entity-generator.stubs.{$stubName}";
+
+        $stubPath = config($config);
+
+        if (!view()->exists($stubPath)) {
+            $generationType = Str::replace('_', ' ', $stubName);
+
+            $message = "Generation of {$generationType} has been skipped cause the view {$stubPath} from the config {$config} is not exists. Please check that config has the correct view name value.";
+
+            event(new WarningEvent($message));
+
+            return false;
+        }
+
+        return true;
     }
 }

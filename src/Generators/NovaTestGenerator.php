@@ -40,6 +40,10 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     public function generateTests(): void
     {
+        if (!$this->isStubExists('nova_test')) {
+            return;
+        }
+
         $actions = $this->getActions();
         $filters = $this->collectFilters();
 

@@ -23,9 +23,13 @@ class ControllerGenerator extends EntityGenerator
         if (!$this->classExists('services', "{$this->model}Service")) {
             $this->throwFailureException(
                 ClassNotExistsException::class,
-                "Cannot create {$this->model}Service cause {$this->model}Service does not exists.",
+                "Cannot create {$this->model}Controller cause {$this->model}Service does not exists.",
                 "Create a {$this->model}Service by himself.",
             );
+        }
+
+        if (!$this->isStubExists('controller')) {
+            return;
         }
 
         $controllerContent = $this->getControllerContent($this->model);
@@ -61,8 +65,10 @@ class ControllerGenerator extends EntityGenerator
             );
         }
 
-        $this->addUseController($routesPath);
-        $this->addRoutes($routesPath);
+        if ($this->isStubExists('routes') && $this->isStubExists('use_routes')) {
+            $this->addUseController($routesPath);
+            $this->addRoutes($routesPath);
+        }
     }
 
     protected function addRoutes($routesPath): string

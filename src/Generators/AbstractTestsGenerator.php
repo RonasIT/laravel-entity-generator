@@ -44,15 +44,15 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function createDump(): void
     {
+        if (!$this->isStubExists('dump')) {
+            return;
+        }
+
         $content = $this->getStub('dump', [
             'inserts' => $this->getInserts()
         ]);
 
-        $fixturePath = $this->getFixturesPath();
-
-        if (!file_exists($fixturePath)) {
-            mkdir($fixturePath, 0777, true);
-        }
+        $this->createFixtureFolder();
 
         $dumpName = $this->getDumpName();
 
@@ -186,6 +186,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $object = $this->getFixtureValuesList($this->model);
         $entity = Str::snake($this->model);
 
+        $this->createFixtureFolder();
+
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
             if ($this->isFixtureNeeded($type)) {
                 foreach ($modifications as $modification) {
@@ -239,6 +241,15 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         return $this->classExists('models', 'User')
             && $this->isFactoryExists('User')
             && $this->isMethodExists('User', 'getFields');
+    }
+
+    protected function createFixtureFolder(): void
+    {
+        $fixturePath = $this->getFixturesPath();
+
+        if (!file_exists($fixturePath)) {
+            mkdir($fixturePath, 0777, true);
+        }
     }
 
     abstract protected function getTestClassName(): string;
