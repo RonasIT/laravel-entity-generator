@@ -9,7 +9,7 @@ return new class extends Migration
 {
     use MigrationTrait;
 
-    public function up()
+    public function up(): void
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
@@ -23,7 +23,7 @@ return new class extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('posts');
     }

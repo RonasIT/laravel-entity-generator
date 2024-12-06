@@ -9,8 +9,13 @@ class ResourceGenerator extends EntityGenerator
 {
     public function generate(): void
     {
-        $this->generateResource();
-        $this->generateCollectionResource();
+        if ($this->isStubExists('resource')) {
+            $this->generateResource();
+
+            if ($this->isStubExists('collection_resource')) {
+                $this->generateCollectionResource();
+            }
+        }
     }
 
     public function generateCollectionResource(): void
@@ -48,7 +53,8 @@ class ResourceGenerator extends EntityGenerator
 
         $resourceContent = $this->getStub('resource', [
             'entity' => $this->model,
-            'namespace' => $this->getOrCreateNamespace('resources')
+            'namespace' => $this->getOrCreateNamespace('resources'),
+            'model_namespace' => $this->getOrCreateNamespace('models'),
         ]);
 
         $this->saveClass('resources', "{$this->model}Resource", $resourceContent);

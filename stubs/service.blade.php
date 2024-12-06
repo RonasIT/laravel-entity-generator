@@ -3,6 +3,7 @@ namespace {{$namespace}};
 use {{$repositoriesNamespace}}\{{$entity}}Repository;
 use Illuminate\Support\Arr;
 use RonasIT\Support\Services\EntityService;
+use Illuminate\Pagination\LengthAwarePaginator;
 {{--
     Laravel inserts two spaces between @property and type, so we are forced
     to use hack here to preserve one space
@@ -23,7 +24,7 @@ class {{$entity}}Service extends EntityService
         $this->setRepository({{$entity}}Repository::class);
     }
 
-    public function search($filters)
+    public function search(array $filters = []): LengthAwarePaginator
     {
         return $this
             ->with(Arr::get($filters, 'with', []))

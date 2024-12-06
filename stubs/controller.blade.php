@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response;
 class {{$entity}}Controller extends Controller
 {
 @if (in_array('C', $options))
-    public function create(Create{{$entity}}Request $request, {{$entity}}Service $service)
+    public function create(Create{{$entity}}Request $request, {{$entity}}Service $service): {{$entity}}Resource
     {
         $data = $request->onlyValidated();
 
@@ -35,7 +35,7 @@ class {{$entity}}Controller extends Controller
 
 @endif
 @if (in_array('R', $options))
-    public function get(Get{{$entity}}Request $request, {{$entity}}Service $service, $id)
+    public function get(Get{{$entity}}Request $request, {{$entity}}Service $service, $id): {{$entity}}Resource
     {
         $result = $service
             ->with($request->input('with', []))
@@ -45,7 +45,7 @@ class {{$entity}}Controller extends Controller
         return {{$entity}}Resource::make($result);
     }
 
-    public function search(Search{{$str::plural($entity)}}Request $request, {{$entity}}Service $service)
+    public function search(Search{{$str::plural($entity)}}Request $request, {{$entity}}Service $service): {{$str::plural($entity)}}CollectionResource
     {
         $result = $service->search($request->onlyValidated());
 
@@ -54,7 +54,7 @@ class {{$entity}}Controller extends Controller
 
 @endif
 @if (in_array('U', $options))
-    public function update(Update{{$entity}}Request $request, {{$entity}}Service $service, $id)
+    public function update(Update{{$entity}}Request $request, {{$entity}}Service $service, $id): Response
     {
         $service->update($id, $request->onlyValidated());
 
@@ -63,7 +63,7 @@ class {{$entity}}Controller extends Controller
 
 @endif
 @if (in_array('D', $options))
-    public function delete(Delete{{$entity}}Request $request, {{$entity}}Service $service, $id)
+    public function delete(Delete{{$entity}}Request $request, {{$entity}}Service $service, $id): Response
     {
         $service->delete($id);
 
