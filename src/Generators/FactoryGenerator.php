@@ -43,6 +43,10 @@ class FactoryGenerator extends EntityGenerator
             );
         }
 
+        if (!$this->isStubExists('factory')) {
+            return;
+        }
+
         $factoryContent = $this->getStub('factory', [
             'namespace' => $this->getOrCreateNamespace('factories'),
             'entity' => $this->model,

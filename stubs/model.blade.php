@@ -1,18 +1,12 @@
 namespace {{$namespace}};
 
-@if(version_compare(app()->version(), '8', '>='))
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-@endif
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
 class {{$entity}} extends Model
 {
-@if(version_compare(app()->version(), '8', '>='))
     use ModelTrait, HasFactory;
-@else
-    use ModelTrait;
-@endif
 
     protected $fillable = [
 @foreach($fields as $field)

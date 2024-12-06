@@ -7,12 +7,8 @@ return [
         'requests' => 'app/Http/Requests',
         'controllers' => 'app/Http/Controllers',
         'migrations' => 'database/migrations',
-        'seeders' => (version_compare(app()->version(), '8', '>='))
-            ? 'database/seeders'
-            : 'database/seeds',
-        'database_seeder' => (version_compare(app()->version(), '8', '>='))
-            ? 'database/seeders/DatabaseSeeder.php'
-            : 'database/seeds/DatabaseSeeder.php',
+        'seeders' => 'database/seeders',
+        'database_seeder' => 'database/seeders/DatabaseSeeder.php',
         'repositories' => 'app/Repositories',
         'tests' => 'tests',
         'routes' => 'routes/api.php',
@@ -33,7 +29,6 @@ return [
         'use_routes' => 'entity-generator::use_routes',
         'factory' => 'entity-generator::factory',
         'seeder' => 'entity-generator::seeder',
-        'legacy_seeder' => 'entity-generator::legacy_seeder',
         'database_empty_seeder' => 'entity-generator::database_empty_seeder',
         'migration' => 'entity-generator::migration',
         'dump' => 'entity-generator::dumps.pgsql',

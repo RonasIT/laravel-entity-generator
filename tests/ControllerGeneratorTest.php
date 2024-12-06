@@ -4,7 +4,9 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\View;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\ControllerGenerator;
@@ -46,7 +48,7 @@ class ControllerGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
-            message: 'Cannot create PostService cause PostService does not exists. Create a PostService by himself.',
+            message: 'Cannot create PostController cause PostService does not exists. Create a PostService by himself.',
         );
 
         app(ControllerGenerator::class)
@@ -67,6 +69,69 @@ class ControllerGeneratorTest extends TestCase
             ->setModel('Post')
             ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
+    }
+
+    public function testControllerStubNotExist()
+    {
+        $this->mockFilesystem();
+
+        View::shouldReceive('exists')
+            ->with('entity-generator::controller')
+            ->once()
+            ->andReturnFalse();
+
+        app(ControllerGenerator::class)
+            ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('empty_api.php', 'routes/api.php');
+        $this->assertFileDoesNotExist('app/Http/Controllers/PostController.php');
+
+        $this->assertEventPushed(
+            className: WarningEvent::class,
+            message: 'Generation of controller has been skipped cause the view entity-generator::controller from the config entity-generator.stubs.controller is not exists. Please check that config has the correct view name value.',
+        );
+    }
+
+    public function testRoutesStubNotExist()
+    {
+        $this->mockFilesystem();
+
+       config(['entity-generator.stubs.routes' => 'incorrect_stub']);
+
+        app(ControllerGenerator::class)
+            ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('created_controller.php', 'app/Http/Controllers/PostController.php');
+        $this->assertGeneratedFileEquals('empty_api.php', 'routes/api.php');
+
+        $this->assertEventPushedChain([
+            WarningEvent::class => 'Generation of routes has been skipped cause the view incorrect_stub from the config entity-generator.stubs.routes is not exists. Please check that config has the correct view name value.',
+            SuccessCreateMessage::class => 'Created a new Controller: PostController',
+        ]);
+    }
+
+    public function testUseRoutesStubNotExist()
+    {
+        $this->mockFilesystem();
+
+        config(['entity-generator.stubs.use_routes' => 'incorrect_stub']);
+
+        app(ControllerGenerator::class)
+            ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('created_controller.php', 'app/Http/Controllers/PostController.php');
+        $this->assertGeneratedFileEquals('empty_api.php', 'routes/api.php');
+
+        $this->assertEventPushedChain([
+            WarningEvent::class => 'Generation of use routes has been skipped cause the view incorrect_stub from the config entity-generator.stubs.use_routes is not exists. Please check that config has the correct view name value.',
+            SuccessCreateMessage::class => 'Created a new Controller: PostController',
+        ]);
     }
 
     public function testSuccess()

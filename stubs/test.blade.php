@@ -1,6 +1,6 @@
 namespace App\Tests;
 
-@if ($hasModificationEndpoints)
+@if ($hasModificationEndpoints && (!$withAuth || $entity !== 'User'))
 use RonasIT\Support\Tests\ModelTestState;
 use {{$modelsNamespace}}\{{$entity}};
 @endif
@@ -173,25 +173,25 @@ class {{$entity}}Test extends TestCase
         $response->assertNotFound();
     }
 
-    public static function getSearchFilters()
+    public static function getSearchFilters(): array
     {
         return [
             [
                 'filter' => ['all' => 1],
-                'fixture' => 'search_all.json'
+                'fixture' => 'search_all.json',
             ],
             [
                 'filter' => [
                     'page' => 2,
-                    'per_page' => 2
+                    'per_page' => 2,
                 ],
-                'fixture' => 'search_by_page_per_page.json'
+                'fixture' => 'search_by_page_per_page.json',
             ],
         ];
     }
 
     #[DataProvider('getSearchFilters')]
-    public function testSearch($filter, $fixture)
+    public function testSearch(array $filter, string $fixture)
     {
         $response = $this->json('get', '/{{$entities}}', $filter);
 
