@@ -86,6 +86,6 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEventPushed(SuccessCreateMessage::class, "Created a new Route: Route::delete('posts/{id}', 'delete');");
         $this->assertEventPushed(SuccessCreateMessage::class, "Created a new Route: Route::get('posts/{id}', 'get');");
         $this->assertEventPushed(SuccessCreateMessage::class, "Created a new Route: Route::get('posts', 'search');");
-        $this->assertEventPushed(SuccessCreateMessage::class, "Created a new Controller: PostController");
+        $this->assertEventPushed(SuccessCreateMessage::class, 'Created a new Controller: PostController');
     }
 }
