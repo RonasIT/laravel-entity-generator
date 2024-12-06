@@ -79,9 +79,12 @@ class ControllerGenerator extends EntityGenerator
         ]);
 
         $routes = explode("\n", $routesContent);
+        $routes = array_slice($routes, 1, array_key_last($routes) - 1);
 
         foreach ($routes as $route) {
             if (!empty($route)) {
+                $route = trim($route);
+
                 $createMessage = "Created a new Route: $route";
 
                 event(new SuccessCreateMessage($createMessage));
