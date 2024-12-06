@@ -109,8 +109,8 @@ class ControllerGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('empty_api.php', 'routes/api.php');
 
         $this->assertEventPushedChain([
-            WarningEvent::class => 'Generation of routes has been skipped cause the view incorrect_stub from the config entity-generator.stubs.routes is not exists. Please check that config has the correct view name value.',
-            SuccessCreateMessage::class => 'Created a new Controller: PostController',
+            WarningEvent::class => ['Generation of routes has been skipped cause the view incorrect_stub from the config entity-generator.stubs.routes is not exists. Please check that config has the correct view name value.'],
+            SuccessCreateMessage::class => ['Created a new Controller: PostController'],
         ]);
     }
 
@@ -129,8 +129,8 @@ class ControllerGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('empty_api.php', 'routes/api.php');
 
         $this->assertEventPushedChain([
-            WarningEvent::class => 'Generation of use routes has been skipped cause the view incorrect_stub from the config entity-generator.stubs.use_routes is not exists. Please check that config has the correct view name value.',
-            SuccessCreateMessage::class => 'Created a new Controller: PostController',
+            WarningEvent::class => ['Generation of use routes has been skipped cause the view incorrect_stub from the config entity-generator.stubs.use_routes is not exists. Please check that config has the correct view name value.'],
+            SuccessCreateMessage::class => ['Created a new Controller: PostController'],
         ]);
     }
 
@@ -146,11 +146,15 @@ class ControllerGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('created_controller.php', 'app/Http/Controllers/PostController.php');
         $this->assertGeneratedFileEquals('api.php', 'routes/api.php');
 
-        $this->assertEventPushed(SuccessCreateMessage::class, "Created a new Route: Route::post('posts', 'create');");
-        $this->assertEventPushed(SuccessCreateMessage::class, "Created a new Route: Route::put('posts/{id}', 'update');");
-        $this->assertEventPushed(SuccessCreateMessage::class, "Created a new Route: Route::delete('posts/{id}', 'delete');");
-        $this->assertEventPushed(SuccessCreateMessage::class, "Created a new Route: Route::get('posts/{id}', 'get');");
-        $this->assertEventPushed(SuccessCreateMessage::class, "Created a new Route: Route::get('posts', 'search');");
-        $this->assertEventPushed(SuccessCreateMessage::class, 'Created a new Controller: PostController');
+        $this->assertEventPushedChain([
+            SuccessCreateMessage::class => [
+                "Created a new Route: Route::post('posts', 'create');",
+                "Created a new Route: Route::put('posts/{id}', 'update');",
+                "Created a new Route: Route::delete('posts/{id}', 'delete');",
+                "Created a new Route: Route::get('posts/{id}', 'get');",
+                "Created a new Route: Route::get('posts', 'search');",
+                'Created a new Controller: PostController',
+            ],
+        ]);
     }
 }
