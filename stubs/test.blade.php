@@ -1,6 +1,6 @@
 namespace App\Tests;
 
-@if ($hasModificationEndpoints)
+@if ($hasModificationEndpoints && (!$withAuth || $entity !== 'User'))
 use RonasIT\Support\Tests\ModelTestState;
 use {{$modelsNamespace}}\{{$entity}};
 @endif
