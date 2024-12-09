@@ -14,11 +14,10 @@ class MigrationGeneratorTest extends TestCase
 
     public function testSetUnknownFieldType()
     {
-        $this->mockViewsNamespace();
         $this->setupConfigurations();
 
         $this->expectException(UnknownFieldTypeException::class);
-        $this->expectErrorMessage('Unknown field type unknown-type in MigrationGenerator.');
+        $this->expectExceptionMessage('Unknown field type unknown-type in MigrationGenerator.');
 
         app(MigrationGenerator::class)
             ->setModel('Post')
@@ -30,7 +29,7 @@ class MigrationGeneratorTest extends TestCase
             ])
             ->setFields([
                 'integer-required' => ['media_id', 'user_id'],
-                'unknown-type' => ['title']
+                'unknown-type' => ['title'],
             ])
             ->generate();
     }
@@ -40,7 +39,6 @@ class MigrationGeneratorTest extends TestCase
         Carbon::setTestNow('2022-02-02');
 
         $this->mockFilesystem();
-        $this->mockViewsNamespace();
         $this->setupConfigurations();
 
         app(MigrationGenerator::class)
@@ -55,11 +53,9 @@ class MigrationGeneratorTest extends TestCase
                 'integer-required' => ['media_id', 'user_id'],
                 'string' => ['title', 'body'],
                 'json' => ['meta'],
-                'timestamp' => ['created_at']
+                'timestamp' => ['created_at'],
             ])
             ->generate();
-
-        $this->rollbackToDefaultBasePath();
 
         $this->assertGeneratedFileEquals('migrations.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
     }
@@ -68,9 +64,11 @@ class MigrationGeneratorTest extends TestCase
     {
         putenv('DB_CONNECTION=mysql');
 
-        $generator = app(MigrationGenerator::class);
+        $generatorClassName = MigrationGenerator::class;
 
-        $reflectionClass = new ReflectionClass(MigrationGenerator::class);
+        $generator = app($generatorClassName);
+
+        $reflectionClass = new ReflectionClass($generatorClassName);
         $jsonLineMethod = $reflectionClass->getMethod('getJsonLine');
         $requiredLineMethod = $reflectionClass->getMethod('getRequiredLine');
 

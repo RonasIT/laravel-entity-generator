@@ -4,7 +4,7 @@ namespace RonasIT\Support\Tests\Support\Model;
 
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\ModelGenerator;
-use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 
 trait ModelMockTrait
 {
@@ -14,7 +14,7 @@ trait ModelMockTrait
     {
         $this->mockClass(ModelGenerator::class, [
             [
-                'method' => 'classExists',
+                'function' => 'classExists',
                 'arguments' => ['models', 'Post'],
                 'result' => true
             ]
@@ -25,12 +25,12 @@ trait ModelMockTrait
     {
         $this->mockClass(ModelGenerator::class, [
             [
-                'method' => 'classExists',
+                'function' => 'classExists',
                 'arguments' => ['models', 'Post'],
                 'result' => false
             ],
             [
-                'method' => 'classExists',
+                'function' => 'classExists',
                 'arguments' => ['models', 'Comment'],
                 'result' => false
             ]
