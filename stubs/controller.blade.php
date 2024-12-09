@@ -19,8 +19,8 @@ use {{$resourcesNamespace}}\{{$entity}}Resource;
 use {{$servicesNamespace}}\{{$entity}}Service;
 @if (in_array('D', $options) || in_array('U', $options))
 use Symfony\Component\HttpFoundation\Response;
-
 @endif
+
 class {{$entity}}Controller extends Controller
 {
 @if (in_array('C', $options))
