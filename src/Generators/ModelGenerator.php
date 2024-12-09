@@ -25,12 +25,14 @@ class ModelGenerator extends EntityGenerator
             );
         }
 
-        $this->prepareRelatedModels();
-        $modelContent = $this->getNewModelContent();
+        if ($this->isStubExists('model') && ($this->isStubExists('relation') || empty($this->relations))) {
+            $this->prepareRelatedModels();
+            $modelContent = $this->getNewModelContent();
 
-        $this->saveClass('models', $this->model, $modelContent);
+            $this->saveClass('models', $this->model, $modelContent);
 
-        event(new SuccessCreateMessage("Created a new Model: {$this->model}"));
+            event(new SuccessCreateMessage("Created a new Model: {$this->model}"));
+        }
     }
 
     protected function getNewModelContent(): string

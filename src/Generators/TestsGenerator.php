@@ -50,12 +50,17 @@ class TestsGenerator extends AbstractTestsGenerator
 
     protected function generateTests(): void
     {
+        if (!$this->isStubExists('test')) {
+            return;
+        }
+
         $content = $this->getStub('test', [
             'entity' => $this->model,
             'databaseTableName' => $this->getTableName($this->model),
             'entities' => $this->getTableName($this->model, '-'),
             'withAuth' => $this->withAuth,
-            'modelsNamespace' => $this->getOrCreateNamespace('models')
+            'modelsNamespace' => $this->getOrCreateNamespace('models'),
+            'hasModificationEndpoints' => !empty(array_intersect($this->crudOptions, ['C', 'U', 'D'])),
         ]);
 
         $testName = $this->getTestClassName();

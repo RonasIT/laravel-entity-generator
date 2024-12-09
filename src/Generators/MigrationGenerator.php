@@ -11,6 +11,10 @@ class MigrationGenerator extends EntityGenerator
 {
     public function generate(): void
     {
+        if (!$this->isStubExists('migration')) {
+            return;
+        }
+
         $entities = $this->getTableName($this->model);
 
         $content = $this->getStub('migration', [
