@@ -6,7 +6,7 @@ use RonasIT\Support\Traits\ModelTrait;
 
 class {{$entity}} extends Model
 {
-    use ModelTrait, HasFactory;
+    use HasFactory, ModelTrait;
 
     protected $fillable = [
 @foreach($fields as $field)

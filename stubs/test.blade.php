@@ -21,7 +21,7 @@ class {{$entity}}Test extends TestCase
     protected static ModelTestState ${{\Illuminate\Support\Str::camel($entity)}}State;
 
 @endif
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 @if ($withAuth)
