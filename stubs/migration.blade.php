@@ -3,15 +3,11 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use RonasIT\Support\Traits\MigrationTrait;
 
-@if (version_compare(app()->version(), '9', '>='))
 return new class extends Migration
-@else
-class {{$class}}CreateTable extends Migration
-@endif
 {
     use MigrationTrait;
 
-    public function up()
+    public function up(): void
     {
 @if(!empty($relations['belongsToMany']) || !empty($relations['belongsTo']) || !empty($relations['hasOne']) || !empty($relations['hasMany']))
         $this->createTable();
@@ -42,7 +38,7 @@ class {{$class}}CreateTable extends Migration
 @endforeach
     }
 
-    public function down()
+    public function down(): void
     {
 @foreach($relations['hasOne'] as $relation)
         $this->dropForeignKey('{{$relation}}', '{{$entity}}', true);
@@ -60,7 +56,7 @@ class {{$class}}CreateTable extends Migration
     }
 @if(!empty($relations['belongsToMany']) || !empty($relations['belongsTo']) || !empty($relations['hasOne']) || !empty($relations['hasMany']))
 
-    public function createTable()
+    public function createTable(): void
     {
         Schema::create('{{\Illuminate\Support\Str::plural(\Illuminate\Support\Str::snake($entity))}}', function (Blueprint $table) {
             $table->increments('id');

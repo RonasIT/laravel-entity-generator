@@ -22,6 +22,10 @@ class SeederGenerator extends EntityGenerator
 
     public function generate(): void
     {
+        if (!$this->isStubExists('seeder') || !$this->isStubExists('database_empty_seeder')) {
+            return;
+        }
+
         if (!file_exists($this->seedsPath)) {
             mkdir($this->seedsPath);
         }
@@ -43,20 +47,9 @@ class SeederGenerator extends EntityGenerator
 
     protected function createDatabaseSeeder(): void
     {
-        $stubPath = config('entity-generator.stubs.database_empty_seeder');
-
-        //@TODO: remove after implementing https://github.com/RonasIT/laravel-entity-generator/issues/93
-        if ($stubPath === 'entity-generator::database_seed_empty') {
-            $stubPath = 'entity-generator::database_empty_seeder';
-
-            $message = "You are using the deprecated value for 'entity-generator.stubs.database_empty_seeder' config. Please use 'entity-generator::database_empty_seeder'.";
-
-            event(new WarningEvent($message));
-        }
-
-        $content = "<?php \n\n" . view($stubPath, [
+        $content = "<?php \n\n" . $this->getStub('database_empty_seeder', [
             'namespace' => $this->getOrCreateNamespace('seeders')
-        ])->render();
+        ]);
 
         file_put_contents($this->databaseSeederPath, $content);
 
@@ -67,16 +60,12 @@ class SeederGenerator extends EntityGenerator
 
     protected function createEntitySeeder(): void
     {
-        $seeder = (version_compare(app()->version(), '8', '>=')) ? 'seeder' : 'legacy_seeder';
-
-        $stubPath = config("entity-generator.stubs.{$seeder}");
-
-        $content = "<?php \n\n" . view($stubPath)->with([
+        $content = "<?php \n\n" . $this->getStub('seeder', [
             'entity' => $this->model,
             'relations' => $this->relations,
             'namespace' => $this->getOrCreateNamespace('seeders'),
-            'modelsNamespace' => $this->getOrCreateNamespace('models')
-        ])->render();
+            'modelsNamespace' => $this->getOrCreateNamespace('models'),
+        ]);
 
         $seederPath = "{$this->seedsPath}/{$this->model}Seeder.php";
 

@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\Models\WelcomeBonus;
+use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Tests\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 
@@ -33,7 +34,7 @@ class NovaWelcomeBonusTest extends TestCase
 
         $this->assertEqualsFixture('create_welcome_bonus_response.json', $response->json());
 
-        // TODO: Need to remove after first successful start
+        // TODO: Need to remove last argument after first successful start
         self::$welcomeBonusState->assertChangesEqualsFixture('create_welcome_bonuses_state.json', true);
     }
 
@@ -52,7 +53,7 @@ class NovaWelcomeBonusTest extends TestCase
 
         $response->assertUnprocessable();
 
-        // TODO: Need to remove after first successful start
+        // TODO: Need to remove last argument after first successful start
         $this->assertEqualsFixture('create_validation_response.json', $response->json(), true);
 
         self::$welcomeBonusState->assertNotChanged();
@@ -66,7 +67,7 @@ class NovaWelcomeBonusTest extends TestCase
 
         $response->assertNoContent();
 
-        // TODO: Need to remove after first successful start
+        // TODO: Need to remove last argument after first successful start
         self::$welcomeBonusState->assertChangesEqualsFixture('update_welcome_bonuses_state.json', true);
     }
 
@@ -92,7 +93,7 @@ class NovaWelcomeBonusTest extends TestCase
 
         $response->assertUnprocessable();
 
-        // TODO: Need to remove after first successful start
+        // TODO: Need to remove last argument after first successful start
         $this->assertEqualsFixture('update_validation_response.json', $response->json(), true);
     }
 
@@ -102,7 +103,7 @@ class NovaWelcomeBonusTest extends TestCase
 
         $response->assertOk();
 
-        // TODO: Need to remove after first successful start
+        // TODO: Need to remove last argument after first successful start
         $this->assertEqualsFixture('get_updatable_fields_response.json', $response->json(), true);
     }
 
@@ -112,7 +113,7 @@ class NovaWelcomeBonusTest extends TestCase
 
         $response->assertOk();
 
-        // TODO: Need to remove after first successful start
+        // TODO: Need to remove last argument after first successful start
         self::$welcomeBonusState->assertChangesEqualsFixture('delete_welcome_bonuses_state.json', true);
     }
 
@@ -136,7 +137,7 @@ class NovaWelcomeBonusTest extends TestCase
 
         $response->assertOk();
 
-        // TODO: Need to remove after first successful start
+        // TODO: Need to remove last argument after first successful start
         $this->assertEqualsFixture('get_welcome_bonus_response.json', $response->json(), true);
     }
 
@@ -167,11 +168,11 @@ class NovaWelcomeBonusTest extends TestCase
 
         $response->assertOk();
 
-        // TODO: Need to remove after first successful start
+        // TODO: Need to remove last argument after first successful start
         $this->assertEqualsFixture('get_fields_visible_on_create_response.json', $response->json(), true);
     }
 
-    public function getRunWelcomeBonusActionsData(): array
+    public static function getRunWelcomeBonusActionsData(): array
     {
         return [
             [
@@ -191,9 +192,7 @@ class NovaWelcomeBonusTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider getRunWelcomeBonusActionsData
-     */
+    #[DataProvider('getRunWelcomeBonusActionsData')]
     public function testRunWelcomeBonusActions($action, $request, $state): void
     {
         $response = $this->novaActingAs(self::$user)->novaRunActionAPICall(WelcomeBonus::class, $action, $request);
@@ -202,65 +201,61 @@ class NovaWelcomeBonusTest extends TestCase
 
         $this->assertEmpty($response->getContent());
 
-        // TODO: Need to remove after first successful start
+        // TODO: Need to remove last argument after first successful start
         self::$welcomeBonusState->assertChangesEqualsFixture($state, true);
     }
 
-    public function getWelcomeBonusActionsData(): array
+    public static function getWelcomeBonusActionsData(): array
     {
         return [
             [
                 'resources' => [1, 2],
-                'response_fixture' => 'get_welcome_bonus_actions_publish_post_action.json',
+                'fixture' => 'get_welcome_bonus_actions_publish_post_action.json',
             ],
             [
                 'resources' => [1, 2],
-                'response_fixture' => 'get_welcome_bonus_actions_un_publish_post_action.json',
+                'fixture' => 'get_welcome_bonus_actions_un_publish_post_action.json',
             ],
         ];
     }
 
-    /**
-     * @dataProvider getWelcomeBonusActionsData
-     */
-    public function testGetWelcomeBonusActions(array $resources, string $responseFixture): void
+    #[DataProvider('getWelcomeBonusActionsData')]
+    public function testGetWelcomeBonusActions(array $resources, string $fixture): void
     {
         $response = $this->novaActingAs(self::$user)->novaGetActionsAPICall(WelcomeBonus::class, $resources);
 
         $response->assertOk();
 
-        // TODO: Need to remove after first successful start
-        $this->assertEqualsFixture($responseFixture, $response->json(), true);
+        // TODO: Need to remove last argument after first successful start
+        $this->assertEqualsFixture($fixture, $response->json(), true);
     }
 
-    public function getWelcomeBonusFiltersData(): array
+    public static function getWelcomeBonusFiltersData(): array
     {
         return [
             [
                 'request' => [
                     'TextField:description_field' => $this->novaSearchParams(['search term']),
                 ],
-                'response_fixture' => 'filter_welcome_bonus_by_text_field.json',
+                'fixture' => 'filter_welcome_bonus_by_text_field.json',
             ],
             [
                 'request' => [
                     'RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
-                'response_fixture' => 'filter_welcome_bonus_by_created_at_filter.json',
+                'fixture' => 'filter_welcome_bonus_by_created_at_filter.json',
             ],
         ];
     }
 
-    /**
-     * @dataProvider getWelcomeBonusFiltersData
-     */
-    public function testFilterWelcomeBonus(array $request, string $responseFixture): void
+    #[DataProvider('getWelcomeBonusFiltersData')]
+    public function testFilterWelcomeBonus(array $request, string $fixture): void
     {
         $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(WelcomeBonus::class, $request);
 
         $response->assertOk();
 
-        // TODO: Need to remove after first successful start
-        $this->assertEqualsFixture($responseFixture, $response->json(), true);
+        // TODO: Need to remove last argument after first successful start
+        $this->assertEqualsFixture($fixture, $response->json(), true);
     }
 }

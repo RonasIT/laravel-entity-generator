@@ -3,12 +3,10 @@
 namespace RonasIT\Support\Generators;
 
 use DateTime;
-use Illuminate\Database\Eloquent\Factory as LegacyFactories;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 
 abstract class AbstractTestsGenerator extends EntityGenerator
 {
@@ -45,15 +43,15 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function createDump(): void
     {
+        if (!$this->isStubExists('dump')) {
+            return;
+        }
+
         $content = $this->getStub('dump', [
             'inserts' => $this->getInserts()
         ]);
 
-        $fixturePath = $this->getFixturesPath();
-
-        if (!file_exists($fixturePath)) {
-            mkdir($fixturePath, 0777, true);
-        }
+        $this->createFixtureFolder();
 
         $dumpName = $this->getDumpName();
 
@@ -90,14 +88,11 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         }, $this->buildRelationsTree($arrayModels));
     }
 
-    protected function isFactoryExists($modelName): bool
+    protected function isFactoryExists(string $modelName): bool
     {
-        $factory = app(LegacyFactories::class);
         $modelClass = $this->getModelClass($modelName);
 
-        $isNewStyleFactoryExists = $this->classExists('factory', "{$modelName}Factory") && method_exists($modelClass, 'factory');
-
-        return $isNewStyleFactoryExists || !empty($factory[$this->getModelClass($modelName)]);
+        return $this->classExists('factories', "{$modelName}Factory") && method_exists($modelClass, 'factory');
     }
 
     protected function isMethodExists($modelName, $method): bool
@@ -162,11 +157,6 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getModelClass($model): string
-    {
-        return "App\\Models\\{$model}";
-    }
-
     protected function getModelFields($model): array
     {
         $modelClass = $this->getModelClass($model);
@@ -176,13 +166,14 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function getMockModel($model): array
     {
-        if (!$this->isFactoryExists($model)) {
+        $hasFactory = $this->isFactoryExists($model);
+
+        if (!$hasFactory) {
             return [];
         }
 
         $modelClass = $this->getModelClass($model);
-        $hasFactory = method_exists($modelClass, 'factory') && $this->classExists('factory', "{$model}Factory");
-        $factory = ($hasFactory) ? $modelClass::factory() : factory($modelClass);
+        $factory = $modelClass::factory();
 
         return $factory
             ->make()
@@ -193,6 +184,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     {
         $object = $this->getFixtureValuesList($this->model);
         $entity = Str::snake($this->model);
+
+        $this->createFixtureFolder();
 
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
             if ($this->isFixtureNeeded($type)) {
@@ -219,7 +212,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected function buildRelationsTree($models): array
     {
         foreach ($models as $model) {
-            $relations = $this->getRelatedModels($model);
+            $relations = $this->getRelatedModels($model, $this->getTestClassName());
             $relationsWithFactories = $this->getModelsWithFactories($relations);
 
             if (empty($relationsWithFactories)) {
@@ -242,35 +235,20 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         return array_unique($models);
     }
 
-    protected function getRelatedModels($model)
-    {
-        $content = $this->getModelClassContent($model);
-
-        preg_match_all('/(?<=belongsTo\().*(?=::class)/', $content, $matches);
-
-        return head($matches);
-    }
-
-    protected function getModelClassContent($model): string
-    {
-        $path = base_path("{$this->paths['models']}/{$model}.php");
-
-        if (!$this->classExists('models', $model)) {
-            $this->throwFailureException(
-                ClassNotExistsException::class,
-                "Cannot create {$model} Model cause {$model} Model does not exists.",
-                "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'."
-            );
-        }
-
-        return file_get_contents($path);
-    }
-
     protected function canGenerateUserData(): bool
     {
         return $this->classExists('models', 'User')
             && $this->isFactoryExists('User')
             && $this->isMethodExists('User', 'getFields');
+    }
+
+    protected function createFixtureFolder(): void
+    {
+        $fixturePath = $this->getFixturesPath();
+
+        if (!file_exists($fixturePath)) {
+            mkdir($fixturePath, 0777, true);
+        }
     }
 
     abstract protected function getTestClassName(): string;

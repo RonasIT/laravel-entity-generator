@@ -1,5 +1,7 @@
 # Laravel-Entity-Generator
 
+[![Coverage Status](https://coveralls.io/repos/github/RonasIT/laravel-entity-generator/badge.svg?branch=master)](https://coveralls.io/github/RonasIT/laravel-entity-generator?branch=master)
+
 Laravel-Entity-Generator - This generator is used to create a standard class stack for a new entity.
 
 ### Install

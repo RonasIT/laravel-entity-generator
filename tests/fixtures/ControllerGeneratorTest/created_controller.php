@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class PostController extends Controller
 {
-    public function create(CreatePostRequest $request, PostService $service)
+    public function create(CreatePostRequest $request, PostService $service): PostResource
     {
         $data = $request->onlyValidated();
 
@@ -23,7 +23,7 @@ class PostController extends Controller
         return PostResource::make($result);
     }
 
-    public function get(GetPostRequest $request, PostService $service, $id)
+    public function get(GetPostRequest $request, PostService $service, $id): PostResource
     {
         $result = $service
             ->with($request->input('with', []))
@@ -33,21 +33,21 @@ class PostController extends Controller
         return PostResource::make($result);
     }
 
-    public function search(SearchPostsRequest $request, PostService $service)
+    public function search(SearchPostsRequest $request, PostService $service): PostsCollectionResource
     {
         $result = $service->search($request->onlyValidated());
 
         return PostsCollectionResource::make($result);
     }
 
-    public function update(UpdatePostRequest $request, PostService $service, $id)
+    public function update(UpdatePostRequest $request, PostService $service, $id): Response
     {
         $service->update($id, $request->onlyValidated());
 
         return response('', Response::HTTP_NO_CONTENT);
     }
 
-    public function delete(DeletePostRequest $request, PostService $service, $id)
+    public function delete(DeletePostRequest $request, PostService $service, $id): Response
     {
         $service->delete($id);
 

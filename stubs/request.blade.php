@@ -24,20 +24,10 @@ class {{$method}}{{$entity}}Request extends Request
     }
 @endif
 @if($needToValidate)
-@if($method !== $requestsGenerator::DELETE_METHOD)
-
-@endif
-@if(version_compare(app()->version(), '5.6', '<'))
-    public function validate()
-    {
-        parent::validate();
-
-@else
-    public function validateResolved()
+    public function validateResolved(): void
     {
         parent::validateResolved();
 
-@endif
         $service = app({{$entity}}Service::class);
 
         if (!$service->exists($this->route('id'))) {
