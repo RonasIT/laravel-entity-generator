@@ -93,6 +93,8 @@ class {{$entity}}Test extends TestCase
 @endif
 
         $response->assertNotFound();
+
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertNotChanged();
     }
 
 @if ($withAuth)
@@ -103,6 +105,8 @@ class {{$entity}}Test extends TestCase
         $response = $this->json('put', '/{{$entities}}/1', $data);
 
         $response->assertUnauthorized();
+
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertNotChanged();
     }
 
 @endif
