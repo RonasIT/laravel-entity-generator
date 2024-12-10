@@ -172,8 +172,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
             return [];
         }
 
-        $modelClass = $this->getModelClass($model);
-        $factory = $modelClass::factory();
+        $factoryNamespace = "{$this->getOrCreateNamespace('factories')}\\{$model}Factory";
+        $factory = $factoryNamespace::new();
 
         return $factory
             ->make()
