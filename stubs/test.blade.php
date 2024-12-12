@@ -197,7 +197,7 @@ class {{$entity}}Test extends TestCase
     #[DataProvider('getSearchFilters')]
     public function testSearch(array $filter, string $fixture)
     {
-        $response = $this->json('get', '/{{$entities}}', $filter);
+        $response = $this->actingAs(self::$user)->json('get', '/{{$entities}}', $filter);
 
         $response->assertOk();
 

@@ -1,7 +1,7 @@
 namespace {{$namespace}};
 
 @inject('str', 'Illuminate\Support\Str')
-use {{$resourcesNamespace}}\{{$str::plural($entity)}}CollectionResource;
+use {{$resourcesNamespace}}\{{$entity}}\{{$str::plural($entity)}}CollectionResource;
 @if (in_array('C', $options))
 use {{$requestsNamespace}}\{{$requestsFolder}}\Create{{$entity}}Request;
 @endif
@@ -15,7 +15,7 @@ use {{$requestsNamespace}}\{{$requestsFolder}}\Search{{$str::plural($entity)}}Re
 @if (in_array('U', $options))
 use {{$requestsNamespace}}\{{$requestsFolder}}\Update{{$entity}}Request;
 @endif
-use {{$resourcesNamespace}}\{{$entity}}Resource;
+use {{$resourcesNamespace}}\{{$entity}}\{{$entity}}Resource;
 use {{$servicesNamespace}}\{{$entity}}Service;
 @if (in_array('D', $options) || in_array('U', $options))
 use Symfony\Component\HttpFoundation\Response;
