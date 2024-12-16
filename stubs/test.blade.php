@@ -47,7 +47,8 @@ class {{$entity}}Test extends TestCase
 
         $response->assertCreated();
 
-        $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json', $response->json());
+        // TODO: Need to remove last argument after first successful start
+        $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json', $response->json(), true);
 
         // TODO: Need to remove last argument after first successful start
         self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_state.json', true);
@@ -205,6 +206,13 @@ class {{$entity}}Test extends TestCase
         $this->exportJson($fixture, $response->json());
 
         $this->assertEqualsFixture($fixture, $response->json());
+    }
+
+    public function testSearchNoAuth()
+    {
+        $response = $this->json('get', '/{{$entities}}');
+
+        $response->assertUnauthorized();
     }
 @endif
 }
