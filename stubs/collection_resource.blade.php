@@ -1,4 +1,4 @@
-namespace {{$namespace}}{{$singular_name}};
+namespace {{$namespace}}\{{$singular_name}};
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
