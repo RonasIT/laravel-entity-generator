@@ -177,8 +177,8 @@ class {{$entity}}Test extends TestCase
 
         $response->assertNotFound();
     }
-
 @if ($withAuth)
+
     public function testGetNoAuth()
     {
         $response = $this->json('get', '/{{$entities}}/1');
@@ -186,6 +186,7 @@ class {{$entity}}Test extends TestCase
         $response->assertUnauthorized();
     }
 @endif
+
     public static function getSearchFilters(): array
     {
         return [
