@@ -36,7 +36,7 @@ class ResourceGenerator extends EntityGenerator
             'namespace' => $this->getOrCreateNamespace('resources')
         ]);
 
-        $this->saveClass('resources', "{$pluralName}CollectionResource", $collectionResourceContent);
+        $this->saveClass('resources', "{$pluralName}CollectionResource", $collectionResourceContent, $this->model);
 
         event(new SuccessCreateMessage("Created a new CollectionResource: {$pluralName}CollectionResource"));
     }
@@ -57,7 +57,7 @@ class ResourceGenerator extends EntityGenerator
             'model_namespace' => $this->getOrCreateNamespace('models'),
         ]);
 
-        $this->saveClass('resources', "{$this->model}Resource", $resourceContent);
+        $this->saveClass('resources', "{$this->model}Resource", $resourceContent, $this->model);
 
         event(new SuccessCreateMessage("Created a new Resource: {$this->model}Resource"));
     }

@@ -17,7 +17,6 @@ class ControllerGenerator extends EntityGenerator
                 "Cannot create {$this->model}Controller cause {$this->model}Controller already exists.",
                 "Remove {$this->model}Controller.",
             );
-
         }
 
         if (!$this->classExists('services', "{$this->model}Service")) {
@@ -45,7 +44,7 @@ class ControllerGenerator extends EntityGenerator
     {
         return $this->getStub('controller', [
             'entity' => $model,
-            'requestsFolder' => $this->getPluralName($model),
+            'requestsFolder' => $model,
             'namespace' => $this->getOrCreateNamespace('controllers'),
             'requestsNamespace' => $this->getOrCreateNamespace('requests'),
             'resourcesNamespace' => $this->getOrCreateNamespace('resources'),
