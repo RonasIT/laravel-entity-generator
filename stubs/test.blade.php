@@ -217,11 +217,13 @@ class {{$entity}}Test extends TestCase
         $this->assertEqualsFixture($fixture, $response->json());
     }
 
+@if ($withAuth)
     public function testSearchNoAuth()
     {
         $response = $this->json('get', '/{{$entities}}');
 
         $response->assertUnauthorized();
     }
+@endif
 @endif
 }
