@@ -16,8 +16,10 @@ class MigrationGeneratorTest extends TestCase
     {
         $this->setupConfigurations();
 
-        $this->expectException(UnknownFieldTypeException::class);
-        $this->expectExceptionMessage('Unknown field type unknown-type in MigrationGenerator.');
+        $this->assertExceptionThrew(
+            className: UnknownFieldTypeException::class,
+            message: 'Unknown field type unknown-type in MigrationGenerator.',
+        );
 
         app(MigrationGenerator::class)
             ->setModel('Post')
@@ -60,25 +62,31 @@ class MigrationGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('migrations.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
     }
 
-    public function testMethodForMYSQLConnection()
+    public function testCreateMigrationMYSQL()
     {
         putenv('DB_CONNECTION=mysql');
 
-        $generatorClassName = MigrationGenerator::class;
+        Carbon::setTestNow('2022-02-02');
 
-        $generator = app($generatorClassName);
+        $this->mockFilesystem();
+        $this->setupConfigurations();
 
-        $reflectionClass = new ReflectionClass($generatorClassName);
-        $jsonLineMethod = $reflectionClass->getMethod('getJsonLine');
-        $requiredLineMethod = $reflectionClass->getMethod('getRequiredLine');
+        app(MigrationGenerator::class)
+            ->setModel('Post')
+            ->setRelations([
+                'belongsTo' => [],
+                'belongsToMany' => [],
+                'hasOne' => [],
+                'hasMany' => [],
+            ])
+            ->setFields([
+                'integer-required' => ['media_id', 'user_id'],
+                'string' => ['title', 'body'],
+                'json' => ['meta'],
+                'timestamp' => ['created_at'],
+            ])
+            ->generate();
 
-        $jsonLineMethod->setAccessible(true);
-        $requiredLineMethod->setAccessible(true);
-
-        $jsonLineResult = $jsonLineMethod->invoke($generator, 'meta');
-        $requiredLineResult = $requiredLineMethod->invoke($generator, 'created_at', 'timestamp-required');
-
-        $this->assertEquals("\$table->json('meta')->nullable();", $jsonLineResult);
-        $this->assertEquals("\$table->timestamp('created_at')->nullable();", $requiredLineResult);
+        $this->assertGeneratedFileEquals('migrations_mysql.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
     }
 }
