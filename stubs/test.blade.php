@@ -21,7 +21,7 @@ class {{$entity}}Test extends TestCase
     protected static ModelTestState ${{\Illuminate\Support\Str::camel($entity)}}State;
 
 @endif
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 @if ($withAuth)
@@ -47,7 +47,8 @@ class {{$entity}}Test extends TestCase
 
         $response->assertCreated();
 
-        $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json', $response->json());
+        // TODO: Need to remove last argument after first successful start
+        $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json', $response->json(), true);
 
         // TODO: Need to remove last argument after first successful start
         self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_state.json', true);
@@ -93,6 +94,8 @@ class {{$entity}}Test extends TestCase
 @endif
 
         $response->assertNotFound();
+
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertNotChanged();
     }
 
 @if ($withAuth)
@@ -103,6 +106,8 @@ class {{$entity}}Test extends TestCase
         $response = $this->json('put', '/{{$entities}}/1', $data);
 
         $response->assertUnauthorized();
+
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertNotChanged();
     }
 
 @endif
@@ -172,6 +177,15 @@ class {{$entity}}Test extends TestCase
 
         $response->assertNotFound();
     }
+@if ($withAuth)
+
+    public function testGetNoAuth()
+    {
+        $response = $this->json('get', '/{{$entities}}/1');
+
+        $response->assertUnauthorized();
+    }
+@endif
 
     public static function getSearchFilters(): array
     {
@@ -193,7 +207,7 @@ class {{$entity}}Test extends TestCase
     #[DataProvider('getSearchFilters')]
     public function testSearch(array $filter, string $fixture)
     {
-        $response = $this->json('get', '/{{$entities}}', $filter);
+        $response = $this->actingAs(self::$user)->json('get', '/{{$entities}}', $filter);
 
         $response->assertOk();
 
@@ -202,5 +216,14 @@ class {{$entity}}Test extends TestCase
 
         $this->assertEqualsFixture($fixture, $response->json());
     }
+
+@if ($withAuth)
+    public function testSearchNoAuth()
+    {
+        $response = $this->json('get', '/{{$entities}}');
+
+        $response->assertUnauthorized();
+    }
+@endif
 @endif
 }
