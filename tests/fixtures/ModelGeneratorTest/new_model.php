@@ -8,7 +8,7 @@ use RonasIT\Support\Traits\ModelTrait;
 
 class Post extends Model
 {
-    use ModelTrait, HasFactory;
+    use HasFactory, ModelTrait;
 
     protected $fillable = [
         'media_id',
