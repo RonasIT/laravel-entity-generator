@@ -90,9 +90,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function isFactoryExists(string $modelName): bool
     {
-        $modelClass = $this->getModelClass($modelName);
-
-        return $this->classExists('factories', "{$modelName}Factory") && method_exists($modelClass, 'factory');
+        return $this->classExists('factories', "{$modelName}Factory");
     }
 
     protected function isMethodExists($modelName, $method): bool
