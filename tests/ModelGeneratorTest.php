@@ -16,8 +16,10 @@ class ModelGeneratorTest extends TestCase
     {
         $this->mockGeneratorForExistingModel();
 
-        $this->expectException(ClassAlreadyExistsException::class);
-        $this->expectExceptionMessage('Cannot create Post Model cause Post Model already exists. Remove Post Model.');
+        $this->assertExceptionThrew(
+            className: ClassAlreadyExistsException::class,
+            message: 'Cannot create Post Model cause Post Model already exists. Remove Post Model.',
+        );
 
         app(ModelGenerator::class)
             ->setModel('Post')
@@ -26,9 +28,11 @@ class ModelGeneratorTest extends TestCase
 
     public function testRelationModelMissing()
     {
-        $this->expectException(ClassNotExistsException::class);
-        $this->expectExceptionMessage("Cannot create Post Model cause relation model Comment does not exist. "
-            . "Create the Comment Model by himself or run command 'php artisan make:entity Comment --only-model'.");
+        $this->assertExceptionThrew(
+            className: ClassNotExistsException::class,
+            message: "Cannot create Post Model cause relation model Comment does not exist. "
+            . "Create the Comment Model by himself or run command 'php artisan make:entity Comment --only-model'.",
+        );
 
         app(ModelGenerator::class)
             ->setModel('Post')

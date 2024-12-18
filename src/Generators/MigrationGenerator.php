@@ -102,6 +102,6 @@ class MigrationGenerator extends EntityGenerator
             return $this->getNonRequiredLine($fieldName, $typeName);
         }
 
-        throw new UnknownFieldTypeException("Unknown field type {$typeName} in MigrationGenerator.");
+        throw new UnknownFieldTypeException($typeName, 'MigrationGenerator');
     }
 }
