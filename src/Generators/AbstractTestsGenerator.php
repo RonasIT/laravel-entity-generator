@@ -238,7 +238,6 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected function canGenerateUserData(): bool
     {
         return $this->classExists('models', 'User')
-            && $this->isFactoryExists('User')
             && $this->isMethodExists('User', 'getFields');
     }
 
