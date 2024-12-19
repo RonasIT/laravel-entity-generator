@@ -4,47 +4,36 @@ namespace RonasIT\Support\Tests\Support\Model;
 
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\ModelGenerator;
-use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 
 trait ModelMockTrait
 {
     use GeneratorMockTrait;
 
-    public function mockGeneratorForExistingModel()
+    public function mockGeneratorForExistingModel(): void
     {
         $this->mockClass(ModelGenerator::class, [
             [
-                'method' => 'classExists',
+                'function' => 'classExists',
                 'arguments' => ['models', 'Post'],
-                'result' => true
-            ]
+                'result' => true,
+            ],
         ]);
     }
 
-    public function mockGeneratorForMissingRelationModel()
+    public function mockGeneratorForMissingRelationModel(): void
     {
         $this->mockClass(ModelGenerator::class, [
             [
-                'method' => 'classExists',
+                'function' => 'classExists',
                 'arguments' => ['models', 'Post'],
-                'result' => false
+                'result' => false,
             ],
             [
-                'method' => 'classExists',
+                'function' => 'classExists',
                 'arguments' => ['models', 'Comment'],
-                'result' => false
-            ]
-        ]);
-    }
-
-    public function setupConfigurations(): void
-    {
-        config([
-            'entity-generator.stubs.model' => 'entity-generator::model',
-            'entity-generator.stubs.relation' => 'entity-generator::relation',
-            'entity-generator.paths' => [
-                'models' => 'app/Models',
-            ]
+                'result' => false,
+            ],
         ]);
     }
 
@@ -54,8 +43,8 @@ trait ModelMockTrait
             'app' => [
                 'Models' => [
                     'Comment.php' => file_get_contents(getcwd() . '/tests/Support/Model/RelationModelMock.php'),
-                    'User.php' => file_get_contents(getcwd() . '/tests/Support/Model/RelationModelMock.php')
-                ]
+                    'User.php' => file_get_contents(getcwd() . '/tests/Support/Model/RelationModelMock.php'),
+                ],
             ],
         ];
 

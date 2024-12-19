@@ -4,22 +4,27 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use org\bovigo\vfs\vfsStream;
-use phpmock\Mock;
+use RonasIT\Support\EntityGeneratorServiceProvider;
 use RonasIT\Support\Traits\FixturesTrait;
 
 class TestCase extends BaseTestCase
 {
-    use FixturesTrait, InteractsWithViews;
+    use FixturesTrait;
+    use InteractsWithViews;
 
-    protected $globalExportMode = false;
-    protected $generatedFileBasePath;
+    protected bool $globalExportMode = false;
+    protected string $generatedFileBasePath;
 
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->mockConfigurations();
 
         vfsStream::setup();
 
@@ -28,21 +33,32 @@ class TestCase extends BaseTestCase
         $this->app->setBasePath($this->generatedFileBasePath);
     }
 
-    public function tearDown(): void
+    public function getFixturePath(string $fixtureName): string
     {
-        parent::tearDown();
+        $class = get_class($this);
+        $explodedClass = explode('\\', $class);
+        $className = Arr::last($explodedClass);
 
-        Mock::disableAll();
+        return getcwd() . "/tests/fixtures/{$className}/{$fixtureName}";
     }
 
-    public function rollbackToDefaultBasePath(): void
+    public function mockConfigurations(): void
     {
-        $this->app->setBasePath(getcwd());
+        config([
+            'entity-generator' => include('config/entity-generator.php'),
+        ]);
     }
 
-    protected function getEnvironmentSetUp($app)
+    protected function getPackageProviders($app): array
     {
-        $app->useEnvironmentPath(__DIR__.'/..');
+        return [
+            EntityGeneratorServiceProvider::class
+        ];
+    }
+
+    protected function getEnvironmentSetUp($app): void
+    {
+        $app->useEnvironmentPath(__DIR__ . '/..');
         $app->bootstrapWith([LoadEnvironmentVariables::class]);
     }
 
@@ -69,5 +85,32 @@ class TestCase extends BaseTestCase
     protected function assertGenerateFileExists(string $path): void
     {
         $this->assertFileExists("{$this->generatedFileBasePath}/{$path}");
+    }
+
+    protected function assertEventPushed(string $className, string $message): void
+    {
+        Event::assertDispatched(
+            event: $className,
+            callback: fn ($event) => $event->message === $message,
+        );
+    }
+
+    protected function assertEventPushedChain(array $expectedEvents): void
+    {
+        $dispatchedEvents = Event::dispatchedEvents();
+
+        $this->assertEquals(array_keys($expectedEvents), array_keys($dispatchedEvents));
+
+        foreach ($dispatchedEvents as $event => $messages) {
+            $messages = array_map(fn ($message) => Arr::first($message)->message, $messages);
+
+            $this->assertEquals($expectedEvents[$event], $messages);
+        }
+    }
+
+    protected function assertExceptionThrew(string $className, string $message): void
+    {
+        $this->expectException($className);
+        $this->expectExceptionMessage($message);
     }
 }
