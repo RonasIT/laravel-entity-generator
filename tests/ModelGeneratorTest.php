@@ -47,7 +47,6 @@ class ModelGeneratorTest extends TestCase
 
     public function testCreateModel()
     {
-        $this->setupConfigurations();
         $this->mockFilesystem();
 
         app(ModelGenerator::class)
