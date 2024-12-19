@@ -18,7 +18,7 @@ class ModelGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ClassAlreadyExistsException::class,
-            message: 'Cannot create Post Model cause Post Model already exists. Remove Post Model.'
+            message: 'Cannot create Post Model cause Post Model already exists. Remove Post Model.',
         );
 
         app(ModelGenerator::class)
