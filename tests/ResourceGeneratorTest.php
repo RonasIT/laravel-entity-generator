@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -12,13 +11,6 @@ use RonasIT\Support\Tests\Support\Resource\ResourceMockTrait;
 class ResourceGeneratorTest extends TestCase
 {
     use ResourceMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Event::fake();
-    }
 
     public function testResourceAlreadyExists()
     {
