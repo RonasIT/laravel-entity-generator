@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -15,16 +14,11 @@ class ModelGeneratorTest extends TestCase
 {
     use ModelMockTrait, MockTrait;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Event::fake();
-    }
-
     public function testModelAlreadyExists()
     {
-        $this->mockGeneratorForExistingModel();
+        $this->mockClass(ModelGenerator::class, [
+            $this->classExistsMethodCall(['models', 'Post']),
+        ]);
 
         $this->assertExceptionThrew(
             className: ClassAlreadyExistsException::class,

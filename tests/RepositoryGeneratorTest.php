@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -13,16 +12,11 @@ class RepositoryGeneratorTest extends TestCase
 {
     use RepositoryMockTrait;
 
-    public function setUp(): void
+    public function testModelNotExist()
     {
-        parent::setUp();
-
-        Event::fake();
-    }
-
-    public function testModelDoesntExists()
-    {
-        $this->mockGeneratorForMissingModel();
+        $this->mockClass(RepositoryGenerator::class, [
+            $this->classExistsMethodCall(['models', 'Post'], false),
+        ]);
 
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
