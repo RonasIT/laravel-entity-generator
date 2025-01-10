@@ -17,15 +17,17 @@ class Post extends Model
 
     protected $hidden = ['pivot'];
 
+    protected $casts = [
+        'is_published' => 'boolean',
+    ];
+
     public function comment()
     {
         return $this->hasOne(Comment::class);
     }
+
     public function users()
     {
         return $this->hasMany(User::class);
     }
-    protected $casts = [
-        'is_published' => 'boolean',
-    ];
 }
