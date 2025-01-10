@@ -14,8 +14,8 @@ class {{$entity}} extends Model
     ];
 
     protected $hidden = ['pivot'];
-
 @if(!empty($casts))
+
     protected $casts = [
 @foreach($casts as $fieldName => $cast)
         '{{$fieldName}}' => '{{$cast}}',
