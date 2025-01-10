@@ -6,6 +6,5 @@ class RelationModelMock
 {
     public function some_relation()
     {
-
     }
 }
