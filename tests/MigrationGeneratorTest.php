@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Carbon;
-use ReflectionClass;
 use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 use RonasIT\Support\Generators\MigrationGenerator;
 use RonasIT\Support\Tests\Support\Migration\MigrationMockTrait;
@@ -14,11 +13,12 @@ class MigrationGeneratorTest extends TestCase
 
     public function testSetUnknownFieldType()
     {
-        $this->mockViewsNamespace();
         $this->setupConfigurations();
 
-        $this->expectException(UnknownFieldTypeException::class);
-        $this->expectErrorMessage('Unknown field type unknown-type in MigrationGenerator.');
+        $this->assertExceptionThrew(
+            className: UnknownFieldTypeException::class,
+            message: 'Unknown field type unknown-type in MigrationGenerator.',
+        );
 
         app(MigrationGenerator::class)
             ->setModel('Post')
@@ -30,7 +30,7 @@ class MigrationGeneratorTest extends TestCase
             ])
             ->setFields([
                 'integer-required' => ['media_id', 'user_id'],
-                'unknown-type' => ['title']
+                'unknown-type' => ['title'],
             ])
             ->generate();
     }
@@ -40,7 +40,6 @@ class MigrationGeneratorTest extends TestCase
         Carbon::setTestNow('2022-02-02');
 
         $this->mockFilesystem();
-        $this->mockViewsNamespace();
         $this->setupConfigurations();
 
         app(MigrationGenerator::class)
@@ -55,32 +54,38 @@ class MigrationGeneratorTest extends TestCase
                 'integer-required' => ['media_id', 'user_id'],
                 'string' => ['title', 'body'],
                 'json' => ['meta'],
-                'timestamp' => ['created_at']
+                'timestamp' => ['created_at'],
             ])
             ->generate();
-
-        $this->rollbackToDefaultBasePath();
 
         $this->assertGeneratedFileEquals('migrations.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
     }
 
-    public function testMethodForMYSQLConnection()
+    public function testCreateMigrationMYSQL()
     {
         putenv('DB_CONNECTION=mysql');
 
-        $generator = app(MigrationGenerator::class);
+        Carbon::setTestNow('2022-02-02');
 
-        $reflectionClass = new ReflectionClass(MigrationGenerator::class);
-        $jsonLineMethod = $reflectionClass->getMethod('getJsonLine');
-        $requiredLineMethod = $reflectionClass->getMethod('getRequiredLine');
+        $this->mockFilesystem();
+        $this->setupConfigurations();
 
-        $jsonLineMethod->setAccessible(true);
-        $requiredLineMethod->setAccessible(true);
+        app(MigrationGenerator::class)
+            ->setModel('Post')
+            ->setRelations([
+                'belongsTo' => [],
+                'belongsToMany' => [],
+                'hasOne' => [],
+                'hasMany' => [],
+            ])
+            ->setFields([
+                'integer-required' => ['media_id', 'user_id'],
+                'string' => ['title', 'body'],
+                'json' => ['meta'],
+                'timestamp' => ['created_at'],
+            ])
+            ->generate();
 
-        $jsonLineResult = $jsonLineMethod->invoke($generator, 'meta');
-        $requiredLineResult = $requiredLineMethod->invoke($generator, 'created_at', 'timestamp-required');
-
-        $this->assertEquals("\$table->json('meta')->nullable();", $jsonLineResult);
-        $this->assertEquals("\$table->timestamp('created_at')->nullable();", $requiredLineResult);
+        $this->assertGeneratedFileEquals('migrations_mysql.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
     }
 }
