@@ -10,17 +10,6 @@ trait RequestMockTrait
 {
     use GeneratorMockTrait, MockTrait;
 
-    public function mockConfigurations(): void
-    {
-        config([
-            'entity-generator.stubs.request' => 'entity-generator::request',
-            'entity-generator.paths' => [
-                'requests' => 'app/Http/Requests',
-                'services' => 'app/Services',
-            ]
-        ]);
-    }
-
     public function mockFilesystem(): void
     {
         $structure = [

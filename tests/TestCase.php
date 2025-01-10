@@ -114,14 +114,4 @@ class TestCase extends BaseTestCase
         $this->expectException($className);
         $this->expectExceptionMessage($message);
     }
-
-    public function mockViewsNamespace(): void
-    {
-        View::addNamespace('entity-generator', getcwd() . '/stubs');
-    }
-
-    public function rollbackToDefaultBasePath(): void
-    {
-        $this->app->setBasePath(getcwd());
-    }
 }
