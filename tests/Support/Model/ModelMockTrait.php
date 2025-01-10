@@ -3,23 +3,11 @@
 namespace RonasIT\Support\Tests\Support\Model;
 
 use org\bovigo\vfs\vfsStream;
-use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 
 trait ModelMockTrait
 {
     use GeneratorMockTrait;
-
-    public function mockGeneratorForExistingModel(): void
-    {
-        $this->mockClass(ModelGenerator::class, [
-            [
-                'function' => 'classExists',
-                'arguments' => ['models', 'Post'],
-                'result' => true,
-            ],
-        ]);
-    }
 
     public function mockFilesystem(): void
     {
