@@ -2,8 +2,6 @@
 
 namespace RonasIT\Support\Tests;
 
-use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Generators\RequestsGenerator;
 use RonasIT\Support\Tests\Support\Request\RequestMockTrait;
 

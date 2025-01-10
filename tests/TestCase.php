@@ -6,6 +6,7 @@ use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use org\bovigo\vfs\vfsStream;
@@ -112,5 +113,15 @@ class TestCase extends BaseTestCase
     {
         $this->expectException($className);
         $this->expectExceptionMessage($message);
+    }
+
+    public function mockViewsNamespace(): void
+    {
+        View::addNamespace('entity-generator', getcwd() . '/stubs');
+    }
+
+    public function rollbackToDefaultBasePath(): void
+    {
+        $this->app->setBasePath(getcwd());
     }
 }
