@@ -2,9 +2,12 @@ namespace {{$namespace}};
 
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use {{$modelNamespace}}\{{$entity}};
 
 class {{$entity}}Factory extends Factory
 {
+    protected $model = {{$entity}}::class;
+
     public function definition(): array
     {
 @if(!empty($fields))
