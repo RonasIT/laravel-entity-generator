@@ -21,22 +21,6 @@ trait ModelMockTrait
         ]);
     }
 
-    public function mockGeneratorForMissingRelationModel(): void
-    {
-        $this->mockClass(ModelGenerator::class, [
-            [
-                'function' => 'classExists',
-                'arguments' => ['models', 'Post'],
-                'result' => false,
-            ],
-            [
-                'function' => 'classExists',
-                'arguments' => ['models', 'Comment'],
-                'result' => false,
-            ],
-        ]);
-    }
-
     public function mockFilesystem(): void
     {
         $structure = [
