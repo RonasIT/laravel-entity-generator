@@ -3,48 +3,20 @@
 namespace RonasIT\Support\Tests\Support\Resource;
 
 use org\bovigo\vfs\vfsStream;
-use RonasIT\Support\Generators\ResourceGenerator;
-use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\Support\Traits\MockTrait;
 
 trait ResourceMockTrait
 {
-    use GeneratorMockTrait;
-
-    public function mockGeneratorForAlreadyExistsResource(): void
-    {
-        $this->mockClass(ResourceGenerator::class, [
-            [
-                'method' => 'classExists',
-                'arguments' => ['resources', 'PostResource'],
-                'result' => true
-            ],
-        ]);
-    }
-
-    public function mockGeneratorForAlreadyExistsCollectionResource(): void
-    {
-        $this->mockClass(ResourceGenerator::class, [
-            [
-                'method' => 'generateResource',
-                'arguments' => [],
-                'result' => null
-            ],
-            [
-                'method' => 'classExists',
-                'arguments' => ['resources', 'PostsCollectionResource'],
-                'result' => true
-            ]
-        ]);
-    }
+    use GeneratorMockTrait, MockTrait;
 
     public function mockConfigurations(): void
     {
         config([
-            'entity-generator.stubs.resource' => 'entity-generator::resource',
-            'entity-generator.stubs.collection_resource' => 'entity-generator::collection_resource',
             'entity-generator.paths' => [
                 'resources' => 'app/Http/Resources',
-            ]
+                'models' => 'app/Models',
+            ],
         ]);
     }
 
