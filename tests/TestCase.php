@@ -28,6 +28,8 @@ class TestCase extends BaseTestCase
 
         vfsStream::setup();
 
+        Event::fake();
+
         $this->generatedFileBasePath = vfsStream::url('root');
 
         $this->app->setBasePath($this->generatedFileBasePath);
