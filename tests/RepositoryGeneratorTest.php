@@ -2,6 +2,9 @@
 
 namespace RonasIT\Support\Tests;
 
+use Illuminate\Support\Facades\Event;
+use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Tests\Support\Repository\RepositoryMockTrait;
@@ -9,6 +12,13 @@ use RonasIT\Support\Tests\Support\Repository\RepositoryMockTrait;
 class RepositoryGeneratorTest extends TestCase
 {
     use RepositoryMockTrait;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        Event::fake();
+    }
 
     public function testModelDoesntExists()
     {
@@ -23,6 +33,8 @@ class RepositoryGeneratorTest extends TestCase
         app(RepositoryGenerator::class)
             ->setModel('Post')
             ->generate();
+
+        $this->assertFileDoesNotExist('repository.php', 'app/Repositories/PostRepository.php');
     }
 
     public function testCreateRepository()
@@ -34,5 +46,28 @@ class RepositoryGeneratorTest extends TestCase
             ->generate();
 
         $this->assertGeneratedFileEquals('repository.php', 'app/Repositories/PostRepository.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Repository: PostRepository',
+        );
+    }
+
+    public function testCreateRepositoryStubNotExist()
+    {
+        config(['entity-generator.stubs.repository' => 'incorrect_stub']);
+
+        $this->mockFilesystem();
+
+        app(RepositoryGenerator::class)
+            ->setModel('Post')
+            ->generate();
+
+        $this->assertFileDoesNotExist('repository.php', 'app/Repositories/PostRepository.php');
+
+        $this->assertEventPushed(
+            className: WarningEvent::class,
+            message: 'Generation of repository has been skipped cause the view incorrect_stub from the config entity-generator.stubs.repository is not exists. Please check that config has the correct view name value.',
+        );
     }
 }

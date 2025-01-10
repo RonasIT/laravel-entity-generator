@@ -213,14 +213,14 @@ abstract class EntityGenerator
         return "{$modelNamespace}\\{$model}";
     }
 
-    protected function isStubExists(string $stubName): bool
+    protected function isStubExists(string $stubName, ?string $generationType = null): bool
     {
         $config = "entity-generator.stubs.{$stubName}";
 
         $stubPath = config($config);
 
         if (!view()->exists($stubPath)) {
-            $generationType = Str::replace('_', ' ', $stubName);
+            $generationType ??= Str::replace('_', ' ', $stubName);
 
             $message = "Generation of {$generationType} has been skipped cause the view {$stubPath} from the config {$config} is not exists. Please check that config has the correct view name value.";
 
