@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\NovaResource;
+namespace RonasIT\Support\Tests\Support\NovaResourceGeneratorTest;
 
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\DateTimeType;

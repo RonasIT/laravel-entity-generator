@@ -40,14 +40,19 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     public function generateTests(): void
     {
+        if (!$this->isStubExists('nova_test')) {
+            return;
+        }
+
         $actions = $this->getActions();
         $filters = $this->collectFilters();
 
         $fileContent = $this->getStub('nova_test', [
-            'url_path' => $this->getPluralName(Str::kebab($this->model)),
+            'url_path' => Str::kebab($this->model) . '-resources',
             'entity' => $this->model,
             'entities' => $this->getPluralName($this->model),
-            'lower_entity' => Str::snake($this->model),
+            'snake_entity' => Str::snake($this->model),
+            'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
@@ -70,7 +75,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             $actionClass = class_basename($action);
 
             return [
-                'url' => Str::kebab($actionClass),
+                'className' => $actionClass,
                 'fixture' => Str::snake($actionClass),
             ];
         }, $actions);
@@ -166,5 +171,12 @@ class NovaTestGenerator extends AbstractTestsGenerator
         }
 
         return $filters;
+    }
+
+    protected function getDumpName(): string
+    {
+        $modelName = Str::snake($this->model);
+
+        return "nova_{$modelName}_dump.sql";
     }
 }

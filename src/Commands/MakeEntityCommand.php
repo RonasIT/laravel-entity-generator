@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use RonasIT\Support\Generators\ControllerGenerator;
@@ -160,13 +161,22 @@ class MakeEntityCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $this->validateInput();
         $this->checkConfigs();
-        $this->eventDispatcher->listen(SuccessCreateMessage::class, $this->getSuccessMessageCallback());
+
+        $this->eventDispatcher->listen(
+            events: SuccessCreateMessage::class,
+            listener: fn (SuccessCreateMessage $event) => $this->info($event->message),
+        );
+
+        $this->eventDispatcher->listen(
+            events: WarningEvent::class,
+            listener: fn (WarningEvent $event) => $this->warn($event->message),
+        );
 
         try {
             $this->generate();
@@ -206,10 +216,9 @@ class MakeEntityCommand extends Command
         }
 
         $factories = 'database/factories';
-        $factories = (version_compare(app()->version(), '8', '>=')) ? $factories : "{$factories}/ModelFactory.php";
 
-        if ($newConfig['paths.factory'] !== $factories) {
-            $newConfig['paths.factory'] = $factories;
+        if ($newConfig['paths.factories'] !== $factories) {
+            $newConfig['paths.factories'] = $factories;
         }
 
         $differences = array_diff_key($newConfig, $flattenedProjectConfigs);
@@ -297,13 +306,6 @@ class MakeEntityCommand extends Command
             'belongsTo' => $this->option('belongs-to'),
             'belongsToMany' => $this->option('belongs-to-many')
         ];
-    }
-
-    protected function getSuccessMessageCallback()
-    {
-        return function (SuccessCreateMessage $event) {
-            $this->info($event->message);
-        };
     }
 
     protected function getFields()

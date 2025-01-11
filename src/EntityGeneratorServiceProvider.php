@@ -9,8 +9,10 @@ class EntityGeneratorServiceProvider extends ServiceProvider
 {
     public function boot()
     {
+        $this->mergeConfigFrom(__DIR__ . '/../config/entity-generator.php', 'entity-generator');
+
         $this->commands([
-            MakeEntityCommand::class
+            MakeEntityCommand::class,
         ]);
 
         $this->publishes([

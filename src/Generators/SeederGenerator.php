@@ -4,6 +4,7 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\EntityCreateException;
 
 class SeederGenerator extends EntityGenerator
@@ -21,7 +22,9 @@ class SeederGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        $this->checkConfigs();
+        if (!$this->isStubExists('seeder') || !$this->isStubExists('database_empty_seeder')) {
+            return;
+        }
 
         if (!file_exists($this->seedsPath)) {
             mkdir($this->seedsPath);
@@ -29,8 +32,6 @@ class SeederGenerator extends EntityGenerator
 
         if (!file_exists($this->databaseSeederPath)) {
             list($basePath, $databaseSeederDir) = extract_last_part($this->databaseSeederPath, '/');
-
-            $databaseSeederDir = base_path($databaseSeederDir);
 
             if (!is_dir($databaseSeederDir)) {
                 mkdir($databaseSeederDir);
@@ -46,11 +47,9 @@ class SeederGenerator extends EntityGenerator
 
     protected function createDatabaseSeeder(): void
     {
-        $stubPath = config('entity-generator.stubs.database_empty_seeder');
-
-        $content = "<?php \n\n" . view($stubPath, [
+        $content = "<?php \n\n" . $this->getStub('database_empty_seeder', [
             'namespace' => $this->getOrCreateNamespace('seeders')
-        ])->render();
+        ]);
 
         file_put_contents($this->databaseSeederPath, $content);
 
@@ -61,16 +60,12 @@ class SeederGenerator extends EntityGenerator
 
     protected function createEntitySeeder(): void
     {
-        $seeder = ($this->useClassStyleSeeder()) ? 'seeder' : 'legacy_seeder';
-
-        $stubPath = config("entity-generator.stubs.{$seeder}");
-
-        $content = "<?php \n\n" . view($stubPath)->with([
+        $content = "<?php \n\n" . $this->getStub('seeder', [
             'entity' => $this->model,
             'relations' => $this->relations,
             'namespace' => $this->getOrCreateNamespace('seeders'),
-            'modelsNamespace' => $this->getOrCreateNamespace('models')
-        ])->render();
+            'modelsNamespace' => $this->getOrCreateNamespace('models'),
+        ]);
 
         $seederPath = "{$this->seedsPath}/{$this->model}Seeder.php";
 
@@ -81,29 +76,14 @@ class SeederGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function useClassStyleSeeder(): bool
-    {
-        return version_compare(app()->version(), '8', '>=');
-    }
-
     protected function appendSeederToList(): void
     {
         $content = file_get_contents($this->databaseSeederPath);
 
-        $insertContent = "\n        \$this->call({$this->model}Seeder::class);\n    }\n}";
+        $insertContent = "    \$this->call({$this->model}Seeder::class);\n    }\n}";
 
         $fixedContent = preg_replace('/\}\s*\}\s*\z/', $insertContent, $content);
 
         file_put_contents($this->databaseSeederPath, $fixedContent);
-    }
-
-    protected function checkConfigs(): void
-    {
-        if (empty(config('entity-generator.stubs.seeder')) || empty(config('entity-generator.stubs.legacy_seeder'))) {
-            throw new EntityCreateException('
-                Looks like you have deprecated configs.
-                Please follow instructions(https://github.com/RonasIT/laravel-entity-generator/blob/master/ReadMe.md#13)
-            ');
-        }
     }
 }
