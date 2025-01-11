@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Posts;
+namespace App\Http\Requests\Post;
 
 use App\Http\Requests\Request;
 

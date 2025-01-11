@@ -3,7 +3,7 @@
 namespace RonasIT\Support\Tests\Support\Migration;
 
 use org\bovigo\vfs\vfsStream;
-use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 
 trait MigrationMockTrait
 {
