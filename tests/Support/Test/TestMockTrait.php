@@ -2,158 +2,142 @@
 
 namespace RonasIT\Support\Tests\Support\Test;
 
-use Illuminate\Database\Eloquent\Factory;
-use Mockery;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\TestsGenerator;
-use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\Support\Traits\MockTrait;
 
 trait TestMockTrait
 {
-    use GeneratorMockTrait;
+    use GeneratorMockTrait, MockTrait;
 
-    public function mockGenerator()
+    public function mockGenerator(): void
     {
-        $mock = Mockery::mock(Factory::class)->makePartial();
-
-        $mock
-            ->shouldAllowMockingProtectedMethods()
-            ->expects('isLegacyFactory')
-            ->zeroOrMoreTimes()
-            ->with('')
-            ->andReturn(false);
-
-        $this->app->instance(Factory::class, $mock);
-
         $this->mockClass(TestsGenerator::class, [
             [
-                'method' => 'getModelClass',
+                'function' => 'getModelClass',
                 'arguments' => ['User'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
             ],
             [
-                'method' => 'getModelClass',
+                'function' => 'getModelClass',
                 'arguments' => ['User'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
             ],
             [
-                'method' => 'getModelClass',
-                'arguments' => ['User'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
+                'function' => 'getModelClass',
+                'arguments' => ['Role'],
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Role',
             ],
             [
-                'method' => 'getModelClass',
-                'arguments' => ['Comment'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\Comment'
-            ],
-            [
-                'method' => 'getModelClass',
-                'arguments' => ['Comment'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\Comment'
-            ],
-            [
-                'method' => 'getModelClass',
-                'arguments' => ['User'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
-            ],
-            [
-                'method' => 'getModelClass',
-                'arguments' => ['User'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
-            ],
-            [
-                'method' => 'getModelClass',
-                'arguments' => ['User'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
-            ],
-            [
-                'method' => 'getModelClass',
+                'function' => 'getModelClass',
                 'arguments' => ['Post'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\User'
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
             ],
             [
-                'method' => 'getModelClass',
-                'arguments' => ['Post'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\Post'
+                'function' => 'getModelClass',
+                'arguments' => ['User'],
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
             ],
             [
-                'method' => 'getModelClass',
-                'arguments' => ['Post'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\Post'
+                'function' => 'getModelClass',
+                'arguments' => ['Role'],
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Role',
             ],
             [
-                'method' => 'getModelClass',
-                'arguments' => ['Post'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\Post'
+                'function' => 'getModelClass',
+                'arguments' => ['Role'],
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Role',
             ],
             [
-                'method' => 'getModelClass',
+                'function' => 'getModelClass',
+                'arguments' => ['Role'],
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Role',
+            ],
+            [
+                'function' => 'getModelClass',
+                'arguments' => ['User'],
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
+            ],
+            [
+                'function' => 'getModelClass',
+                'arguments' => ['User'],
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
+            ],
+            [
+                'function' => 'getModelClass',
                 'arguments' => ['Post'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\Post'
-            ]
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ],
+            [
+                'function' => 'getModelClass',
+                'arguments' => ['Post'],
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ],
+            [
+                'function' => 'getModelClass',
+                'arguments' => ['Post'],
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ],
         ]);
     }
 
-    public function mockGeneratorForCircularDependency()
+    public function mockGeneratorDumpStubNotExist(): void
     {
-        $mock = Mockery::mock(Factory::class)->makePartial();
-
-        $mock
-            ->shouldAllowMockingProtectedMethods()
-            ->expects('isLegacyFactory')
-            ->zeroOrMoreTimes()
-            ->with('')
-            ->andReturn(false);
-
-        $this->app->instance(Factory::class, $mock);
-
         $this->mockClass(TestsGenerator::class, [
             [
-                'method' => 'getModelClass',
+                'function' => 'getModelClass',
+                'arguments' => ['User'],
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
+            ],
+            [
+                'function' => 'getModelClass',
+                'arguments' => ['Post'],
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ],
+        ]);
+    }
+
+    public function mockGeneratorForCircularDependency(): void
+    {
+        $this->mockClass(TestsGenerator::class, [
+            [
+                'function' => 'getModelClass',
                 'arguments' => ['CircularDep'],
-                'result' => '\\RonasIT\\Support\\Tests\\Support\\Test\\CircularDep'
-            ]
-        ]);
-    }
-
-    public function mockConfigurations(): void
-    {
-        config([
-            'entity-generator.stubs.test' => 'entity-generator::test',
-            'entity-generator.stubs.dump' => 'entity-generator::dumps.pgsql',
-            'entity-generator.paths' => [
-                'tests' => 'tests',
-                'models' => 'app/Models',
-                'factory' => 'database/factories',
-            ]
+                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\CircularDep',
+            ],
         ]);
     }
 
     public function mockFilesystem(): void
     {
         $userModel = file_get_contents(getcwd() . '/tests/Support/Test/User.php');
+        $roleModel = file_get_contents(getcwd() . '/tests/Support/Test/Role.php');
         $commentModel = file_get_contents(getcwd() . '/tests/Support/Test/Comment.php');
         $postModel = file_get_contents(getcwd() . '/tests/Support/Test/Post.php');
-        $userFactory = file_get_contents(getcwd() . '/tests/Support/Test/UserFactory.php');
-        $postFactory = file_get_contents(getcwd() . '/tests/Support/Test/PostFactory.php');
+        $userFactory = file_get_contents(getcwd() . '/tests/Support/Factories/UserFactory.php');
+        $roleFactory = file_get_contents(getcwd() . '/tests/Support/Factories/RoleFactory.php');
+        $postFactory = file_get_contents(getcwd() . '/tests/Support/Factories/PostFactory.php');
 
         $structure = [
             'app' => [
                 'Models' => [
                     'Post.php' => $postModel,
                     'User.php' => $userModel,
+                    'Role.php' => $roleModel,
                     'Comment.php' => $commentModel,
                 ],
             ],
             'database' => [
                 'factories' => [
                     'UserFactory.php' => $userFactory,
+                    'RoleFactory.php' => $roleFactory,
                     'PostFactory.php' => $postFactory,
-                ]
+                ],
             ],
             'tests' => [
                 'fixtures' => [
-                    'PostTest' => []
+                    'PostTest' => [],
                 ]
             ]
         ];
@@ -164,18 +148,18 @@ trait TestMockTrait
     public function mockFilesystemForCircleDependency(): void
     {
         $model = file_get_contents(getcwd() . '/tests/Support/Test/CircularDep.php');
-        $factory = file_get_contents(getcwd() . '/tests/Support/Test/CircularDepFactory.php');
+        $factory = file_get_contents(getcwd() . '/tests/Support/Factories/CircularDepFactory.php');
 
         $structure = [
             'app' => [
                 'Models' => [
-                    'CircularDep.php' => $model
+                    'CircularDep.php' => $model,
                 ],
             ],
             'database' => [
                 'factories' => [
                     'CircularDepFactory.php' => $factory,
-                ]
+                ],
             ],
         ];
 

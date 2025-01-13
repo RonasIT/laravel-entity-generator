@@ -15,17 +15,20 @@ class ControllerGenerator extends EntityGenerator
             $this->throwFailureException(
                 ClassAlreadyExistsException::class,
                 "Cannot create {$this->model}Controller cause {$this->model}Controller already exists.",
-                "Remove {$this->model}Controller."
+                "Remove {$this->model}Controller.",
             );
-
         }
 
         if (!$this->classExists('services', "{$this->model}Service")) {
             $this->throwFailureException(
                 ClassNotExistsException::class,
-                "Cannot create {$this->model}Service cause {$this->model}Service does not exists.",
-                "Create a {$this->model}Service by himself."
+                "Cannot create {$this->model}Controller cause {$this->model}Service does not exists.",
+                "Create a {$this->model}Service by himself.",
             );
+        }
+
+        if (!$this->isStubExists('controller')) {
+            return;
         }
 
         $controllerContent = $this->getControllerContent($this->model);
@@ -41,7 +44,7 @@ class ControllerGenerator extends EntityGenerator
     {
         return $this->getStub('controller', [
             'entity' => $model,
-            'requestsFolder' => $this->getPluralName($model),
+            'requestsFolder' => $model,
             'namespace' => $this->getOrCreateNamespace('controllers'),
             'requestsNamespace' => $this->getOrCreateNamespace('requests'),
             'resourcesNamespace' => $this->getOrCreateNamespace('resources'),
@@ -57,12 +60,14 @@ class ControllerGenerator extends EntityGenerator
             $this->throwFailureException(
                 FileNotFoundException::class,
                 "Not found file with routes.",
-                "Create a routes file on path: '{$routesPath}'."
+                "Create a routes file on path: '{$routesPath}'.",
             );
         }
 
-        $this->addUseController($routesPath);
-        $this->addRoutes($routesPath);
+        if ($this->isStubExists('routes') && $this->isStubExists('use_routes')) {
+            $this->addUseController($routesPath);
+            $this->addRoutes($routesPath);
+        }
     }
 
     protected function addRoutes($routesPath): string
@@ -73,9 +78,12 @@ class ControllerGenerator extends EntityGenerator
         ]);
 
         $routes = explode("\n", $routesContent);
+        $routes = array_slice($routes, 1, array_key_last($routes) - 1);
 
         foreach ($routes as $route) {
             if (!empty($route)) {
+                $route = trim($route);
+
                 $createMessage = "Created a new Route: $route";
 
                 event(new SuccessCreateMessage($createMessage));
