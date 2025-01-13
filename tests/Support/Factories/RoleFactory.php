@@ -1,18 +1,18 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Test;
+namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use RonasIT\Support\Tests\Support\Test\Role;
 
-class UserFactory extends Factory
+class RoleFactory extends Factory
 {
-    protected $model = User::class;
+    protected $model = Role::class;
 
     public function definition(): array
     {
         return [
             'name' => 'some name',
-            'email' => 'some email'
         ];
     }
 }

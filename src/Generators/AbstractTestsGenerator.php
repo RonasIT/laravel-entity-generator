@@ -25,6 +25,10 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     public function generate(): void
     {
+        if ($this->canGenerateUserData()) {
+            $this->withAuth = true;
+        }
+
         $this->createDump();
         $this->generateFixtures();
         $this->generateTests();
@@ -70,9 +74,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     {
         $arrayModels = [$this->model];
 
-        if ($this->canGenerateUserData()) {
+        if ($this->withAuth) {
             array_unshift($arrayModels, 'User');
-            $this->withAuth = true;
         }
 
         return array_map(function ($model) {
@@ -113,7 +116,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
         array_walk($values, function (&$value) {
             if ($value instanceof DateTime) {
-                $value = "'{$value->format('Y-m-d h:i:s')}'";
+                $value = "{$value->format('Y-m-d h:i:s')}";
             } elseif (is_bool($value)) {
                 $value = ($value) ? 'true' : 'false';
             } elseif (is_array($value)) {

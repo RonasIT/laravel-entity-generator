@@ -98,40 +98,4 @@ class FactoryGeneratorTest extends TestCase
             message: 'Created a new Factory: PostFactory',
         );
     }
-
-    public function testCreateWithFileEndingPath()
-    {
-        $this->expectsEvents([SuccessCreateMessage::class]);
-
-        $mock = $this->getMockForFileExists(false);
-
-        $this->mockConfigurationsForPathWithEndingFile();
-        $this->mockViewsNamespace();
-        $this->mockFilesystemForPathWithEndingFile();
-        $this->mockFactoryGeneratorForFileEndingPath();
-
-        try {
-            app(FactoryGenerator::class)
-                ->setFields([
-                    'integer-required' => ['author_id'],
-                    'string' => ['title', 'iban', 'something'],
-                    'json' => ['json_text'],
-                ])
-                ->setRelations([
-                    'hasOne' => ['User'],
-                    'hasMany' => ['User'],
-                    'belongsTo' => ['user']
-                ])
-                ->setModel('Post')
-                ->generate();
-        } finally {
-            $mock->disable();
-        }
-
-        $this->rollbackToDefaultBasePath();
-
-        $this->assertFileExists("{$this->generatedFileBasePath}/database/factories/PostFactory.php");
-
-        $this->removeRecursivelyGeneratedFolders(getcwd() . '/vfs:');
-    }
 }

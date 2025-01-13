@@ -1,13 +1,14 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Test;
+namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
+use RonasIT\Support\Tests\Support\Test\CircularDep;
 
-class CommentFactory extends Factory
+class CircularDepFactory extends Factory
 {
-    protected $model = Comment::class;
+    protected $model = CircularDep::class;
 
     public function definition(): array
     {
@@ -16,7 +17,10 @@ class CommentFactory extends Factory
             'body' => 'some body',
             'posted_at' => Carbon::now(),
             'drafted' => false,
-            'data' => ['title' => '1', 'body' => '2']
+            'data' => [
+                'title' => '1',
+                'body' => '2',
+            ],
         ];
     }
 }
