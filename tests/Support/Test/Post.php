@@ -21,6 +21,11 @@ class Post extends Model
         'updated_at'
     ];
 
+    public function getConnectionName(): string
+    {
+        return 'pgsql';
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

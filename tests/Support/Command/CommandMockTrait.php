@@ -2,31 +2,29 @@
 
 namespace RonasIT\Support\Tests\Support\Command;
 
+use Illuminate\Database\Connection;
+use Illuminate\Support\Facades\DB;
 use org\bovigo\vfs\vfsStream;
-use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Generators\NovaResourceGenerator;
+use RonasIT\Support\Generators\NovaTestGenerator;
+use RonasIT\Support\Generators\TestsGenerator;
+use RonasIT\Support\Tests\Support\FileSystemMock;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\SchemaManager;
+use Mockery;
+use RonasIT\Support\Tests\Support\Test\Post;
 
 trait CommandMockTrait
 {
     use GeneratorMockTrait;
 
-    public function mockConfigurations(): void
-    {
-        config([
-            'entity-generator.stubs.service' => 'entity-generator::service',
-            'entity-generator.stubs.service_with_trait' => 'entity-generator::service_with_trait',
-            'entity-generator.paths' => [
-                'repositories' => 'app/Repositories',
-                'services' => 'app/Services',
-                'models' => 'app/Models',
-                'translations' => 'lang/en/validation.php'
-            ]
-        ]);
-    }
-
-    public function mockFilesystem(): void
+    public function mockFilesystemPostModelExists(): void
     {
         $structure = [
             'app' => [
+                'Http' => [
+                    'Controllers' => [],
+                ],
                 'Models' => [
                     'Post.php' => '<?php'
                 ],
@@ -34,9 +32,141 @@ trait CommandMockTrait
             ],
             'config' => [
                 'entity-generator.php' => ''
-            ]
+            ],
         ];
 
         vfsStream::create($structure);
+    }
+
+    public function mockFilesystem(): void
+    {
+        $structure = [
+            'database' => [
+                'migrations' => [],
+                'factories' => [],
+                'seeders' => [],
+            ],
+            'lang' => [
+                'en' => [],
+            ],
+            'app' => [
+                'Http' => [
+                    'Controllers' => [],
+                    'Resources' => [],
+                    'Requests' => [],
+                ],
+                'Nova' => [],
+                'Models' => [],
+                'Repositories' => [],
+                'Services' => [],
+            ],
+            'tests' => [
+                'fixtures' => [
+                    'PostTest' => [],
+                ],
+            ],
+            'routes' => [
+                'api.php' => $this->mockPhpFileContent(),
+            ],
+            'config' => [
+                'entity-generator.php' => '',
+            ],
+        ];
+
+        vfsStream::create($structure);
+    }
+
+    public function mockGenerator(): void
+    {
+        $this->mockClass(TestsGenerator::class, [
+            $this->functionCall(
+                name: 'getModelClass',
+                arguments: ['Post'],
+                result: 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ),
+            $this->functionCall(
+                name: 'getModelClass',
+                arguments: ['Post'],
+                result: 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ),
+            $this->functionCall(
+                name: 'getModelClass',
+                arguments: ['Post'],
+                result: 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ),
+            $this->functionCall(
+                name: 'getModelClass',
+                arguments: ['Post'],
+                result: 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ),
+        ]);
+
+        $this->mockClass(NovaResourceGenerator::class, [
+            $this->functionCall(
+                name: 'getModelClass',
+                arguments: ['Post'],
+                result: 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ),
+        ]);
+
+        $this->mockClass(NovaTestGenerator::class, [
+            $this->functionCall(
+                name: 'getModelClass',
+                arguments: ['Post'],
+                result: 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ),
+            $this->functionCall(
+                name: 'getModelClass',
+                arguments: ['Post'],
+                result: 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ),
+            $this->functionCall(
+                name: 'getModelClass',
+                arguments: ['Post'],
+                result: 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ),
+            $this->functionCall(
+                name: 'getModelClass',
+                arguments: ['Post'],
+                result: 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
+            ),
+            $this->functionCall(
+                name: 'loadNovaActions',
+                result: [],
+            ),
+            $this->functionCall(
+                name: 'loadNovaFields',
+                result: [],
+            ),
+            $this->functionCall(
+                name: 'loadNovaFilters',
+                result: [],
+            ),
+        ]);
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Test\Post', true]),
+            $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
+            $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
+            $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Test\Post', true]),
+        );
+    }
+
+    public function mockGettingModelInstance(): void
+    {
+        $connectionMock = Mockery::mock(Connection::class)->makePartial();
+        $connectionMock
+            ->expects('getDoctrineSchemaManager')
+            ->andReturn(new SchemaManager);
+
+        $mock = Mockery::mock('alias:' . DB::class);
+        $mock
+            ->expects('connection')
+            ->with('pgsql')
+            ->andReturn($connectionMock);
+
+        $mock->shouldReceive('beginTransaction', 'rollBack');
+
+        $this->app->instance('App\\Models\\Post', new Post());
     }
 }
