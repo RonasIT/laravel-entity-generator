@@ -21,13 +21,8 @@ class CircularDep extends Model
         'updated_at'
     ];
 
-    protected static function newFactory(): CircularDepFactory
-    {
-        return CircularDepFactory::new();
-    }
-
     public function dep()
     {
-        return $this->belongsTo(CircularDep::class);
+        return $this->belongsTo(self::class);
     }
 }

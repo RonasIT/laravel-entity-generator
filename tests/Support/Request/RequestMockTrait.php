@@ -3,34 +3,12 @@
 namespace RonasIT\Support\Tests\Support\Request;
 
 use org\bovigo\vfs\vfsStream;
-use RonasIT\Support\Generators\RepositoryGenerator;
-use RonasIT\Support\Tests\Support\Shared\GeneratorMockTrait;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\Support\Traits\MockTrait;
 
 trait RequestMockTrait
 {
-    use GeneratorMockTrait;
-
-    public function mockGeneratorForCreation(): void
-    {
-        $this->mockClass(RepositoryGenerator::class, [
-            [
-                'method' => 'classExists',
-                'arguments' => ['models', 'Post'],
-                'result' => false
-            ],
-        ]);
-    }
-
-    public function mockConfigurations(): void
-    {
-        config([
-            'entity-generator.stubs.request' => 'entity-generator::request',
-            'entity-generator.paths' => [
-                'requests' => 'app/Http/Requests',
-                'services' => 'app/Services',
-            ]
-        ]);
-    }
+    use GeneratorMockTrait, MockTrait;
 
     public function mockFilesystem(): void
     {
