@@ -14,8 +14,8 @@ trait ModelMockTrait
         $structure = [
             'app' => [
                 'Models' => [
-                    'Comment.php' => file_get_contents(getcwd() . '/tests/Support/Model/RelationModelMock.php'),
-                    'User.php' => file_get_contents(getcwd() . '/tests/Support/Model/RelationModelMock.php'),
+                    'Comment.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
+                    'User.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
                 ],
             ],
         ];

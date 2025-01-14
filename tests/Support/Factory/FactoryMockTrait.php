@@ -5,11 +5,10 @@ namespace RonasIT\Support\Tests\Support\Factory;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockTrait;
 
 trait FactoryMockTrait
 {
-    use GeneratorMockTrait, MockTrait;
+    use GeneratorMockTrait;
 
     public function mockFactoryGenerator(array ...$functionCalls): void
     {

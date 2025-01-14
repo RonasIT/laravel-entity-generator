@@ -14,13 +14,6 @@ class FactoryGeneratorTest extends TestCase
 {
     use FactoryMockTrait;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Event::fake();
-    }
-
     public function testModelNotExists()
     {
         $this->assertExceptionThrew(

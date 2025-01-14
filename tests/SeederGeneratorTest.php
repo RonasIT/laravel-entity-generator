@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Generators\SeederGenerator;
 use RonasIT\Support\Tests\Support\SeederGeneratorMockTrait;
@@ -10,13 +9,6 @@ use RonasIT\Support\Tests\Support\SeederGeneratorMockTrait;
 class SeederGeneratorTest extends TestCase
 {
     use SeederGeneratorMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Event::fake();
-    }
 
     public function testCreateSeeder()
     {
