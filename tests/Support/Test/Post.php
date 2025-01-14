@@ -21,11 +21,6 @@ class Post extends Model
         'updated_at'
     ];
 
-    protected static function newFactory(): PostFactory
-    {
-        return PostFactory::new();
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -36,7 +31,7 @@ class Post extends Model
         return $this->hasMany(User::class);
     }
 
-    public function comments()
+    public function comment()
     {
         return $this->belongsTo(Comment::class);
     }

@@ -2,30 +2,39 @@
 
 namespace App\Tests;
 
+use RonasIT\Support\Tests\ModelTestState;
+use App\Models\Post;
 use App\Models\User;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class PostTest extends TestCase
 {
-    protected $user;
+    protected static User $user;
 
-    public function setUp() : void
+    protected static ModelTestState $postState;
+
+    public function setUp(): void
     {
         parent::setUp();
 
-        $this->user = User::find(1);
+        self::$user ??= User::find(1);
+
+        self::$postState ??= new ModelTestState(Post::class);
     }
 
     public function testCreate()
     {
         $data = $this->getJsonFixture('create_post_request.json');
 
-        $response = $this->actingAs($this->user)->json('post', '/posts', $data);
+        $response = $this->actingAs(self::$user)->json('post', '/posts', $data);
 
         $response->assertCreated();
 
-        $this->assertEqualsFixture('create_post_response.json', $response->json());
+        // TODO: Need to remove last argument after first successful start
+        $this->assertEqualsFixture('create_post_response.json', $response->json(), true);
 
-        $this->assertDatabaseHas('posts', $this->getJsonFixture('create_post_response.json'));
+        // TODO: Need to remove last argument after first successful start
+        self::$postState->assertChangesEqualsFixture('create_post_state.json', true);
     }
 
     public function testCreateNoAuth()
@@ -41,20 +50,23 @@ class PostTest extends TestCase
     {
         $data = $this->getJsonFixture('update_post_request.json');
 
-        $response = $this->actingAs($this->user)->json('put', '/posts/1', $data);
+        $response = $this->actingAs(self::$user)->json('put', '/posts/1', $data);
 
         $response->assertNoContent();
 
-        $this->assertDatabaseHas('posts', $data);
+        // TODO: Need to remove last argument after first successful start
+        self::$postState->assertChangesEqualsFixture('update_post_state.json', true);
     }
 
     public function testUpdateNotExists()
     {
         $data = $this->getJsonFixture('update_post_request.json');
 
-        $response = $this->actingAs($this->user)->json('put', '/posts/0', $data);
+        $response = $this->actingAs(self::$user)->json('put', '/posts/0', $data);
 
         $response->assertNotFound();
+
+        self::$postState->assertNotChanged();
     }
 
     public function testUpdateNoAuth()
@@ -64,28 +76,27 @@ class PostTest extends TestCase
         $response = $this->json('put', '/posts/1', $data);
 
         $response->assertUnauthorized();
+
+        self::$postState->assertNotChanged();
     }
 
     public function testDelete()
     {
-        $response = $this->actingAs($this->user)->json('delete', '/posts/1');
+        $response = $this->actingAs(self::$user)->json('delete', '/posts/1');
 
         $response->assertNoContent();
 
-        $this->assertDatabaseMissing('posts', [
-            'id' => 1
-        ]);
+        // TODO: Need to remove last argument after first successful start
+        self::$postState->assertChangesEqualsFixture('delete_post_state.json', true);
     }
 
     public function testDeleteNotExists()
     {
-        $response = $this->actingAs($this->user)->json('delete', '/posts/0');
+        $response = $this->actingAs(self::$user)->json('delete', '/posts/0');
 
         $response->assertNotFound();
 
-        $this->assertDatabaseMissing('posts', [
-            'id' => 0
-        ]);
+        self::$postState->assertNotChanged();
     }
 
     public function testDeleteNoAuth()
@@ -97,7 +108,7 @@ class PostTest extends TestCase
 
     public function testGet()
     {
-        $response = $this->actingAs($this->user)->json('get', '/posts/1');
+        $response = $this->actingAs(self::$user)->json('get', '/posts/1');
 
         $response->assertOk();
 
@@ -109,37 +120,39 @@ class PostTest extends TestCase
 
     public function testGetNotExists()
     {
-        $response = $this->actingAs($this->user)->json('get', '/posts/0');
+        $response = $this->actingAs(self::$user)->json('get', '/posts/0');
 
         $response->assertNotFound();
     }
 
-    public function getSearchFilters()
+    public function testGetNoAuth()
+    {
+        $response = $this->json('get', '/posts/1');
+
+        $response->assertUnauthorized();
+    }
+
+    public static function getSearchFilters(): array
     {
         return [
             [
                 'filter' => ['all' => 1],
-                'result' => 'search_all.json'
+                'fixture' => 'search_all.json',
             ],
             [
                 'filter' => [
                     'page' => 2,
-                    'per_page' => 2
+                    'per_page' => 2,
                 ],
-                'result' => 'search_by_page_per_page.json'
+                'fixture' => 'search_by_page_per_page.json',
             ],
         ];
     }
 
-    /**
-     * @dataProvider  getSearchFilters
-     *
-     * @param  array $filter
-     * @param  string $fixture
-     */
-    public function testSearch($filter, $fixture)
+    #[DataProvider('getSearchFilters')]
+    public function testSearch(array $filter, string $fixture)
     {
-        $response = $this->json('get', '/posts', $filter);
+        $response = $this->actingAs(self::$user)->json('get', '/posts', $filter);
 
         $response->assertOk();
 
@@ -149,4 +162,10 @@ class PostTest extends TestCase
         $this->assertEqualsFixture($fixture, $response->json());
     }
 
+    public function testSearchNoAuth()
+    {
+        $response = $this->json('get', '/posts');
+
+        $response->assertUnauthorized();
+    }
 }

@@ -11,16 +11,19 @@ class ServiceProviderTest extends TestCase
     {
         $provider = new EntityGeneratorServiceProvider($this->app);
         $provider->boot();
+
         $finder = view()->getFinder();
 
         $this->assertArrayHasKey('make:entity', Artisan::all());
+
         $this->assertTrue(in_array(
-            '/app/vendor/orchestra/testbench-core/laravel/resources/views',
-            $finder->getPaths()
+            needle: '/app/vendor/orchestra/testbench-core/laravel/resources/views',
+            haystack: $finder->getPaths(),
         ));
+
         $this->assertEquals(
-            ['/app/src/../config/entity-generator.php' => 'vfs://root/config/entity-generator.php'],
-            EntityGeneratorServiceProvider::$publishes['RonasIT\Support\EntityGeneratorServiceProvider']
+            expected: ['/app/src/../config/entity-generator.php' => 'vfs://root/config/entity-generator.php'],
+            actual: EntityGeneratorServiceProvider::$publishes['RonasIT\Support\EntityGeneratorServiceProvider'],
         );
     }
 }

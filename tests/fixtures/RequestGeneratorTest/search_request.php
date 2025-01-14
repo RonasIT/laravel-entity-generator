@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Posts;
+namespace App\Http\Requests\Post;
 
 use App\Http\Requests\Request;
 
@@ -12,9 +12,9 @@ class SearchPostsRequest extends Request
             'user_id' => 'integer|exists:users,id|required',
             'page' => 'integer',
             'per_page' => 'integer',
-            'all' => 'integer',
             'is_published' => 'boolean',
             'desc' => 'boolean',
+            'all' => 'boolean',
             'with' => 'array',
             'order_by' => 'string',
             'query' => 'string|nullable',

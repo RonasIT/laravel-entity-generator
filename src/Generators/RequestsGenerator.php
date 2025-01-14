@@ -27,6 +27,10 @@ class RequestsGenerator extends EntityGenerator
 
     public function generate(): void
     {
+        if (!$this->isStubExists('request')) {
+            return;
+        }
+
         if (in_array('R', $this->crudOptions)) {
             $this->createRequest(
                 self::GET_METHOD,
@@ -63,7 +67,7 @@ class RequestsGenerator extends EntityGenerator
 
     protected function createRequest($method, $needToValidate = true, $parameters = []): void
     {
-        $requestsFolder = $this->getPluralName($this->model);
+        $requestsFolder = $this->model;
         $modelName = $this->getEntityName($method);
 
         $content = $this->getStub('request', [
@@ -120,10 +124,14 @@ class RequestsGenerator extends EntityGenerator
             'timestamp', 'timestamp-required', 'string-required', 'integer-required', 'boolean-required'
         ]);
 
-        $parameters['boolean'] = array_merge($this->fields['boolean-required'], ['desc']);
+        $parameters['boolean'] = array_merge($this->fields['boolean-required'], [
+            'desc',
+            'all',
+        ]);
 
         $parameters['integer'] = array_merge($this->fields['integer'], [
-            'page', 'per_page', 'all',
+            'page',
+            'per_page',
         ]);
 
         $parameters['array'] = ['with'];

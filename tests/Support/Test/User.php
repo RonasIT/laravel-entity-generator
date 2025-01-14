@@ -13,12 +13,13 @@ class User extends Model
     protected $fillable = [
         'name',
         'email',
+        'role_id',
         'created_at',
         'updated_at'
     ];
 
-    protected static function newFactory(): UserFactory
+    public function role()
     {
-        return UserFactory::new();
+        return $this->belongsTo(Role::class);
     }
 }
