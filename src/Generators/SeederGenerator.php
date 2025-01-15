@@ -62,7 +62,7 @@ class SeederGenerator extends EntityGenerator
             'entity' => $this->model,
             'relations' => $this->relations,
             'namespace' => $this->getOrCreateNamespace('seeders'),
-            'factoryNamespace' => $this->getOrCreateNamespace('factory'),
+            'factoryNamespace' => $this->getOrCreateNamespace('factories'),
         ]);
 
         $seederPath = "{$this->seedsPath}/{$this->model}Seeder.php";
