@@ -17,7 +17,7 @@ trait FactoryMockTrait
 
     public function mockFilesystem(): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
 
         $fileSystemMock->models = [
             'Post.php' => $this->mockPhpFileContent(),
