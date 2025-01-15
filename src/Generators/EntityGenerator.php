@@ -84,18 +84,18 @@ abstract class EntityGenerator
         $this->paths = config('entity-generator.paths');
     }
 
-    protected function getOrCreateNamespace(string $path): string
+    protected function getOrCreateNamespace(string $configPath): string
     {
-        $path = $this->paths[$path];
+        $path = $this->paths[$configPath];
         $pathParts = explode('/', $path);
 
         if (Str::endsWith(Arr::last($pathParts), '.php')) {
             array_pop($pathParts);
         }
 
-        $namespace = array_map(function (string $part) {
-            return ucfirst($part);
-        }, $pathParts);
+        $namespace = Arr::map($pathParts, fn (string $part, int $key) => (
+            $configPath !== 'models' || $key === array_key_first($pathParts)
+        ) ? ucfirst($part) : $part);
 
         $fullPath = base_path($path);
 

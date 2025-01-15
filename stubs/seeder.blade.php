@@ -1,7 +1,7 @@
 namespace {{$namespace}};
 
 use Illuminate\Database\Seeder;
-use {{$modelsNamespace}}\{{$entity}};
+use {{$factoryNamespace}}\{{$entity}}Factory;
 
 class {{$entity}}Seeder extends Seeder
 {
@@ -9,36 +9,36 @@ class {{$entity}}Seeder extends Seeder
     {
 @if (empty($relations['belongsTo']))
 @if(empty(array_filter($relations)))
-        {{$entity}}::factory()->create();
+        {{$entity}}Factory::new()->create();
 @else
-        ${{strtolower($entity)}} = {{$entity}}::factory()->create();
+        ${{strtolower($entity)}} = {{$entity}}Factory::new()->create();
 @endif
 @else
 @if(empty(array_filter($relations)))
-        ${{strtolower($entity)}} = {{$entity}}::factory()->make([
+        ${{strtolower($entity)}} = {{$entity}}Factory::new()->make([
 @else
-        {{$entity}}::factory()->make([
+        {{$entity}}Factory::new()->make([
 @endif
 @foreach($relations['belongsTo'] as $relation)
-            '{{strtolower($relation)}}_id' => \{{$modelsNamespace}}\{{$relation}}::factory()->create()->id,
+            '{{strtolower($relation)}}_id' => \{{$factoryNamespace}}\{{$relation}}Factory::new()->create()->id,
 @endforeach
         ]);
 @endif
 
 @foreach($relations['hasOne'] as $relation)
-        \{{$modelsNamespace}}\{{$relation}}::factory()->make([
+        \{{$factoryNamespace}}\{{$relation}}Factory::new()->make([
             '{{strtolower($entity)}}_id' => ${{strtolower($entity)}}->id,
         ]);
 
 @endforeach
 @foreach($relations['hasMany'] as $relation)
-        \{{$modelsNamespace}}\{{$relation}}::factory()->count(10)->make([
+        \{{$factoryNamespace}}\{{$relation}}Factory::new()->count(10)->make([
             '{{strtolower($entity)}}_id' => ${{strtolower($entity)}}->id,
         ]);
 
 @endforeach
 @foreach($relations['belongsToMany'] as $relation)
-        $list = \{{$modelsNamespace}}\{{$relation}}::factory()->count(10)->create()->pluck('id');
+        $list = \{{$factoryNamespace}}\{{$relation}}Factory::new()->count(10)->create()->pluck('id');
         ${{strtolower($entity)}}->{{strtolower($relation)}}s()->sync($list);
 @endforeach
     }
