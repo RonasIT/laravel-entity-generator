@@ -2,7 +2,7 @@
 
 namespace RonasIT\Support\Tests\Support\Model;
 
-use org\bovigo\vfs\vfsStream;
+use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 
 trait ModelMockTrait
@@ -11,15 +11,13 @@ trait ModelMockTrait
 
     public function mockFilesystem(): void
     {
-        $structure = [
-            'app' => [
-                'Models' => [
-                    'Comment.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
-                    'User.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
-                ],
-            ],
+        $fileSystemMock = new FileSystemMock;
+
+        $fileSystemMock->models = [
+            'Comment.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
+            'User.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
         ];
 
-        vfsStream::create($structure);
+        $fileSystemMock->setStructure();
     }
 }

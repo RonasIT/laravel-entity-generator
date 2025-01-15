@@ -50,7 +50,6 @@ class FactoryGeneratorTest extends TestCase
 
     public function testProcessUnknownFieldType()
     {
-        $this->mockConfigurations();
         $this->mockFilesystem();
 
         $this->assertExceptionThrew(
@@ -75,7 +74,6 @@ class FactoryGeneratorTest extends TestCase
 
     public function testCreateSuccess()
     {
-        $this->mockConfigurations();
         $this->mockFilesystem();
 
         app(FactoryGenerator::class)
