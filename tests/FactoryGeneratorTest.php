@@ -14,13 +14,6 @@ class FactoryGeneratorTest extends TestCase
 {
     use FactoryMockTrait;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Event::fake();
-    }
-
     public function testModelNotExists()
     {
         $this->assertExceptionThrew(
@@ -57,7 +50,6 @@ class FactoryGeneratorTest extends TestCase
 
     public function testProcessUnknownFieldType()
     {
-        $this->mockConfigurations();
         $this->mockFilesystem();
 
         $this->assertExceptionThrew(
@@ -82,7 +74,6 @@ class FactoryGeneratorTest extends TestCase
 
     public function testCreateSuccess()
     {
-        $this->mockConfigurations();
         $this->mockFilesystem();
 
         app(FactoryGenerator::class)

@@ -10,22 +10,22 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ModelGenerator extends EntityGenerator
 {
-    CONST PLURAL_NUMBER_REQUIRED = [
+    protected const array PLURAL_NUMBER_REQUIRED = [
         'belongsToMany',
-        'hasMany'
+        'hasMany',
     ];
 
     public function generate(): void
     {
         if ($this->classExists('models', $this->model)) {
             $this->throwFailureException(
-                ClassAlreadyExistsException::class,
-                "Cannot create {$this->model} Model cause {$this->model} Model already exists.",
-                "Remove {$this->model} Model."
+                exceptionClass: ClassAlreadyExistsException::class,
+                failureMessage: "Cannot create {$this->model} Model cause {$this->model} Model already exists.",
+                recommendedMessage: "Remove {$this->model} Model.",
             );
         }
 
-        if ($this->isStubExists('model') && ($this->isStubExists('relation') || empty($this->relations))) {
+        if ($this->isStubExists('model') && (!$this->hasRelations() || $this->isStubExists('relation', 'model'))) {
             $this->prepareRelatedModels();
             $modelContent = $this->getNewModelContent();
 
@@ -35,6 +35,11 @@ class ModelGenerator extends EntityGenerator
         }
     }
 
+    protected function hasRelations(): bool
+    {
+        return !collect($this->relations)->every(fn ($relation) => empty($relation));
+    }
+
     protected function getNewModelContent(): string
     {
         return $this->getStub('model', [
@@ -42,7 +47,7 @@ class ModelGenerator extends EntityGenerator
             'fields' => Arr::collapse($this->fields),
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
-            'namespace' => $this->getOrCreateNamespace('models')
+            'namespace' => $this->getOrCreateNamespace('models'),
         ]);
     }
 
@@ -59,9 +64,9 @@ class ModelGenerator extends EntityGenerator
             foreach ($relationsByType as $relation) {
                 if (!$this->classExists('models', $relation)) {
                     $this->throwFailureException(
-                        ClassNotExistsException::class,
-                        "Cannot create {$relation} Model cause {$relation} Model does not exists.",
-                        "Create a {$relation} Model by himself or run command 'php artisan make:entity {$relation} --only-model'."
+                        exceptionClass: ClassNotExistsException::class,
+                        failureMessage: "Cannot create {$this->model} Model cause relation model {$relation} does not exist.",
+                        recommendedMessage: "Create the {$relation} Model by himself or run command 'php artisan make:entity {$relation} --only-model'.",
                     );
                 }
 
@@ -70,7 +75,7 @@ class ModelGenerator extends EntityGenerator
                 $newRelation = $this->getStub('relation', [
                     'name' => $this->getRelationName($this->model, $types[$type]),
                     'type' => $types[$type],
-                    'entity' => $this->model
+                    'entity' => $this->model,
                 ]);
 
                 $fixedContent = preg_replace('/\}$/', "\n    {$newRelation}\n}", $content);
@@ -80,9 +85,9 @@ class ModelGenerator extends EntityGenerator
         }
     }
 
-    public function getModelContent($model): string
+    public function getModelContent(string $model): string
     {
-        $modelPath = base_path($this->paths['models'] . "/{$model}.php");
+        $modelPath = base_path("{$this->paths['models']}/{$model}.php");
 
         return file_get_contents($modelPath);
     }
@@ -97,7 +102,7 @@ class ModelGenerator extends EntityGenerator
                     $result[] = [
                         'name' => $this->getRelationName($relation, $type),
                         'type' => $type,
-                        'entity' => $relation
+                        'entity' => $relation,
                     ];
                 }
             }
@@ -106,7 +111,7 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getCasts($fields): array
+    protected function getCasts(array $fields): array
     {
         $casts = [
             'boolean-required' => 'boolean',
@@ -117,7 +122,7 @@ class ModelGenerator extends EntityGenerator
         $result = [];
 
         foreach ($fields as $fieldType => $names) {
-            if (empty($casts[$fieldType])) {
+            if (!array_key_exists($fieldType, $casts)) {
                 continue;
             }
 
@@ -129,7 +134,7 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    private function getRelationName($relation, $type): string
+    private function getRelationName(string $relation, string $type): string
     {
         $relationName = Str::snake($relation);
 
