@@ -2,25 +2,21 @@
 
 namespace RonasIT\Support\Tests\Support\Repository;
 
-use org\bovigo\vfs\vfsStream;
+use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockTrait;
 
 trait RepositoryMockTrait
 {
-    use GeneratorMockTrait, MockTrait;
+    use GeneratorMockTrait;
 
     public function mockFilesystem(): void
     {
-        $structure = [
-            'app' => [
-                'Models' => [
-                    'Post.php' => '<?php',
-                ],
-                'Repositories' => [],
-            ],
+        $fileSystemMock = new FileSystemMock;
+
+        $fileSystemMock->models = [
+            'Post.php' => $this->mockPhpFileContent(),
         ];
 
-        vfsStream::create($structure);
+        $fileSystemMock->setStructure();
     }
 }
