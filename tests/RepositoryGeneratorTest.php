@@ -20,7 +20,7 @@ class RepositoryGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
-            message: "Cannot create Post Model cause Post Model does not exists. "
+            message: "Cannot create PostRepository cause Post Model does not exists. "
             . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'.",
         );
 
