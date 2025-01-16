@@ -69,7 +69,6 @@ class FactoryGeneratorTest extends TestCase
             ])
             ->setModel('Post')
             ->generate();
-
     }
 
     public function testCreateSuccess()
