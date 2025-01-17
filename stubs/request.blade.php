@@ -23,6 +23,9 @@ class {{$method}}{{$entity}}Request extends Request
 @endif
     }
 @endif
+@if($method !== $requestsGenerator::DELETE_METHOD && $needToValidate)
+
+@endif
 @if($needToValidate)
     public function validateResolved(): void
     {
