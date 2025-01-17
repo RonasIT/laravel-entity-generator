@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -15,13 +14,6 @@ use RonasIT\Support\Tests\Support\ControllerGeneratorTest\ControllerGeneratorMoc
 class ControllerGeneratorTest extends TestCase
 {
     use ControllerGeneratorMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Event::fake();
-    }
 
     public function testControllerAlreadyExists()
     {

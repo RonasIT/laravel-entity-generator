@@ -4,12 +4,10 @@ namespace RonasIT\Support\Tests\Support\ControllerGeneratorTest;
 
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockTrait;
 
 trait ControllerGeneratorMockTrait
 {
     use GeneratorMockTrait;
-    use MockTrait;
 
     public function mockFilesystemWithoutRoutesFile(): void
     {
