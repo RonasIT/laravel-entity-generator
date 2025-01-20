@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use Throwable;
 use ReflectionMethod;
 use ReflectionClass;
@@ -93,9 +94,15 @@ abstract class EntityGenerator
             array_pop($pathParts);
         }
 
-        $namespace = Arr::map($pathParts, fn (string $part, int $key) => (
-            $configPath !== 'models' || $key === array_key_first($pathParts)
-        ) ? ucfirst($part) : $part);
+        foreach ($pathParts as $part) {
+            if (!$this->isFolderHasCorrectCase($part, $configPath)) {
+                throw new IncorrectClassPathException("Incorrect path to {$configPath}, {$part} folder must start with a capital letter, please specify the path according to the PSR.");
+            }
+        }
+
+        $namespace = array_map(function (string $part) {
+            return ucfirst($part);
+        }, $pathParts);
 
         $fullPath = base_path($path);
 
@@ -104,6 +111,22 @@ abstract class EntityGenerator
         }
 
         return implode('\\', $namespace);
+    }
+
+    protected function isFolderHasCorrectCase(string $folder, string $configPath): bool
+    {
+        $lowerCaseDirectoriesMap = [
+            'migrations' => 'database/migrations',
+            'factories' => 'database/factories',
+            'seeders' => 'database/seeders',
+            'database_seeder' => 'database/seeders',
+            'tests' => 'tests',
+            'routes' => 'routes',
+        ];
+
+        $directory = Arr::get($lowerCaseDirectoriesMap, $configPath);
+
+        return $folder === 'app' || preg_match('/^[A-Z]/', $folder) || Str::contains($directory, $folder);
     }
 
     abstract public function generate(): void;
