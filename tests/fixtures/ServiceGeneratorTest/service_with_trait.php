@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Post;
+use Illuminate\Pagination\LengthAwarePaginator;
 use RonasIT\Support\Traits\EntityControlTrait;
 
 /**
@@ -17,11 +18,12 @@ class PostService
         $this->setModel(Post::class);
     }
 
-    public function search($filters)
+    public function search($filters): LengthAwarePaginator
     {
-        return $this->searchQuery($filters)
-        ->filterBy('media_id')
-        ->filterByQuery(['title', 'body'])
-        ->getSearchResults();
+        return $this
+            ->searchQuery($filters)
+            ->filterBy('media_id')
+            ->filterByQuery(['title', 'body'])
+            ->getSearchResults();
     }
 }
