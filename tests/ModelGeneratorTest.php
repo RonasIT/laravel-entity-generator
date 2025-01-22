@@ -8,11 +8,10 @@ use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Tests\Support\Model\ModelMockTrait;
-use RonasIT\Support\Traits\MockTrait;
 
 class ModelGeneratorTest extends TestCase
 {
-    use ModelMockTrait, MockTrait;
+    use ModelMockTrait;
 
     public function testModelAlreadyExists()
     {
@@ -69,7 +68,7 @@ class ModelGeneratorTest extends TestCase
 
         $this->assertGeneratedFileEquals('new_model.php', 'app/Models/Post.php');
         $this->assertGeneratedFileEquals('comment_relation_model.php', 'app/Models/Comment.php');
-        $this->assertGeneratedFileEquals('user_relation_model.php', 'app/Models/User.php');
+        $this->assertGeneratedFileEquals('comment_relation_model.php', 'app/Models/User.php');
 
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
@@ -86,12 +85,6 @@ class ModelGeneratorTest extends TestCase
         app(ModelGenerator::class)
             ->setModel('Post')
             ->setFields([])
-            ->setRelations([
-                'hasOne' => [],
-                'hasMany' => [],
-                'belongsTo' => [],
-                'belongsToMany' => [],
-            ])
             ->generate();
 
         $this->assertFileDoesNotExist('app/Models/Post.php');
@@ -113,12 +106,6 @@ class ModelGeneratorTest extends TestCase
         app(ModelGenerator::class)
             ->setModel('Post')
             ->setFields([])
-            ->setRelations([
-                'hasOne' => [],
-                'hasMany' => [],
-                'belongsTo' => [],
-                'belongsToMany' => [],
-            ])
             ->generate();
 
         $this->assertGeneratedFileEquals('new_model_without_fields_and_relations.php', 'app/Models/Post.php');

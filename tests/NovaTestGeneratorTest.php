@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
-use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -58,8 +57,6 @@ class NovaTestGeneratorTest extends TestCase
 
     public function testNovaTestStubNotExist()
     {
-        Event::fake();
-
         $this->mockNativeGeneratorFunctions(
             $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
             $this->nativeClassExistsMethodCall([WelcomeBonus::class, true]),
@@ -96,8 +93,6 @@ class NovaTestGeneratorTest extends TestCase
 
     public function testDumpStubNotExist()
     {
-        Event::fake();
-
         $this->mockNovaServiceProviderExists();
 
         $this->mockFilesystem();
@@ -156,8 +151,6 @@ class NovaTestGeneratorTest extends TestCase
 
     public function testGenerateNovaPackageNotInstall()
     {
-        Event::fake();
-
         $this->mockNovaServiceProviderExists(false);
 
         app(NovaTestGenerator::class)
