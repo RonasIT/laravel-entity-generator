@@ -24,7 +24,7 @@ class {{$entity}}Service
         $this->setModel({{$entity}}::class);
     }
 
-    public function search($filters): LengthAwarePaginator
+    public function search(array $filters = []): LengthAwarePaginator
     {
         return $this
             ->searchQuery($filters)

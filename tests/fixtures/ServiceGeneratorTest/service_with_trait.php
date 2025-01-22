@@ -18,7 +18,7 @@ class PostService
         $this->setModel(Post::class);
     }
 
-    public function search($filters): LengthAwarePaginator
+    public function search(array $filters = []): LengthAwarePaginator
     {
         return $this
             ->searchQuery($filters)
