@@ -6,11 +6,11 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Generators\ResourceGenerator;
-use RonasIT\Support\Tests\Support\Resource\ResourceMockTrait;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 
 class ResourceGeneratorTest extends TestCase
 {
-    use ResourceMockTrait;
+    use GeneratorMockTrait;
 
     public function testResourceAlreadyExists()
     {
@@ -55,8 +55,6 @@ class ResourceGeneratorTest extends TestCase
 
     public function testCreateResources()
     {
-        $this->mockFilesystem();
-
         app(ResourceGenerator::class)
             ->setModel('Post')
             ->generate();
@@ -76,8 +74,6 @@ class ResourceGeneratorTest extends TestCase
     {
         config(['entity-generator.stubs.resource' => 'incorrect_stub']);
 
-        $this->mockFilesystem();
-
         app(ResourceGenerator::class)
             ->setModel('Post')
             ->generate();
@@ -94,8 +90,6 @@ class ResourceGeneratorTest extends TestCase
     public function testCreateResourcesCollectionResourceStubNotExist()
     {
         config(['entity-generator.stubs.collection_resource' => 'incorrect_stub']);
-
-        $this->mockFilesystem();
 
         app(ResourceGenerator::class)
             ->setModel('Post')
