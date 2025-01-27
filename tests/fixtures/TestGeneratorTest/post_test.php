@@ -3,8 +3,8 @@
 namespace App\Tests;
 
 use RonasIT\Support\Tests\ModelTestState;
-use RonasIT\Support\Tests\Support\Test\Post;
-use RonasIT\Support\Tests\Support\Test\User;
+use RonasIT\Support\Tests\Support\Test\Models\Post;
+use RonasIT\Support\Tests\Support\Test\Models\User;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class PostTest extends TestCase

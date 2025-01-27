@@ -49,8 +49,8 @@ class TestGeneratorTest extends TestCase
             ->times(5);
 
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Factories',
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
         ]);
 
         $this->mockClass(TestsGenerator::class, [
@@ -92,8 +92,8 @@ class TestGeneratorTest extends TestCase
     public function testCreateTestsDumpStubNotExist()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Factories',
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
             'entity-generator.stubs.dump' => 'incorrect_stub',
         ]);
 
@@ -131,8 +131,8 @@ class TestGeneratorTest extends TestCase
     public function testCreateTestsTestStubNotExist()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Factories',
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
             'entity-generator.stubs.test' => 'incorrect_stub',
         ]);
 
@@ -192,7 +192,7 @@ class TestGeneratorTest extends TestCase
             ->times(3);
 
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test',
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
         ]);
 
         $this->mockClass(TestsGenerator::class, [

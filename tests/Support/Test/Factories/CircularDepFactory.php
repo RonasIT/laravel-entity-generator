@@ -1,10 +1,10 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Factories;
+namespace RonasIT\Support\Tests\Support\Test\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use RonasIT\Support\Tests\Support\Test\CircularDep;
+use RonasIT\Support\Tests\Support\Test\Models\CircularDep;
 
 class CircularDepFactory extends Factory
 {

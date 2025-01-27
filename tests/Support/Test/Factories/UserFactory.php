@@ -1,9 +1,9 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Factories;
+namespace RonasIT\Support\Tests\Support\Test\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use RonasIT\Support\Tests\Support\Test\User;
+use RonasIT\Support\Tests\Support\Test\Models\User;
 
 class UserFactory extends Factory
 {

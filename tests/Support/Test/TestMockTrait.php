@@ -12,13 +12,13 @@ trait TestMockTrait
 
     public function mockFilesystem(): void
     {
-        $userModel = file_get_contents(getcwd() . '/tests/Support/Test/User.php');
-        $roleModel = file_get_contents(getcwd() . '/tests/Support/Test/Role.php');
-        $commentModel = file_get_contents(getcwd() . '/tests/Support/Test/Comment.php');
-        $postModel = file_get_contents(getcwd() . '/tests/Support/Test/Post.php');
-        $userFactory = file_get_contents(getcwd() . '/tests/Support/Factories/UserFactory.php');
-        $roleFactory = file_get_contents(getcwd() . '/tests/Support/Factories/RoleFactory.php');
-        $postFactory = file_get_contents(getcwd() . '/tests/Support/Factories/PostFactory.php');
+        $userModel = file_get_contents(getcwd() . '/tests/Support/Test/Models/User.php');
+        $roleModel = file_get_contents(getcwd() . '/tests/Support/Test/Models/Role.php');
+        $commentModel = file_get_contents(getcwd() . '/tests/Support/Test/Models/Comment.php');
+        $postModel = file_get_contents(getcwd() . '/tests/Support/Test/Models/Post.php');
+        $userFactory = file_get_contents(getcwd() . '/tests/Support/Test/Factories/UserFactory.php');
+        $roleFactory = file_get_contents(getcwd() . '/tests/Support/Test/Factories/RoleFactory.php');
+        $postFactory = file_get_contents(getcwd() . '/tests/Support/Test/Factories/PostFactory.php');
 
         $fileSystemMock = new FileSystemMock;
 
@@ -40,8 +40,8 @@ trait TestMockTrait
 
     public function mockFilesystemForCircleDependency(): void
     {
-        $model = file_get_contents(getcwd() . '/tests/Support/Test/CircularDep.php');
-        $factory = file_get_contents(getcwd() . '/tests/Support/Factories/CircularDepFactory.php');
+        $model = file_get_contents(getcwd() . '/tests/Support/Test/Models/CircularDep.php');
+        $factory = file_get_contents(getcwd() . '/tests/Support/Test/Factories/CircularDepFactory.php');
 
         $fileSystemMock = new FileSystemMock;
 
