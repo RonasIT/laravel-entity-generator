@@ -26,7 +26,7 @@ abstract class EntityGenerator
     protected $paths = [];
     protected $model;
     protected $fields;
-    protected $relations;
+    protected $relations = [];
     protected $crudOptions;
 
     /**

@@ -30,7 +30,7 @@ class ServiceGenerator extends EntityGenerator
             if (!$this->classExists('models', $this->model)) {
                 $this->throwFailureException(
                     exceptionClass: ClassNotExistsException::class,
-                    failureMessage: "Cannot create {$this->model} Model cause {$this->model} Model does not exists.",
+                    failureMessage: "Cannot create {$this->model}Service cause {$this->model} Model does not exists.",
                     recommendedMessage: "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'.",
                 );
             }

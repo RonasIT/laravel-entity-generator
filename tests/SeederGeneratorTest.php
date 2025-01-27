@@ -4,16 +4,11 @@ namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Generators\SeederGenerator;
-use RonasIT\Support\Tests\Support\SeederGeneratorMockTrait;
 
 class SeederGeneratorTest extends TestCase
 {
-    use SeederGeneratorMockTrait;
-
     public function testCreateSeeder()
     {
-        $this->mockFilesystem();
-
         app(SeederGenerator::class)
             ->setRelations([
                 'hasOne' => [],
@@ -30,8 +25,6 @@ class SeederGeneratorTest extends TestCase
 
     public function testCreateSeederEmptyDatabaseSeederStubNotExist()
     {
-        $this->mockFilesystem();
-
         config(['entity-generator.stubs.database_empty_seeder' => 'entity-generator::database_seed_empty']);
 
         app(SeederGenerator::class)
@@ -55,8 +48,6 @@ class SeederGeneratorTest extends TestCase
 
     public function testCreateSeederEntityDatabaseSeederStubNotExist()
     {
-        $this->mockFilesystem();
-
         config(['entity-generator.stubs.seeder' => 'incorrect_stub']);
 
         app(SeederGenerator::class)
