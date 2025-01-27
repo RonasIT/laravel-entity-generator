@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace RonasIT\Support\Tests\Support\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use RonasIT\Support\Tests\Support\Test\Role;

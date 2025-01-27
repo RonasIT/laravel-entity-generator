@@ -50,6 +50,7 @@ class TestGeneratorTest extends TestCase
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Factories',
         ]);
 
         $this->mockClass(TestsGenerator::class, [
@@ -92,6 +93,7 @@ class TestGeneratorTest extends TestCase
     {
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Factories',
             'entity-generator.stubs.dump' => 'incorrect_stub',
         ]);
 
@@ -130,6 +132,7 @@ class TestGeneratorTest extends TestCase
     {
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Factories',
             'entity-generator.stubs.test' => 'incorrect_stub',
         ]);
 
