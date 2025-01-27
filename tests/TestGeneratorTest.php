@@ -4,7 +4,6 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Carbon;
-use ReflectionClass;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
@@ -49,7 +48,22 @@ class TestGeneratorTest extends TestCase
             ->shouldReceive('beginTransaction', 'rollBack')
             ->times(5);
 
-        $this->mockGenerator();
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test',
+        ]);
+
+        $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+        ]);
+
         $this->mockFilesystem();
 
         app(TestsGenerator::class)
@@ -76,11 +90,18 @@ class TestGeneratorTest extends TestCase
 
     public function testCreateTestsDumpStubNotExist()
     {
-        config(['entity-generator.stubs.dump' => 'incorrect_stub']);
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test',
+            'entity-generator.stubs.dump' => 'incorrect_stub',
+        ]);
 
         Carbon::setTestNow('2022-02-02');
 
-        $this->mockGeneratorDumpStubNotExist();
+        $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+        ]);
+
         $this->mockFilesystem();
 
         app(TestsGenerator::class)
@@ -107,7 +128,10 @@ class TestGeneratorTest extends TestCase
 
     public function testCreateTestsTestStubNotExist()
     {
-        config(['entity-generator.stubs.test' => 'incorrect_stub']);
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test',
+            'entity-generator.stubs.test' => 'incorrect_stub',
+        ]);
 
         Carbon::setTestNow('2022-02-02');
 
@@ -116,7 +140,18 @@ class TestGeneratorTest extends TestCase
             ->shouldReceive('beginTransaction', 'rollBack')
             ->times(5);
 
-        $this->mockGenerator();
+        $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+        ]);
+
         $this->mockFilesystem();
 
         app(TestsGenerator::class)
@@ -151,9 +186,18 @@ class TestGeneratorTest extends TestCase
         $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
         $mock
             ->shouldReceive('beginTransaction', 'rollBack')
-            ->once();
+            ->times(3);
 
-        $this->mockGeneratorForCircularDependency();
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test',
+        ]);
+
+        $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'CircularDepFactory']),
+        ]);
+
         $this->mockFilesystemForCircleDependency();
 
         app(TestsGenerator::class)
@@ -162,17 +206,5 @@ class TestGeneratorTest extends TestCase
             ->generate();
 
         Event::assertNothingDispatched();
-    }
-
-    public function testGetModelClass()
-    {
-        $reflectionClass = new ReflectionClass(TestsGenerator::class);
-        $method = $reflectionClass->getMethod('getModelClass');
-
-        $method->setAccessible(true);
-
-        $result = $method->invoke(new TestsGenerator, 'Post');
-
-        $this->assertEquals('App\\Models\\Post', $result);
     }
 }

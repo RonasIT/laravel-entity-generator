@@ -2,112 +2,13 @@
 
 namespace RonasIT\Support\Tests\Support\Test;
 
-use org\bovigo\vfs\vfsStream;
-use RonasIT\Support\Generators\TestsGenerator;
+use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 use RonasIT\Support\Traits\MockTrait;
 
 trait TestMockTrait
 {
     use GeneratorMockTrait, MockTrait;
-
-    public function mockGenerator(): void
-    {
-        $this->mockClass(TestsGenerator::class, [
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['User'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['User'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['Role'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Role',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['Post'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['User'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['Role'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Role',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['Role'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Role',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['Role'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Role',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['User'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['User'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['Post'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['Post'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['Post'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
-            ],
-        ]);
-    }
-
-    public function mockGeneratorDumpStubNotExist(): void
-    {
-        $this->mockClass(TestsGenerator::class, [
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['User'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\User',
-            ],
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['Post'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\Post',
-            ],
-        ]);
-    }
-
-    public function mockGeneratorForCircularDependency(): void
-    {
-        $this->mockClass(TestsGenerator::class, [
-            [
-                'function' => 'getModelClass',
-                'arguments' => ['CircularDep'],
-                'result' => 'RonasIT\\Support\\Tests\\Support\\Test\\CircularDep',
-            ],
-        ]);
-    }
 
     public function mockFilesystem(): void
     {
@@ -119,30 +20,22 @@ trait TestMockTrait
         $roleFactory = file_get_contents(getcwd() . '/tests/Support/Factories/RoleFactory.php');
         $postFactory = file_get_contents(getcwd() . '/tests/Support/Factories/PostFactory.php');
 
-        $structure = [
-            'app' => [
-                'Models' => [
-                    'Post.php' => $postModel,
-                    'User.php' => $userModel,
-                    'Role.php' => $roleModel,
-                    'Comment.php' => $commentModel,
-                ],
-            ],
-            'database' => [
-                'factories' => [
-                    'UserFactory.php' => $userFactory,
-                    'RoleFactory.php' => $roleFactory,
-                    'PostFactory.php' => $postFactory,
-                ],
-            ],
-            'tests' => [
-                'fixtures' => [
-                    'PostTest' => [],
-                ]
-            ]
+        $fileSystemMock = new FileSystemMock;
+
+        $fileSystemMock->models = [
+            'Post.php' => $postModel,
+            'User.php' => $userModel,
+            'Role.php' => $roleModel,
+            'Comment.php' => $commentModel,
         ];
 
-        vfsStream::create($structure);
+        $fileSystemMock->factories = [
+            'UserFactory.php' => $userFactory,
+            'RoleFactory.php' => $roleFactory,
+            'PostFactory.php' => $postFactory,
+        ];
+
+        $fileSystemMock->setStructure();
     }
 
     public function mockFilesystemForCircleDependency(): void
@@ -150,19 +43,11 @@ trait TestMockTrait
         $model = file_get_contents(getcwd() . '/tests/Support/Test/CircularDep.php');
         $factory = file_get_contents(getcwd() . '/tests/Support/Factories/CircularDepFactory.php');
 
-        $structure = [
-            'app' => [
-                'Models' => [
-                    'CircularDep.php' => $model,
-                ],
-            ],
-            'database' => [
-                'factories' => [
-                    'CircularDepFactory.php' => $factory,
-                ],
-            ],
-        ];
+        $fileSystemMock = new FileSystemMock;
 
-        vfsStream::create($structure);
+        $fileSystemMock->models = ['CircularDep.php' => $model];
+        $fileSystemMock->factories = ['CircularDepFactory.php' => $factory];
+
+        $fileSystemMock->setStructure();
     }
 }
