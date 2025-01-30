@@ -5,7 +5,7 @@ namespace RonasIT\Support\Tests\Support\Test\Models;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
-class CircularDep extends Model
+class Media extends Model
 {
     use ModelTrait;
 
@@ -20,7 +20,7 @@ class CircularDep extends Model
         'updated_at'
     ];
 
-    public function dep()
+    public function preview()
     {
         return $this->belongsTo(self::class);
     }

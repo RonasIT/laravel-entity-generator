@@ -4,11 +4,11 @@ namespace RonasIT\Support\Tests\Support\Test\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use RonasIT\Support\Tests\Support\Test\Models\CircularDep;
+use RonasIT\Support\Tests\Support\Test\Models\Media;
 
-class CircularDepFactory extends Factory
+class MediaFactory extends Factory
 {
-    protected $model = CircularDep::class;
+    protected $model = Media::class;
 
     public function definition(): array
     {

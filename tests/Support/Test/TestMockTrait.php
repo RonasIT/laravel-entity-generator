@@ -40,13 +40,13 @@ trait TestMockTrait
 
     public function mockFilesystemForCircleDependency(): void
     {
-        $model = file_get_contents(getcwd() . '/tests/Support/Test/Models/CircularDep.php');
-        $factory = file_get_contents(getcwd() . '/tests/Support/Test/Factories/CircularDepFactory.php');
+        $model = file_get_contents(getcwd() . '/tests/Support/Test/Models/Media.php');
+        $factory = file_get_contents(getcwd() . '/tests/Support/Test/Factories/MediaFactory.php');
 
         $fileSystemMock = new FileSystemMock;
 
-        $fileSystemMock->models = ['CircularDep.php' => $model];
-        $fileSystemMock->factories = ['CircularDepFactory.php' => $factory];
+        $fileSystemMock->models = ['Media.php' => $model];
+        $fileSystemMock->factories = ['MediaFactory.php' => $factory];
 
         $fileSystemMock->setStructure();
     }
