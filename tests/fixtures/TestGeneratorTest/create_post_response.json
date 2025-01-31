@@ -1,0 +1,12 @@
+{
+    "id": 1,
+    "title": "some title",
+    "body": "some body",
+    "data": {
+        "title": "1",
+        "body": "2"
+    },
+    "drafted": false,
+    "user_id": 1,
+    "posted_at": "2022-02-02 12:00:00"
+}

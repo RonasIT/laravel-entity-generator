@@ -16,6 +16,7 @@ class FileSystemMock
     public ?array $testFixtures = null;
     public ?array $testClasses = null;
     public ?array $routes = null;
+    public ?array $factories = null;
 
     public function setStructure(): void
     {
@@ -94,6 +95,14 @@ class FileSystemMock
 
             foreach ($this->routes as $route => $content) {
                 $structure['routes'][$route] = $content;
+            }
+        }
+
+        if (!is_null($this->factories)) {
+            $structure['database']['factories'] = [];
+
+            foreach ($this->factories as $factory => $content) {
+                $structure['database']['factories'][$factory] = $content;
             }
         }
 

@@ -121,6 +121,12 @@ abstract class EntityGenerator
     {
         $entitiesPath = base_path($this->paths[$path]);
 
+        if (Str::endsWith($entitiesPath, '.php')) {
+            $pathParts = explode('/', $entitiesPath);
+            array_pop($pathParts);
+            $entitiesPath = implode('/', $pathParts);
+        }
+
         if ($additionalEntityFolder) {
             $entitiesPath = $entitiesPath . "/{$additionalEntityFolder}";
         }
