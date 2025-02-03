@@ -5,12 +5,10 @@ namespace RonasIT\Support\Tests\Support\NovaTestGeneratorTest;
 use Mockery;
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockTrait;
 
 trait NovaTestGeneratorMockTrait
 {
     use GeneratorMockTrait;
-    use MockTrait;
 
     public function mockNovaRequestClassCall(): void
     {

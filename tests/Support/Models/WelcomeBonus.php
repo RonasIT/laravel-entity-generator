@@ -18,4 +18,8 @@ class WelcomeBonus extends Model
         'title',
         'name',
     ];
+
+    public function some_relation()
+    {
+    }
 }

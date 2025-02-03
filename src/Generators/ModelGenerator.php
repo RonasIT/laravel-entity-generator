@@ -25,7 +25,7 @@ class ModelGenerator extends EntityGenerator
             );
         }
 
-        if ($this->isStubExists('model') && (collect($this->relations)->every(fn ($relation) => empty($relation)) || $this->isStubExists('relation', 'model'))) {
+        if ($this->isStubExists('model') && (!$this->hasRelations() || $this->isStubExists('relation', 'model'))) {
             $this->prepareRelatedModels();
             $modelContent = $this->getNewModelContent();
 
@@ -33,6 +33,11 @@ class ModelGenerator extends EntityGenerator
 
             event(new SuccessCreateMessage("Created a new Model: {$this->model}"));
         }
+    }
+
+    protected function hasRelations(): bool
+    {
+        return !collect($this->relations)->every(fn ($relation) => empty($relation));
     }
 
     protected function getNewModelContent(): string

@@ -1,14 +1,14 @@
 <?php
 
-namespace Database\Factories;
+namespace RonasIT\Support\Tests\Support\Test\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
-use RonasIT\Support\Tests\Support\Test\CircularDep;
+use RonasIT\Support\Tests\Support\Test\Models\Post;
 
-class CircularDepFactory extends Factory
+class PostFactory extends Factory
 {
-    protected $model = CircularDep::class;
+    protected $model = Post::class;
 
     public function definition(): array
     {

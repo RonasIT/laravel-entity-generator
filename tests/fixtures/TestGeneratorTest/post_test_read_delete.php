@@ -22,64 +22,6 @@ class PostTest extends TestCase
         self::$postState ??= new ModelTestState(Post::class);
     }
 
-    public function testCreate()
-    {
-        $data = $this->getJsonFixture('create_post_request.json');
-
-        $response = $this->actingAs(self::$user)->json('post', '/posts', $data);
-
-        $response->assertCreated();
-
-        // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('create_post_response.json', $response->json(), true);
-
-        // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('create_post_state.json', true);
-    }
-
-    public function testCreateNoAuth()
-    {
-        $data = $this->getJsonFixture('create_post_request.json');
-
-        $response = $this->json('post', '/posts', $data);
-
-        $response->assertUnauthorized();
-    }
-
-    public function testUpdate()
-    {
-        $data = $this->getJsonFixture('update_post_request.json');
-
-        $response = $this->actingAs(self::$user)->json('put', '/posts/1', $data);
-
-        $response->assertNoContent();
-
-        // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('update_post_state.json', true);
-    }
-
-    public function testUpdateNotExists()
-    {
-        $data = $this->getJsonFixture('update_post_request.json');
-
-        $response = $this->actingAs(self::$user)->json('put', '/posts/0', $data);
-
-        $response->assertNotFound();
-
-        self::$postState->assertNotChanged();
-    }
-
-    public function testUpdateNoAuth()
-    {
-        $data = $this->getJsonFixture('update_post_request.json');
-
-        $response = $this->json('put', '/posts/1', $data);
-
-        $response->assertUnauthorized();
-
-        self::$postState->assertNotChanged();
-    }
-
     public function testDelete()
     {
         $response = $this->actingAs(self::$user)->json('delete', '/posts/1');
