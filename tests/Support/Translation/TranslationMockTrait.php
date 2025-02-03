@@ -2,41 +2,30 @@
 
 namespace RonasIT\Support\Tests\Support\Translation;
 
-use org\bovigo\vfs\vfsStream;
+use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockTrait;
 
 trait TranslationMockTrait
 {
-    use GeneratorMockTrait, MockTrait;
+    use GeneratorMockTrait;
 
     public function mockFilesystem(): void
     {
-        $structure = [
-            'resources' => [
-                'lang' => [
-                    'en' => [],
-                ],
-            ],
-        ];
+        $fileSystemMock = new FileSystemMock;
 
-        vfsStream::create($structure);
+        $fileSystemMock->translations = [];
+
+        $fileSystemMock->setStructure();
     }
 
     public function mockFilesystemForAppend(): void
     {
         $validation = file_get_contents(getcwd() . '/tests/Support/Translation/validation_without_exceptions.php');
 
-        $structure = [
-            'resources' => [
-                'lang' => [
-                    'en' => [
-                        'validation.php' => $validation,
-                    ],
-                ],
-            ],
-        ];
+        $fileSystemMock = new FileSystemMock;
 
-        vfsStream::create($structure);
+        $fileSystemMock->translations = ['validation.php' => $validation];
+
+        $fileSystemMock->setStructure();
     }
 }
