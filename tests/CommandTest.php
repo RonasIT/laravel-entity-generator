@@ -4,6 +4,7 @@ namespace RonasIT\Support\Tests;
 
 use Carbon\Carbon;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Tests\Support\Command\CommandMockTrait;
 use UnexpectedValueException;
 
@@ -33,6 +34,14 @@ class CommandTest extends TestCase
 
     public function testCallCommand()
     {
+        config([
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+        ]);
+
+//        $this->mockClass(TestsGenerator::class, [
+//            $this->classExistsMethodCall(['factories', 'PostFactory']),
+//        ]);
+
         Carbon::setTestNow('2016-10-20 11:05:00');
 
         $this->mockFilesystem();
@@ -44,7 +53,7 @@ class CommandTest extends TestCase
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('migration.php', 'database/migrations/2016_10_20_110500_posts_create_table.php');
-        $this->assertGeneratedFileEquals('factory.php', 'database/factories/PostFactory.php');
+        $this->assertGeneratedFileEquals('factory.php', 'RonasIT/Support/Tests/Support/Command/Factories/PostFactory.php');
         $this->assertGeneratedFileEquals('seeder.php', 'database/seeders/PostSeeder.php');
         $this->assertGeneratedFileEquals('model.php', 'app/Models/Post.php');
         $this->assertGeneratedFileEquals('repository.php', 'app/Repositories/PostRepository.php');

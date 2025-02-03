@@ -18,6 +18,7 @@ class FileSystemMock
     public ?array $routes = null;
     public ?array $factories = null;
     public ?array $translations = null;
+    public ?array $config = null;
 
     public function setStructure(): void
     {
@@ -108,10 +109,18 @@ class FileSystemMock
         }
 
         if (!is_null($this->translations)) {
-            $structure['resources']['lang']['en'] = [];
+            $structure['lang']['en'] = [];
 
             foreach ($this->translations as $translation => $content) {
-                $structure['resources']['lang']['en'][$translation] = $content;
+                $structure['lang']['en'][$translation] = $content;
+            }
+        }
+
+        if (!is_null($this->config)) {
+            $structure['config'] = [];
+
+            foreach ($this->config as $config => $content) {
+                $structure['config'][$config] = $content;
             }
         }
 

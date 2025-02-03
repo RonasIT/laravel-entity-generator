@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace RonasIT\Support\Tests\Support\Command\Factories;
 
 use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;
