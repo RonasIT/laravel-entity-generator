@@ -4,10 +4,7 @@ namespace RonasIT\Support\Tests\Support\Command;
 
 use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\DB;
-use org\bovigo\vfs\vfsStream;
-use RonasIT\Support\Generators\NovaResourceGenerator;
 use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Tests\Support\Command\Models\Post;
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
@@ -20,22 +17,12 @@ trait CommandMockTrait
 
     public function mockFilesystemPostModelExists(): void
     {
-        $structure = [
-            'app' => [
-                'Http' => [
-                    'Controllers' => [],
-                ],
-                'Models' => [
-                    'Post.php' => '<?php'
-                ],
-                'Repositories' => []
-            ],
-            'config' => [
-                'entity-generator.php' => ''
-            ],
-        ];
+        $fileSystemMock = new FileSystemMock;
 
-        vfsStream::create($structure);
+        $fileSystemMock->models = ['Post.php' => $this->mockPhpFileContent()];
+        $fileSystemMock->config = ['entity-generator.php' => ''];
+
+        $fileSystemMock->setStructure();
     }
 
     public function mockFilesystem(): void
@@ -51,58 +38,7 @@ trait CommandMockTrait
 
     public function mockGenerator(): void
     {
-        $this->mockClass(TestsGenerator::class, [
-            $this->functionCall(
-                name: 'getModelClass',
-                arguments: ['Post'],
-                result: 'RonasIT\\Support\\Tests\\Support\\Command\\Models\\Post',
-            ),
-            $this->functionCall(
-                name: 'getModelClass',
-                arguments: ['Post'],
-                result: 'RonasIT\\Support\\Tests\\Support\\Command\\Models\\Post',
-            ),
-            $this->functionCall(
-                name: 'getModelClass',
-                arguments: ['Post'],
-                result: 'RonasIT\\Support\\Tests\\Support\\Command\\Models\\Post',
-            ),
-            $this->functionCall(
-                name: 'getModelClass',
-                arguments: ['Post'],
-                result: 'RonasIT\\Support\\Tests\\Support\\Command\\Models\\Post',
-            ),
-        ]);
-
-        $this->mockClass(NovaResourceGenerator::class, [
-            $this->functionCall(
-                name: 'getModelClass',
-                arguments: ['Post'],
-                result: 'RonasIT\\Support\\Tests\\Support\\Command\\Models\\Post',
-            ),
-        ]);
-
         $this->mockClass(NovaTestGenerator::class, [
-            $this->functionCall(
-                name: 'getModelClass',
-                arguments: ['Post'],
-                result: 'RonasIT\\Support\\Tests\\Support\\Command\\Models\\Post',
-            ),
-            $this->functionCall(
-                name: 'getModelClass',
-                arguments: ['Post'],
-                result: 'RonasIT\\Support\\Tests\\Support\\Command\\Models\\Post',
-            ),
-            $this->functionCall(
-                name: 'getModelClass',
-                arguments: ['Post'],
-                result: 'RonasIT\\Support\\Tests\\Support\\Command\\Models\\Post',
-            ),
-            $this->functionCall(
-                name: 'getModelClass',
-                arguments: ['Post'],
-                result: 'RonasIT\\Support\\Tests\\Support\\Command\\Models\\Post',
-            ),
             $this->functionCall(
                 name: 'loadNovaActions',
                 result: [],

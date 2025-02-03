@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Post;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Models\Post;
+use RonasIT\Support\Tests\Support\Command\Models\Post;
 
 /**
  * @property Post $resource

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Post;
+use RonasIT\Support\Tests\Support\Command\Models\Post;
 
 class PostSeeder extends Seeder
 {
