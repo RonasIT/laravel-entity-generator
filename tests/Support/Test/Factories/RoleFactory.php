@@ -1,9 +1,9 @@
 <?php
 
-namespace Database\Factories;
+namespace RonasIT\Support\Tests\Support\Test\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use RonasIT\Support\Tests\Support\Test\Role;
+use RonasIT\Support\Tests\Support\Test\Models\Role;
 
 class RoleFactory extends Factory
 {

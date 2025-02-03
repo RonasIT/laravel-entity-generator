@@ -1,14 +1,13 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Test;
+namespace RonasIT\Support\Tests\Support\Test\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
-class CircularDep extends Model
+class Media extends Model
 {
-    use HasFactory, ModelTrait;
+    use ModelTrait;
 
     protected $fillable = [
         'title',
@@ -21,7 +20,7 @@ class CircularDep extends Model
         'updated_at'
     ];
 
-    public function dep()
+    public function preview()
     {
         return $this->belongsTo(self::class);
     }

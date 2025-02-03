@@ -3,9 +3,12 @@
 namespace RonasIT\Support\Tests\Support;
 
 use Laravel\Nova\NovaServiceProvider;
+use RonasIT\Support\Traits\MockTrait;
 
 trait GeneratorMockTrait
 {
+    use MockTrait;
+
     public function mockNativeGeneratorFunctions(...$functionCalls): void
     {
         $this->mockNativeFunction('\RonasIT\Support\Generators', $functionCalls);

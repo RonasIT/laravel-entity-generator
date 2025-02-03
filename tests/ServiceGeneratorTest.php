@@ -8,11 +8,10 @@ use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
-use RonasIT\Support\Traits\MockTrait;
 
 class ServiceGeneratorTest extends TestCase
 {
-    use GeneratorMockTrait, MockTrait;
+    use GeneratorMockTrait;
 
     public function testMissingModel()
     {
@@ -23,7 +22,7 @@ class ServiceGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
-            message: 'Cannot create Post Model cause Post Model does not exists. '
+            message: 'Cannot create PostService cause Post Model does not exists. '
             . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'",
         );
 
@@ -74,12 +73,6 @@ class ServiceGeneratorTest extends TestCase
         ]);
 
         app(ServiceGenerator::class)
-            ->setRelations([
-                'hasOne' => [],
-                'belongsTo' => [],
-                'hasMany' => [],
-                'belongsToMany' => [],
-            ])
             ->setFields([])
             ->setModel('Post')
             ->generate();
@@ -130,12 +123,6 @@ class ServiceGeneratorTest extends TestCase
         ]);
 
         app(ServiceGenerator::class)
-            ->setRelations([
-                'hasOne' => [],
-                'belongsTo' => [],
-                'hasMany' => [],
-                'belongsToMany' => []
-            ])
             ->setFields([])
             ->setModel('Post')
             ->generate();

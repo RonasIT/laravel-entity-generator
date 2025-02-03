@@ -53,7 +53,7 @@ class TranslationsGenerator extends EntityGenerator
 
         $stubContent = view($stubPath)->render();
 
-        $fixedContent = preg_replace('/\]\;\s*$/', "\n\t{$stubContent}", $content);
+        $fixedContent = preg_replace('/\]\;\s*$/', "\n    {$stubContent}", $content);
 
         file_put_contents($this->translationPath, $fixedContent);
     }

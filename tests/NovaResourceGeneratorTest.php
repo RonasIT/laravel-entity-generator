@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -13,13 +12,6 @@ use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\NovaResourceGenerato
 class NovaResourceGeneratorTest extends TestCase
 {
     use NovaResourceGeneratorMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Event::fake();
-    }
 
     public function testCreateWithMissingNovaPackage()
     {

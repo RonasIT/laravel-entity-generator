@@ -37,8 +37,6 @@ class TranslationGeneratorTest extends TestCase
     {
         config(['entity-generator.stubs.validation' => 'incorrect_stub']);
 
-        $this->mockFilesystem();
-
         app(TranslationsGenerator::class)
             ->setModel('Post')
             ->generate();
