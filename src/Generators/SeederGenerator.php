@@ -4,8 +4,6 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\EntityCreateException;
 
 class SeederGenerator extends EntityGenerator
 {
@@ -64,7 +62,7 @@ class SeederGenerator extends EntityGenerator
             'entity' => $this->model,
             'relations' => $this->relations,
             'namespace' => $this->getOrCreateNamespace('seeders'),
-            'modelsNamespace' => $this->getOrCreateNamespace('models'),
+            'factoryNamespace' => $this->getOrCreateNamespace('factories'),
         ]);
 
         $seederPath = "{$this->seedsPath}/{$this->model}Seeder.php";

@@ -3,17 +3,17 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Post;
+use Database\Factories\PostFactory;
 
 class PostSeeder extends Seeder
 {
     public function run()
     {
-        Post::factory()->make([
-            'user_id' => \App\Models\User::factory()->create()->id,
+        PostFactory::new()->make([
+            'user_id' => \Database\Factories\UserFactory::new()->create()->id,
         ]);
 
-        \App\Models\Comment::factory()->count(10)->make([
+        \Database\Factories\CommentFactory::new()->count(10)->make([
             'post_id' => $post->id,
         ]);
 
