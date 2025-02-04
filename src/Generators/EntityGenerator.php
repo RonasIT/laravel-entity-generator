@@ -24,6 +24,15 @@ abstract class EntityGenerator
         'boolean-required', 'boolean', 'timestamp-required', 'timestamp', 'json'
     ];
 
+    const LOVER_CASE_DIRECTORIES_MAP = [
+        'migrations' => 'database/migrations',
+        'factories' => 'database/factories',
+        'seeders' => 'database/seeders',
+        'database_seeder' => 'database/seeders',
+        'tests' => 'tests',
+        'routes' => 'routes',
+    ];
+
     protected $paths = [];
     protected $model;
     protected $fields;
@@ -115,18 +124,11 @@ abstract class EntityGenerator
 
     protected function isFolderHasCorrectCase(string $folder, string $configPath): bool
     {
-        $lowerCaseDirectoriesMap = [
-            'migrations' => 'database/migrations',
-            'factories' => 'database/factories',
-            'seeders' => 'database/seeders',
-            'database_seeder' => 'database/seeders',
-            'tests' => 'tests',
-            'routes' => 'routes',
-        ];
+        $directory = Arr::get(self::LOVER_CASE_DIRECTORIES_MAP, $configPath);
 
-        $directory = Arr::get($lowerCaseDirectoriesMap, $configPath);
+        $firstFolderChar = substr($folder, 0, 1);
 
-        return $folder === 'app' || preg_match('/^[A-Z]/', $folder) || Str::contains($directory, $folder);
+        return $folder === 'app' || (ucfirst($firstFolderChar) === $firstFolderChar) || Str::contains($directory, $folder);
     }
 
     abstract public function generate(): void;
