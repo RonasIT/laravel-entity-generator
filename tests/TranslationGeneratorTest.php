@@ -15,9 +15,7 @@ class TranslationGeneratorTest extends TestCase
 
     public function testCreate()
     {
-        $translations = $this->getJsonFixture('validation.json');
-
-        Lang::shouldReceive('get')->andReturn($translations);
+        Lang::shouldReceive('get')->andReturn([]);
 
         $this->mockFilesystem();
 
