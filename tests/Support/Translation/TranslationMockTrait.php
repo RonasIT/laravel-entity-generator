@@ -11,7 +11,7 @@ trait TranslationMockTrait
 
     public function mockFilesystem(): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
 
         $fileSystemMock->translations = [];
 
@@ -22,7 +22,7 @@ trait TranslationMockTrait
     {
         $validation = file_get_contents(getcwd() . '/tests/Support/Translation/validation_without_exceptions.php');
 
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
 
         $fileSystemMock->translations = ['validation.php' => $validation];
 

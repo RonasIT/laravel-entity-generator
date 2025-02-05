@@ -15,9 +15,7 @@ class TranslationGeneratorTest extends TestCase
 
     public function testCreate()
     {
-        $translations = $this->getJsonFixture('validation.json');
-
-        Lang::shouldReceive('get')->andReturn($translations);
+        Lang::shouldReceive('get')->andReturn([]);
 
         $this->mockFilesystem();
 
@@ -57,7 +55,7 @@ class TranslationGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->assertGeneratedFileEquals('validation.php', 'lang/en/validation.php');
+        $this->assertGeneratedFileEquals('validation_append_not_found_exception.php', 'lang/en/validation.php');
 
         Event::assertNothingDispatched();
     }
