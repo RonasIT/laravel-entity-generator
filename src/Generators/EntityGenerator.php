@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use Throwable;
 use ReflectionMethod;
 use ReflectionClass;
@@ -21,6 +22,15 @@ abstract class EntityGenerator
     const AVAILABLE_FIELDS = [
         'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
         'boolean-required', 'boolean', 'timestamp-required', 'timestamp', 'json'
+    ];
+
+    const LOVER_CASE_DIRECTORIES_MAP = [
+        'migrations' => 'database/migrations',
+        'factories' => 'database/factories',
+        'seeders' => 'database/seeders',
+        'database_seeder' => 'database/seeders',
+        'tests' => 'tests',
+        'routes' => 'routes',
     ];
 
     protected $paths = [];
@@ -84,13 +94,19 @@ abstract class EntityGenerator
         $this->paths = config('entity-generator.paths');
     }
 
-    protected function getOrCreateNamespace(string $path): string
+    protected function getOrCreateNamespace(string $configPath): string
     {
-        $path = $this->paths[$path];
+        $path = $this->paths[$configPath];
         $pathParts = explode('/', $path);
 
         if (Str::endsWith(Arr::last($pathParts), '.php')) {
             array_pop($pathParts);
+        }
+
+        foreach ($pathParts as $part) {
+            if (!$this->isFolderHasCorrectCase($part, $configPath)) {
+                throw new IncorrectClassPathException("Incorrect path to {$configPath}, {$part} folder must start with a capital letter, please specify the path according to the PSR.");
+            }
         }
 
         $namespace = array_map(function (string $part) {
@@ -104,6 +120,15 @@ abstract class EntityGenerator
         }
 
         return implode('\\', $namespace);
+    }
+
+    protected function isFolderHasCorrectCase(string $folder, string $configPath): bool
+    {
+        $directory = Arr::get(self::LOVER_CASE_DIRECTORIES_MAP, $configPath);
+
+        $firstFolderChar = substr($folder, 0, 1);
+
+        return $folder === 'app' || (ucfirst($firstFolderChar) === $firstFolderChar) || Str::contains($directory, $folder);
     }
 
     abstract public function generate(): void;
