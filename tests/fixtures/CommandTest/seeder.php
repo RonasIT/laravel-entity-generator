@@ -3,13 +3,13 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use RonasIT\Support\Tests\Support\Command\Models\Post;
+use RonasIT\Support\Tests\Support\Command\Factories\PostFactory;
 
 class PostSeeder extends Seeder
 {
     public function run()
     {
-        Post::factory()->create();
+        PostFactory::new()->create();
 
     }
 }
