@@ -17,7 +17,7 @@ trait CommandMockTrait
 
     public function mockFilesystemPostModelExists(): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
 
         $fileSystemMock->models = ['Post.php' => $this->mockPhpFileContent()];
         $fileSystemMock->config = ['entity-generator.php' => ''];
