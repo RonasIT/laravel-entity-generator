@@ -66,7 +66,7 @@ trait CommandMockTrait
         $connectionMock = Mockery::mock(Connection::class)->makePartial();
         $connectionMock
             ->expects('getDoctrineSchemaManager')
-            ->andReturn(new SchemaManager);
+            ->andReturn(new SchemaManager());
 
         $mock = Mockery::mock('alias:' . DB::class);
         $mock
