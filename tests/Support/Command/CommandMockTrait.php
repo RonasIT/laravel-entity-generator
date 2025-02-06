@@ -27,7 +27,7 @@ trait CommandMockTrait
 
     public function mockFilesystem(): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
 
         $fileSystemMock->routes = [ 'api.php' => $this->mockPhpFileContent()];
         $fileSystemMock->config = ['entity-generator.php' => ''];
