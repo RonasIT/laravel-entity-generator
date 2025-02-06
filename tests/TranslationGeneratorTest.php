@@ -23,11 +23,11 @@ class TranslationGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->assertGeneratedFileEquals('validation.php', 'resources/lang/en/validation.php');
+        $this->assertGeneratedFileEquals('validation.php', 'lang/en/validation.php');
 
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
-            message: 'Created a new Translations dump on path: vfs://root/resources/lang/en/validation.php',
+            message: 'Created a new Translations dump on path: vfs://root/lang/en/validation.php',
         );
     }
 
@@ -55,7 +55,7 @@ class TranslationGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->assertGeneratedFileEquals('validation_append_not_found_exception.php', 'resources/lang/en/validation.php');
+        $this->assertGeneratedFileEquals('validation_append_not_found_exception.php', 'lang/en/validation.php');
 
         Event::assertNothingDispatched();
     }
