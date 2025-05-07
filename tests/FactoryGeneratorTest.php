@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\ViewException;
 use RonasIT\Support\Events\SuccessCreateMessage;
@@ -95,5 +96,28 @@ class FactoryGeneratorTest extends TestCase
             className: SuccessCreateMessage::class,
             message: 'Created a new Factory: PostFactory',
         );
+    }
+
+    public function testCreateFactoryWithoutFactoryStub(): void
+    {
+        $this->mockFilesystem();
+
+        Config::set('entity-generator.stubs.factory');
+
+        $result = app(FactoryGenerator::class)
+            ->setFields([
+                'integer-required' => ['author_id'],
+                'string' => ['title', 'iban', 'something'],
+                'json' => ['json_text'],
+            ])
+            ->setRelations([
+                'hasOne' => ['user'],
+                'hasMany' => [],
+                'belongsTo' => ['user'],
+            ])
+            ->setModel('Post')
+            ->generate();
+
+        $this->assertNull($result);
     }
 }
