@@ -3,8 +3,9 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\View;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\ControllerGenerator;
@@ -14,20 +15,13 @@ class ControllerGeneratorTest extends TestCase
 {
     use ControllerGeneratorMockTrait;
 
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Event::fake();
-    }
-
     public function testControllerAlreadyExists()
     {
         $this->mockClass(ControllerGenerator::class, [
-            $this->classExistsMethodCall(['controllers', 'PostController'])
+            $this->classExistsMethodCall(['controllers', 'PostController']),
         ]);
 
-        $this->assertExceptionThrowed(
+        $this->assertExceptionThrew(
             className: ClassAlreadyExistsException::class,
             message: 'Cannot create PostController cause PostController already exists. Remove PostController.',
         );
@@ -41,12 +35,12 @@ class ControllerGeneratorTest extends TestCase
     {
         $this->mockClass(ControllerGenerator::class, [
             $this->classExistsMethodCall(['controllers', 'PostController'], false),
-            $this->classExistsMethodCall(['services', 'PostService'], false)
+            $this->classExistsMethodCall(['services', 'PostService'], false),
         ]);
 
-        $this->assertExceptionThrowed(
+        $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
-            message: 'Cannot create PostService cause PostService does not exists. Create a PostService by himself.',
+            message: 'Cannot create PostController cause PostService does not exists. Create a PostService by himself.',
         );
 
         app(ControllerGenerator::class)
@@ -58,7 +52,7 @@ class ControllerGeneratorTest extends TestCase
     {
         $this->mockFilesystemWithoutRoutesFile();
 
-        $this->assertExceptionThrowed(
+        $this->assertExceptionThrew(
             className: FileNotFoundException::class,
             message: "Not found file with routes. Create a routes file on path: 'vfs://root/routes/api.php'",
         );
@@ -67,6 +61,69 @@ class ControllerGeneratorTest extends TestCase
             ->setModel('Post')
             ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
+    }
+
+    public function testControllerStubNotExist()
+    {
+        $this->mockFilesystem();
+
+        View::shouldReceive('exists')
+            ->with('entity-generator::controller')
+            ->once()
+            ->andReturnFalse();
+
+        app(ControllerGenerator::class)
+            ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('empty_api.php', 'routes/api.php');
+        $this->assertFileDoesNotExist('app/Http/Controllers/PostController.php');
+
+        $this->assertEventPushed(
+            className: WarningEvent::class,
+            message: 'Generation of controller has been skipped cause the view entity-generator::controller from the config entity-generator.stubs.controller is not exists. Please check that config has the correct view name value.',
+        );
+    }
+
+    public function testRoutesStubNotExist()
+    {
+        $this->mockFilesystem();
+
+       config(['entity-generator.stubs.routes' => 'incorrect_stub']);
+
+        app(ControllerGenerator::class)
+            ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('created_controller.php', 'app/Http/Controllers/PostController.php');
+        $this->assertGeneratedFileEquals('empty_api.php', 'routes/api.php');
+
+        $this->assertEventPushedChain([
+            WarningEvent::class => ['Generation of routes has been skipped cause the view incorrect_stub from the config entity-generator.stubs.routes is not exists. Please check that config has the correct view name value.'],
+            SuccessCreateMessage::class => ['Created a new Controller: PostController'],
+        ]);
+    }
+
+    public function testUseRoutesStubNotExist()
+    {
+        $this->mockFilesystem();
+
+        config(['entity-generator.stubs.use_routes' => 'incorrect_stub']);
+
+        app(ControllerGenerator::class)
+            ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('created_controller.php', 'app/Http/Controllers/PostController.php');
+        $this->assertGeneratedFileEquals('empty_api.php', 'routes/api.php');
+
+        $this->assertEventPushedChain([
+            WarningEvent::class => ['Generation of use routes has been skipped cause the view incorrect_stub from the config entity-generator.stubs.use_routes is not exists. Please check that config has the correct view name value.'],
+            SuccessCreateMessage::class => ['Created a new Controller: PostController'],
+        ]);
     }
 
     public function testSuccess()
@@ -82,12 +139,14 @@ class ControllerGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('api.php', 'routes/api.php');
 
         $this->assertEventPushedChain([
-            SuccessCreateMessage::class => "Created a new Route: Route::post('posts', [PostController::class, 'create']);",
-            SuccessCreateMessage::class => "Created a new Route: Route::put('posts/{id}', [PostController::class, 'update']);",
-            SuccessCreateMessage::class => "Created a new Route: Route::delete('posts/{id}', [PostController::class, 'delete']);",
-            SuccessCreateMessage::class => "Created a new Route: Route::get('posts/{id}', [PostController::class, 'get']);",
-            SuccessCreateMessage::class => "Created a new Route: Route::get('posts', [PostController::class, 'search']);",
-            SuccessCreateMessage::class => "Created a new Controller: PostController",
+            SuccessCreateMessage::class => [
+                "Created a new Route: Route::post('posts', 'create');",
+                "Created a new Route: Route::put('posts/{id}', 'update');",
+                "Created a new Route: Route::delete('posts/{id}', 'delete');",
+                "Created a new Route: Route::get('posts/{id}', 'get');",
+                "Created a new Route: Route::get('posts', 'search');",
+                'Created a new Controller: PostController',
+            ],
         ]);
     }
 }

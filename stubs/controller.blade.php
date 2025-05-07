@@ -1,7 +1,7 @@
 namespace {{$namespace}};
 
 @inject('str', 'Illuminate\Support\Str')
-use {{$resourcesNamespace}}\{{$str::plural($entity)}}CollectionResource;
+use {{$resourcesNamespace}}\{{$entity}}\{{$str::plural($entity)}}CollectionResource;
 @if (in_array('C', $options))
 use {{$requestsNamespace}}\{{$requestsFolder}}\Create{{$entity}}Request;
 @endif
@@ -15,16 +15,16 @@ use {{$requestsNamespace}}\{{$requestsFolder}}\Search{{$str::plural($entity)}}Re
 @if (in_array('U', $options))
 use {{$requestsNamespace}}\{{$requestsFolder}}\Update{{$entity}}Request;
 @endif
-use {{$resourcesNamespace}}\{{$entity}}Resource;
+use {{$resourcesNamespace}}\{{$entity}}\{{$entity}}Resource;
 use {{$servicesNamespace}}\{{$entity}}Service;
 @if (in_array('D', $options) || in_array('U', $options))
 use Symfony\Component\HttpFoundation\Response;
-
 @endif
+
 class {{$entity}}Controller extends Controller
 {
 @if (in_array('C', $options))
-    public function create(Create{{$entity}}Request $request, {{$entity}}Service $service)
+    public function create(Create{{$entity}}Request $request, {{$entity}}Service $service): {{$entity}}Resource
     {
         $data = $request->onlyValidated();
 
@@ -35,7 +35,7 @@ class {{$entity}}Controller extends Controller
 
 @endif
 @if (in_array('R', $options))
-    public function get(Get{{$entity}}Request $request, {{$entity}}Service $service, $id)
+    public function get(Get{{$entity}}Request $request, {{$entity}}Service $service, $id): {{$entity}}Resource
     {
         $result = $service
             ->with($request->input('with', []))
@@ -45,7 +45,7 @@ class {{$entity}}Controller extends Controller
         return {{$entity}}Resource::make($result);
     }
 
-    public function search(Search{{$str::plural($entity)}}Request $request, {{$entity}}Service $service)
+    public function search(Search{{$str::plural($entity)}}Request $request, {{$entity}}Service $service): {{$str::plural($entity)}}CollectionResource
     {
         $result = $service->search($request->onlyValidated());
 
@@ -54,7 +54,7 @@ class {{$entity}}Controller extends Controller
 
 @endif
 @if (in_array('U', $options))
-    public function update(Update{{$entity}}Request $request, {{$entity}}Service $service, $id)
+    public function update(Update{{$entity}}Request $request, {{$entity}}Service $service, $id): Response
     {
         $service->update($id, $request->onlyValidated());
 
@@ -63,7 +63,7 @@ class {{$entity}}Controller extends Controller
 
 @endif
 @if (in_array('D', $options))
-    public function delete(Delete{{$entity}}Request $request, {{$entity}}Service $service, $id)
+    public function delete(Delete{{$entity}}Request $request, {{$entity}}Service $service, $id): Response
     {
         $service->delete($id);
 

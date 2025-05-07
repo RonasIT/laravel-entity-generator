@@ -70,6 +70,10 @@ class NovaResourceGenerator extends EntityGenerator
                 );
             }
 
+            if (!$this->isStubExists('nova_resource')) {
+                return;
+            }
+
             $novaFields = $this->prepareNovaFields();
 
             $fileContent = $this->getStub('nova_resource', [
@@ -136,8 +140,9 @@ class NovaResourceGenerator extends EntityGenerator
 
     protected function getFieldsFromDatabase(): array
     {
-        $modelClass = "App\\Models\\{$this->model}";
+        $modelClass = $this->getModelClass($this->model);
         $model = app($modelClass);
+
         $columns = DB::connection($model->getConnectionName())
             ->getDoctrineSchemaManager()
             ->listTableColumns($model->getTable());

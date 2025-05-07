@@ -11,24 +11,6 @@ class TestsGenerator extends AbstractTestsGenerator
         return "{$this->model}Test";
     }
 
-    protected function generateExistedEntityFixture()
-    {
-        $object = $this->getFixtureValuesList($this->model);
-        $entity = Str::snake($this->model);
-
-        foreach (self::FIXTURE_TYPES as $type => $modifications) {
-            if ($this->isFixtureNeeded($type)) {
-                foreach ($modifications as $modification) {
-                    $excepts = [];
-                    if ($modification === 'request') {
-                        $excepts = ['id'];
-                    }
-                    $this->generateFixture("{$type}_{$entity}_{$modification}.json", Arr::except($object, $excepts));
-                }
-            }
-        }
-    }
-
     protected function isFixtureNeeded($type): bool
     {
         $firstLetter = strtoupper($type[0]);
@@ -50,12 +32,17 @@ class TestsGenerator extends AbstractTestsGenerator
 
     protected function generateTests(): void
     {
+        if (!$this->isStubExists('test')) {
+            return;
+        }
+
         $content = $this->getStub('test', [
             'entity' => $this->model,
             'databaseTableName' => $this->getTableName($this->model),
             'entities' => $this->getTableName($this->model, '-'),
             'withAuth' => $this->withAuth,
-            'modelsNamespace' => $this->getOrCreateNamespace('models')
+            'modelsNamespace' => $this->getOrCreateNamespace('models'),
+            'hasModificationEndpoints' => !empty(array_intersect($this->crudOptions, ['C', 'U', 'D'])),
         ]);
 
         $testName = $this->getTestClassName();

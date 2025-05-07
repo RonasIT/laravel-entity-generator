@@ -2,8 +2,8 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaResourceGenerator;
@@ -12,13 +12,6 @@ use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\NovaResourceGenerato
 class NovaResourceGeneratorTest extends TestCase
 {
     use NovaResourceGeneratorMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        Event::fake();
-    }
 
     public function testCreateWithMissingNovaPackage()
     {
@@ -38,7 +31,7 @@ class NovaResourceGeneratorTest extends TestCase
     {
         $this->mockNovaServiceProviderExists();
 
-        $this->assertExceptionThrowed(
+        $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
             message: 'Cannot create Post Nova resource cause Post Model does not exists. '
             . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'"
@@ -58,7 +51,7 @@ class NovaResourceGeneratorTest extends TestCase
             $this->classExistsMethodCall(['nova', 'PostResource']),
         ]);
 
-        $this->assertExceptionThrowed(
+        $this->assertExceptionThrew(
             className: ClassAlreadyExistsException::class,
             message: 'Cannot create PostResource cause PostResource already exists. Remove PostResource.',
         );
@@ -66,6 +59,29 @@ class NovaResourceGeneratorTest extends TestCase
         app(NovaResourceGenerator::class)
             ->setModel('Post')
             ->generate();
+    }
+
+    public function testNovaResourceStubNotExist()
+    {
+        $this->mockNovaServiceProviderExists();
+
+        $this->mockFilesystem();
+
+        $fields = $this->getJsonFixture('command_line_fields.json');
+
+        config(['entity-generator.stubs.nova_resource' => 'incorrect_stub']);
+
+        app(NovaResourceGenerator::class)
+            ->setModel('Post')
+            ->setFields($fields)
+            ->generate();
+
+        $this->assertFileDoesNotExist('app/Nova/PostResource.php');
+
+        $this->assertEventPushed(
+            className: WarningEvent::class,
+            message: 'Generation of nova resource has been skipped cause the view incorrect_stub from the config entity-generator.stubs.nova_resource is not exists. Please check that config has the correct view name value.',
+        );
     }
 
     public function testSuccess()

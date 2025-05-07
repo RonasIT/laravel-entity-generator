@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace RonasIT\Support\Tests\Support\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
@@ -18,4 +18,8 @@ class WelcomeBonus extends Model
         'title',
         'name',
     ];
+
+    public function some_relation()
+    {
+    }
 }

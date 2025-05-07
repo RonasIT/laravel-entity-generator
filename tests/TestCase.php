@@ -28,6 +28,8 @@ class TestCase extends BaseTestCase
 
         vfsStream::setup();
 
+        Event::fake();
+
         $this->generatedFileBasePath = vfsStream::url('root');
 
         $this->app->setBasePath($this->generatedFileBasePath);
@@ -95,14 +97,20 @@ class TestCase extends BaseTestCase
         );
     }
 
-    protected function assertEventPushedChain(array $events): void
+    protected function assertEventPushedChain(array $expectedEvents): void
     {
-        foreach ($events as $className => $message) {
-            $this->assertEventPushed($className, $message);
+        $dispatchedEvents = Event::dispatchedEvents();
+
+        $this->assertEquals(array_keys($expectedEvents), array_keys($dispatchedEvents));
+
+        foreach ($dispatchedEvents as $event => $messages) {
+            $messages = array_map(fn ($message) => Arr::first($message)->message, $messages);
+
+            $this->assertEquals($expectedEvents[$event], $messages);
         }
     }
 
-    protected function assertExceptionThrowed(string $className, string $message): void
+    protected function assertExceptionThrew(string $className, string $message): void
     {
         $this->expectException($className);
         $this->expectExceptionMessage($message);

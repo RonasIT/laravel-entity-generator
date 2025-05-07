@@ -2,9 +2,17 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use RonasIT\Support\Events\WarningEvent;
+use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\IncorrectClassPathException;
+use Throwable;
+use ReflectionMethod;
+use ReflectionClass;
 
 /**
  * @property Filesystem $fs
@@ -16,10 +24,19 @@ abstract class EntityGenerator
         'boolean-required', 'boolean', 'timestamp-required', 'timestamp', 'json'
     ];
 
+    const LOVER_CASE_DIRECTORIES_MAP = [
+        'migrations' => 'database/migrations',
+        'factories' => 'database/factories',
+        'seeders' => 'database/seeders',
+        'database_seeder' => 'database/seeders',
+        'tests' => 'tests',
+        'routes' => 'routes',
+    ];
+
     protected $paths = [];
     protected $model;
     protected $fields;
-    protected $relations;
+    protected $relations = [];
     protected $crudOptions;
 
     /**
@@ -77,13 +94,19 @@ abstract class EntityGenerator
         $this->paths = config('entity-generator.paths');
     }
 
-    protected function getOrCreateNamespace(string $path): string
+    protected function getOrCreateNamespace(string $configPath): string
     {
-        $path = $this->paths[$path];
+        $path = $this->paths[$configPath];
         $pathParts = explode('/', $path);
 
         if (Str::endsWith(Arr::last($pathParts), '.php')) {
             array_pop($pathParts);
+        }
+
+        foreach ($pathParts as $part) {
+            if (!$this->isFolderHasCorrectCase($part, $configPath)) {
+                throw new IncorrectClassPathException("Incorrect path to {$configPath}, {$part} folder must start with a capital letter, please specify the path according to the PSR.");
+            }
         }
 
         $namespace = array_map(function (string $part) {
@@ -97,6 +120,15 @@ abstract class EntityGenerator
         }
 
         return implode('\\', $namespace);
+    }
+
+    protected function isFolderHasCorrectCase(string $folder, string $configPath): bool
+    {
+        $directory = Arr::get(self::LOVER_CASE_DIRECTORIES_MAP, $configPath);
+
+        $firstFolderChar = substr($folder, 0, 1);
+
+        return $folder === 'app' || (ucfirst($firstFolderChar) === $firstFolderChar) || Str::contains($directory, $folder);
     }
 
     abstract public function generate(): void;
@@ -113,6 +145,12 @@ abstract class EntityGenerator
     protected function saveClass($path, $name, $content, $additionalEntityFolder = false): string
     {
         $entitiesPath = base_path($this->paths[$path]);
+
+        if (Str::endsWith($entitiesPath, '.php')) {
+            $pathParts = explode('/', $entitiesPath);
+            array_pop($pathParts);
+            $entitiesPath = implode('/', $pathParts);
+        }
 
         if ($additionalEntityFolder) {
             $entitiesPath = $entitiesPath . "/{$additionalEntityFolder}";
@@ -156,5 +194,72 @@ abstract class EntityGenerator
     protected function throwFailureException($exceptionClass, $failureMessage, $recommendedMessage): void
     {
         throw new $exceptionClass("{$failureMessage} {$recommendedMessage}");
+    }
+
+    protected function getRelatedModels(string $model, string $creatableClass): array
+    {
+        $modelClass = $this->getModelClass($model);
+
+        if (!class_exists($modelClass)) {
+            $this->throwFailureException(
+                exceptionClass: ClassNotExistsException::class,
+                failureMessage: "Cannot create {$creatableClass} cause {$model} Model does not exists.",
+                recommendedMessage: "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'.",
+            );
+        }
+
+        $instance = new $modelClass();
+
+        $publicMethods = (new ReflectionClass($modelClass))->getMethods(ReflectionMethod::IS_PUBLIC);
+
+        $methods = array_filter($publicMethods, fn ($method) => $method->class === $modelClass && !$method->getParameters());
+
+        $relatedModels = [];
+
+        DB::beginTransaction();
+
+        foreach ($methods as $method) {
+            try {
+                $result = call_user_func([$instance, $method->getName()]);
+
+                if (!$result instanceof BelongsTo) {
+                    continue;
+                }
+            } catch (Throwable) {
+                continue;
+            }
+
+            $relatedModels[] = class_basename(get_class($result->getRelated()));
+        }
+
+        DB::rollBack();
+
+        return $relatedModels;
+    }
+
+    protected function getModelClass(string $model): string
+    {
+        $modelNamespace = $this->getOrCreateNamespace('models');
+
+        return "{$modelNamespace}\\{$model}";
+    }
+
+    protected function isStubExists(string $stubName, ?string $generationType = null): bool
+    {
+        $config = "entity-generator.stubs.{$stubName}";
+
+        $stubPath = config($config);
+
+        if (!view()->exists($stubPath)) {
+            $generationType ??= Str::replace('_', ' ', $stubName);
+
+            $message = "Generation of {$generationType} has been skipped cause the view {$stubPath} from the config {$config} is not exists. Please check that config has the correct view name value.";
+
+            event(new WarningEvent($message));
+
+            return false;
+        }
+
+        return true;
     }
 }

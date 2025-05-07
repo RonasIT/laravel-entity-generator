@@ -11,7 +11,7 @@
   ],
   "require": {
     "php": "^8.3",
-    "laravel/framework": "^11.31.0",
+    "laravel/framework": ">=11.31.0",
     "ronasit/laravel-helpers": "^3.0.1-beta",
     "laravel/legacy-factories": ">=1.4.0",
     "ext-json": "*",
@@ -38,7 +38,6 @@
     "psr-4": {
       "RonasIT\\Support\\Tests\\": "tests/",
       "RonasIT\\Support\\Tests\\Support\\": "tests/Support/",
-      "App\\Models\\": "tests/Support/Models/",
       "App\\Nova\\": "tests/Support/Nova/"
     },
     "files": [
