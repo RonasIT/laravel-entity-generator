@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Config;
 use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 use RonasIT\Support\Generators\MigrationGenerator;
 
@@ -72,9 +73,35 @@ class MigrationGeneratorTest extends TestCase
                 'string' => ['title', 'body'],
                 'json' => ['meta'],
                 'timestamp' => ['created_at'],
+                'timestamp-required' => ['published_at'],
             ])
             ->generate();
 
         $this->assertGeneratedFileEquals('migrations_mysql.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
+    }
+
+    public function testCreateMigrationWithoutMigrationStub(): void
+    {
+        Carbon::setTestNow('2022-02-02');
+
+        Config::set('entity-generator.stubs.migration');
+
+        $result = app(MigrationGenerator::class)
+            ->setModel('Post')
+            ->setRelations([
+                'belongsTo' => [],
+                'belongsToMany' => [],
+                'hasOne' => [],
+                'hasMany' => [],
+            ])
+            ->setFields([
+                'integer-required' => ['media_id', 'user_id'],
+                'string' => ['title', 'body'],
+                'json' => ['meta'],
+                'timestamp' => ['created_at'],
+            ])
+            ->generate();
+
+        $this->assertNull($result);
     }
 }
