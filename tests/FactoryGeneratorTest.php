@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\ViewException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\FactoryGenerator;
@@ -102,7 +103,7 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->mockFilesystem();
 
-        Config::set('entity-generator.stubs.factory');
+        config(['entity-generator.stubs.factory' => 'incorrect_stub']);
 
         $result = app(FactoryGenerator::class)
             ->setFields([
@@ -118,6 +119,11 @@ class FactoryGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->assertNull($result);
+        $this->assertFileDoesNotExist('app/Database/Factories/PostFactory.php');
+
+        $this->assertEventPushed(
+            className: WarningEvent::class,
+            message: 'Generation of factory has been skipped cause the view incorrect_stub from the config entity-generator.stubs.factory is not exists. Please check that config has the correct view name value.',
+        );
     }
 }
