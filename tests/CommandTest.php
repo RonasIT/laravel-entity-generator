@@ -3,6 +3,8 @@
 namespace RonasIT\Support\Tests;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Config;
+use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Tests\Support\Command\CommandMockTrait;
 use UnexpectedValueException;
@@ -112,5 +114,33 @@ class CommandTest extends TestCase
         $this->assertFileDoesNotExist('tests/fixtures/NovaPostTest/create_post_request.json');
         $this->assertFileDoesNotExist('tests/fixtures/NovaPostTest/create_post_response.json');
         $this->assertFileDoesNotExist('tests/fixtures/NovaPostTest/update_post_request.json');
+    }
+
+    public function testCallWithNotDefaultConfig()
+    {
+        $rootUrl = vfsStream::setup('root', null, [
+            'config' => [
+                'entity-generator.php' => "<?php return ['test' => 'original'];",
+            ],
+            'routes' => [
+                'api.php' => "",
+            ],
+        ])->url();
+
+        $this->app->instance('path.base', $rootUrl);
+
+        Config::set('entity-generator', ['test' => 'changed']);
+
+        $this->artisan('make:entity Post')
+            ->expectsOutput('Config has been updated')
+            ->assertExitCode(0);
+
+        $configPath = $rootUrl . '/config/entity-generator.php';
+
+        $updated = include $configPath;
+
+        $this->assertTrue(file_exists($configPath));
+        
+        $this->assertEquals(array_merge(['test' => 'changed'], config('entity-generator')), $updated);
     }
 }
