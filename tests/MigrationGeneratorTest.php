@@ -4,6 +4,7 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Config;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 use RonasIT\Support\Generators\MigrationGenerator;
 
@@ -84,9 +85,9 @@ class MigrationGeneratorTest extends TestCase
     {
         Carbon::setTestNow('2022-02-02');
 
-        Config::set('entity-generator.stubs.migration');
+        config(['entity-generator.stubs.migration' => 'incorrect_stub']);
 
-        $result = app(MigrationGenerator::class)
+        app(MigrationGenerator::class)
             ->setModel('Post')
             ->setRelations([
                 'belongsTo' => [],
@@ -102,6 +103,11 @@ class MigrationGeneratorTest extends TestCase
             ])
             ->generate();
 
-        $this->assertNull($result);
+        $this->assertFileDoesNotExist('database/migrations/2022_02_02_000000_posts_create_table.php');
+
+        $this->assertEventPushed(
+            className: WarningEvent::class,
+            message: 'Generation of migration has been skipped cause the view incorrect_stub from the config entity-generator.stubs.migration is not exists. Please check that config has the correct view name value.',
+        );
     }
 }
