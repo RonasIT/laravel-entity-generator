@@ -11,6 +11,7 @@ use Orchestra\Testbench\TestCase as BaseTestCase;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\EntityGeneratorServiceProvider;
 use RonasIT\Support\Traits\FixturesTrait;
+use org\bovigo\vfs\vfsStreamFile;
 
 class TestCase extends BaseTestCase
 {
@@ -26,7 +27,14 @@ class TestCase extends BaseTestCase
 
         $this->mockConfigurations();
 
-        vfsStream::setup();
+        $root = vfsStream::setup();
+
+        vfsStream::newDirectory('config')->at($root);
+        $routesDir = vfsStream::newDirectory('routes')->at($root);
+
+        $apiRoute = new vfsStreamFile('api.php');
+
+        $routesDir->addChild($apiRoute);
 
         Event::fake();
 

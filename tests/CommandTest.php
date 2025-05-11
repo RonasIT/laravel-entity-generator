@@ -118,29 +118,21 @@ class CommandTest extends TestCase
 
     public function testCallWithNotDefaultConfig()
     {
-        $rootUrl = vfsStream::setup('root', null, [
-            'config' => [
-                'entity-generator.php' => "<?php return ['test' => 'original'];",
-            ],
-            'routes' => [
-                'api.php' => "",
-            ],
-        ])->url();
-
-        $this->app->instance('path.base', $rootUrl);
+        $this->app->instance('path.base', $this->generatedFileBasePath);
 
         Config::set('entity-generator', ['test' => 'changed']);
 
-        $this->artisan('make:entity Post')
+        $this
+            ->artisan('make:entity Post')
             ->expectsOutput('Config has been updated')
             ->assertExitCode(0);
 
-        $configPath = $rootUrl . '/config/entity-generator.php';
+        $configPath = "{$this->generatedFileBasePath}/config/entity-generator.php";
 
         $updated = include $configPath;
 
         $this->assertTrue(file_exists($configPath));
-        
-        $this->assertEquals(array_merge(['test' => 'changed'], config('entity-generator')), $updated);
+
+        $this->assertEquals(json_decode($this->getFixture('changed_config.json'), true), $updated, true);
     }
 }
