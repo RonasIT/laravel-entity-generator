@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Config;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 use RonasIT\Support\Generators\MigrationGenerator;
@@ -78,7 +77,7 @@ class MigrationGeneratorTest extends TestCase
             ])
             ->generate();
 
-        $this->assertGeneratedFileEquals('migrations_mysql.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
+        $this->assertGeneratedFileEquals('generated_mysql_migration.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
     }
 
     public function testCreateMigrationWithoutMigrationStub(): void
