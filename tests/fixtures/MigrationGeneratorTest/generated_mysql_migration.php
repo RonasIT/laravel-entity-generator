@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('body')->nullable();
             $table->json('meta')->nullable();
             $table->timestamp('created_at')->nullable();
+            $table->timestamp('published_at')->nullable();
             $table->timestamps();
         });
     }
