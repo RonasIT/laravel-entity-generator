@@ -19,11 +19,9 @@ class CommandTest extends TestCase
         parent::setUp();
 
         vfsStream::newDirectory('config')->at($this->rootDirectory);
-        $routesDir = vfsStream::newDirectory('routes')->at($this->rootDirectory);
-
-        $apiRoute = new vfsStreamFile('api.php');
-
-        $routesDir->addChild($apiRoute);
+        vfsStream::newDirectory('routes')
+            ->at($this->rootDirectory)
+            ->addChild(new vfsStreamFile('api.php'));
     }
 
     public function testCallWithInvalidCrudOption()
@@ -144,8 +142,8 @@ class CommandTest extends TestCase
 
         $updated = include $configPath;
 
-        $this->assertTrue(file_exists($configPath));
+        $this->assertFileExists($configPath);
 
-        $this->assertEquals(json_decode($this->getFixture('changed_config.json'), true), $updated, true);
+        $this->assertEqualsFixture('changed_config', $updated);
     }
 }

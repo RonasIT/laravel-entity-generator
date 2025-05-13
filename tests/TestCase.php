@@ -12,7 +12,6 @@ use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use RonasIT\Support\EntityGeneratorServiceProvider;
 use RonasIT\Support\Traits\FixturesTrait;
-use org\bovigo\vfs\vfsStreamFile;
 
 class TestCase extends BaseTestCase
 {
