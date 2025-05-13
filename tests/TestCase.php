@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 use RonasIT\Support\EntityGeneratorServiceProvider;
 use RonasIT\Support\Traits\FixturesTrait;
 
@@ -20,17 +21,19 @@ class TestCase extends BaseTestCase
     protected bool $globalExportMode = false;
     protected string $generatedFileBasePath;
 
+    protected vfsStreamDirectory $rootDirectory;
+
     public function setUp(): void
     {
         parent::setUp();
 
         $this->mockConfigurations();
 
-        vfsStream::setup();
-
-        Event::fake();
+        $this->rootDirectory = vfsStream::setup();
 
         $this->generatedFileBasePath = vfsStream::url('root');
+        
+        Event::fake();
 
         $this->app->setBasePath($this->generatedFileBasePath);
     }
