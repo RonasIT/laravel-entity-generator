@@ -5,6 +5,7 @@ namespace RonasIT\Support\Tests;
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\ViewException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\FactoryGenerator;
@@ -94,6 +95,34 @@ class FactoryGeneratorTest extends TestCase
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
             message: 'Created a new Factory: PostFactory',
+        );
+    }
+
+    public function testCreateFactoryWithoutFactoryStub(): void
+    {
+        $this->mockFilesystem();
+
+        config(['entity-generator.stubs.factory' => 'incorrect_stub']);
+
+        $result = app(FactoryGenerator::class)
+            ->setFields([
+                'integer-required' => ['author_id'],
+                'string' => ['title', 'iban', 'something'],
+                'json' => ['json_text'],
+            ])
+            ->setRelations([
+                'hasOne' => ['user'],
+                'hasMany' => [],
+                'belongsTo' => ['user'],
+            ])
+            ->setModel('Post')
+            ->generate();
+
+        $this->assertFileDoesNotExist('app/Database/Factories/PostFactory.php');
+
+        $this->assertEventPushed(
+            className: WarningEvent::class,
+            message: 'Generation of factory has been skipped cause the view incorrect_stub from the config entity-generator.stubs.factory is not exists. Please check that config has the correct view name value.',
         );
     }
 }
