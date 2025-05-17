@@ -128,7 +128,7 @@ class FactoryGeneratorTest extends TestCase
         );
     }
 
-    public function testHasntFolderCorrectCase(): void
+    public function testConfigFolderWithIncorrect(): void
     {
         $this->mockFilesystem();
 
