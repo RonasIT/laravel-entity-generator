@@ -4,6 +4,7 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class RequestsGenerator extends EntityGenerator
@@ -14,7 +15,7 @@ class RequestsGenerator extends EntityGenerator
     const DELETE_METHOD = 'Delete';
     const GET_METHOD = 'Get';
 
-    public function setRelations($relations)
+    public function setRelations(RelationsDTO $relations)
     {
         parent::setRelations($relations);
 

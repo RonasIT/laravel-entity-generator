@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
+use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -41,12 +42,10 @@ class ServiceGeneratorTest extends TestCase
         ]);
 
         app(ServiceGenerator::class)
-            ->setRelations([
-                'hasOne' => [],
-                'belongsTo' => ['User'],
-                'hasMany' => ['Comment'],
-                'belongsToMany' => []
-            ])
+            ->setRelations(new RelationsDTO(
+                hasMany: ['Comment'],
+                belongsTo: ['User'],
+            ))
             ->setFields([
                 'integer-required' => ['media_id'],
                 'string-required' => ['body'],

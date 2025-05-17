@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Str;
+use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -287,12 +288,12 @@ class MakeEntityCommand extends Command
 
     protected function getRelations()
     {
-        return [
-            'hasOne' => $this->option('has-one'),
-            'hasMany' => $this->option('has-many'),
-            'belongsTo' => $this->option('belongs-to'),
-            'belongsToMany' => $this->option('belongs-to-many')
-        ];
+        return new RelationsDTO(
+            hasOne: $this->option('has-one'),
+            hasMany: $this->option('has-many'),
+            belongsTo: $this->option('belongs-to'),
+            belongsToMany: $this->option('belongs-to-many'),
+        );
     }
 
     protected function getFields()

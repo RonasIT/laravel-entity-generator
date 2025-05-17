@@ -7,6 +7,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
@@ -76,8 +77,10 @@ abstract class EntityGenerator
      * @param array $relations
      * @return $this
      */
-    public function setRelations($relations)
+    public function setRelations(RelationsDTO $relations)
     {
+        $relations = $relations->toArray();
+
         $this->relations = $relations;
 
         foreach ($relations['belongsTo'] as $field) {
