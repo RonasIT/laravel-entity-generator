@@ -14,8 +14,8 @@ class RequestGeneratorTest extends TestCase
         app(RequestsGenerator::class)
             ->setModel('Post')
             ->setRelations(new RelationsDTO(
-                hasMany: ['User'],
-                belongsTo: ['Comments'],
+                hasMany: ['Comments'],
+                belongsTo: ['User'],
             ))
             ->setFields([
                 'boolean-required' => ['is_published'],
