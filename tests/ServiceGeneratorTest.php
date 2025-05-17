@@ -91,12 +91,11 @@ class ServiceGeneratorTest extends TestCase
         ]);
 
         app(ServiceGenerator::class)
-            ->setRelations([
-                'hasOne' => [],
-                'belongsTo' => ['User'],
-                'hasMany' => ['Comment'],
-                'belongsToMany' => []
-            ])
+            ->setRelations(
+                new RelationsDTO(
+                    hasMany: ['Comment'],
+                    belongsTo: ['User'],
+                ))
             ->setFields([
                 'integer-required' => ['media_id'],
                 'string-required' => ['body'],

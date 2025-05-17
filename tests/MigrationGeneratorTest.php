@@ -33,12 +33,7 @@ class MigrationGeneratorTest extends TestCase
 
         app(MigrationGenerator::class)
             ->setModel('Post')
-            ->setRelations([
-                'belongsTo' => [],
-                'belongsToMany' => [],
-                'hasOne' => [],
-                'hasMany' => [],
-            ])
+            ->setRelations(new RelationsDTO())
             ->setFields([
                 'integer-required' => ['media_id', 'user_id'],
                 'string' => ['title', 'body'],
@@ -58,12 +53,7 @@ class MigrationGeneratorTest extends TestCase
 
         app(MigrationGenerator::class)
             ->setModel('Post')
-            ->setRelations([
-                'belongsTo' => [],
-                'belongsToMany' => [],
-                'hasOne' => [],
-                'hasMany' => [],
-            ])
+            ->setRelations(new RelationsDTO())
             ->setFields([
                 'integer-required' => ['media_id', 'user_id'],
                 'string' => ['title', 'body'],
@@ -84,12 +74,7 @@ class MigrationGeneratorTest extends TestCase
 
         app(MigrationGenerator::class)
             ->setModel('Post')
-            ->setRelations([
-                'belongsTo' => [],
-                'belongsToMany' => [],
-                'hasOne' => [],
-                'hasMany' => [],
-            ])
+            ->setRelations(new RelationsDTO())
             ->setFields([
                 'integer-required' => ['media_id', 'user_id'],
                 'string' => ['title', 'body'],
