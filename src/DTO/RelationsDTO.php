@@ -2,8 +2,6 @@
 
 namespace RonasIT\Support\DTO;
 
-use Illuminate\Support\Str;
-
 class RelationsDTO
 {
     public function __construct(
@@ -16,12 +14,11 @@ class RelationsDTO
 
     public function toArray(): array
     {
-        $result = [];
-
-        foreach ($this as $key => $value) {
-            $result[$key] = $value;
-        }
-
-        return $result;
+        return [
+            'hasOne' => $this->hasOne,
+            'hasMany' => $this->hasMany,
+            'belongsTo' => $this->belongsTo,
+            'belongsToMany' => $this->belongsToMany,
+        ];
     }
 }
