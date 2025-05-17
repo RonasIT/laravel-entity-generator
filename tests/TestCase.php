@@ -10,7 +10,6 @@ use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
-use org\bovigo\vfs\vfsStreamFile;
 use RonasIT\Support\EntityGeneratorServiceProvider;
 use RonasIT\Support\Traits\FixturesTrait;
 
@@ -35,9 +34,6 @@ class TestCase extends BaseTestCase
         $this->generatedFileBasePath = vfsStream::url('root');
 
         vfsStream::newDirectory('config')->at($this->rootDirectory);
-        vfsStream::newDirectory('routes')
-            ->at($this->rootDirectory)
-            ->addChild(new vfsStreamFile('api.php'));
 
         Event::fake();
 
