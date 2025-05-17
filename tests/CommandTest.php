@@ -18,7 +18,6 @@ class CommandTest extends TestCase
     {
         parent::setUp();
 
-        vfsStream::newDirectory('config')->at($this->rootDirectory);
         vfsStream::newDirectory('routes')
             ->at($this->rootDirectory)
             ->addChild(new vfsStreamFile('api.php'));
