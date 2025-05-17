@@ -4,6 +4,7 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\ViewException;
+use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -63,11 +64,7 @@ class FactoryGeneratorTest extends TestCase
             ->setFields([
                 'another_type' => ['some_field'],
             ])
-            ->setRelations([
-                'hasOne' => [],
-                'hasMany' => [],
-                'belongsTo' => [],
-            ])
+            ->setRelations(new RelationsDTO())
             ->setModel('Post')
             ->generate();
     }
@@ -82,11 +79,10 @@ class FactoryGeneratorTest extends TestCase
                 'string' => ['title', 'iban', 'something'],
                 'json' => ['json_text'],
             ])
-            ->setRelations([
-                'hasOne' => ['user'],
-                'hasMany' => [],
-                'belongsTo' => ['user'],
-            ])
+            ->setRelations(new RelationsDTO(
+                hasOne: ['user'],
+                belongsTo: ['user'],
+            ))
             ->setModel('Post')
             ->generate();
 
@@ -110,11 +106,10 @@ class FactoryGeneratorTest extends TestCase
                 'string' => ['title', 'iban', 'something'],
                 'json' => ['json_text'],
             ])
-            ->setRelations([
-                'hasOne' => ['user'],
-                'hasMany' => [],
-                'belongsTo' => ['user'],
-            ])
+            ->setRelations(new RelationsDTO(
+                hasOne: ['user'],
+                belongsTo: ['user'],
+            ))
             ->setModel('Post')
             ->generate();
 

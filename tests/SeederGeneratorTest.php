@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
+use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Generators\SeederGenerator;
 
@@ -10,12 +11,10 @@ class SeederGeneratorTest extends TestCase
     public function testCreateSeeder()
     {
         app(SeederGenerator::class)
-            ->setRelations([
-                'hasOne' => [],
-                'belongsTo' => ['User'],
-                'hasMany' => ['Comment'],
-                'belongsToMany' => []
-            ])
+            ->setRelations(new RelationsDTO(
+                hasMany: ['Comment'],
+                belongsTo: ['User'],
+            ))
             ->setModel('Post')
             ->generate();
 
@@ -28,12 +27,10 @@ class SeederGeneratorTest extends TestCase
         config(['entity-generator.stubs.database_empty_seeder' => 'entity-generator::database_seed_empty']);
 
         app(SeederGenerator::class)
-            ->setRelations([
-                'hasOne' => [],
-                'belongsTo' => ['User'],
-                'hasMany' => ['Comment'],
-                'belongsToMany' => []
-            ])
+            ->setRelations(new RelationsDTO(
+                hasMany: ['Comment'],
+                belongsTo: ['User'],
+            ))
             ->setModel('Post')
             ->generate();
 
@@ -51,12 +48,10 @@ class SeederGeneratorTest extends TestCase
         config(['entity-generator.stubs.seeder' => 'incorrect_stub']);
 
         app(SeederGenerator::class)
-            ->setRelations([
-                'hasOne' => [],
-                'belongsTo' => ['User'],
-                'hasMany' => ['Comment'],
-                'belongsToMany' => []
-            ])
+            ->setRelations(new RelationsDTO(
+                hasMany: ['Comment'],
+                belongsTo: ['User'],
+            ))
             ->setModel('Post')
             ->generate();
 
