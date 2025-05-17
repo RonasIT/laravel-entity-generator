@@ -5,8 +5,6 @@ namespace RonasIT\Support\Tests;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\View\ViewException;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -18,16 +16,6 @@ use RonasIT\Support\Tests\Support\Factory\FactoryMockTrait;
 class FactoryGeneratorTest extends TestCase
 {
     use FactoryMockTrait;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        vfsStream::newDirectory('config')->at($this->rootDirectory);
-        vfsStream::newDirectory('routes')
-            ->at($this->rootDirectory)
-            ->addChild(new vfsStreamDirectory('api.php'));
-    }
 
     public function testModelNotExists()
     {
