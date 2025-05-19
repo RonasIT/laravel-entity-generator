@@ -4,7 +4,6 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class RequestsGenerator extends EntityGenerator
@@ -14,6 +13,13 @@ class RequestsGenerator extends EntityGenerator
     const CREATE_METHOD = 'Create';
     const DELETE_METHOD = 'Delete';
     const GET_METHOD = 'Get';
+
+    public function setRelationFields(): array
+    {
+        return array_map(function ($field) {
+            return Str::snake($field) . '_id';
+        }, $this->relations->belongsTo);
+    }
 
     public function generate(): void
     {
@@ -167,7 +173,7 @@ class RequestsGenerator extends EntityGenerator
             Arr::get($replaces, $type, $type)
         ];
 
-        if (in_array($name, $this->relations->belongsTo)) {
+        if (in_array($name, $this->setRelationFields())) {
             $tableName = str_replace('_id', '', $name);
 
             $rules[] = "exists:{$this->getTableName($tableName)},id";

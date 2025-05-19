@@ -101,6 +101,7 @@ class ModelGeneratorTest extends TestCase
 
         app(ModelGenerator::class)
             ->setModel('Post')
+            ->setRelations(new RelationsDTO())
             ->setFields([])
             ->generate();
 

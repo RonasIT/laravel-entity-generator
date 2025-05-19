@@ -139,11 +139,10 @@ class FactoryGeneratorTest extends TestCase
                 'string' => ['title', 'iban', 'something'],
                 'json' => ['json_text'],
             ])
-            ->setRelations([
-                'hasOne' => ['user'],
-                'hasMany' => [],
-                'belongsTo' => ['user'],
-            ])
+            ->setRelations(new RelationsDTO(
+                hasOne: ['user'],
+                belongsTo: ['user'],
+            ))
             ->setModel('Post')
             ->generate();
     }
