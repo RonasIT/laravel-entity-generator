@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0e6d7ad33208420eeaf095f3b0d31718",
+    "content-hash": "06b28df5fc599471a59b373705d00f71",
     "packages": [
         {
             "name": "brick/math",
@@ -4800,27 +4800,84 @@
             "time": "2024-04-27T21:32:50+00:00"
         },
         {
-            "name": "ronasit/laravel-helpers",
-            "version": "3.0.1-beta",
+            "name": "riverline/multipart-parser",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/RonasIT/laravel-helpers.git",
-                "reference": "5bf2992029c1f71269d0fddd036a102822399925"
+                "url": "https://github.com/Riverline/multipart-parser.git",
+                "reference": "1410f23a8fd416a0cf5c8867ea9c95544016c831"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RonasIT/laravel-helpers/zipball/5bf2992029c1f71269d0fddd036a102822399925",
-                "reference": "5bf2992029c1f71269d0fddd036a102822399925",
+                "url": "https://api.github.com/repos/Riverline/multipart-parser/zipball/1410f23a8fd416a0cf5c8867ea9c95544016c831",
+                "reference": "1410f23a8fd416a0cf5c8867ea9c95544016c831",
                 "shasum": ""
             },
             "require": {
+                "ext-mbstring": "*",
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "laminas/laminas-diactoros": "^1.8.7 || ^2.11.1",
+                "phpunit/phpunit": "^5.7 || ^9.0",
+                "psr/http-message": "^1.0",
+                "symfony/psr-http-message-bridge": "^1.1 || ^2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Riverline\\MultiPartParser\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romain Cambien",
+                    "email": "romain@cambien.net"
+                },
+                {
+                    "name": "Riverline",
+                    "homepage": "http://www.riverline.fr"
+                }
+            ],
+            "description": "One class library to parse multipart content with encoding and charset support.",
+            "keywords": [
+                "http",
+                "multipart",
+                "parser"
+            ],
+            "support": {
+                "issues": "https://github.com/Riverline/multipart-parser/issues",
+                "source": "https://github.com/Riverline/multipart-parser/tree/2.2.0"
+            },
+            "time": "2025-04-29T08:38:14+00:00"
+        },
+        {
+            "name": "ronasit/laravel-helpers",
+            "version": "3.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RonasIT/laravel-helpers.git",
+                "reference": "997141b533877508e074263a1cf92fa1664816a9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RonasIT/laravel-helpers/zipball/997141b533877508e074263a1cf92fa1664816a9",
+                "reference": "997141b533877508e074263a1cf92fa1664816a9",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "^4.2",
                 "ext-json": "*",
                 "guzzlehttp/guzzle": "^7.9.2",
-                "laravel/framework": "^11.20",
+                "laravel/framework": ">=11.20",
                 "maatwebsite/excel": "^3.1.55",
                 "php": ">=8.3",
                 "php-mock/php-mock-phpunit": "^2.10",
-                "tecnickcom/tcpdf": "^6.7.5"
+                "riverline/multipart-parser": "^2.1"
             },
             "require-dev": {
                 "brainmaestro/composer-git-hooks": "^3.0",
@@ -4834,11 +4891,6 @@
             },
             "type": "library",
             "extra": {
-                "laravel": {
-                    "providers": [
-                        "RonasIT\\Support\\HelpersServiceProvider"
-                    ]
-                },
                 "hooks": {
                     "config": {
                         "stop-on-failure": [
@@ -4848,6 +4900,11 @@
                     "pre-commit": [
                         "docker-compose up -d php && docker-compose exec -T php vendor/bin/php-cs-fixer fix && docker-compose exec -T php vendor/bin/tlint"
                     ]
+                },
+                "laravel": {
+                    "providers": [
+                        "RonasIT\\Support\\HelpersServiceProvider"
+                    ]
                 }
             },
             "autoload": {
@@ -4855,9 +4912,7 @@
                     "src/helpers.php"
                 ],
                 "psr-4": {
-                    "RonasIT\\Support\\": "src/",
-                    "RonasIT\\Support\\Tests\\": "tests/",
-                    "RonasIT\\Support\\Tests\\Support\\": "tests/support/"
+                    "RonasIT\\Support\\": "src/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -4877,9 +4932,9 @@
             ],
             "support": {
                 "issues": "https://github.com/RonasIT/laravel-helpers/issues",
-                "source": "https://github.com/RonasIT/laravel-helpers/tree/3.0.1-beta"
+                "source": "https://github.com/RonasIT/laravel-helpers/tree/3.4.1"
             },
-            "time": "2024-11-04T10:52:30+00:00"
+            "time": "2025-04-30T14:00:55+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -8026,79 +8081,6 @@
             "time": "2025-01-17T11:39:41+00:00"
         },
         {
-            "name": "tecnickcom/tcpdf",
-            "version": "6.8.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/tecnickcom/TCPDF.git",
-                "reference": "14ffa0e308f5634aa2489568b4b90b24073b6731"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/14ffa0e308f5634aa2489568b4b90b24073b6731",
-                "reference": "14ffa0e308f5634aa2489568b4b90b24073b6731",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=7.1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "config",
-                    "include",
-                    "tcpdf.php",
-                    "tcpdf_parser.php",
-                    "tcpdf_import.php",
-                    "tcpdf_barcodes_1d.php",
-                    "tcpdf_barcodes_2d.php",
-                    "include/tcpdf_colors.php",
-                    "include/tcpdf_filters.php",
-                    "include/tcpdf_font_data.php",
-                    "include/tcpdf_fonts.php",
-                    "include/tcpdf_images.php",
-                    "include/tcpdf_static.php",
-                    "include/barcodes/datamatrix.php",
-                    "include/barcodes/pdf417.php",
-                    "include/barcodes/qrcode.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-3.0-or-later"
-            ],
-            "authors": [
-                {
-                    "name": "Nicola Asuni",
-                    "email": "info@tecnick.com",
-                    "role": "lead"
-                }
-            ],
-            "description": "TCPDF is a PHP class for generating PDF documents and barcodes.",
-            "homepage": "http://www.tcpdf.org/",
-            "keywords": [
-                "PDFD32000-2008",
-                "TCPDF",
-                "barcodes",
-                "datamatrix",
-                "pdf",
-                "pdf417",
-                "qrcode"
-            ],
-            "support": {
-                "issues": "https://github.com/tecnickcom/TCPDF/issues",
-                "source": "https://github.com/tecnickcom/TCPDF/tree/6.8.0"
-            },
-            "funding": [
-                {
-                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tcpdf%20project",
-                    "type": "custom"
-                }
-            ],
-            "time": "2024-12-23T13:34:57+00:00"
-        },
-        {
             "name": "theseer/tokenizer",
             "version": "1.2.3",
             "source": {
@@ -10672,9 +10654,7 @@
     ],
     "aliases": [],
     "minimum-stability": "beta",
-    "stability-flags": {
-        "ronasit/laravel-helpers": 10
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -10682,5 +10662,5 @@
         "ext-json": "*"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }
