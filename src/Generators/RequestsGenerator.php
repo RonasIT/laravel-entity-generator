@@ -15,17 +15,6 @@ class RequestsGenerator extends EntityGenerator
     const DELETE_METHOD = 'Delete';
     const GET_METHOD = 'Get';
 
-    public function setRelations(RelationsDTO $relations)
-    {
-        parent::setRelations($relations);
-
-        $this->relations['belongsTo'] = array_map(function ($field) {
-            return Str::snake($field) . '_id';
-        }, $this->relations['belongsTo']);
-
-        return $this;
-    }
-
     public function generate(): void
     {
         if (!$this->isStubExists('request')) {
@@ -178,7 +167,7 @@ class RequestsGenerator extends EntityGenerator
             Arr::get($replaces, $type, $type)
         ];
 
-        if (in_array($name, $this->relations['belongsTo'])) {
+        if (in_array($name, $this->relations->belongsTo)) {
             $tableName = str_replace('_id', '', $name);
 
             $rules[] = "exists:{$this->getTableName($tableName)},id";

@@ -2,7 +2,7 @@
 
 namespace RonasIT\Support\DTO;
 
-class RelationsDTO
+readonly class RelationsDTO
 {
     public function __construct(
         public array $hasOne = [],
@@ -14,11 +14,6 @@ class RelationsDTO
 
     public function toArray(): array
     {
-        return [
-            'hasOne' => $this->hasOne,
-            'hasMany' => $this->hasMany,
-            'belongsTo' => $this->belongsTo,
-            'belongsToMany' => $this->belongsToMany,
-        ];
+        return get_object_vars($this);
     }
 }

@@ -37,7 +37,7 @@ abstract class EntityGenerator
     protected $paths = [];
     protected $model;
     protected $fields;
-    protected $relations = [];
+    protected RelationsDTO $relations;
     protected $crudOptions;
 
     /**
@@ -79,11 +79,9 @@ abstract class EntityGenerator
      */
     public function setRelations(RelationsDTO $relations)
     {
-        $relations = $relations->toArray();
-
         $this->relations = $relations;
 
-        foreach ($relations['belongsTo'] as $field) {
+        foreach ($relations->belongsTo as $field) {
             $name = Str::snake($field) . '_id';
 
             $this->fields['integer-required'][] = $name;

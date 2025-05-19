@@ -21,7 +21,7 @@ class MigrationGenerator extends EntityGenerator
             'class' => $this->getPluralName($this->model),
             'entity' => $this->model,
             'entities' => $entities,
-            'relations' => $this->relations,
+            'relations' => $this->relations->toArray(),
             'fields' => $this->fields,
             'table' => $this->generateTable($this->fields)
         ]);
