@@ -128,7 +128,7 @@ class FactoryGeneratorTest extends TestCase
         );
     }
 
-    public function testConfigFolderWithIncorrect(): void
+    public function testConfigFolderWithIncorrectCase(): void
     {
         $this->mockFilesystem();
 
@@ -153,7 +153,7 @@ class FactoryGeneratorTest extends TestCase
             ->generate();
     }
 
-    public function testRemovePhpExtension(): void
+    public function testConfigFolderWithExtension(): void
     {
         $this->mockFilesystem();
 
