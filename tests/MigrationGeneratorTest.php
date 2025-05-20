@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Carbon;
+use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 use RonasIT\Support\Generators\MigrationGenerator;
@@ -18,12 +19,7 @@ class MigrationGeneratorTest extends TestCase
 
         app(MigrationGenerator::class)
             ->setModel('Post')
-            ->setRelations([
-                'belongsTo' => [],
-                'belongsToMany' => [],
-                'hasOne' => [],
-                'hasMany' => [],
-            ])
+            ->setRelations(new RelationsDTO())
             ->setFields([
                 'integer-required' => ['media_id', 'user_id'],
                 'unknown-type' => ['title'],
@@ -37,12 +33,7 @@ class MigrationGeneratorTest extends TestCase
 
         app(MigrationGenerator::class)
             ->setModel('Post')
-            ->setRelations([
-                'belongsTo' => [],
-                'belongsToMany' => [],
-                'hasOne' => [],
-                'hasMany' => [],
-            ])
+            ->setRelations(new RelationsDTO())
             ->setFields([
                 'integer-required' => ['media_id', 'user_id'],
                 'string' => ['title', 'body'],
@@ -62,12 +53,7 @@ class MigrationGeneratorTest extends TestCase
 
         app(MigrationGenerator::class)
             ->setModel('Post')
-            ->setRelations([
-                'belongsTo' => [],
-                'belongsToMany' => [],
-                'hasOne' => [],
-                'hasMany' => [],
-            ])
+            ->setRelations(new RelationsDTO())
             ->setFields([
                 'integer-required' => ['media_id', 'user_id'],
                 'string' => ['title', 'body'],
@@ -88,12 +74,7 @@ class MigrationGeneratorTest extends TestCase
 
         app(MigrationGenerator::class)
             ->setModel('Post')
-            ->setRelations([
-                'belongsTo' => [],
-                'belongsToMany' => [],
-                'hasOne' => [],
-                'hasMany' => [],
-            ])
+            ->setRelations(new RelationsDTO())
             ->setFields([
                 'integer-required' => ['media_id', 'user_id'],
                 'string' => ['title', 'body'],

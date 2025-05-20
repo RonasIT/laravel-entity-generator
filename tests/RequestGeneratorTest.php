@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
+use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Generators\RequestsGenerator;
@@ -12,12 +13,10 @@ class RequestGeneratorTest extends TestCase
     {
         app(RequestsGenerator::class)
             ->setModel('Post')
-            ->setRelations([
-                'belongsTo' => ['User'],
-                'hasMany' => ['Comments'],
-                'hasOne' => [],
-                'belongsToMany' => []
-            ])
+            ->setRelations(new RelationsDTO(
+                hasMany: ['Comments'],
+                belongsTo: ['User'],
+            ))
             ->setFields([
                 'boolean-required' => ['is_published'],
                 'integer' => ['user_id'],

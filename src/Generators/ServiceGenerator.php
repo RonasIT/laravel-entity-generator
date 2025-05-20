@@ -4,22 +4,12 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ServiceGenerator extends EntityGenerator
 {
-    public function setRelations($relations)
-    {
-        foreach ($relations['belongsTo'] as $field) {
-            $name = Str::snake($field) . '_id';
-
-            $this->fields['integer'][] = $name;
-        }
-
-        return $this;
-    }
-
     public function generate(): void
     {
         if ($this->classExists('repositories', "{$this->model}Repository")) {

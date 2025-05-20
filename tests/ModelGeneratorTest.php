@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
+use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -39,12 +40,9 @@ class ModelGeneratorTest extends TestCase
 
         app(ModelGenerator::class)
             ->setModel('Post')
-            ->setRelations([
-                'hasOne' => ['Comment'],
-                'hasMany' => [],
-                'belongsTo' => [],
-                'belongsToMany' => [],
-            ])
+            ->setRelations(new RelationsDTO(
+                hasOne: ['Comment']
+            ))
             ->generate();
     }
 
@@ -58,12 +56,10 @@ class ModelGeneratorTest extends TestCase
                 'integer-required' => ['media_id'],
                 'boolean-required' => ['is_published'],
             ])
-            ->setRelations([
-                'hasOne' => ['Comment'],
-                'hasMany' => ['User'],
-                'belongsTo' => [],
-                'belongsToMany' => [],
-            ])
+            ->setRelations(new RelationsDTO(
+                hasOne: ['Comment'],
+                hasMany: ['User'],
+            ))
             ->generate();
 
         $this->assertGeneratedFileEquals('new_model.php', 'app/Models/Post.php');
@@ -105,6 +101,7 @@ class ModelGeneratorTest extends TestCase
 
         app(ModelGenerator::class)
             ->setModel('Post')
+            ->setRelations(new RelationsDTO())
             ->setFields([])
             ->generate();
 
@@ -125,12 +122,10 @@ class ModelGeneratorTest extends TestCase
         app(ModelGenerator::class)
             ->setModel('Post')
             ->setFields([])
-            ->setRelations([
-                'hasOne' => ['Comment'],
-                'hasMany' => ['User'],
-                'belongsTo' => [],
-                'belongsToMany' => [],
-            ])
+            ->setRelations(new RelationsDTO(
+                hasOne: ['Comment'],
+                hasMany: ['User'],
+            ))
             ->generate();
 
         $this->assertFileDoesNotExist('new_model.php', 'app/Models/Post.php');

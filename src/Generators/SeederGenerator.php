@@ -60,7 +60,7 @@ class SeederGenerator extends EntityGenerator
     {
         $content = "<?php \n\n" . $this->getStub('seeder', [
             'entity' => $this->model,
-            'relations' => $this->relations,
+            'relations' => $this->relations->toArray(),
             'namespace' => $this->getOrCreateNamespace('seeders'),
             'factoryNamespace' => $this->getOrCreateNamespace('factories'),
         ]);

@@ -14,22 +14,17 @@ class RequestsGenerator extends EntityGenerator
     const DELETE_METHOD = 'Delete';
     const GET_METHOD = 'Get';
 
-    public function setRelations($relations)
-    {
-        parent::setRelations($relations);
-
-        $this->relations['belongsTo'] = array_map(function ($field) {
-            return Str::snake($field) . '_id';
-        }, $this->relations['belongsTo']);
-
-        return $this;
-    }
+    protected array $relationFields = [];
 
     public function generate(): void
     {
         if (!$this->isStubExists('request')) {
             return;
         }
+
+        $this->relationFields = array_map(function ($field) {
+            return Str::snake($field) . '_id';
+        }, $this->relations->belongsTo);
 
         if (in_array('R', $this->crudOptions)) {
             $this->createRequest(
@@ -177,7 +172,7 @@ class RequestsGenerator extends EntityGenerator
             Arr::get($replaces, $type, $type)
         ];
 
-        if (in_array($name, $this->relations['belongsTo'])) {
+        if (in_array($name, $this->relationFields)) {
             $tableName = str_replace('_id', '', $name);
 
             $rules[] = "exists:{$this->getTableName($tableName)},id";
