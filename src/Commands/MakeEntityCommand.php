@@ -5,12 +5,13 @@ namespace RonasIT\Support\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Exceptions\EntityCreateException;
+use Exception;
 use RonasIT\Support\Generators\ControllerGenerator;
 use RonasIT\Support\Generators\EntityGenerator;
 use RonasIT\Support\Generators\FactoryGenerator;
@@ -25,25 +26,8 @@ use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Generators\TranslationsGenerator;
 use RonasIT\Support\Generators\SeederGenerator;
-use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use UnexpectedValueException;
 
-/**
- * @property ControllerGenerator $controllerGenerator
- * @property MigrationGenerator $migrationGenerator
- * @property ModelGenerator $modelGenerator
- * @property RepositoryGenerator $repositoryGenerator
- * @property RequestsGenerator $requestsGenerator
- * @property ServiceGenerator $serviceGenerator
- * @property FactoryGenerator $factoryGenerator
- * @property TestsGenerator $testGenerator
- * @property TranslationsGenerator $translationsGenerator
- * @property SeederGenerator $seederGenerator
- * @property ResourceGenerator $resourceGenerator
- * @property NovaResourceGenerator $novaResourceGenerator
- * @property NovaTestGenerator $novaTestGenerator
- * @property EventDispatcher $eventDispatcher
- */
 class MakeEntityCommand extends Command
 {
     const CRUD_OPTIONS = [
@@ -98,21 +82,6 @@ class MakeEntityCommand extends Command
      */
     protected $description = 'Make entity with Model, Repository, Service, Migration, Controller, Resource and Nova Resource.';
 
-    protected $controllerGenerator;
-    protected $migrationGenerator;
-    protected $modelGenerator;
-    protected $repositoryGenerator;
-    protected $requestsGenerator;
-    protected $serviceGenerator;
-    protected $factoryGenerator;
-    protected $testGenerator;
-    protected $translationsGenerator;
-    protected $seederGenerator;
-    protected $resourceGenerator;
-    protected $novaResourceGenerator;
-    protected $novaTestGenerator;
-    protected $eventDispatcher;
-
     protected $rules = [
         'only' => [
             'only-api' => [ResourceGenerator::class, ControllerGenerator::class, RequestsGenerator::class, TestsGenerator::class],
@@ -139,26 +108,6 @@ class MakeEntityCommand extends Command
         NovaTestGenerator::class
     ];
 
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->controllerGenerator = app(ControllerGenerator::class);
-        $this->migrationGenerator = app(MigrationGenerator::class);
-        $this->modelGenerator = app(ModelGenerator::class);
-        $this->repositoryGenerator = app(RepositoryGenerator::class);
-        $this->requestsGenerator = app(RequestsGenerator::class);
-        $this->serviceGenerator = app(ServiceGenerator::class);
-        $this->factoryGenerator = app(FactoryGenerator::class);
-        $this->testGenerator = app(TestsGenerator::class);
-        $this->translationsGenerator = app(TranslationsGenerator::class);
-        $this->seederGenerator = app(SeederGenerator::class);
-        $this->resourceGenerator = app(ResourceGenerator::class);
-        $this->novaResourceGenerator = app(NovaResourceGenerator::class);
-        $this->novaTestGenerator = app(NovaTestGenerator::class);
-        $this->eventDispatcher = app(EventDispatcher::class);
-    }
-
     /**
      * Execute the console command.
      *
@@ -168,20 +117,11 @@ class MakeEntityCommand extends Command
     {
         $this->validateInput();
         $this->checkConfigs();
-
-        $this->eventDispatcher->listen(
-            events: SuccessCreateMessage::class,
-            listener: fn (SuccessCreateMessage $event) => $this->info($event->message),
-        );
-
-        $this->eventDispatcher->listen(
-            events: WarningEvent::class,
-            listener: fn (WarningEvent $event) => $this->warn($event->message),
-        );
+        $this->listenEvents();
 
         try {
             $this->generate();
-        } catch (EntityCreateException $e) {
+        } catch (Exception $e) {
             $this->error($e->getMessage());
         }
     }
@@ -320,5 +260,18 @@ class MakeEntityCommand extends Command
                 throw new ClassNotExistsException('Cannot create API without entity.');
             }
         }
+    }
+
+    protected function listenEvents(): void
+    {
+        Event::listen(
+            events: SuccessCreateMessage::class,
+            listener: fn (SuccessCreateMessage $event) => $this->info($event->message),
+        );
+
+        Event::listen(
+            events: WarningEvent::class,
+            listener: fn (WarningEvent $event) => $this->warn($event->message),
+        );
     }
 }
