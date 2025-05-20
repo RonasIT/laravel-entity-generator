@@ -5,6 +5,7 @@ namespace RonasIT\Support\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -24,7 +25,6 @@ use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Generators\TranslationsGenerator;
 use RonasIT\Support\Generators\SeederGenerator;
-use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use UnexpectedValueException;
 
 class MakeEntityCommand extends Command
@@ -263,14 +263,12 @@ class MakeEntityCommand extends Command
 
     protected function listenEvents(): void
     {
-        $eventDispatcher = app(EventDispatcher::class);
-
-        $eventDispatcher->listen(
+        Event::listen(
             events: SuccessCreateMessage::class,
             listener: fn (SuccessCreateMessage $event) => $this->info($event->message),
         );
 
-        $eventDispatcher->listen(
+        Event::listen(
             events: WarningEvent::class,
             listener: fn (WarningEvent $event) => $this->warn($event->message),
         );
