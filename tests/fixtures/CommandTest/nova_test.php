@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use App\Models\Post;
 use PHPUnit\Framework\Attributes\DataProvider;
-use RonasIT\Support\Tests\ModelTestState;
+use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 
 class NovaPostTest extends TestCase
