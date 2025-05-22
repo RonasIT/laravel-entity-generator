@@ -32,10 +32,10 @@ class NovaPostTest extends TestCase
 
         $response->assertCreated();
 
-        $this->assertEqualsFixture('create_post_response.json', $response->json());
+        $this->assertEqualsFixture('create_post_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('create_posts_state.json', true);
+        self::$postState->assertChangesEqualsFixture('create_posts_state', true);
     }
 
     public function testCreateNoAuth(): void
@@ -54,7 +54,7 @@ class NovaPostTest extends TestCase
         $response->assertUnprocessable();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('create_validation_response.json', $response->json(), true);
+        $this->assertEqualsFixture('create_validation_response', $response->json(), true);
 
         self::$postState->assertNotChanged();
     }
@@ -68,7 +68,7 @@ class NovaPostTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('update_posts_state.json', true);
+        self::$postState->assertChangesEqualsFixture('update_posts_state', true);
     }
 
     public function testUpdateNotExists(): void
@@ -94,7 +94,7 @@ class NovaPostTest extends TestCase
         $response->assertUnprocessable();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('update_validation_response.json', $response->json(), true);
+        $this->assertEqualsFixture('update_validation_response', $response->json(), true);
     }
 
     public function testGetUpdatableFields(): void
@@ -104,7 +104,7 @@ class NovaPostTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('get_updatable_fields_response.json', $response->json(), true);
+        $this->assertEqualsFixture('get_updatable_fields_response', $response->json(), true);
     }
 
     public function testDelete(): void
@@ -114,7 +114,7 @@ class NovaPostTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('delete_posts_state.json', true);
+        self::$postState->assertChangesEqualsFixture('delete_posts_state', true);
     }
 
     public function testDeleteNotExists(): void
@@ -138,7 +138,7 @@ class NovaPostTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('get_post_response.json', $response->json(), true);
+        $this->assertEqualsFixture('get_post_response', $response->json(), true);
     }
 
     public function testGetNotExists(): void
@@ -169,7 +169,7 @@ class NovaPostTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('get_fields_visible_on_create_response.json', $response->json(), true);
+        $this->assertEqualsFixture('get_fields_visible_on_create_response', $response->json(), true);
     }
 
     public static function getRunPostActionsData(): array
