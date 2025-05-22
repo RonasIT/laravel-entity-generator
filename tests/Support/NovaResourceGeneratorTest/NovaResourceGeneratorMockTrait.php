@@ -38,4 +38,11 @@ trait NovaResourceGeneratorMockTrait
 
         $this->app->instance('App\\Models\\Post', new Post);
     }
+
+    public function mockFileSystemWithoutPostModel(): void
+    {
+        $this->fileSystemMock->models = null;
+
+        $this->fileSystemMock->setStructure();
+    }
 }

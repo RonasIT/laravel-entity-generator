@@ -36,6 +36,8 @@ class NovaResourceGeneratorTest extends TestCase
 
     public function testCreateNovaResourceWithMissingModel()
     {
+        $this->mockFileSystemWithoutPostModel();
+        
         $this->mockNovaServiceProviderExists();
 
         $this->assertExceptionThrew(
