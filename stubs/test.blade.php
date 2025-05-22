@@ -37,7 +37,7 @@ class {{$entity}}Test extends TestCase
 @if (in_array('C', $options))
     public function testCreate()
     {
-        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
+        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_request');
 
 @if (!$withAuth)
         $response = $this->json('post', '/{{$entities}}', $data);
@@ -48,16 +48,16 @@ class {{$entity}}Test extends TestCase
         $response->assertCreated();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response.json', $response->json(), true);
+        $this->assertEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_response', $response->json(), true);
 
         // TODO: Need to remove last argument after first successful start
-        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_state.json', true);
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_state', true);
     }
 
 @if ($withAuth)
     public function testCreateNoAuth()
     {
-        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
+        $data = $this->getJsonFixture('create_{{\Illuminate\Support\Str::snake($entity)}}_request');
 
         $response = $this->json('post', '/{{$entities}}', $data);
 
@@ -69,7 +69,7 @@ class {{$entity}}Test extends TestCase
 @if (in_array('U', $options))
     public function testUpdate()
     {
-        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
+        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_request');
 
 @if (!$withAuth)
         $response = $this->json('put', '/{{$entities}}/1', $data);
@@ -80,12 +80,12 @@ class {{$entity}}Test extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_state.json', true);
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_state', true);
     }
 
     public function testUpdateNotExists()
     {
-        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
+        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_request');
 
 @if (!$withAuth)
         $response = $this->json('put', '/{{$entities}}/0', $data);
@@ -101,7 +101,7 @@ class {{$entity}}Test extends TestCase
 @if ($withAuth)
     public function testUpdateNoAuth()
     {
-        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_request.json');
+        $data = $this->getJsonFixture('update_{{\Illuminate\Support\Str::snake($entity)}}_request');
 
         $response = $this->json('put', '/{{$entities}}/1', $data);
 
@@ -124,7 +124,7 @@ class {{$entity}}Test extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('delete_{{\Illuminate\Support\Str::snake($entity)}}_state.json', true);
+        self::${{\Illuminate\Support\Str::camel($entity)}}State->assertChangesEqualsFixture('delete_{{\Illuminate\Support\Str::snake($entity)}}_state', true);
     }
 
     public function testDeleteNotExists()
@@ -162,9 +162,9 @@ class {{$entity}}Test extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove after first successful start
-        $this->exportJson('get_{{\Illuminate\Support\Str::snake($entity)}}.json', $response->json());
+        $this->exportJson('get_{{\Illuminate\Support\Str::snake($entity)}}', $response->json());
 
-        $this->assertEqualsFixture('get_{{\Illuminate\Support\Str::snake($entity)}}.json', $response->json());
+        $this->assertEqualsFixture('get_{{\Illuminate\Support\Str::snake($entity)}}', $response->json());
     }
 
     public function testGetNotExists()

@@ -31,10 +31,10 @@ class PostTest extends TestCase
         $response->assertCreated();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('create_post_response.json', $response->json(), true);
+        $this->assertEqualsFixture('create_post_response', $response->json(), true);
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('create_post_state.json', true);
+        self::$postState->assertChangesEqualsFixture('create_post_state', true);
     }
 
     public function testCreateNoAuth()
@@ -55,7 +55,7 @@ class PostTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('update_post_state.json', true);
+        self::$postState->assertChangesEqualsFixture('update_post_state', true);
     }
 
     public function testUpdateNotExists()
@@ -87,7 +87,7 @@ class PostTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('delete_post_state.json', true);
+        self::$postState->assertChangesEqualsFixture('delete_post_state', true);
     }
 
     public function testDeleteNotExists()
@@ -115,7 +115,7 @@ class PostTest extends TestCase
         // TODO: Need to remove after first successful start
         $this->exportJson('get_post.json', $response->json());
 
-        $this->assertEqualsFixture('get_post.json', $response->json());
+        $this->assertEqualsFixture('get_post', $response->json());
     }
 
     public function testGetNotExists()
