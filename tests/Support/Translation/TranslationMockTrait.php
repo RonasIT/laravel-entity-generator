@@ -11,21 +11,19 @@ trait TranslationMockTrait
 
     public function mockFilesystem(): void
     {
-        $fileSystemMock = new FileSystemMock();
+        $this->fileSystemMock = new FileSystemMock();
 
-        $fileSystemMock->translations = [];
+        $this->fileSystemMock->translations = [];
 
-        $fileSystemMock->setStructure();
+        $this->fileSystemMock->setStructure();
     }
 
     public function mockFilesystemForAppend(): void
     {
         $validation = file_get_contents(getcwd() . '/tests/Support/Translation/validation_without_exceptions.php');
 
-        $fileSystemMock = new FileSystemMock();
+        $this->fileSystemMock->translations = ['validation.php' => $validation];
 
-        $fileSystemMock->translations = ['validation.php' => $validation];
-
-        $fileSystemMock->setStructure();
+        $this->fileSystemMock->setStructure();
     }
 }

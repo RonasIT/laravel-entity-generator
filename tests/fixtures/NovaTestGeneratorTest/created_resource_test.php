@@ -26,7 +26,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testCreate(): void
     {
-        $data = $this->getJsonFixture('create_welcome_bonus_request.json');
+        $data = $this->getJsonFixture('create_welcome_bonus_request');
 
         $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(WelcomeBonus::class, $data);
 
@@ -61,7 +61,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testUpdate(): void
     {
-        $data = $this->getJsonFixture('update_welcome_bonus_request.json');
+        $data = $this->getJsonFixture('update_welcome_bonus_request');
 
         $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonus::class, 1, $data);
 
@@ -73,7 +73,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testUpdateNotExists(): void
     {
-        $data = $this->getJsonFixture('update_welcome_bonus_request.json');
+        $data = $this->getJsonFixture('update_welcome_bonus_request');
 
         $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonus::class, 0, $data);
 

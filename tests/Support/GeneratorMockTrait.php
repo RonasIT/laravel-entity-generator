@@ -9,6 +9,8 @@ trait GeneratorMockTrait
 {
     use MockTrait;
 
+    protected FileSystemMock $fileSystemMock;
+
     public function mockNativeGeneratorFunctions(...$functionCalls): void
     {
         $this->mockNativeFunction('\RonasIT\Support\Generators', $functionCalls);

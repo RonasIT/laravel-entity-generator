@@ -17,8 +17,17 @@ class FactoryGeneratorTest extends TestCase
 {
     use FactoryMockTrait;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockFilesystem();
+    }
+
     public function testModelNotExists()
     {
+        $this->mockFileSystemWithoutPostModel();
+
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
             message: "Cannot create PostFactory cause Post Model does not exists. "
@@ -53,8 +62,6 @@ class FactoryGeneratorTest extends TestCase
 
     public function testProcessUnknownFieldType()
     {
-        $this->mockFilesystem();
-
         $this->assertExceptionThrew(
             className: ViewException::class,
             message: "Cannot generate fake data for unsupported another_type field type. "
@@ -76,8 +83,6 @@ class FactoryGeneratorTest extends TestCase
 
     public function testCreateSuccess()
     {
-        $this->mockFilesystem();
-
         app(FactoryGenerator::class)
             ->setFields([
                 'integer-required' => ['author_id'],
@@ -102,8 +107,6 @@ class FactoryGeneratorTest extends TestCase
 
     public function testCreateFactoryWithoutFactoryStub(): void
     {
-        $this->mockFilesystem();
-
         config(['entity-generator.stubs.factory' => 'incorrect_stub']);
 
         app(FactoryGenerator::class)

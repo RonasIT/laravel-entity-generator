@@ -19,27 +19,27 @@ trait NovaTestGeneratorMockTrait
 
     public function mockFilesystem(): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $this->fileSystemMock = new FileSystemMock;
 
-        $fileSystemMock->novaActions = [
+        $this->fileSystemMock->novaActions = [
             'PublishPostAction.php' => $this->mockPhpFileContent(),
             'ArchivePostAction.php' => $this->mockPhpFileContent(),
             'BlockCommentAction.php' => $this->mockPhpFileContent(),
             'UnPublishPostAction.txt' => 'text',
         ];
 
-        $fileSystemMock->novaModels = [
+        $this->fileSystemMock->novaModels = [
             'WelcomeBonusResource.php' => $this->mockPhpFileContent(),
         ];
 
-        $fileSystemMock->models = [
+        $this->fileSystemMock->models = [
             'WelcomeBonus.php' => $this->mockPhpFileContent(),
         ];
 
-        $fileSystemMock->testFixtures = [
+        $this->fileSystemMock->testFixtures = [
             'NovaWelcomeBonusTest' => []
         ];
 
-        $fileSystemMock->setStructure();
+        $this->fileSystemMock->setStructure();
     }
 }

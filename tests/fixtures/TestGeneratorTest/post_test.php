@@ -24,7 +24,7 @@ class PostTest extends TestCase
 
     public function testCreate()
     {
-        $data = $this->getJsonFixture('create_post_request.json');
+        $data = $this->getJsonFixture('create_post_request');
 
         $response = $this->actingAs(self::$user)->json('post', '/posts', $data);
 
@@ -39,7 +39,7 @@ class PostTest extends TestCase
 
     public function testCreateNoAuth()
     {
-        $data = $this->getJsonFixture('create_post_request.json');
+        $data = $this->getJsonFixture('create_post_request');
 
         $response = $this->json('post', '/posts', $data);
 
@@ -48,7 +48,7 @@ class PostTest extends TestCase
 
     public function testUpdate()
     {
-        $data = $this->getJsonFixture('update_post_request.json');
+        $data = $this->getJsonFixture('update_post_request');
 
         $response = $this->actingAs(self::$user)->json('put', '/posts/1', $data);
 
@@ -60,7 +60,7 @@ class PostTest extends TestCase
 
     public function testUpdateNotExists()
     {
-        $data = $this->getJsonFixture('update_post_request.json');
+        $data = $this->getJsonFixture('update_post_request');
 
         $response = $this->actingAs(self::$user)->json('put', '/posts/0', $data);
 
@@ -71,7 +71,7 @@ class PostTest extends TestCase
 
     public function testUpdateNoAuth()
     {
-        $data = $this->getJsonFixture('update_post_request.json');
+        $data = $this->getJsonFixture('update_post_request');
 
         $response = $this->json('put', '/posts/1', $data);
 

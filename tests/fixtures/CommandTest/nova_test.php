@@ -26,7 +26,7 @@ class NovaPostTest extends TestCase
 
     public function testCreate(): void
     {
-        $data = $this->getJsonFixture('create_post_request.json');
+        $data = $this->getJsonFixture('create_post_request');
 
         $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(Post::class, $data);
 
@@ -61,7 +61,7 @@ class NovaPostTest extends TestCase
 
     public function testUpdate(): void
     {
-        $data = $this->getJsonFixture('update_post_request.json');
+        $data = $this->getJsonFixture('update_post_request');
 
         $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(Post::class, 1, $data);
 
@@ -73,7 +73,7 @@ class NovaPostTest extends TestCase
 
     public function testUpdateNotExists(): void
     {
-        $data = $this->getJsonFixture('update_post_request.json');
+        $data = $this->getJsonFixture('update_post_request');
 
         $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(Post::class, 0, $data);
 

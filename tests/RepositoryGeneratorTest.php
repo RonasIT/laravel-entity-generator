@@ -12,6 +12,13 @@ class RepositoryGeneratorTest extends TestCase
 {
     use RepositoryMockTrait;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockFilesystem();
+    }
+
     public function testModelNotExist()
     {
         $this->mockClass(RepositoryGenerator::class, [
@@ -33,8 +40,6 @@ class RepositoryGeneratorTest extends TestCase
 
     public function testCreateRepository()
     {
-        $this->mockFilesystem();
-
         app(RepositoryGenerator::class)
             ->setModel('Post')
             ->generate();
@@ -50,8 +55,6 @@ class RepositoryGeneratorTest extends TestCase
     public function testCreateRepositoryStubNotExist()
     {
         config(['entity-generator.stubs.repository' => 'incorrect_stub']);
-
-        $this->mockFilesystem();
 
         app(RepositoryGenerator::class)
             ->setModel('Post')

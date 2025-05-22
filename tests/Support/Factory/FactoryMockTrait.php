@@ -15,15 +15,24 @@ trait FactoryMockTrait
         $this->mockClass(FactoryGenerator::class, $functionCalls);
     }
 
+    public function mockFileSystemWithoutPostModel(): void
+    {
+        $this->fileSystemMock->models = [
+            'User.php' => $this->mockPhpFileContent(),
+        ];
+
+        $this->fileSystemMock->setStructure();
+    }
+
     public function mockFilesystem(): void
     {
-        $fileSystemMock = new FileSystemMock();
+        $this->fileSystemMock = new FileSystemMock();
 
-        $fileSystemMock->models = [
+        $this->fileSystemMock->models = [
             'Post.php' => $this->mockPhpFileContent(),
             'User.php' => $this->mockPhpFileContent(),
         ];
 
-        $fileSystemMock->setStructure();
+        $this->fileSystemMock->setStructure();
     }
 }
