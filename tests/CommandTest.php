@@ -138,6 +138,6 @@ class CommandTest extends TestCase
 
         $this->assertFileExists($configPath);
 
-        $this->assertEqualsFixture('changed_config.json', $updated);
+        $this->assertEqualsFixture('changed_config', $updated);
     }
 }
