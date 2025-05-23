@@ -16,8 +16,6 @@ class NovaTestGeneratorTest extends TestCase
 {
     use NovaTestGeneratorMockTrait;
 
-    protected ?Mock $classExistsMock = null;
-
     public function setUp(): void
     {
         parent::setUp();
