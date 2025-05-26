@@ -11,12 +11,12 @@ trait RepositoryMockTrait
 
     public function mockFilesystem(): void
     {
-        $this->fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock;
 
-        $this->fileSystemMock->models = [
+        $fileSystemMock->models = [
             'Post.php' => $this->mockPhpFileContent(),
         ];
 
-        $this->fileSystemMock->setStructure();
+        $fileSystemMock->setStructure();
     }
 }

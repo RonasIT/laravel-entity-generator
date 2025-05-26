@@ -11,22 +11,26 @@ trait ControllerGeneratorMockTrait
 
     public function mockFilesystemWithoutRoutesFile(): void
     {
-        $this->fileSystemMock->routes = [];
+        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock->services = [
+            'PostService.php' => $this->mockPhpFileContent(),
+        ];
+        $fileSystemMock->controllers = [];
 
-        $this->fileSystemMock->setStructure();
+        $fileSystemMock->setStructure();
     }
 
     public function mockFilesystem(): void
     {
-        $this->fileSystemMock = new FileSystemMock;
-        $this->fileSystemMock->services = [
+        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock->services = [
             'PostService.php' => $this->mockPhpFileContent(),
         ];
-        $this->fileSystemMock->controllers = [];
-        $this->fileSystemMock->routes = [
+        $fileSystemMock->controllers = [];
+        $fileSystemMock->routes = [
             'api.php' => $this->mockPhpFileContent(),
         ];
 
-        $this->fileSystemMock->setStructure();
+        $fileSystemMock->setStructure();
     }
 }
