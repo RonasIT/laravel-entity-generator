@@ -9,6 +9,18 @@ trait ModelMockTrait
 {
     use GeneratorMockTrait;
 
+
+    public function mockFileSystemWithoutCommentModel(): void
+    {
+        $fileSystemMock = new FileSystemMock();
+
+        $fileSystemMock->models = [
+            'User.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
+        ];
+
+        $fileSystemMock->setStructure();
+    }
+
     public function mockFilesystem(): void
     {
         $fileSystemMock = new FileSystemMock;

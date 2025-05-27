@@ -13,11 +13,16 @@ class TranslationGeneratorTest extends TestCase
 {
     use TranslationMockTrait;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockFilesystem();
+    }
+
     public function testCreate()
     {
         Lang::shouldReceive('get')->andReturn([]);
-
-        $this->mockFilesystem();
 
         app(TranslationsGenerator::class)
             ->setModel('Post')

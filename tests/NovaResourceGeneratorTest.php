@@ -13,6 +13,13 @@ class NovaResourceGeneratorTest extends TestCase
 {
     use NovaResourceGeneratorMockTrait;
 
+    public function setUp():void
+    {
+        parent::setUp();
+
+        $this->mockFilesystem();
+    }
+
     public function testCreateWithMissingNovaPackage()
     {
         $this->mockNovaServiceProviderExists(false);
@@ -29,6 +36,8 @@ class NovaResourceGeneratorTest extends TestCase
 
     public function testCreateNovaResourceWithMissingModel()
     {
+        $this->mockFileSystemWithoutPostModel();
+
         $this->mockNovaServiceProviderExists();
 
         $this->assertExceptionThrew(
@@ -65,9 +74,7 @@ class NovaResourceGeneratorTest extends TestCase
     {
         $this->mockNovaServiceProviderExists();
 
-        $this->mockFilesystem();
-
-        $fields = $this->getJsonFixture('command_line_fields.json');
+        $fields = $this->getJsonFixture('command_line_fields');
 
         config(['entity-generator.stubs.nova_resource' => 'incorrect_stub']);
 
@@ -88,9 +95,7 @@ class NovaResourceGeneratorTest extends TestCase
     {
         $this->mockNovaServiceProviderExists();
 
-        $this->mockFilesystem();
-
-        $fields = $this->getJsonFixture('command_line_fields.json');
+        $fields = $this->getJsonFixture('command_line_fields');
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
@@ -110,8 +115,6 @@ class NovaResourceGeneratorTest extends TestCase
         $this->mockNovaServiceProviderExists();
 
         $this->mockGettingModelInstance();
-
-        $this->mockFilesystem();
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')

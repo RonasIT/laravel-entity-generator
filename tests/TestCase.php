@@ -5,11 +5,11 @@ namespace RonasIT\Support\Tests;
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
 use RonasIT\Support\EntityGeneratorServiceProvider;
 use RonasIT\Support\Traits\FixturesTrait;
 
@@ -21,23 +21,21 @@ class TestCase extends BaseTestCase
     protected bool $globalExportMode = false;
     protected string $generatedFileBasePath;
 
-    protected vfsStreamDirectory $rootDirectory;
-
     public function setUp(): void
     {
         parent::setUp();
 
         $this->mockConfigurations();
 
-        $this->rootDirectory = vfsStream::setup();
+        vfsStream::setup();
 
         $this->generatedFileBasePath = vfsStream::url('root');
-
-        vfsStream::newDirectory('config')->at($this->rootDirectory);
 
         Event::fake();
 
         $this->app->setBasePath($this->generatedFileBasePath);
+
+        Carbon::setTestNow('2022-02-02');
     }
 
     public function getFixturePath(string $fixtureName): string

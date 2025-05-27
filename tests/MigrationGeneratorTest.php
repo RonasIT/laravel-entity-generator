@@ -29,8 +29,6 @@ class MigrationGeneratorTest extends TestCase
 
     public function testCreateMigration()
     {
-        Carbon::setTestNow('2022-02-02');
-
         app(MigrationGenerator::class)
             ->setModel('Post')
             ->setRelations(new RelationsDTO())
@@ -49,8 +47,6 @@ class MigrationGeneratorTest extends TestCase
     {
         putenv('DB_CONNECTION=mysql');
 
-        Carbon::setTestNow('2022-02-02');
-
         app(MigrationGenerator::class)
             ->setModel('Post')
             ->setRelations(new RelationsDTO())
@@ -68,8 +64,6 @@ class MigrationGeneratorTest extends TestCase
 
     public function testCreateMigrationWithoutMigrationStub(): void
     {
-        Carbon::setTestNow('2022-02-02');
-
         config(['entity-generator.stubs.migration' => 'incorrect_stub']);
 
         app(MigrationGenerator::class)

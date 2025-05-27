@@ -14,6 +14,13 @@ class ModelGeneratorTest extends TestCase
 {
     use ModelMockTrait;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockFilesystem();
+    }
+
     public function testModelAlreadyExists()
     {
         $this->mockClass(ModelGenerator::class, [
@@ -32,6 +39,8 @@ class ModelGeneratorTest extends TestCase
 
     public function testRelationModelMissing()
     {
+        $this->mockFileSystemWithoutCommentModel();
+        
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
             message: "Cannot create Post Model cause relation model Comment does not exist. "
@@ -48,8 +57,6 @@ class ModelGeneratorTest extends TestCase
 
     public function testCreateModel()
     {
-        $this->mockFilesystem();
-
         app(ModelGenerator::class)
             ->setModel('Post')
             ->setFields([
@@ -74,8 +81,6 @@ class ModelGeneratorTest extends TestCase
 
     public function testCreateModelStubNotExist()
     {
-        $this->mockFilesystem();
-
         config(['entity-generator.stubs.model' => 'incorrect_stub']);
 
         app(ModelGenerator::class)
@@ -95,8 +100,6 @@ class ModelGeneratorTest extends TestCase
 
     public function testCreateModelWithoutRelationsRelationStubNotExist()
     {
-        $this->mockFilesystem();
-
         config(['entity-generator.stubs.relation' => 'incorrect_stub']);
 
         app(ModelGenerator::class)
@@ -115,8 +118,6 @@ class ModelGeneratorTest extends TestCase
 
     public function testCreateModelWithRelationsRelationStubNotExist()
     {
-        $this->mockFilesystem();
-
         config(['entity-generator.stubs.relation' => 'incorrect_stub']);
 
         app(ModelGenerator::class)

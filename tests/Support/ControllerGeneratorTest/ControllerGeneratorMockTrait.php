@@ -15,7 +15,7 @@ trait ControllerGeneratorMockTrait
         $fileSystemMock->services = [
             'PostService.php' => $this->mockPhpFileContent(),
         ];
-        $fileSystemMock->controllers = [];
+        $fileSystemMock->routes = [];
 
         $fileSystemMock->setStructure();
     }
