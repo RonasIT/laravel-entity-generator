@@ -1,9 +1,9 @@
 namespace {{$namespace}};
-
 @if(!empty($fields))
     use Faker\Generator as Faker;
 
 @endif
+
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use {{$modelNamespace}}\{{$entity}};
