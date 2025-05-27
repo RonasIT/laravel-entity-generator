@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests\Support\Command\Factories;
 
+use Faker\Generator as Faker;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use RonasIT\Support\Tests\Support\Command\Models\Post;
 
