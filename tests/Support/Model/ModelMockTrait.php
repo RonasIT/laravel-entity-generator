@@ -12,7 +12,7 @@ trait ModelMockTrait
 
     public function mockFileSystemWithoutCommentModel(): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
 
         $fileSystemMock->models = [
             'User.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),

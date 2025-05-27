@@ -41,7 +41,7 @@ trait NovaResourceGeneratorMockTrait
 
     public function mockFileSystemWithoutPostModel(): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
 
         $fileSystemMock->models = null;
 
