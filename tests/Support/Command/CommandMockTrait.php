@@ -2,10 +2,12 @@
 
 namespace RonasIT\Support\Tests\Support\Command;
 
-use Illuminate\Database\Connection;
-use Illuminate\Support\Facades\DB;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\DBAL\Types\IntegerType;
+use Doctrine\DBAL\Types\StringType;
 use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Tests\Support\Command\Models\Post;
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\SchemaManager;
@@ -63,19 +65,28 @@ trait CommandMockTrait
 
     public function mockGettingModelInstance(): void
     {
-        $connectionMock = Mockery::mock(Connection::class)->makePartial();
-        $connectionMock
-            ->expects('getDoctrineSchemaManager')
-            ->andReturn(new SchemaManager());
+        $schemaManagerMock = Mockery::mock(AbstractSchemaManager::class);
+        $schemaManagerMock
+            ->shouldReceive('listTableColumns')
+            ->andReturn(
+                [
+                    new Column('id', new IntegerType),
+                    new Column('title', new StringType),
+                    new Column('created_at', new DateTimeType),
+                ],
+            );
 
-        $mock = Mockery::mock('alias:' . DB::class);
+        $connectionMock = Mockery::mock(\Doctrine\DBAL\Connection::class)->makePartial();
+        $connectionMock
+            ->expects('createSchemaManager')
+            ->andReturn($schemaManagerMock);
+
+        $mock = Mockery::mock('alias:' . \RonasIT\Support\Support\DB::class);
         $mock
             ->expects('connection')
             ->with('pgsql')
             ->andReturn($connectionMock);
 
-        $mock->shouldReceive('beginTransaction', 'rollBack');
-
-        $this->app->instance('App\\Models\\Post', new Post());
+        $this->app->instance('App\\Models\\Post', new \RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\Post);
     }
 }
