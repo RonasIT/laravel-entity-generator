@@ -26,16 +26,16 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testCreate(): void
     {
-        $data = $this->getJsonFixture('create_welcome_bonus_request.json');
+        $data = $this->getJsonFixture('create_welcome_bonus_request');
 
         $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(WelcomeBonus::class, $data);
 
         $response->assertCreated();
 
-        $this->assertEqualsFixture('create_welcome_bonus_response.json', $response->json());
+        $this->assertEqualsFixture('create_welcome_bonus_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
-        self::$welcomeBonusState->assertChangesEqualsFixture('create_welcome_bonuses_state.json', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('create_welcome_bonuses_state', true);
     }
 
     public function testCreateNoAuth(): void
@@ -54,26 +54,26 @@ class NovaWelcomeBonusTest extends TestCase
         $response->assertUnprocessable();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('create_validation_response.json', $response->json(), true);
+        $this->assertEqualsFixture('create_validation_response', $response->json(), true);
 
         self::$welcomeBonusState->assertNotChanged();
     }
 
     public function testUpdate(): void
     {
-        $data = $this->getJsonFixture('update_welcome_bonus_request.json');
+        $data = $this->getJsonFixture('update_welcome_bonus_request');
 
         $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonus::class, 1, $data);
 
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$welcomeBonusState->assertChangesEqualsFixture('update_welcome_bonuses_state.json', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('update_welcome_bonuses_state', true);
     }
 
     public function testUpdateNotExists(): void
     {
-        $data = $this->getJsonFixture('update_welcome_bonus_request.json');
+        $data = $this->getJsonFixture('update_welcome_bonus_request');
 
         $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonus::class, 0, $data);
 
@@ -94,7 +94,7 @@ class NovaWelcomeBonusTest extends TestCase
         $response->assertUnprocessable();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('update_validation_response.json', $response->json(), true);
+        $this->assertEqualsFixture('update_validation_response', $response->json(), true);
     }
 
     public function testGetUpdatableFields(): void
@@ -104,7 +104,7 @@ class NovaWelcomeBonusTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('get_updatable_fields_response.json', $response->json(), true);
+        $this->assertEqualsFixture('get_updatable_fields_response', $response->json(), true);
     }
 
     public function testDelete(): void
@@ -114,7 +114,7 @@ class NovaWelcomeBonusTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        self::$welcomeBonusState->assertChangesEqualsFixture('delete_welcome_bonuses_state.json', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('delete_welcome_bonuses_state', true);
     }
 
     public function testDeleteNotExists(): void
@@ -138,7 +138,7 @@ class NovaWelcomeBonusTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('get_welcome_bonus_response.json', $response->json(), true);
+        $this->assertEqualsFixture('get_welcome_bonus_response', $response->json(), true);
     }
 
     public function testGetNotExists(): void
@@ -169,7 +169,7 @@ class NovaWelcomeBonusTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('get_fields_visible_on_create_response.json', $response->json(), true);
+        $this->assertEqualsFixture('get_fields_visible_on_create_response', $response->json(), true);
     }
 
     public static function getRunWelcomeBonusActionsData(): array

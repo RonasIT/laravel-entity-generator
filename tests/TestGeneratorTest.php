@@ -25,6 +25,8 @@ class TestGeneratorTest extends TestCase
             WarningEvent::class,
             SuccessCreateMessage::class,
         ]);
+
+        $this->mockFilesystem();
     }
 
     public function testMissingModel()
@@ -42,8 +44,6 @@ class TestGeneratorTest extends TestCase
 
     public function testCreateTests()
     {
-        Carbon::setTestNow('2022-02-02');
-
         DB::shouldReceive('beginTransaction')->times(5);
         DB::shouldReceive('rollBack')->times(5);
 
@@ -63,8 +63,6 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
-
-        $this->mockFilesystem();
 
         app(TestsGenerator::class)
             ->setCrudOptions(['C', 'R', 'U', 'D'])
@@ -90,8 +88,6 @@ class TestGeneratorTest extends TestCase
 
     public function testCreateTestsReadDelete()
     {
-        Carbon::setTestNow('2022-02-02');
-
         DB::shouldReceive('beginTransaction')->times(5);
         DB::shouldReceive('rollBack')->times(5);
 
@@ -111,8 +107,6 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
-
-        $this->mockFilesystem();
 
         app(TestsGenerator::class)
             ->setCrudOptions(['R', 'D'])
@@ -138,14 +132,10 @@ class TestGeneratorTest extends TestCase
             'entity-generator.stubs.dump' => 'incorrect_stub',
         ]);
 
-        Carbon::setTestNow('2022-02-02');
-
         $this->mockClass(TestsGenerator::class, [
             $this->classExistsMethodCall(['models', 'User']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
-
-        $this->mockFilesystem();
 
         app(TestsGenerator::class)
             ->setCrudOptions(['C', 'R', 'U', 'D'])
@@ -179,8 +169,6 @@ class TestGeneratorTest extends TestCase
             'entity-generator.stubs.test' => 'incorrect_stub',
         ]);
 
-        Carbon::setTestNow('2022-02-02');
-
         DB::shouldReceive('beginTransaction')->times(5);
         DB::shouldReceive('rollBack')->times(5);
 
@@ -195,8 +183,6 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
-
-        $this->mockFilesystem();
 
         app(TestsGenerator::class)
             ->setCrudOptions(['C', 'R', 'U', 'D'])

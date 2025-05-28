@@ -19,34 +19,34 @@ class PostTest extends TestCase
 
     public function testCreate()
     {
-        $data = $this->getJsonFixture('create_post_request.json');
+        $data = $this->getJsonFixture('create_post_request');
 
         $response = $this->json('post', '/posts', $data);
 
         $response->assertCreated();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('create_post_response.json', $response->json(), true);
+        $this->assertEqualsFixture('create_post_response', $response->json(), true);
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('create_post_state.json', true);
+        self::$postState->assertChangesEqualsFixture('create_post_state', true);
     }
 
     public function testUpdate()
     {
-        $data = $this->getJsonFixture('update_post_request.json');
+        $data = $this->getJsonFixture('update_post_request');
 
         $response = $this->json('put', '/posts/1', $data);
 
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('update_post_state.json', true);
+        self::$postState->assertChangesEqualsFixture('update_post_state', true);
     }
 
     public function testUpdateNotExists()
     {
-        $data = $this->getJsonFixture('update_post_request.json');
+        $data = $this->getJsonFixture('update_post_request');
 
         $response = $this->json('put', '/posts/0', $data);
 
@@ -62,7 +62,7 @@ class PostTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('delete_post_state.json', true);
+        self::$postState->assertChangesEqualsFixture('delete_post_state', true);
     }
 
     public function testDeleteNotExists()
@@ -83,7 +83,7 @@ class PostTest extends TestCase
         // TODO: Need to remove after first successful start
         $this->exportJson('get_post.json', $response->json());
 
-        $this->assertEqualsFixture('get_post.json', $response->json());
+        $this->assertEqualsFixture('get_post', $response->json());
     }
 
     public function testGetNotExists()

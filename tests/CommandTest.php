@@ -4,8 +4,6 @@ namespace RonasIT\Support\Tests;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamFile;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Tests\Support\Command\CommandMockTrait;
 use UnexpectedValueException;
@@ -18,9 +16,7 @@ class CommandTest extends TestCase
     {
         parent::setUp();
 
-        vfsStream::newDirectory('routes')
-            ->at($this->rootDirectory)
-            ->addChild(new vfsStreamFile('api.php'));
+        $this->mockFilesystem();
     }
 
     public function testCallWithInvalidCrudOption()
@@ -52,7 +48,6 @@ class CommandTest extends TestCase
 
         Carbon::setTestNow('2016-10-20 11:05:00');
 
-        $this->mockFilesystem();
         $this->mockGenerator();
         $this->mockGettingModelInstance();
 
@@ -143,6 +138,6 @@ class CommandTest extends TestCase
 
         $this->assertFileExists($configPath);
 
-        $this->assertEqualsFixture('changed_config.json', $updated);
+        $this->assertEqualsFixture('changed_config', $updated);
     }
 }

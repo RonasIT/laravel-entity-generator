@@ -15,6 +15,13 @@ class ControllerGeneratorTest extends TestCase
 {
     use ControllerGeneratorMockTrait;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockFilesystem();
+    }
+
     public function testControllerAlreadyExists()
     {
         $this->mockClass(ControllerGenerator::class, [
@@ -65,8 +72,6 @@ class ControllerGeneratorTest extends TestCase
 
     public function testControllerStubNotExist()
     {
-        $this->mockFilesystem();
-
         View::shouldReceive('exists')
             ->with('entity-generator::controller')
             ->once()
@@ -88,8 +93,6 @@ class ControllerGeneratorTest extends TestCase
 
     public function testRoutesStubNotExist()
     {
-        $this->mockFilesystem();
-
        config(['entity-generator.stubs.routes' => 'incorrect_stub']);
 
         app(ControllerGenerator::class)
@@ -108,8 +111,6 @@ class ControllerGeneratorTest extends TestCase
 
     public function testUseRoutesStubNotExist()
     {
-        $this->mockFilesystem();
-
         config(['entity-generator.stubs.use_routes' => 'incorrect_stub']);
 
         app(ControllerGenerator::class)
@@ -128,8 +129,6 @@ class ControllerGeneratorTest extends TestCase
 
     public function testSuccess()
     {
-        $this->mockFilesystem();
-
         app(ControllerGenerator::class)
             ->setModel('Post')
             ->setCrudOptions(['C', 'R', 'U', 'D'])

@@ -17,6 +17,13 @@ class NovaTestGeneratorTest extends TestCase
 {
     use NovaTestGeneratorMockTrait;
 
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->mockFilesystem();
+    }
+
     public function testGenerateResourceNotExists()
     {
         $this->mockNovaServiceProviderExists();
@@ -63,7 +70,6 @@ class NovaTestGeneratorTest extends TestCase
             $this->nativeClassExistsMethodCall([WelcomeBonus::class, true]),
         );
 
-        $this->mockFilesystem();
         $this->mockNovaRequestClassCall();
 
         config([
@@ -94,7 +100,6 @@ class NovaTestGeneratorTest extends TestCase
     {
         $this->mockNovaServiceProviderExists();
 
-        $this->mockFilesystem();
         $this->mockNovaRequestClassCall();
 
         config([
@@ -132,7 +137,6 @@ class NovaTestGeneratorTest extends TestCase
             $this->nativeClassExistsMethodCall([WelcomeBonus::class, true]),
         );
 
-        $this->mockFilesystem();
         $this->mockNovaRequestClassCall();
 
         app(NovaTestGenerator::class)
