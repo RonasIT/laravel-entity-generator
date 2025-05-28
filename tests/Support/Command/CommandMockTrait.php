@@ -2,12 +2,15 @@
 
 namespace RonasIT\Support\Tests\Support\Command;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Types\DateTimeType;
 use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\StringType;
 use RonasIT\Support\Generators\NovaTestGenerator;
+use RonasIT\Support\Support\DB;
+use RonasIT\Support\Tests\Support\Command\Models\Post;
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\SchemaManager;
@@ -76,17 +79,17 @@ trait CommandMockTrait
                 ],
             );
 
-        $connectionMock = Mockery::mock(\Doctrine\DBAL\Connection::class)->makePartial();
+        $connectionMock = Mockery::mock(Connection::class)->makePartial();
         $connectionMock
             ->expects('createSchemaManager')
             ->andReturn($schemaManagerMock);
 
-        $mock = Mockery::mock('alias:' . \RonasIT\Support\Support\DB::class);
+        $mock = Mockery::mock('alias:' . DB::class);
         $mock
             ->expects('connection')
             ->with('pgsql')
             ->andReturn($connectionMock);
 
-        $this->app->instance('App\\Models\\Post', new \RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\Post);
+        $this->app->instance('App\\Models\\Post', new Post());
     }
 }
