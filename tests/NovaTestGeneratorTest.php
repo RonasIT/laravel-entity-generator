@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
+use Illuminate\Support\Facades\DB;
 use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -70,10 +71,8 @@ class NovaTestGeneratorTest extends TestCase
             'entity-generator.stubs.nova_test' => 'incorrect_stub',
         ]);
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->once();
+        DB::shouldReceive('beginTransaction')->once();
+        DB::shouldReceive('rollBack')->once();
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')
@@ -125,10 +124,8 @@ class NovaTestGeneratorTest extends TestCase
             'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
         ]);
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->once();
+        DB::shouldReceive('beginTransaction')->once();
+        DB::shouldReceive('rollBack')->once();
 
         $this->mockNativeGeneratorFunctions(
             $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),

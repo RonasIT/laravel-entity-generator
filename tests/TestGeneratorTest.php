@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Carbon;
 use RonasIT\Support\Events\SuccessCreateMessage;
@@ -43,10 +44,8 @@ class TestGeneratorTest extends TestCase
     {
         Carbon::setTestNow('2022-02-02');
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->times(5);
+        DB::shouldReceive('beginTransaction')->times(5);
+        DB::shouldReceive('rollBack')->times(5);
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
@@ -93,10 +92,8 @@ class TestGeneratorTest extends TestCase
     {
         Carbon::setTestNow('2022-02-02');
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->times(5);
+        DB::shouldReceive('beginTransaction')->times(5);
+        DB::shouldReceive('rollBack')->times(5);
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
@@ -184,10 +181,8 @@ class TestGeneratorTest extends TestCase
 
         Carbon::setTestNow('2022-02-02');
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->times(5);
+        DB::shouldReceive('beginTransaction')->times(5);
+        DB::shouldReceive('rollBack')->times(5);
 
         $this->mockClass(TestsGenerator::class, [
             $this->classExistsMethodCall(['models', 'User']),
@@ -234,10 +229,8 @@ class TestGeneratorTest extends TestCase
             message: 'Circular relations founded. Please resolve you relations in models, factories and database.',
         );
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->times(3);
+        DB::shouldReceive('beginTransaction')->times(3);
+        DB::shouldReceive('rollBack')->times(3);
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
