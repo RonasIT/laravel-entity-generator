@@ -8,9 +8,9 @@ use Doctrine\DBAL\Types\DateTimeType;
 use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\StringType;
 
-class SchemaManager extends PostgreSQLSchemaManager
+class SchemaManager
 {
-    public function listTableColumns(string $table): array
+    public function listTableColumns(): array
     {
         return [
             new Column('id', new IntegerType),
