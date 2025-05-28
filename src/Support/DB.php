@@ -8,17 +8,20 @@ use Doctrine\DBAL\Connection;
 
 class DB
 {
-    public static function connection(string $driver): Connection
+    public static function connection(?string $driver = null): Connection
     {
         $laravelConnection = BaseDB::connection();
+
         $config = $laravelConnection->getConfig();
+
+        $driver = empty($driver) ? "pdo_{$config['driver']}" : "pdo_{$driver}";
 
         return DriverManager::getConnection([
             'dbname' => $config['database'],
             'user' => $config['username'],
             'password' => $config['password'],
             'host' => $config['host'],
-            'driver' => "pdo_{$driver}",
+            'driver' => $driver,
         ]);
     }
 }
