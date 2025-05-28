@@ -10,8 +10,7 @@ class DB
 {
     public static function connection(string $driver): Connection
     {
-        $laravelConnection = BaseDB::connection();
-        $config = $laravelConnection->getConfig();
+        $config = BaseDB::connection()->getConfig();
 
         return DriverManager::getConnection([
             'dbname' => $config['database'],
