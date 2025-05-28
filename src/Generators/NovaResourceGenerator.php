@@ -3,7 +3,7 @@
 namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
+use RonasIT\Support\Support\DB;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -144,7 +144,7 @@ class NovaResourceGenerator extends EntityGenerator
         $model = app($modelClass);
 
         $columns = DB::connection($model->getConnectionName())
-            ->getDoctrineSchemaManager()
+            ->createSchemaManager()
             ->listTableColumns($model->getTable());
 
         $fields = array_map(function ($column) {
