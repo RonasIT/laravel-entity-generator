@@ -117,6 +117,6 @@ trait CommandMockTrait
             ])
             ->andReturn($connectionMock);
 
-        $this->app->instance('App\\Models\\Post', new Post());
+        $this->app->instance('App\\Models\\Post', new Post);
     }
 }

@@ -77,7 +77,7 @@ trait NovaResourceGeneratorMockTrait
             ])
             ->andReturn($connectionMock);
 
-        $this->app->instance('App\\Models\\Post', new Post());
+        $this->app->instance('App\\Models\\Post', new Post);
     }
 
     public function mockFileSystemWithoutPostModel(): void
