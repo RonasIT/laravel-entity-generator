@@ -2,8 +2,10 @@
 
 namespace RonasIT\Support\Generators;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
 use Illuminate\Support\Arr;
-use RonasIT\Support\Support\DB;
+use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
@@ -143,7 +145,7 @@ class NovaResourceGenerator extends EntityGenerator
         $modelClass = $this->getModelClass($this->model);
         $model = app($modelClass);
 
-        $columns = DB::connection($model->getConnectionName())
+        $columns = $this->connection($model->getConnectionName())
             ->createSchemaManager()
             ->listTableColumns($model->getTable());
 
@@ -157,5 +159,20 @@ class NovaResourceGenerator extends EntityGenerator
     protected function commandFieldsExists(): bool
     {
         return !empty(Arr::flatten($this->fields));
+    }
+
+    protected function connection(?string $name = null): Connection
+    {
+        $config = DB::connection($name)->getConfig();
+
+        $name = empty($name) ? "pdo_{$config['driver']}" : "pdo_{$name}";
+
+        return DriverManager::getConnection([
+            'dbname' => $config['database'],
+            'user' => $config['username'],
+            'password' => $config['password'],
+            'host' => $config['host'],
+            'driver' => $name,
+        ]);
     }
 }
