@@ -87,6 +87,8 @@ trait CommandMockTrait
             ->with('pgsql')
             ->andReturn($laravelConnectionMock);
 
+        DB::shouldReceive('beginTransaction', 'rollBack');
+
         $schemaManagerMock = Mockery::mock(AbstractSchemaManager::class);
         $schemaManagerMock
             ->shouldReceive('listTableColumns')
