@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Event;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
