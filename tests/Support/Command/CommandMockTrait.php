@@ -85,7 +85,7 @@ trait CommandMockTrait
             ->with('pgsql')
             ->andReturn($laravelConnectionMock);
 
-        $this->mockDBTransactionStartRollback();
+        $this->mockDBTransactionStartRollback(2);
 
         $schemaManagerMock = Mockery::mock(AbstractSchemaManager::class);
         $schemaManagerMock
