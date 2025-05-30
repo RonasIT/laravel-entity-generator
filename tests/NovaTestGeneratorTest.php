@@ -76,8 +76,7 @@ class NovaTestGeneratorTest extends TestCase
             'entity-generator.stubs.nova_test' => 'incorrect_stub',
         ]);
 
-        DB::shouldReceive('beginTransaction')->once();
-        DB::shouldReceive('rollBack')->once();
+        $this->mockDBTransactionStartRollback();
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')
@@ -128,8 +127,7 @@ class NovaTestGeneratorTest extends TestCase
             'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
         ]);
 
-        DB::shouldReceive('beginTransaction')->once();
-        DB::shouldReceive('rollBack')->once();
+        $this->mockDBTransactionStartRollback();
 
         $this->mockNativeGeneratorFunctions(
             $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),

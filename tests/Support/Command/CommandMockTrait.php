@@ -70,35 +70,31 @@ trait CommandMockTrait
 
     public function mockGettingModelInstance(): void
     {
-        $config = [
-            'database' => 'my_db',
-            'username' => 'my_user',
-            'password' => 'secret',
-            'host'     => '127.0.0.1',
-            'driver'   => 'pgsql',
-        ];
-
         $laravelConnectionMock = Mockery::mock(LaravelConnection::class);
         $laravelConnectionMock
             ->shouldReceive('getConfig')
-            ->andReturn($config);
+            ->andReturn([
+                'database' => 'my_db',
+                'username' => 'my_user',
+                'password' => 'secret',
+                'host' => '127.0.0.1',
+                'driver' => 'pgsql',
+            ]);
 
         DB::shouldReceive('connection')
             ->with('pgsql')
             ->andReturn($laravelConnectionMock);
 
-        DB::shouldReceive('beginTransaction', 'rollBack');
+        $this->mockDBTransactionStartRollback();
 
         $schemaManagerMock = Mockery::mock(AbstractSchemaManager::class);
         $schemaManagerMock
             ->shouldReceive('listTableColumns')
-            ->andReturn(
-                [
-                    new Column('id', new IntegerType),
-                    new Column('title', new StringType),
-                    new Column('created_at', new DateTimeType),
-                ],
-            );
+            ->andReturn([
+                new Column('id', new IntegerType),
+                new Column('title', new StringType),
+                new Column('created_at', new DateTimeType),
+            ]);
 
         $connectionMock = Mockery::mock(Connection::class)->makePartial();
         $connectionMock
@@ -109,11 +105,11 @@ trait CommandMockTrait
         $driverManagerMock
             ->shouldReceive('getConnection')
             ->with([
-                'dbname'   => 'my_db',
-                'user'     => 'my_user',
+                'dbname' => 'my_db',
+                'user' => 'my_user',
                 'password' => 'secret',
-                'host'     => '127.0.0.1',
-                'driver'   => 'pdo_pgsql',
+                'host' => '127.0.0.1',
+                'driver' => 'pdo_pgsql',
             ])
             ->andReturn($connectionMock);
 

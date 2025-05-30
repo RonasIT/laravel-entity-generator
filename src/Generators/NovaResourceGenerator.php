@@ -145,9 +145,7 @@ class NovaResourceGenerator extends EntityGenerator
         $modelClass = $this->getModelClass($this->model);
         $model = app($modelClass);
 
-        $columns = $this->connection($model->getConnectionName())
-            ->createSchemaManager()
-            ->listTableColumns($model->getTable());
+        $columns = $this->getColumnList( $model->getTable(), $model->getConnectionName());
 
         $fields = array_map(function ($column) {
             return new DatabaseNovaField($column);
@@ -161,18 +159,22 @@ class NovaResourceGenerator extends EntityGenerator
         return !empty(Arr::flatten($this->fields));
     }
 
-    protected function connection(?string $name = null): Connection
+    protected function getColumnList(string $table, ?string $name = null): array
     {
         $config = DB::connection($name)->getConfig();
 
         $name = empty($name) ? "pdo_{$config['driver']}" : "pdo_{$name}";
 
-        return DriverManager::getConnection([
+        $dbalConnection = DriverManager::getConnection([
             'dbname' => $config['database'],
             'user' => $config['username'],
             'password' => $config['password'],
             'host' => $config['host'],
             'driver' => $name,
         ]);
+
+        return $dbalConnection
+            ->createSchemaManager()
+            ->listTableColumns($table);
     }
 }

@@ -42,8 +42,7 @@ class TestGeneratorTest extends TestCase
 
     public function testCreateTests()
     {
-        DB::shouldReceive('beginTransaction')->times(5);
-        DB::shouldReceive('rollBack')->times(5);
+        $this->mockDBTransactionStartRollback(5);
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
@@ -86,8 +85,7 @@ class TestGeneratorTest extends TestCase
 
     public function testCreateTestsReadDelete()
     {
-        DB::shouldReceive('beginTransaction')->times(5);
-        DB::shouldReceive('rollBack')->times(5);
+        $this->mockDBTransactionStartRollback(5);
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
@@ -167,8 +165,7 @@ class TestGeneratorTest extends TestCase
             'entity-generator.stubs.test' => 'incorrect_stub',
         ]);
 
-        DB::shouldReceive('beginTransaction')->times(5);
-        DB::shouldReceive('rollBack')->times(5);
+        $this->mockDBTransactionStartRollback(5);
 
         $this->mockClass(TestsGenerator::class, [
             $this->classExistsMethodCall(['models', 'User']),
@@ -213,8 +210,7 @@ class TestGeneratorTest extends TestCase
             message: 'Circular relations founded. Please resolve you relations in models, factories and database.',
         );
 
-        DB::shouldReceive('beginTransaction')->times(3);
-        DB::shouldReceive('rollBack')->times(3);
+        $this->mockDBTransactionStartRollback(3);
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
