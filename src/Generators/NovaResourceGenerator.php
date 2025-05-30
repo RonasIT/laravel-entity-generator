@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Generators;
 
-use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
