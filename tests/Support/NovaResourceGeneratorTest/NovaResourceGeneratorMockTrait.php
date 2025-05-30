@@ -2,11 +2,18 @@
 
 namespace RonasIT\Support\Tests\Support\NovaResourceGeneratorTest;
 
-use Illuminate\Database\Connection;
-use Illuminate\Support\Facades\DB;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\DBAL\Types\IntegerType;
+use Doctrine\DBAL\Types\StringType;
 use Mockery;
+use Illuminate\Support\Facades\DB;
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Illuminate\Database\Connection as LaravelConnection;
 
 trait NovaResourceGeneratorMockTrait
 {
@@ -25,15 +32,45 @@ trait NovaResourceGeneratorMockTrait
 
     public function mockGettingModelInstance(): void
     {
+        $laravelConnectionMock = Mockery::mock(LaravelConnection::class);
+        $laravelConnectionMock
+            ->shouldReceive('getConfig')
+            ->andReturn([
+                'database' => 'my_db',
+                'username' => 'my_user',
+                'password' => 'secret',
+                'host' => '127.0.0.1',
+                'driver' => 'pgsql',
+            ]);
+
+        DB::shouldReceive('connection')
+            ->with('pgsql')
+            ->andReturn($laravelConnectionMock);
+
+        $schemaManagerMock = Mockery::mock(AbstractSchemaManager::class);
+        $schemaManagerMock
+            ->shouldReceive('listTableColumns')
+            ->andReturn([
+                new Column('id', new IntegerType),
+                new Column('title', new StringType),
+                new Column('created_at', new DateTimeType),
+            ]);
+
         $connectionMock = Mockery::mock(Connection::class)->makePartial();
         $connectionMock
-            ->expects('getDoctrineSchemaManager')
-            ->andReturn(new SchemaManager);
+            ->expects('createSchemaManager')
+            ->andReturn($schemaManagerMock);
 
-        $mock = Mockery::mock('alias:' . DB::class);
-        $mock
-            ->expects('connection')
-            ->with('pgsql')
+        $driverManagerMock = Mockery::mock('alias:' . DriverManager::class);
+        $driverManagerMock
+            ->shouldReceive('getConnection')
+            ->with([
+                'dbname' => 'my_db',
+                'user' => 'my_user',
+                'password' => 'secret',
+                'host' => '127.0.0.1',
+                'driver' => 'pdo_pgsql',
+            ])
             ->andReturn($connectionMock);
 
         $this->app->instance('App\\Models\\Post', new Post);

@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests\Support;
 
+use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Traits\MockTrait;
 
@@ -42,5 +43,11 @@ trait GeneratorMockTrait
     public function mockPhpFileContent(): string
     {
         return '<?php';
+    }
+
+    public function mockDBTransactionStartRollback(int $count = 1): void
+    {
+        DB::shouldReceive('beginTransaction')->times($count);
+        DB::shouldReceive('rollBack')->times($count);
     }
 }
