@@ -144,7 +144,7 @@ class NovaResourceGenerator extends EntityGenerator
         $modelClass = $this->getModelClass($this->model);
         $model = app($modelClass);
 
-        $columns = $this->getColumnList( $model->getTable(), $model->getConnectionName());
+        $columns = $this->getColumnList($model->getTable(), $model->getConnectionName());
 
         $fields = array_map(function ($column) {
             return new DatabaseNovaField($column);
