@@ -98,14 +98,14 @@ class PostTest extends TestCase
         return [
             [
                 'filter' => ['all' => 1],
-                'fixture' => 'search_all.json',
+                'fixture' => 'search_all',
             ],
             [
                 'filter' => [
                     'page' => 2,
                     'per_page' => 2,
                 ],
-                'fixture' => 'search_by_page_per_page.json',
+                'fixture' => 'search_by_page_per_page',
             ],
         ];
     }
