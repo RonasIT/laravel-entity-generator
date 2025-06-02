@@ -158,18 +158,16 @@ class NovaResourceGenerator extends EntityGenerator
         return !empty(Arr::flatten($this->fields));
     }
 
-    protected function getColumnList(string $table, ?string $name = null): array
+    protected function getColumnList(string $table, ?string $connectionName = null): array
     {
-        $config = DB::connection($name)->getConfig();
-
-        $name = empty($name) ? "pdo_{$config['driver']}" : "pdo_{$name}";
+        $config = DB::connection($connectionName)->getConfig();
 
         $dbalConnection = DriverManager::getConnection([
             'dbname' => $config['database'],
             'user' => $config['username'],
             'password' => $config['password'],
             'host' => $config['host'],
-            'driver' => $name,
+            'driver' => "pdo_{$config['driver']}",
         ]);
 
         return $dbalConnection
