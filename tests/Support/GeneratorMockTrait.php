@@ -2,9 +2,18 @@
 
 namespace RonasIT\Support\Tests\Support;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Schema\AbstractSchemaManager;
+use Doctrine\DBAL\Schema\Column;
+use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\DBAL\Types\IntegerType;
+use Doctrine\DBAL\Types\StringType;
+use Illuminate\Database\Connection as LaravelConnection;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Traits\MockTrait;
+use Mockery;
 
 trait GeneratorMockTrait
 {
@@ -49,5 +58,51 @@ trait GeneratorMockTrait
     {
         DB::shouldReceive('beginTransaction')->times($count);
         DB::shouldReceive('rollBack')->times($count);
+    }
+
+    public function mockGettingModelInstance(object $postModel): void
+    {
+        $laravelConnectionMock = Mockery::mock(LaravelConnection::class);
+        $laravelConnectionMock
+            ->shouldReceive('getConfig')
+            ->andReturn([
+                'database' => 'my_db',
+                'username' => 'my_user',
+                'password' => 'secret',
+                'host' => '127.0.0.1',
+                'driver' => 'pgsql',
+            ]);
+
+        DB::shouldReceive('connection')
+            ->with('pgsql')
+            ->andReturn($laravelConnectionMock);
+
+        $schemaManagerMock = Mockery::mock(AbstractSchemaManager::class);
+        $schemaManagerMock
+            ->shouldReceive('listTableColumns')
+            ->andReturn([
+                new Column('id', new IntegerType),
+                new Column('title', new StringType),
+                new Column('created_at', new DateTimeType),
+            ]);
+
+        $connectionMock = Mockery::mock(Connection::class)->makePartial();
+        $connectionMock
+            ->expects('createSchemaManager')
+            ->andReturn($schemaManagerMock);
+
+        $driverManagerMock = Mockery::mock('alias:' . DriverManager::class);
+        $driverManagerMock
+            ->shouldReceive('getConnection')
+            ->with([
+                'dbname' => 'my_db',
+                'user' => 'my_user',
+                'password' => 'secret',
+                'host' => '127.0.0.1',
+                'driver' => 'pdo_pgsql',
+            ])
+            ->andReturn($connectionMock);
+
+        $this->app->instance('App\\Models\\Post', $postModel);
     }
 }
