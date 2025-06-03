@@ -180,14 +180,14 @@ class NovaWelcomeBonusTest extends TestCase
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_publish_post_action_state.json',
+                'state' => 'run_publish_post_action_state',
             ],
             [
                 'action' => UnPublishPostAction::class,
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_un_publish_post_action_state.json',
+                'state' => 'run_un_publish_post_action_state',
             ],
         ];
     }
@@ -210,11 +210,11 @@ class NovaWelcomeBonusTest extends TestCase
         return [
             [
                 'resources' => [1, 2],
-                'fixture' => 'get_welcome_bonus_actions_publish_post_action.json',
+                'fixture' => 'get_welcome_bonus_actions_publish_post_action',
             ],
             [
                 'resources' => [1, 2],
-                'fixture' => 'get_welcome_bonus_actions_un_publish_post_action.json',
+                'fixture' => 'get_welcome_bonus_actions_un_publish_post_action',
             ],
         ];
     }
@@ -237,13 +237,13 @@ class NovaWelcomeBonusTest extends TestCase
                 'request' => [
                     'TextField:description_field' => $this->novaSearchParams(['search term']),
                 ],
-                'fixture' => 'filter_welcome_bonus_by_text_field.json',
+                'fixture' => 'filter_welcome_bonus_by_text_field',
             ],
             [
                 'request' => [
                     'RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
-                'fixture' => 'filter_welcome_bonus_by_created_at_filter.json',
+                'fixture' => 'filter_welcome_bonus_by_created_at_filter',
             ],
         ];
     }

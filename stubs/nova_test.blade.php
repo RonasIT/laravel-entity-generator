@@ -179,7 +179,7 @@ class Nova{{$entity}}Test extends TestCase
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_{{$action['fixture']}}_state.json',
+                'state' => 'run_{{$action['fixture']}}_state',
             ],
 @endforeach
         ];
@@ -204,7 +204,7 @@ class Nova{{$entity}}Test extends TestCase
 @foreach($actions as $action)
             [
                 'resources' => [1, 2],
-                'fixture' => 'get_{{$snake_entity}}_actions_{{$action['fixture']}}.json',
+                'fixture' => 'get_{{$snake_entity}}_actions_{{$action['fixture']}}',
             ],
 @endforeach
         ];
@@ -229,7 +229,7 @@ class Nova{{$entity}}Test extends TestCase
                 'request' => [
                     '{{$filter['name']}}' => $this->novaSearchParams(['search term']),
                 ],
-                'fixture' => 'filter_{{$snake_entity}}_by_{{$filter['fixture_name']}}.json',
+                'fixture' => 'filter_{{$snake_entity}}_by_{{$filter['fixture_name']}}',
             ],
 @endforeach
         ];
