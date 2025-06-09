@@ -8,6 +8,7 @@ use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaResourceGenerator;
 use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\NovaResourceGeneratorMockTrait;
+use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\Post;
 
 class NovaResourceGeneratorTest extends TestCase
 {
@@ -114,7 +115,7 @@ class NovaResourceGeneratorTest extends TestCase
     {
         $this->mockNovaServiceProviderExists();
 
-        $this->mockGettingModelInstance();
+        $this->mockGettingModelInstance(new Post);
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')

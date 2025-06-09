@@ -3,14 +3,12 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Carbon;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Tests\Support\Test\TestMockTrait;
-use Mockery;
 
 class TestGeneratorTest extends TestCase
 {
@@ -43,10 +41,7 @@ class TestGeneratorTest extends TestCase
 
     public function testCreateTests()
     {
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->times(5);
+        $this->mockDBTransactionStartRollback(5);
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
@@ -89,10 +84,7 @@ class TestGeneratorTest extends TestCase
 
     public function testCreateTestsReadDelete()
     {
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->times(5);
+        $this->mockDBTransactionStartRollback(5);
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
@@ -172,10 +164,7 @@ class TestGeneratorTest extends TestCase
             'entity-generator.stubs.test' => 'incorrect_stub',
         ]);
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->times(5);
+        $this->mockDBTransactionStartRollback(5);
 
         $this->mockClass(TestsGenerator::class, [
             $this->classExistsMethodCall(['models', 'User']),
@@ -220,10 +209,7 @@ class TestGeneratorTest extends TestCase
             message: 'Circular relations founded. Please resolve you relations in models, factories and database.',
         );
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->times(3);
+        $this->mockDBTransactionStartRollback(3);
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',

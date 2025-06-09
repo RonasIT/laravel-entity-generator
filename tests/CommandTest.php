@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Tests\Support\Command\CommandMockTrait;
+use RonasIT\Support\Tests\Support\Command\Models\Post;
 use UnexpectedValueException;
 
 class CommandTest extends TestCase
@@ -49,7 +50,8 @@ class CommandTest extends TestCase
         Carbon::setTestNow('2016-10-20 11:05:00');
 
         $this->mockGenerator();
-        $this->mockGettingModelInstance();
+        $this->mockGettingModelInstance(new Post);
+        $this->mockDBTransactionStartRollback(2);
 
         $this
             ->artisan('make:entity Post --methods=CRUD')
