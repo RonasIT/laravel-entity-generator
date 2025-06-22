@@ -45,7 +45,7 @@ class SeederGenerator extends EntityGenerator
 
     protected function createDatabaseSeeder(): void
     {
-        $content = "<?php \n\n" . $this->getStub('database_empty_seeder', [
+        $content = "<?php\n\n" . $this->getStub('database_empty_seeder', [
             'namespace' => $this->getOrCreateNamespace('seeders')
         ]);
 
@@ -58,12 +58,12 @@ class SeederGenerator extends EntityGenerator
 
     protected function createEntitySeeder(): void
     {
-        $content = "<?php \n\n" . $this->getStub('seeder', [
+        $content = "<?php\n\n" . $this->getStub('seeder', [
             'entity' => $this->model,
             'relations' => $this->relations->toArray(),
             'namespace' => $this->getOrCreateNamespace('seeders'),
             'factoryNamespace' => $this->getOrCreateNamespace('factories'),
-        ]);
+        ]) . "\n";
 
         $seederPath = "{$this->seedsPath}/{$this->model}Seeder.php";
 
@@ -78,7 +78,7 @@ class SeederGenerator extends EntityGenerator
     {
         $content = file_get_contents($this->databaseSeederPath);
 
-        $insertContent = "    \$this->call({$this->model}Seeder::class);\n    }\n}";
+        $insertContent = "    \$this->call({$this->model}Seeder::class);\n    }\n}\n";
 
         $fixedContent = preg_replace('/\}\s*\}\s*\z/', $insertContent, $content);
 
