@@ -30,6 +30,15 @@ trait GeneratorMockTrait
         ];
     }
 
+    public function doesNovaResourceExistsCall(bool $result = true): array
+    {
+        return [
+            'function' => 'doesNovaResourceExists',
+            'arguments' => [],
+            'result' => $result
+        ];
+    }
+
     public function nativeClassExistsMethodCall(array $arguments, bool $result = true): array
     {
         return [
