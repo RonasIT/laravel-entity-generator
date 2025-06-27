@@ -77,11 +77,11 @@ class CommandTest extends TestCase
         $this->assertGeneratedFileEquals('update_request.json', 'tests/fixtures/PostTest/update_post_request.json');
         $this->assertGeneratedFileEquals('validation.php', 'lang/en/validation.php');
         $this->assertGeneratedFileEquals('nova_resource.php', 'app/Nova/PostResource.php');
-        $this->assertGeneratedFileEquals('nova_test.php', 'tests/NovaPostTest.php');
-        $this->assertGeneratedFileEquals('nova_dump.php', 'tests/fixtures/NovaPostTest/nova_post_dump.sql');
-        $this->assertGeneratedFileEquals('create_request.json', 'tests/fixtures/NovaPostTest/create_post_request.json');
-        $this->assertGeneratedFileEquals('create_response.json', 'tests/fixtures/NovaPostTest/create_post_response.json');
-        $this->assertGeneratedFileEquals('update_request.json', 'tests/fixtures/NovaPostTest/update_post_request.json');
+        $this->assertGeneratedFileEquals('nova_test.php', 'tests/NovaPostResourceTest.php');
+        $this->assertGeneratedFileEquals('nova_dump.php', 'tests/fixtures/NovaPostResourceTest/nova_post_dump.sql');
+        $this->assertGeneratedFileEquals('create_request.json', 'tests/fixtures/NovaPostResourceTest/create_post_request.json');
+        $this->assertGeneratedFileEquals('create_response.json', 'tests/fixtures/NovaPostResourceTest/create_post_response.json');
+        $this->assertGeneratedFileEquals('update_request.json', 'tests/fixtures/NovaPostResourceTest/update_post_request.json');
     }
 
     public function testMakeOnly()
@@ -119,6 +119,49 @@ class CommandTest extends TestCase
         $this->assertFileDoesNotExist('tests/fixtures/NovaPostTest/create_post_request.json');
         $this->assertFileDoesNotExist('tests/fixtures/NovaPostTest/create_post_response.json');
         $this->assertFileDoesNotExist('tests/fixtures/NovaPostTest/update_post_request.json');
+    }
+
+    public function testMakeOnlyNovaTest(): void
+    {
+        $this->mockFilesystemWithPostModelAndResource();
+
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
+        ]);
+
+        $this->mockGeneratorOnlyNovaTests();
+
+        $this
+            ->artisan('make:entity Post PostResource --only-nova-tests')
+            ->assertSuccessful();
+
+        $this->assertFileDoesNotExist('app/Repositories/PostRepository.php');
+        $this->assertFileDoesNotExist('database/migrations/2016_10_20_110500_posts_create_table.php');
+        $this->assertFileDoesNotExist('database/factories/PostFactory.php');
+        $this->assertFileDoesNotExist('database/seeders/PostSeeder.php');
+        $this->assertFileDoesNotExist('app/Models/Post.php');
+        $this->assertFileDoesNotExist('app/Services/PostService.php');
+        $this->assertFileDoesNotExist('app/Http/Requests/Post/CreatePostRequest.php');
+        $this->assertFileDoesNotExist('app/Http/Requests/Post/GetPostRequest.php');
+        $this->assertFileDoesNotExist('app/Http/Requests/Post/SearchPostsRequest.php');
+        $this->assertFileDoesNotExist('app/Http/Requests/Post/UpdatePostRequest.php');
+        $this->assertFileDoesNotExist('app/Http/Requests/Post/DeletePostRequest.php');
+        $this->assertFileDoesNotExist('app/Http/Controllers/PostController.php');
+        $this->assertFileDoesNotExist('app/Http/Resources/Post/PostResource.php');
+        $this->assertFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
+        $this->assertFileDoesNotExist('routes/api.php');
+        $this->assertFileDoesNotExist('tests/PostTest.php');
+        $this->assertFileDoesNotExist('tests/fixtures/PostTest/dump.sql');
+        $this->assertFileDoesNotExist('tests/fixtures/PostTest/create_post_request.json');
+        $this->assertFileDoesNotExist('tests/fixtures/PostTest/create_post_response.json');
+        $this->assertFileDoesNotExist('tests/fixtures/PostTest/update_post_request.json');
+        $this->assertFileDoesNotExist('lang/en/validation.php');
+        $this->assertFileDoesNotExist('app/Nova/PostResource.php');
+        $this->assertGeneratedFileEquals('nova_test.php', 'tests/NovaPostResourceTest.php');
+        $this->assertGeneratedFileEquals('nova_dump.php', 'tests/fixtures/NovaPostResourceTest/nova_post_dump.sql');
+        $this->assertGeneratedFileEquals('create_request.json', 'tests/fixtures/NovaPostResourceTest/create_post_request.json');
+        $this->assertGeneratedFileEquals('create_response.json', 'tests/fixtures/NovaPostResourceTest/create_post_response.json');
+        $this->assertGeneratedFileEquals('update_request.json', 'tests/fixtures/NovaPostResourceTest/update_post_request.json');
     }
 
     public function testCallWithNotDefaultConfig()
