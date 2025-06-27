@@ -90,8 +90,8 @@ trait CommandMockTrait
             $this->classExistsMethodCall(['nova', 'NovaPostResourceTest'], false),
             $this->classExistsMethodCall(['models', 'Post']),
             $this->classExistsMethodCall(['models', 'User'], false),
-            $this->classExistsMethodCall(['factories', 'PostFactory'], false),
-            $this->classExistsMethodCall(['factories', 'PostFactory'], false),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
 
         $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');

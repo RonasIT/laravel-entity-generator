@@ -127,6 +127,7 @@ class CommandTest extends TestCase
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
         ]);
 
         $this->mockGeneratorOnlyNovaTests();
