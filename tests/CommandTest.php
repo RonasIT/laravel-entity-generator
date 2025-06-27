@@ -123,6 +123,8 @@ class CommandTest extends TestCase
 
     public function testMakeOnlyNovaTest(): void
     {
+        Carbon::setTestNow('2016-10-20 11:05:00');
+
         $this->mockFilesystemWithPostModelAndResource();
 
         config([
