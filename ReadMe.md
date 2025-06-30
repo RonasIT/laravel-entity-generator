@@ -149,7 +149,7 @@ Since 1.3 version you need to add to your config/entity-generator.php following 
         ... // your old data
         'seeds' => 'database/seeds',
         'database_seeder' => 'database/seeds/DatabaseSeeder.php',
-        'translations' => 'resources/lang/en/validation.php'
+        'translations' => 'lang/en/validation.php'
     ],
     'stubs' => [
         ... // your old data
