@@ -162,7 +162,7 @@ class {{$entity}}Test extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove after first successful start
-        $this->exportJson('get_{{\Illuminate\Support\Str::snake($entity)}}.json', $response->json());
+        $this->exportJson('get_{{\Illuminate\Support\Str::snake($entity)}}', $response->json());
 
         $this->assertEqualsFixture('get_{{\Illuminate\Support\Str::snake($entity)}}', $response->json());
     }

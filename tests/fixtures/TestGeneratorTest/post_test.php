@@ -113,7 +113,7 @@ class PostTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove after first successful start
-        $this->exportJson('get_post.json', $response->json());
+        $this->exportJson('get_post', $response->json());
 
         $this->assertEqualsFixture('get_post', $response->json());
     }
