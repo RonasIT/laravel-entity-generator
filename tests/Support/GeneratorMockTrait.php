@@ -60,7 +60,7 @@ trait GeneratorMockTrait
         DB::shouldReceive('rollBack')->times($count);
     }
 
-    public function mockGettingModelInstance(object $postModel): void
+    public function mockGettingModelInstance(object $model): void
     {
         $laravelConnectionMock = Mockery::mock(LaravelConnection::class);
         $laravelConnectionMock
@@ -103,6 +103,10 @@ trait GeneratorMockTrait
             ])
             ->andReturn($connectionMock);
 
-        $this->app->instance('App\\Models\\Post', $postModel);
+        $modelPath = explode('\\', get_class($model));
+
+        $modelName = end($modelPath);
+
+        $this->app->instance("App\\Models\\{$modelName}", $model);
     }
 }
