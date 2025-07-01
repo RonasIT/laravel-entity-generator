@@ -103,9 +103,7 @@ trait GeneratorMockTrait
             ])
             ->andReturn($connectionMock);
 
-        $modelPath = explode('\\', get_class($model));
-
-        $modelName = end($modelPath);
+        $modelName = last(explode('\\', get_class($model)));
 
         $this->app->instance("App\\Models\\{$modelName}", $model);
     }
