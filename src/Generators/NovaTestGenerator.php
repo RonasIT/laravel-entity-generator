@@ -134,6 +134,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         foreach ($allNovaClasses as $class) {
             if (Str::contains($class, $this->novaResourceName)) {
                 $this->fullNovaResourcePath = $class;
+
                 return true;
             }
         }
@@ -144,12 +145,15 @@ class NovaTestGenerator extends AbstractTestsGenerator
     protected function getAllNovaClasses(string $directory): array
     {
         $classes = [];
+
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
 
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
                 $relativePath = str_replace(app_path() . DIRECTORY_SEPARATOR, '', $file->getPathname());
+
                 $class = 'App\\' . str_replace(['/', '.php'], ['\\', ''], $relativePath);
+
                 $classes[] = $class;
             }
         }
