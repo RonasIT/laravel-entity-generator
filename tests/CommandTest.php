@@ -135,7 +135,7 @@ class CommandTest extends TestCase
         $this->mockGeneratorOnlyNovaTests();
 
         $this
-            ->artisan('make:entity Post PostResource --only-nova-tests')
+            ->artisan('make:entity Post --only-nova-tests --resource-name=PostResource')
             ->assertSuccessful();
 
         $this->assertFileDoesNotExist('app/Repositories/PostRepository.php');

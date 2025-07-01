@@ -55,8 +55,8 @@ class MakeEntityCommand extends Command
         {--only-seeder : Set this flag if you want to create only seeder.}
         {--only-nova-resource : Set this flag if you want to create only nova resource.}
         {--only-nova-tests : Set this flag if you want to create only nova resource tests.}
-        {resourceName? : The name of the Nova resource, used only with --only-nova-tests.}
-
+        {--resource-name= : Override the default Nova resource name. Used only with --only-nova-tests.}
+        
         {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
         {--i|integer=* : Add integer field to entity.}
@@ -216,8 +216,8 @@ class MakeEntityCommand extends Command
     {
         $resourceName = "{$this->argument('name')}Resource";
 
-        if (!empty($this->argument('resourceName'))){
-            $resourceName = $this->argument('resourceName');
+        if (!empty($this->option('resource-name'))){
+            $resourceName = $this->option('resource-name');
         }
 
         $generatorInstance = app($generator);
