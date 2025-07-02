@@ -127,9 +127,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function doesNovaResourceExists(): bool
     {
-        $novaDirectory = app_path('Nova');
-
-        $allNovaClasses = $this->getAllNovaClasses($novaDirectory);
+        $allNovaClasses = $this->getAllNovaClasses();
 
         foreach ($allNovaClasses as $class) {
             if (Str::contains($class, $this->novaResourceName)) {
@@ -142,11 +140,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return false;
     }
 
-    protected function getAllNovaClasses(string $directory): array
+    protected function getAllNovaClasses(): array
     {
         $classes = [];
 
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(app_path('Nova')));
 
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
