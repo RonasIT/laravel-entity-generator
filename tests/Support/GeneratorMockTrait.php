@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Traits\MockTrait;
 use Mockery;
+use Illuminate\Support\Str;
 
 trait GeneratorMockTrait
 {
@@ -103,7 +104,7 @@ trait GeneratorMockTrait
             ])
             ->andReturn($connectionMock);
 
-        $modelName = last(explode('\\', get_class($model)));
+        $modelName = Str::afterLast(get_class($model), '\\');
 
         $this->app->instance("App\\Models\\{$modelName}", $model);
     }
