@@ -50,7 +50,7 @@ class CommandTest extends TestCase
         Carbon::setTestNow('2016-10-20 11:05:00');
 
         $this->mockGenerator();
-        $this->mockGettingModelInstance(new Post);
+        $this->mockGettingModelInstance(new Post());
         $this->mockDBTransactionStartRollback(2);
 
         $this

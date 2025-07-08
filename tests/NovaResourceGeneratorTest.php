@@ -115,7 +115,7 @@ class NovaResourceGeneratorTest extends TestCase
     {
         $this->mockNovaServiceProviderExists();
 
-        $this->mockGettingModelInstance(new Post);
+        $this->mockGettingModelInstance(new Post());
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
