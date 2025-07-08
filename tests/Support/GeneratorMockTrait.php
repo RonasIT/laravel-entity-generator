@@ -63,7 +63,8 @@ trait GeneratorMockTrait
 
     public function mockGettingModelInstance(object $model): void
     {
-        $laravelConnectionMock = Mockery::mock(LaravelConnection::class)
+        $laravelConnectionMock = Mockery::mock(LaravelConnection::class);
+        $laravelConnectionMock
             ->shouldReceive('getConfig')
             ->andReturn([
                 'database' => 'my_db',
@@ -77,7 +78,8 @@ trait GeneratorMockTrait
             ->with('pgsql')
             ->andReturn($laravelConnectionMock);
 
-        $schemaManagerMock = Mockery::mock(AbstractSchemaManager::class)
+        $schemaManagerMock = Mockery::mock(AbstractSchemaManager::class);
+        $schemaManagerMock
             ->shouldReceive('listTableColumns')
             ->andReturn([
                 new Column('id', new IntegerType()),
@@ -85,12 +87,12 @@ trait GeneratorMockTrait
                 new Column('created_at', new DateTimeType()),
             ]);
 
-        $connectionMock = Mockery::mock(Connection::class)
-            ->makePartial()
+        $connectionMock = Mockery::mock(Connection::class);
+        $connectionMock->makePartial()
             ->expects('createSchemaManager')
             ->andReturn($schemaManagerMock);
 
-        $driverManagerMock = Mockery::mock('alias:' . DriverManager::class)
+        Mockery::mock('alias:' . DriverManager::class)
             ->shouldReceive('getConnection')
             ->with([
                 'dbname' => 'my_db',
