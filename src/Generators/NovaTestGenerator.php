@@ -40,13 +40,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
                 );
             }
 
-            if (!$this->doesNovaResourceExists()) {
-                $this->throwFailureException(
-                    ClassNotExistsException::class,
-                    "Cannot create Nova{$this->shortNovaResourceName}Test cause {$this->resourceName} Nova resource does not exist.",
-                    "Create {$this->resourceName} Nova resource."
-                );
-            }
+            $this->isNovaResourceExists();
 
             if ($this->classExists('nova', "Nova{$this->shortNovaResourceName}Test")) {
                 $this->throwFailureException(
@@ -141,7 +135,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return true;
     }
 
-    protected function doesNovaResourceExists(): bool
+    protected function isNovaResourceExists(): true
     {
         $allNovaClasses = $this->getAllNovaClasses();
 
@@ -169,7 +163,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
             );
         }
 
-        return false;
+        $this->throwFailureException(
+            ClassNotExistsException::class,
+            "Cannot create Nova{$this->shortNovaResourceName}Test cause {$this->resourceName} Nova resource does not exist.",
+            "Create {$this->resourceName} Nova resource."
+        );
     }
 
     protected function getAllNovaClasses(): \Generator
