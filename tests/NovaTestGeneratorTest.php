@@ -87,6 +87,7 @@ class NovaTestGeneratorTest extends TestCase
         $mock
             ->shouldReceive('beginTransaction', 'rollBack')
             ->once();
+        $this->mockDBTransactionStartRollback();
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')
@@ -158,6 +159,8 @@ class NovaTestGeneratorTest extends TestCase
         $mock
             ->shouldReceive('beginTransaction', 'rollBack')
             ->once();
+
+        $this->mockDBTransactionStartRollback();
 
         $this->mockNativeGeneratorFunctions(
             $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
