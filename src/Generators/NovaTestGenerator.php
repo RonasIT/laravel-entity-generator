@@ -32,6 +32,14 @@ class NovaTestGenerator extends AbstractTestsGenerator
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
+            if (!$this->classExists('models', $this->model)) {
+                $this->throwFailureException(
+                    ClassNotExistsException::class,
+                    "Cannot create Nova{$this->shortNovaResourceName}Test cause {$this->model} does not exist.",
+                    "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'."
+                );
+            }
+
             if (!$this->doesNovaResourceExists()) {
                 $this->throwFailureException(
                     ClassNotExistsException::class,
@@ -44,15 +52,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
                 $this->throwFailureException(
                     ClassAlreadyExistsException::class,
                     "Cannot create Nova{$this->shortNovaResourceName}Test cause it's already exist.",
-                    "Remove Nova{$this->resourceName}Test."
-                );
-            }
-
-            if (!$this->classExists('models', $this->model)) {
-                $this->throwFailureException(
-                    ClassNotExistsException::class,
-                    "Cannot create Nova{$this->shortNovaResourceName}Test cause {$this->model} does not exist.",
-                    "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'."
+                    "Remove Nova{$this->shortNovaResourceName}Test."
                 );
             }
 
@@ -159,12 +159,12 @@ class NovaTestGenerator extends AbstractTestsGenerator
             }
         }
 
-        if (count($resources) > 1) {
+        if (!empty($resources)) {
             $resources = implode(', ', $resources);
 
             $this->throwFailureException(
                 EntityCreateException::class,
-                "Cannot create Nova{$this->shortNovaResourceName}Test cause I found a lot of suitable resources: $resources",
+                "Cannot create Nova{$this->shortNovaResourceName}Test cause I am found a lot of suitable resources: $resources",
                 "Please, use --resource-name option"
             );
         }

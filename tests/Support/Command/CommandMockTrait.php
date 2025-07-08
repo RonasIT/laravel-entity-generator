@@ -5,7 +5,6 @@ namespace RonasIT\Support\Tests\Support\Command;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
-use Mockery;
 
 trait CommandMockTrait
 {
@@ -67,6 +66,7 @@ trait CommandMockTrait
             $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
         );
     }
+
     public function mockGeneratorOnlyNovaTests(): void
     {
         $this->mockClass(NovaTestGenerator::class, [
@@ -82,8 +82,8 @@ trait CommandMockTrait
                 name: 'loadNovaFilters',
                 result: [],
             ),
-            $this->classExistsMethodCall(['nova', 'NovaPostResourceTest'], false),
             $this->classExistsMethodCall(['models', 'Post']),
+            $this->classExistsMethodCall(['nova', 'NovaPostResourceTest'], false),
             $this->classExistsMethodCall(['models', 'User'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),

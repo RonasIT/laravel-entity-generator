@@ -12,7 +12,7 @@ use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\TextField;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
 use App\Nova\Resource;
 
-class WelcomeBonusDraftResource extends Resource
+class PostResource extends Resource
 {
     public static $title = 'name';
 

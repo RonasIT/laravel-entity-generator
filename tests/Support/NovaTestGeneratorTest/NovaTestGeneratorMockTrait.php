@@ -30,7 +30,6 @@ trait NovaTestGeneratorMockTrait
 
         $fileSystemMock->novaModels = [
             'WelcomeBonusResource.php' => $this->mockPhpFileContent(),
-            'PostResource.php' => $this->mockPhpFileContent(),
         ];
 
         $fileSystemMock->novaResources = [
@@ -40,7 +39,8 @@ trait NovaTestGeneratorMockTrait
 
         $fileSystemMock->models = [
             'WelcomeBonus.php' => $this->mockPhpFileContent(),
-            'WelcomeBonusResource.php' => $this->mockPhpFileContent(),
+            'Post.php' => $this->mockPhpFileContent(),
+            'News.php' => $this->mockPhpFileContent(),
         ];
 
         $fileSystemMock->testFixtures = [
