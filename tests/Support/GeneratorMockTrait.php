@@ -85,7 +85,8 @@ trait GeneratorMockTrait
                 new Column('created_at', new DateTimeType()),
             ]);
 
-        $connectionMock = Mockery::mock(Connection::class)->makePartial()
+        $connectionMock = Mockery::mock(Connection::class)
+            ->makePartial()
             ->expects('createSchemaManager')
             ->andReturn($schemaManagerMock);
 
