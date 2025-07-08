@@ -10,7 +10,6 @@ use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 use Laravel\Nova\NovaServiceProvider;
-use Mockery;
 
 class NovaTestGeneratorTest extends TestCase
 {
@@ -76,10 +75,7 @@ class NovaTestGeneratorTest extends TestCase
             'entity-generator.stubs.nova_test' => 'incorrect_stub',
         ]);
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->once();
+        $this->mockDBTransactionStartRollback();
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')
@@ -130,10 +126,7 @@ class NovaTestGeneratorTest extends TestCase
             'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
         ]);
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->once();
+        $this->mockDBTransactionStartRollback();
 
         $this->mockNativeGeneratorFunctions(
             $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
