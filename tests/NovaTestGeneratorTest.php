@@ -11,6 +11,7 @@ use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTra
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use Mockery;
+use RonasIT\Support\Exceptions\EntityCreateException;
 
 class NovaTestGeneratorTest extends TestCase
 {
@@ -33,12 +34,12 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
-            message: 'Cannot create NovaPostTest cause Post Nova resource does not exist. Create Post Nova resource.',
+            message: 'Cannot create NovaPostResourceTest cause PostResource Nova resource does not exist. Create PostResource Nova resource.',
         );
 
         app(NovaTestGenerator::class)
             ->setModel('Post')
-            ->setResource('Post')
+            ->setMetaData(['resource_name' => 'PostResource'])
             ->generate();
     }
 
@@ -47,17 +48,17 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockNovaServiceProviderExists();
 
         $this->mockClass(NovaTestGenerator::class, [
-            $this->classExistsMethodCall(['nova', 'NovaPostTest']),
+            $this->classExistsMethodCall(['nova', 'NovaPostResourceTest']),
         ]);
 
         $this->assertExceptionThrew(
             className: ClassAlreadyExistsException::class,
-            message: "Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.",
+            message: "Cannot create NovaPostResourceTest cause it's already exist. Remove NovaPostResourceTest.",
         );
 
         app(NovaTestGenerator::class)
             ->setModel('Post')
-            ->setResource('Post')
+            ->setMetaData(['resource_name' => 'PostResource'])
             ->generate();
     }
 
@@ -74,7 +75,7 @@ class NovaTestGeneratorTest extends TestCase
         );
 
         $this->mockClass(NovaTestGenerator::class, [
-            $this->classExistsMethodCall(['nova', 'NovaWelcomeBonusTest'], false),
+            $this->classExistsMethodCall(['nova', 'NovaWelcomeBonusResourceTest'], false),
             $this->classExistsMethodCall(['models', 'WelcomeBonus']),
             $this->classExistsMethodCall(['models', 'User'], false),
             $this->classExistsMethodCall(['factories', 'WelcomeBonusFactory'], false),
@@ -83,22 +84,18 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockNovaRequestClassCall();
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->once();
         $this->mockDBTransactionStartRollback();
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')
-            ->setResource('WelcomeBonus')
+            ->setMetaData(['resource_name' => 'WelcomeBonusResource'])
             ->generate();
 
         $this->assertFileDoesNotExist('tests/NovaWelcomeBonusTest.php');
-        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusTest/nova_welcome_bonus_dump.sql');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_request.json');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_response.json');
-        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/update_welcome_bonus_request.json');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusResourceTest/nova_welcome_bonus_dump.sql');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_request.json');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_response.json');
+        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/update_welcome_bonus_request.json');
 
         $this->assertEventPushed(
             className: WarningEvent::class,
@@ -118,7 +115,7 @@ class NovaTestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(NovaTestGenerator::class, [
-            $this->classExistsMethodCall(['nova', 'NovaWelcomeBonusTest'], false),
+            $this->classExistsMethodCall(['nova', 'NovaWelcomeBonusResourceTest'], false),
             $this->classExistsMethodCall(['models', 'WelcomeBonus']),
             $this->classExistsMethodCall(['models', 'User'], false),
             $this->classExistsMethodCall(['factories', 'WelcomeBonusFactory'], false),
@@ -126,14 +123,14 @@ class NovaTestGeneratorTest extends TestCase
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')
-            ->setResource('WelcomeBonus')
+            ->setMetaData(['resource_name' => 'WelcomeBonusResource'])
             ->generate();
 
-        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaWelcomeBonusTest.php');
-        $this->assertFileDoesNotExist('tests/fixtures/NovaWelcomeBonusTest/nova_welcome_bonus_dump.sql');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_request.json');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_response.json');
-        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/update_welcome_bonus_request.json');
+        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaWelcomeBonusResourceTest.php');
+        $this->assertFileDoesNotExist('tests/fixtures/NovaWelcomeBonusResourceTest/nova_welcome_bonus_dump.sql');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_request.json');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_response.json');
+        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/update_welcome_bonus_request.json');
 
         $this->assertEventPushed(
             className: WarningEvent::class,
@@ -148,17 +145,12 @@ class NovaTestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(NovaTestGenerator::class, [
-            $this->classExistsMethodCall(['nova', 'NovaWelcomeBonusTest'], false),
+            $this->classExistsMethodCall(['nova', 'NovaWelcomeBonusResourceTest'], false),
             $this->classExistsMethodCall(['models', 'WelcomeBonus']),
             $this->classExistsMethodCall(['models', 'User'], false),
             $this->classExistsMethodCall(['factories', 'WelcomeBonusFactory'], false),
             $this->classExistsMethodCall(['factories', 'WelcomeBonusFactory'], false),
         ]);
-
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->once();
 
         $this->mockDBTransactionStartRollback();
 
@@ -171,14 +163,99 @@ class NovaTestGeneratorTest extends TestCase
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')
-            ->setResource('WelcomeBonus')
+            ->setMetaData(['resource_name' => 'WelcomeBonusResource'])
             ->generate();
 
-        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaWelcomeBonusTest.php');
-        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusTest/nova_welcome_bonus_dump.sql');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_request.json');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_response.json');
-        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/update_welcome_bonus_request.json');
+        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaWelcomeBonusResourceTest.php');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusResourceTest/nova_welcome_bonus_dump.sql');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_request.json');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_response.json');
+        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/update_welcome_bonus_request.json');
+    }
+
+    public function testWithManySameResources()
+    {
+        $this->mockNovaServiceProviderExists();
+
+        $this->assertExceptionThrew(
+            className: EntityCreateException::class,
+            message: 'Cannot create NovaPostResourceTest cause I found a lot of suitable resources: Resources\PostResource Please, use --resource-name option',
+        );
+
+        app(NovaTestGenerator::class)
+            ->setModel('Post')
+            ->setMetaData(['resource_name' => 'PostResource'])
+            ->generate();
+    }
+
+    public function testSuccessWithoutSetMetaData()
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+        ]);
+
+        $this->mockClass(NovaTestGenerator::class, [
+            $this->classExistsMethodCall(['nova', 'NovaWelcomeBonusResourceTest'], false),
+            $this->classExistsMethodCall(['models', 'WelcomeBonus']),
+            $this->classExistsMethodCall(['models', 'User'], false),
+            $this->classExistsMethodCall(['factories', 'WelcomeBonusFactory'], false),
+            $this->classExistsMethodCall(['factories', 'WelcomeBonusFactory'], false),
+        ]);
+
+        $this->mockDBTransactionStartRollback();
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
+            $this->nativeClassExistsMethodCall([WelcomeBonus::class, true]),
+        );
+
+        $this->mockNovaRequestClassCall();
+
+        app(NovaTestGenerator::class)
+            ->setModel('WelcomeBonus')
+            ->setMetaData(['resource_name' => null])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaWelcomeBonusResourceTest.php');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusResourceTest/nova_welcome_bonus_dump.sql');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_request.json');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_response.json');
+        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/update_welcome_bonus_request.json');
+    }
+
+    public function testSuccessWithNestedFile(): void
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+        ]);
+
+        $this->mockClass(NovaTestGenerator::class, [
+            $this->classExistsMethodCall(['nova', 'NovaWelcomeBonusDraftResourceTest'], false),
+            $this->classExistsMethodCall(['models', 'WelcomeBonus']),
+            $this->classExistsMethodCall(['models', 'User'], false),
+            $this->classExistsMethodCall(['factories', 'WelcomeBonusFactory'], false),
+            $this->classExistsMethodCall(['factories', 'WelcomeBonusFactory'], false),
+        ]);
+
+        $this->mockDBTransactionStartRollback();
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
+            $this->nativeClassExistsMethodCall([WelcomeBonus::class, true]),
+        );
+
+        $this->mockNovaRequestClassCall();
+
+        app(NovaTestGenerator::class)
+            ->setModel('WelcomeBonus')
+            ->setMetaData(['resource_name' => 'Resources\WelcomeBonusDraftResource'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaWelcomeBonusDraftResourceTest.php');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusDraftResourceTest/nova_welcome_bonus_dump.sql');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusDraftResourceTest/create_welcome_bonus_request.json');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusDraftResourceTest/create_welcome_bonus_response.json');
+        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusDraftResourceTest/update_welcome_bonus_request.json');
     }
 
     public function testGenerateNovaPackageNotInstall()

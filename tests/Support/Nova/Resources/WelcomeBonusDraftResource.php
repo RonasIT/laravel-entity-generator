@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Nova;
+namespace App\Nova\Resources;
 
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
@@ -11,7 +11,7 @@ use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\PublishPostAction;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\TextField;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
 
-class WelcomeBonusResource extends Resource
+class WelcomeBonusDraftResource
 {
     public static $title = 'name';
 

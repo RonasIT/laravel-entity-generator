@@ -214,23 +214,12 @@ class MakeEntityCommand extends Command
 
     protected function runGeneration($generator)
     {
-        $resourceName = "{$this->argument('name')}Resource";
-
-        if (!empty($this->option('resource-name'))){
-            $resourceName = $this->option('resource-name');
-        }
-
-        $generatorInstance = app($generator);
-
-        if (method_exists($generatorInstance, 'setResource')) {
-            $generatorInstance->setResource($resourceName);
-        }
-
-        $generatorInstance
+        app($generator)
             ->setModel($this->argument('name'))
             ->setFields($this->getFields())
             ->setRelations($this->getRelations())
             ->setCrudOptions($this->getCrudOptions())
+            ->setMetaData(['resource_name' => $this->option('resource-name')])
             ->generate();
     }
 

@@ -89,10 +89,7 @@ trait CommandMockTrait
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
 
-        $mock = Mockery::mock('alias:Illuminate\Support\Facades\DB');
-        $mock
-            ->shouldReceive('beginTransaction', 'rollBack')
-            ->once();
+        $this->mockDBTransactionStartRollback();
 
         $this->mockNativeGeneratorFunctions(
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
