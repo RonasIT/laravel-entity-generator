@@ -85,12 +85,11 @@ trait GeneratorMockTrait
                 new Column('created_at', new DateTimeType()),
             ]);
 
-        $connectionMock = Mockery::mock(Connection::class)->makePartial();
-        $connectionMock
+        $connectionMock = Mockery::mock(Connection::class)->makePartial()
             ->expects('createSchemaManager')
             ->andReturn($schemaManagerMock);
 
-        $driverManagerMock = Mockery::mock('alias:' . DriverManager::class);
+        $driverManagerMock = Mockery::mock('alias:' . DriverManager::class)
             ->shouldReceive('getConnection')
             ->with([
                 'dbname' => 'my_db',
