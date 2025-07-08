@@ -63,7 +63,7 @@ trait GeneratorMockTrait
 
     public function mockGettingModelInstance(object $model): void
     {
-        $laravelConnectionMock = Mockery::mock(LaravelConnection::class);
+        $laravelConnectionMock = Mockery::mock(LaravelConnection::class)
             ->shouldReceive('getConfig')
             ->andReturn([
                 'database' => 'my_db',
@@ -77,7 +77,7 @@ trait GeneratorMockTrait
             ->with('pgsql')
             ->andReturn($laravelConnectionMock);
 
-        $schemaManagerMock = Mockery::mock(AbstractSchemaManager::class);
+        $schemaManagerMock = Mockery::mock(AbstractSchemaManager::class)
             ->shouldReceive('listTableColumns')
             ->andReturn([
                 new Column('id', new IntegerType()),
