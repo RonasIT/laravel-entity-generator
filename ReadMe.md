@@ -123,6 +123,14 @@ Syntax:
 
     --only-resource            : Set this flag if you want to create only resource.
 
+    --only-nova-resource       : Set this flag if you want to create only nova resource.
+    
+    --only-nova-tests          : Set this flag if you want to create only nova resource tests.
+
+    --resource-name[=RESOURCE-NAME] : Override the default (App\\Nova\\ModelResource) Nova resource name. Used only with --only-nova-tests.
+   
+    please, use flag variable with double screening and double quotes without Nova directory, for example --resource-name="Resources\\Banner\\BannerResource"
+
 #### Mode combination options
 
     --only-entity              : Generate stack of classes to work with entity inside the app (Migration/Model/Service/Repository)
