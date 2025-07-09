@@ -50,8 +50,10 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $fileContent = $this->getStub('nova_test', [
             'url_path' => Str::kebab($this->model) . '-resources',
             'entity' => $this->model,
+            'resource' => $this->shortNovaResourceName,
+            'resource_path' => $this->fullNovaResourcePath,
             'entities' => $this->getPluralName($this->model),
-            'snake_entity' => Str::snake($this->model),
+            'snake_resource' => Str::snake($this->shortNovaResourceName),
             'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
