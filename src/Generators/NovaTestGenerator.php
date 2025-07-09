@@ -11,6 +11,7 @@ use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use RonasIT\Support\Exceptions\EntityCreateException;
+use Generator;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
@@ -170,7 +171,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         );
     }
 
-    protected function getAllNovaClasses(): \Generator
+    protected function getAllNovaClasses(): Generator
     {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->novaPath));
 
