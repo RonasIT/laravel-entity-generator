@@ -8,27 +8,46 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
+use RonasIT\Support\Exceptions\EntityCreateException;
+use Generator;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
-    protected $novaModelName;
+    protected string $resourceName;
+
+    protected ?string $fullNovaResourcePath = null;
+
+    protected string $shortNovaResourceName;
+
+    protected string $novaPath;
+
+    public function __construct()
+    {
+        $this->novaPath = app_path('Nova');
+
+        parent::__construct();
+    }
 
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
-            if (!$this->doesNovaResourceExists()) {
+            if (!$this->classExists('models', $this->model)) {
                 $this->throwFailureException(
                     ClassNotExistsException::class,
-                    "Cannot create Nova{$this->model}Test cause {$this->model} Nova resource does not exist.",
-                    "Create {$this->model} Nova resource."
+                    "Cannot create Nova{$this->shortNovaResourceName}Test cause {$this->model} does not exist.",
+                    "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'."
                 );
             }
 
-            if ($this->classExists('nova', "Nova{$this->model}Test")) {
+            $this->isNovaResourceExists();
+
+            if ($this->classExists('nova', "Nova{$this->shortNovaResourceName}Test")) {
                 $this->throwFailureException(
                     ClassAlreadyExistsException::class,
-                    "Cannot create Nova{$this->model}Test cause it's already exist.",
-                    "Remove Nova{$this->model}Test."
+                    "Cannot create Nova{$this->shortNovaResourceName}Test cause it's already exist.",
+                    "Remove Nova{$this->shortNovaResourceName}Test."
                 );
             }
 
@@ -36,6 +55,17 @@ class NovaTestGenerator extends AbstractTestsGenerator
         } else {
             event(new SuccessCreateMessage("Nova is not installed and NovaTest is skipped"));
         }
+    }
+
+    public function setMetaData(array $data): self
+    {
+        $resourceName = empty($data['resource_name']) ? "{$this->model}Resource" : $data['resource_name'];
+
+        $this->resourceName = Str::studly($resourceName);
+
+        $this->shortNovaResourceName = Str::afterLast($this->resourceName, '\\');
+
+        return $this;
     }
 
     public function generateTests(): void
@@ -50,17 +80,19 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $fileContent = $this->getStub('nova_test', [
             'url_path' => Str::kebab($this->model) . '-resources',
             'entity' => $this->model,
+            'resource' => $this->shortNovaResourceName,
+            'resource_path' => $this->fullNovaResourcePath,
             'entities' => $this->getPluralName($this->model),
-            'snake_entity' => Str::snake($this->model),
+            'snake_resource' => Str::snake($this->shortNovaResourceName),
             'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
         ]);
 
-        $this->saveClass('tests', "Nova{$this->model}Test", $fileContent);
+        $this->saveClass('tests', "Nova{$this->shortNovaResourceName}Test", $fileContent);
 
-        event(new SuccessCreateMessage("Created a new Nova test: Nova{$this->model}Test"));
+        event(new SuccessCreateMessage("Created a new Nova test: Nova{$this->shortNovaResourceName}Test"));
     }
 
     protected function getActions(): array
@@ -83,22 +115,22 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function loadNovaActions()
     {
-        return app("\\App\\Nova\\{$this->novaModelName}")->actions(new NovaRequest());
+        return app("{$this->fullNovaResourcePath}")->actions(new NovaRequest());
     }
 
     protected function loadNovaFields()
     {
-        return app("\\App\\Nova\\{$this->novaModelName}")->fields(new NovaRequest());
+        return app("{$this->fullNovaResourcePath}")->fields(new NovaRequest());
     }
 
     protected function loadNovaFilters()
     {
-        return app("\\App\\Nova\\{$this->novaModelName}")->filters(new NovaRequest());
+        return app("{$this->fullNovaResourcePath}")->filters(new NovaRequest());
     }
 
     public function getTestClassName(): string
     {
-        return "Nova{$this->model}Test";
+        return "Nova{$this->shortNovaResourceName}Test";
     }
 
     protected function isFixtureNeeded($type): bool
@@ -106,23 +138,52 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return true;
     }
 
-    protected function doesNovaResourceExists(): bool
+    protected function isNovaResourceExists(): true
     {
-        $possibleNovaModelNames = [
-            "{$this->model}NovaResource",
-            "{$this->model}Resource",
-            $this->model
-        ];
+        $allNovaClasses = $this->getAllNovaClasses();
 
-        foreach ($possibleNovaModelNames as $modelName) {
-            if ($this->classExists('nova', $modelName)) {
-                $this->novaModelName = $modelName;
+        $resources = [];
+
+        foreach ($allNovaClasses as $class) {
+            if ($class === $this->resourceName) {
+                $this->fullNovaResourcePath = "App\\Nova\\{$this->resourceName}";
 
                 return true;
             }
+
+            if (Str::contains($class, $this->model) && is_subclass_of("App\\Nova\\{$class}", "App\\Nova\\Resource")) {
+                $resources[] = $class;
+            }
         }
 
-        return false;
+        if (!empty($resources)) {
+            $resources = implode(', ', $resources);
+
+            $this->throwFailureException(
+                EntityCreateException::class,
+                "Cannot create Nova{$this->shortNovaResourceName}Test cause I am found a lot of suitable resources: $resources",
+                "Please, use --resource-name option"
+            );
+        }
+
+        $this->throwFailureException(
+            ClassNotExistsException::class,
+            "Cannot create Nova{$this->shortNovaResourceName}Test cause {$this->resourceName} Nova resource does not exist.",
+            "Create {$this->resourceName} Nova resource."
+        );
+    }
+
+    protected function getAllNovaClasses(): Generator
+    {
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->novaPath));
+
+        foreach ($iterator as $file) {
+            if ($file->isFile() && $file->getExtension() === 'php') {
+                $relativePath = Str::after($file->getPathname(), $this->novaPath . DIRECTORY_SEPARATOR);
+
+                yield str_replace(['/', '.php'], ['\\', ''], $relativePath);
+            }
+        }
     }
 
     protected function collectFilters(): array
@@ -160,7 +221,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function getFilters(): array
     {
-        $filters= [];
+        $filters = [];
         $novaResourceFilters = $this->loadNovaFilters();
 
         foreach ($novaResourceFilters as $filter) {

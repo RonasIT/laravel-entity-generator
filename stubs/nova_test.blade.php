@@ -4,8 +4,9 @@ use App\Models\{{$entity}};
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
+use {{$resource_path}};
 
-class Nova{{$entity}}Test extends TestCase
+class Nova{{$resource}}Test extends TestCase
 {
     use NovaTestTrait;
 
@@ -24,13 +25,13 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testCreate(): void
     {
-        $data = $this->getJsonFixture('create_{{$snake_entity}}_request');
+        $data = $this->getJsonFixture('create_{{$snake_resource}}_request');
 
-        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall({{$entity}}::class, $data);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall({{$resource}}::class, $data);
 
         $response->assertCreated();
 
-        $this->assertEqualsFixture('create_{{$snake_entity}}_response', $response->json());
+        $this->assertEqualsFixture('create_{{$snake_resource}}_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
         self::${{$dromedary_entity}}State->assertChangesEqualsFixture('create_{{$lower_entities}}_state', true);
@@ -38,7 +39,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testCreateNoAuth(): void
     {
-        $response = $this->novaCreateResourceAPICall({{$entity}}::class);
+        $response = $this->novaCreateResourceAPICall({{$resource}}::class);
 
         $response->assertUnauthorized();
 
@@ -47,7 +48,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testCreateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall({{$entity}}::class);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall({{$resource}}::class);
 
         $response->assertUnprocessable();
 
@@ -59,9 +60,9 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testUpdate(): void
     {
-        $data = $this->getJsonFixture('update_{{$snake_entity}}_request');
+        $data = $this->getJsonFixture('update_{{$snake_resource}}_request');
 
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall({{$entity}}::class, 1, $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall({{$resource}}::class, 1, $data);
 
         $response->assertNoContent();
 
@@ -71,23 +72,23 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testUpdateNotExists(): void
     {
-        $data = $this->getJsonFixture('update_{{$snake_entity}}_request');
+        $data = $this->getJsonFixture('update_{{$snake_resource}}_request');
 
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall({{$entity}}::class, 0, $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall({{$resource}}::class, 0, $data);
 
         $response->assertNotFound();
     }
 
     public function testUpdateNoAuth(): void
     {
-        $response = $this->novaUpdateResourceAPICall({{$entity}}::class, 1);
+        $response = $this->novaUpdateResourceAPICall({{$resource}}::class, 1);
 
         $response->assertUnauthorized();
     }
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall({{$entity}}::class, 4);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall({{$resource}}::class, 4);
 
         $response->assertUnprocessable();
 
@@ -97,7 +98,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testGetUpdatableFields(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetUpdatableFieldsAPICall({{$entity}}::class, 1);
+        $response = $this->novaActingAs(self::$user)->novaGetUpdatableFieldsAPICall({{$resource}}::class, 1);
 
         $response->assertOk();
 
@@ -107,7 +108,7 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall({{$entity}}::class, [1, 2]);
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall({{$resource}}::class, [1, 2]);
 
         $response->assertOk();
 
@@ -117,52 +118,52 @@ class Nova{{$entity}}Test extends TestCase
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall({{$entity}}::class, [0]);
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall({{$resource}}::class, [0]);
 
         $response->assertNotFound();
     }
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->novaDeleteResourceAPICall({{$entity}}::class, [1, 2]);
+        $response = $this->novaDeleteResourceAPICall({{$resource}}::class, [1, 2]);
 
         $response->assertUnauthorized();
     }
 
     public function testGet(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall({{$entity}}::class, 1);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall({{$resource}}::class, 1);
 
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('get_{{$snake_entity}}_response', $response->json(), true);
+        $this->assertEqualsFixture('get_{{$snake_resource}}_response', $response->json(), true);
     }
 
     public function testGetNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall({{$entity}}::class, 0);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall({{$resource}}::class, 0);
 
         $response->assertNotFound();
     }
 
     public function testGetNoAuth(): void
     {
-        $response = $this->novaGetResourceAPICall({{$entity}}::class, 1);
+        $response = $this->novaGetResourceAPICall({{$resource}}::class, 1);
 
         $response->assertUnauthorized();
     }
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->novaSearchResourceAPICall({{$entity}}::class);
+        $response = $this->novaSearchResourceAPICall({{$resource}}::class);
 
         $response->assertUnauthorized();
     }
 
     public function testGetFieldsVisibleOnCreate(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetCreationFieldsAPICall({{$entity}}::class);
+        $response = $this->novaActingAs(self::$user)->novaGetCreationFieldsAPICall({{$resource}}::class);
 
         $response->assertOk();
 
@@ -170,7 +171,7 @@ class Nova{{$entity}}Test extends TestCase
         $this->assertEqualsFixture('get_fields_visible_on_create_response', $response->json(), true);
     }
 
-    public static function getRun{{$entity}}ActionsData(): array
+    public static function getRun{{$resource}}ActionsData(): array
     {
         return [
 @foreach($actions as $action)
@@ -185,10 +186,10 @@ class Nova{{$entity}}Test extends TestCase
         ];
     }
 
-    #[DataProvider('getRun{{$entity}}ActionsData')]
-    public function testRun{{$entity}}Actions($action, $request, $state): void
+    #[DataProvider('getRun{{$resource}}ActionsData')]
+    public function testRun{{$resource}}Actions($action, $request, $state): void
     {
-        $response = $this->novaActingAs(self::$user)->novaRunActionAPICall({{$entity}}::class, $action, $request);
+        $response = $this->novaActingAs(self::$user)->novaRunActionAPICall({{$resource}}::class, $action, $request);
 
         $response->assertOk();
 
@@ -198,22 +199,22 @@ class Nova{{$entity}}Test extends TestCase
         self::${{$dromedary_entity}}State->assertChangesEqualsFixture($state, true);
     }
 
-    public static function get{{$entity}}ActionsData(): array
+    public static function get{{$resource}}ActionsData(): array
     {
         return [
 @foreach($actions as $action)
             [
                 'resources' => [1, 2],
-                'fixture' => 'get_{{$snake_entity}}_actions_{{$action['fixture']}}',
+                'fixture' => 'get_{{$snake_resource}}_actions_{{$action['fixture']}}',
             ],
 @endforeach
         ];
     }
 
-    #[DataProvider('get{{$entity}}ActionsData')]
-    public function testGet{{$entity}}Actions(array $resources, string $fixture): void
+    #[DataProvider('get{{$resource}}ActionsData')]
+    public function testGet{{$resource}}Actions(array $resources, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetActionsAPICall({{$entity}}::class, $resources);
+        $response = $this->novaActingAs(self::$user)->novaGetActionsAPICall({{$resource}}::class, $resources);
 
         $response->assertOk();
 
@@ -221,7 +222,7 @@ class Nova{{$entity}}Test extends TestCase
         $this->assertEqualsFixture($fixture, $response->json(), true);
     }
 
-    public static function get{{$entity}}FiltersData(): array
+    public static function get{{$resource}}FiltersData(): array
     {
         return [
 @foreach($filters as $filter)
@@ -229,16 +230,16 @@ class Nova{{$entity}}Test extends TestCase
                 'request' => [
                     '{{$filter['name']}}' => $this->novaSearchParams(['search term']),
                 ],
-                'fixture' => 'filter_{{$snake_entity}}_by_{{$filter['fixture_name']}}',
+                'fixture' => 'filter_{{$snake_resource}}_by_{{$filter['fixture_name']}}',
             ],
 @endforeach
         ];
     }
 
-    #[DataProvider('get{{$entity}}FiltersData')]
-    public function testFilter{{$entity}}(array $request, string $fixture): void
+    #[DataProvider('get{{$resource}}FiltersData')]
+    public function testFilter{{$resource}}(array $request, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall({{$entity}}::class, $request);
+        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall({{$resource}}::class, $request);
 
         $response->assertOk();
 
