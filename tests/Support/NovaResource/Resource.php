@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Nova;
+namespace Laravel\Nova;
 
 class Resource
 {

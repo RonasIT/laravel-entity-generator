@@ -8,6 +8,7 @@ use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Tests\Support\Command\CommandMockTrait;
 use RonasIT\Support\Tests\Support\Command\Models\Post;
 use UnexpectedValueException;
+use App\Nova\PostResource;
 
 class CommandTest extends TestCase
 {
@@ -51,6 +52,7 @@ class CommandTest extends TestCase
 
         $this->mockGenerator();
         $this->mockGettingModelInstance(new Post());
+        $this->app->instance(PostResource::class, new PostResource());
         $this->mockDBTransactionStartRollback(2);
 
         $this

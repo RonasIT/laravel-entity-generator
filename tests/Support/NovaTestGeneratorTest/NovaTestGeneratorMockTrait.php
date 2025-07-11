@@ -34,6 +34,7 @@ trait NovaTestGeneratorMockTrait
 
         $fileSystemMock->novaResources = [
             'WelcomeBonusDraftResource.php' => $this->mockPhpFileContent(),
+            'WelcomeBonus.php' => $this->mockPhpFileContent(),
             'PostResource.php' => $this->mockPhpFileContent(),
         ];
 

@@ -12,7 +12,7 @@ use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\TextField;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
 use Laravel\Nova\Resource;
 
-class WelcomeBonusResource extends Resource
+class PostResource extends Resource
 {
     public static $title = 'name';
 

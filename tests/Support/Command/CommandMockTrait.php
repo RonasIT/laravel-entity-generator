@@ -63,6 +63,7 @@ trait CommandMockTrait
             $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
+            $this->nativeClassExistsMethodCall(['App\Nova\PostResource']),
             $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
         );
     }
@@ -93,6 +94,7 @@ trait CommandMockTrait
 
         $this->mockNativeGeneratorFunctions(
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
+            $this->nativeClassExistsMethodCall(['App\Nova\PostResource']),
             $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
         );
     }

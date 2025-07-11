@@ -10,7 +10,7 @@ use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\DateField;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\PublishPostAction;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\TextField;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
-use App\Nova\Resource;
+use Laravel\Nova\Resource;
 
 class PostResource extends Resource
 {
