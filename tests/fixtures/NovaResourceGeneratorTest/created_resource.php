@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Resource;
 
 class PostResource extends Resource
 {
