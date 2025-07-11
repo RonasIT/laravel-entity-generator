@@ -179,7 +179,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
                 $class = str_replace(['/', '.php'], ['\\', ''], $relativePath);
 
-                if($this->isValidCommonResourceCheck($class)){
+                if ($this->isValidCommonResourceCheck($class)) {
                     yield $class;
                 }
             }
