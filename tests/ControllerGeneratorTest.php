@@ -140,9 +140,9 @@ class ControllerGeneratorTest extends TestCase
         $this->assertEventPushedChain([
             SuccessCreateMessage::class => [
                 "Created a new Route: Route::post('posts', 'create');",
-                "Created a new Route: Route::put('posts/{id}', 'update');",
-                "Created a new Route: Route::delete('posts/{id}', 'delete');",
-                "Created a new Route: Route::get('posts/{id}', 'get');",
+                "Created a new Route: Route::put('posts/{id}', 'update')->whereNumber('id');",
+                "Created a new Route: Route::delete('posts/{id}', 'delete')->whereNumber('id');",
+                "Created a new Route: Route::get('posts/{id}', 'get')->whereNumber('id');",
                 "Created a new Route: Route::get('posts', 'search');",
                 'Created a new Controller: PostController',
             ],
