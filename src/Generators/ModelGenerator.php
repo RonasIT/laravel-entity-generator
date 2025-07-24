@@ -16,15 +16,6 @@ class ModelGenerator extends EntityGenerator
         'hasMany',
     ];
 
-    protected const array TYPE_NAME = [
-        'integer' => 'int',
-        'float' => 'float',
-        'string' => 'string',
-        'boolean' => 'bool',
-        'timestamp' => 'Carbon',
-        'json' => 'array',
-    ];
-
     public function generate(): void
     {
         if ($this->classExists('models', $this->model)) {
@@ -186,7 +177,16 @@ class ModelGenerator extends EntityGenerator
 
     protected function getProperty(string $fieldName, string $typeName, bool $nullable = false): string
     {
-        $type = self::TYPE_NAME[explode('-', $typeName)[0]];
+        $typeNames = [
+            'integer' => 'int',
+            'float' => 'float',
+            'string' => 'string',
+            'boolean' => 'bool',
+            'timestamp' => 'Carbon',
+            'json' => 'array',
+        ];
+
+        $type = $typeNames[explode('-', $typeName)[0]];
         $null = $nullable ? '|null' : '';
 
         return "* @property {$type}{$null} {$fieldName}";
