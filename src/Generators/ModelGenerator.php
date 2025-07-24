@@ -7,12 +7,22 @@ use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 
 class ModelGenerator extends EntityGenerator
 {
     protected const array PLURAL_NUMBER_REQUIRED = [
         'belongsToMany',
         'hasMany',
+    ];
+
+    protected const array TYPE_NAME = [
+        'integer' => 'int',
+        'float' => 'float',
+        'string' => 'string',
+        'boolean' => 'bool',
+        'timestamp' => 'Carbon',
+        'json' => 'array',
     ];
 
     public function generate(): void
@@ -48,6 +58,7 @@ class ModelGenerator extends EntityGenerator
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->getOrCreateNamespace('models'),
+            'properties' => $this->generateProperty($this->fields),
         ]);
     }
 
@@ -143,5 +154,55 @@ class ModelGenerator extends EntityGenerator
         }
 
         return $relationName;
+    }
+
+    protected function generateProperty(array $fields): array
+    {
+        $resultProperty = [];
+
+        foreach ($fields as $typeName => $fieldNames) {
+            foreach ($fieldNames as $fieldName) {
+                $resultProperty[] = $this->getPropertyLine($fieldName, $typeName);
+            }
+        }
+
+        return $resultProperty;
+    }
+
+    protected function isRequired(string $typeName): bool
+    {
+        return Str::afterLast($typeName, '-') === 'required';
+    }
+
+    protected function isNullable(string $typeName): bool
+    {
+        return empty(explode('-', $typeName)[1]);
+    }
+
+    protected function getProperty(string $fieldName, string $typeName): string
+    {
+        $type = self::TYPE_NAME[explode('-', $typeName)[0]];
+
+        return "* @property {$type} {$fieldName}";
+    }
+
+    protected function getPropertyNullable(string $fieldName, string $typeName): string
+    {
+        $type = self::TYPE_NAME[explode('-', $typeName)[0]];
+
+        return "* @property {$type}|null {$fieldName}";
+    }
+
+    protected function getPropertyLine(string $fieldName, string $typeName): string
+    {
+        if ($this->isRequired($typeName)) {
+            return $this->getProperty($fieldName, $typeName);
+        }
+
+        if ($this->isNullable($typeName)) {
+            return $this->getPropertyNullable($fieldName, $typeName);
+        }
+
+        throw new UnknownFieldTypeException($typeName, 'ModelGenerator');
     }
 }

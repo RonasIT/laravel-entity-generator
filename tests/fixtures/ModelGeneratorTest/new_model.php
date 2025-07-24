@@ -5,6 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
+/**
+ * @property int media_id
+ * @property bool is_published
+ */
 class Post extends Model
 {
     use ModelTrait;

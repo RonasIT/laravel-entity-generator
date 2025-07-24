@@ -3,6 +3,13 @@ namespace {{$namespace}};
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
+@if(!empty($properties))
+/**
+@foreach($properties as $fieldNames)
+ {{$fieldNames}}
+@endforeach
+ */
+@endif
 class {{$entity}} extends Model
 {
     use ModelTrait;
