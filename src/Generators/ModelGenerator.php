@@ -169,6 +169,11 @@ class ModelGenerator extends EntityGenerator
         return $resultProperty;
     }
 
+    protected function isJson(string $typeName): bool
+    {
+        return $typeName === 'json';
+    }
+
     protected function isRequired(string $typeName): bool
     {
         return Str::afterLast($typeName, '-') === 'required';
@@ -179,28 +184,26 @@ class ModelGenerator extends EntityGenerator
         return empty(explode('-', $typeName)[1]);
     }
 
-    protected function getProperty(string $fieldName, string $typeName): string
+    protected function getProperty(string $fieldName, string $typeName, bool $nullable = false): string
     {
         $type = self::TYPE_NAME[explode('-', $typeName)[0]];
+        $null = $nullable ? '|null' : '';
 
-        return "* @property {$type} {$fieldName}";
-    }
-
-    protected function getPropertyNullable(string $fieldName, string $typeName): string
-    {
-        $type = self::TYPE_NAME[explode('-', $typeName)[0]];
-
-        return "* @property {$type}|null {$fieldName}";
+        return "* @property {$type}{$null} {$fieldName}";
     }
 
     protected function getPropertyLine(string $fieldName, string $typeName): string
     {
+        if ($this->isJson($typeName)) {
+            return $this->getProperty($fieldName, $typeName);
+        }
+
         if ($this->isRequired($typeName)) {
             return $this->getProperty($fieldName, $typeName);
         }
 
         if ($this->isNullable($typeName)) {
-            return $this->getPropertyNullable($fieldName, $typeName);
+            return $this->getProperty($fieldName, $typeName, true);
         }
 
         throw new UnknownFieldTypeException($typeName, 'ModelGenerator');

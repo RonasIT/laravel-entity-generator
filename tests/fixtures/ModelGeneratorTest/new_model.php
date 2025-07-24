@@ -7,7 +7,16 @@ use RonasIT\Support\Traits\ModelTrait;
 
 /**
  * @property int media_id
+ * @property int|null priority
+ * @property string title
+ * @property string|null description
+ * @property float rating
+ * @property float|null seo_score
  * @property bool is_published
+ * @property bool|null is_reviewed
+ * @property Carbon|null reviewed_at
+ * @property Carbon published_at
+ * @property array meta
  */
 class Post extends Model
 {
@@ -15,13 +24,24 @@ class Post extends Model
 
     protected $fillable = [
         'media_id',
+        'priority',
+        'title',
+        'description',
+        'rating',
+        'seo_score',
         'is_published',
+        'is_reviewed',
+        'reviewed_at',
+        'published_at',
+        'meta',
     ];
 
     protected $hidden = ['pivot'];
 
     protected $casts = [
         'is_published' => 'boolean',
+        'is_reviewed' => 'boolean',
+        'meta' => 'array',
     ];
 
     public function comment()

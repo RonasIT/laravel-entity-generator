@@ -61,7 +61,16 @@ class ModelGeneratorTest extends TestCase
             ->setModel('Post')
             ->setFields([
                 'integer-required' => ['media_id'],
+                'integer' => ['priority'],
+                'string-required' => ['title'],
+                'string' => ['description'],
+                'float-required' => ['rating'],
+                'float' => ['seo_score'],
                 'boolean-required' => ['is_published'],
+                'boolean' => ['is_reviewed'],
+                'timestamp' => ['reviewed_at'],
+                'timestamp-required' => ['published_at'],
+                'json' => ['meta'],
             ])
             ->setRelations(new RelationsDTO(
                 hasOne: ['Comment'],
@@ -72,6 +81,21 @@ class ModelGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('new_model.php', 'app/Models/Post.php');
         $this->assertGeneratedFileEquals('comment_relation_model.php', 'app/Models/Comment.php');
         $this->assertGeneratedFileEquals('comment_relation_model.php', 'app/Models/User.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
+    public function testCreateModelWithoutFields()
+    {
+        app(ModelGenerator::class)
+            ->setModel('Post')
+            ->setFields([])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('new_model_without_fields.php', 'app/Models/Post.php');
 
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
