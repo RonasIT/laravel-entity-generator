@@ -62,6 +62,8 @@ class ModelGeneratorTest extends TestCase
             ->setFields([
                 'integer-required' => ['media_id'],
                 'boolean-required' => ['is_published'],
+                'timestamp' => ['reviewed_at'],
+                'timestamp-required' => ['published_at'],
             ])
             ->setRelations(new RelationsDTO(
                 hasOne: ['Comment'],
