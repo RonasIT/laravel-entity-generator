@@ -12,12 +12,16 @@ class Post extends Model
     protected $fillable = [
         'media_id',
         'is_published',
+        'reviewed_at',
+        'published_at',
     ];
 
     protected $hidden = ['pivot'];
 
     protected $casts = [
         'is_published' => 'boolean',
+        'reviewed_at' => 'datetime',
+        'published_at' => 'datetime',
     ];
 
     public function comment()
