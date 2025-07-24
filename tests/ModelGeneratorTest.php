@@ -9,6 +9,7 @@ use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Tests\Support\Model\ModelMockTrait;
+use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 
 class ModelGeneratorTest extends TestCase
 {
@@ -103,6 +104,22 @@ class ModelGeneratorTest extends TestCase
         );
     }
 
+    public function testSetUnknownFieldType()
+    {
+        $this->assertExceptionThrew(
+            className: UnknownFieldTypeException::class,
+            message: 'Unknown field type unknown-type in ModelGenerator.',
+        );
+
+        app(ModelGenerator::class)
+            ->setModel('Post')
+            ->setFields([
+                'integer-required' => ['media_id'],
+                'unknown-type' => ['title'],
+            ])
+            ->generate();
+    }
+    
     public function testCreateModelStubNotExist()
     {
         config(['entity-generator.stubs.model' => 'incorrect_stub']);
