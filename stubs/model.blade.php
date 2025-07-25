@@ -3,6 +3,17 @@ namespace {{$namespace}};
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
+@if(!empty($properties))
+/**
+@foreach($properties as $fieldNames)
+ {{$fieldNames}}
+@endforeach
+ */
+@else
+//TODO: add @property annotation for each model's field
+/**
+ */
+@endif
 class {{$entity}} extends Model
 {
     use ModelTrait;

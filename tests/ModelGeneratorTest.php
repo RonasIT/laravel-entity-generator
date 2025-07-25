@@ -9,6 +9,7 @@ use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Tests\Support\Model\ModelMockTrait;
+use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 
 class ModelGeneratorTest extends TestCase
 {
@@ -61,7 +62,16 @@ class ModelGeneratorTest extends TestCase
             ->setModel('Post')
             ->setFields([
                 'integer-required' => ['media_id'],
+                'integer' => ['priority'],
+                'string-required' => ['title'],
+                'string' => ['description'],
+                'float-required' => ['rating'],
+                'float' => ['seo_score'],
                 'boolean-required' => ['is_published'],
+                'boolean' => ['is_reviewed'],
+                'timestamp' => ['reviewed_at'],
+                'timestamp-required' => ['published_at'],
+                'json' => ['meta'],
             ])
             ->setRelations(new RelationsDTO(
                 hasOne: ['Comment'],
@@ -79,6 +89,37 @@ class ModelGeneratorTest extends TestCase
         );
     }
 
+    public function testCreateModelWithoutFields()
+    {
+        app(ModelGenerator::class)
+            ->setModel('Post')
+            ->setFields([])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('new_model_without_fields.php', 'app/Models/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
+    public function testSetUnknownFieldType()
+    {
+        $this->assertExceptionThrew(
+            className: UnknownFieldTypeException::class,
+            message: 'Unknown field type unknown-type in ModelGenerator.',
+        );
+
+        app(ModelGenerator::class)
+            ->setModel('Post')
+            ->setFields([
+                'integer-required' => ['media_id'],
+                'unknown-type' => ['title'],
+            ])
+            ->generate();
+    }
+    
     public function testCreateModelStubNotExist()
     {
         config(['entity-generator.stubs.model' => 'incorrect_stub']);
