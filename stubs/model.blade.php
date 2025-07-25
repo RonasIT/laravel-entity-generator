@@ -9,6 +9,10 @@ use RonasIT\Support\Traits\ModelTrait;
  {{$fieldNames}}
 @endforeach
  */
+@else
+//TODO: add @property annotation for each model's field
+/**
+ */
 @endif
 class {{$entity}} extends Model
 {
