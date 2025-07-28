@@ -49,7 +49,7 @@ class ModelGenerator extends EntityGenerator
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->getOrCreateNamespace('models'),
-            'properties' => $this->generateProperty($this->fields),
+            'anotationProperties' => $this->generateAnnotationProperties($this->fields),
         ]);
     }
 
@@ -147,17 +147,17 @@ class ModelGenerator extends EntityGenerator
         return $relationName;
     }
 
-    protected function generateProperty(array $fields): array
+    protected function generateAnnotationProperties(array $fields): array
     {
-        $resultProperty = [];
+        $result = [];
 
         foreach ($fields as $typeName => $fieldNames) {
             foreach ($fieldNames as $fieldName) {
-                $resultProperty[] = $this->getPropertyLine($fieldName, $typeName);
+                $result[] = $this->getPropertyLine($fieldName, $typeName);
             }
         }
 
-        return $resultProperty;
+        return $result;
     }
 
     protected function isJson(string $typeName): bool
@@ -172,10 +172,10 @@ class ModelGenerator extends EntityGenerator
 
     protected function isNullable(string $typeName): bool
     {
-        return empty(explode('-', $typeName)[1]);
+        return !strpos($typeName, '-');
     }
 
-    protected function getProperty(string $fieldName, string $typeName, bool $nullable = false): string
+    protected function getProperty(string $fieldName, string $typeName, bool $isNullable = false): string
     {
         $typeNames = [
             'integer' => 'int',
@@ -186,10 +186,13 @@ class ModelGenerator extends EntityGenerator
             'json' => 'array',
         ];
 
-        $type = $typeNames[explode('-', $typeName)[0]];
-        $null = $nullable ? '|null' : '';
+        $type = $typeNames[Str::before($typeName, '-')];
 
-        return "* @property {$type}{$null} {$fieldName}";
+        if ($isNullable) {
+            $type .= '|null';
+        }
+
+        return "* @property {$type} {$fieldName}";
     }
 
     protected function getPropertyLine(string $fieldName, string $typeName): string
@@ -205,7 +208,5 @@ class ModelGenerator extends EntityGenerator
         if ($this->isNullable($typeName)) {
             return $this->getProperty($fieldName, $typeName, true);
         }
-
-        throw new UnknownFieldTypeException($typeName, 'ModelGenerator');
     }
 }

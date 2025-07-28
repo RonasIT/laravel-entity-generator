@@ -3,9 +3,9 @@ namespace {{$namespace}};
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
-@if(!empty($properties))
+@if(!empty($anotationProperties))
 /**
-@foreach($properties as $fieldNames)
+@foreach($anotationProperties as $fieldNames)
  {{$fieldNames}}
 @endforeach
  */

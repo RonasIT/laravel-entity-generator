@@ -15,6 +15,8 @@ use RonasIT\Support\Traits\ModelTrait;
  * @property bool is_published
  * @property bool|null is_reviewed
  * @property Carbon|null reviewed_at
+ * @property Carbon|null created_at
+ * @property Carbon|null updated_at
  * @property Carbon published_at
  * @property array meta
  */
@@ -32,6 +34,8 @@ class Post extends Model
         'is_published',
         'is_reviewed',
         'reviewed_at',
+        'created_at',
+        'updated_at',
         'published_at',
         'meta',
     ];

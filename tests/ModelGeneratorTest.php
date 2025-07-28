@@ -9,7 +9,7 @@ use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Tests\Support\Model\ModelMockTrait;
-use RonasIT\Support\Exceptions\UnknownFieldTypeException;
+use Symfony\Component\Console\Exception\RuntimeException;
 
 class ModelGeneratorTest extends TestCase
 {
@@ -69,7 +69,7 @@ class ModelGeneratorTest extends TestCase
                 'float' => ['seo_score'],
                 'boolean-required' => ['is_published'],
                 'boolean' => ['is_reviewed'],
-                'timestamp' => ['reviewed_at'],
+                'timestamp' => ['reviewed_at', 'created_at', 'updated_at'],
                 'timestamp-required' => ['published_at'],
                 'json' => ['meta'],
             ])
@@ -107,17 +107,12 @@ class ModelGeneratorTest extends TestCase
     public function testSetUnknownFieldType()
     {
         $this->assertExceptionThrew(
-            className: UnknownFieldTypeException::class,
-            message: 'Unknown field type unknown-type in ModelGenerator.',
+            className: RuntimeException::class,
+            message: 'The "-l" option does not exist.',
         );
 
-        app(ModelGenerator::class)
-            ->setModel('Post')
-            ->setFields([
-                'integer-required' => ['media_id'],
-                'unknown-type' => ['title'],
-            ])
-            ->generate();
+        $this->artisan('make:entity Post -S name -l unknown-type')
+            ->assertFailed();
     }
     
     public function testCreateModelStubNotExist()
