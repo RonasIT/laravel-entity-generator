@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 
 class ModelGenerator extends EntityGenerator
 {
@@ -48,6 +49,7 @@ class ModelGenerator extends EntityGenerator
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->getOrCreateNamespace('models'),
+            'anotationProperties' => $this->generateAnnotationProperties($this->fields),
         ]);
     }
 
@@ -143,5 +145,68 @@ class ModelGenerator extends EntityGenerator
         }
 
         return $relationName;
+    }
+
+    protected function generateAnnotationProperties(array $fields): array
+    {
+        $result = [];
+
+        foreach ($fields as $typeName => $fieldNames) {
+            foreach ($fieldNames as $fieldName) {
+                $result[] = $this->getPropertyLine($fieldName, $typeName);
+            }
+        }
+
+        return $result;
+    }
+
+    protected function isJson(string $typeName): bool
+    {
+        return $typeName === 'json';
+    }
+
+    protected function isRequired(string $typeName): bool
+    {
+        return Str::afterLast($typeName, '-') === 'required';
+    }
+
+    protected function isNullable(string $typeName): bool
+    {
+        return !strpos($typeName, '-');
+    }
+
+    protected function getProperty(string $fieldName, string $typeName, bool $isNullable = false): string
+    {
+        $typeNames = [
+            'integer' => 'int',
+            'float' => 'float',
+            'string' => 'string',
+            'boolean' => 'bool',
+            'timestamp' => 'Carbon',
+            'json' => 'array',
+        ];
+
+        $type = $typeNames[Str::before($typeName, '-')];
+
+        if ($isNullable) {
+            $type .= '|null';
+        }
+
+        return "* @property {$type} {$fieldName}";
+    }
+
+    protected function getPropertyLine(string $fieldName, string $typeName): string
+    {
+        if ($this->isJson($typeName)) {
+            return $this->getProperty($fieldName, $typeName);
+        }
+
+        if ($this->isRequired($typeName)) {
+            return $this->getProperty($fieldName, $typeName);
+        }
+
+        if ($this->isNullable($typeName)) {
+            return $this->getProperty($fieldName, $typeName, true);
+        }
     }
 }
