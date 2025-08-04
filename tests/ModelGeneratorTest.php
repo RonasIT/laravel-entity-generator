@@ -100,6 +100,20 @@ class ModelGeneratorTest extends TestCase
         );
     }
 
+    public function testModelGeneratedByArtisan()
+    {
+        $this
+            ->artisan('make:entity Post -S name -t reviewed_at -T publiched_at --only-model')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('generated_model.php', 'app/Models/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
     public function testCreateModelWithoutRelationsRelationStubNotExist()
     {
         config(['entity-generator.stubs.relation' => 'incorrect_stub']);
