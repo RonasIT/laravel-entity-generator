@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 
 class ModelGenerator extends EntityGenerator
 {
