@@ -160,19 +160,19 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function isJson(string $typeName): bool
+    protected function getPropertyLine(string $fieldName, string $typeName): string
     {
-        return $typeName === 'json';
-    }
+        if ($this->isJson($typeName)) {
+            return $this->getProperty($fieldName, $typeName);
+        }
 
-    protected function isRequired(string $typeName): bool
-    {
-        return Str::afterLast($typeName, '-') === 'required';
-    }
+        if ($this->isRequired($typeName)) {
+            return $this->getProperty($fieldName, $typeName);
+        }
 
-    protected function isNullable(string $typeName): bool
-    {
-        return !strpos($typeName, '-');
+        if ($this->isNullable($typeName)) {
+            return $this->getProperty($fieldName, $typeName, true);
+        }
     }
 
     protected function getProperty(string $fieldName, string $typeName, bool $isNullable = false): string
@@ -195,18 +195,18 @@ class ModelGenerator extends EntityGenerator
         return "* @property {$type} {$fieldName}";
     }
 
-    protected function getPropertyLine(string $fieldName, string $typeName): string
+    protected function isJson(string $typeName): bool
     {
-        if ($this->isJson($typeName)) {
-            return $this->getProperty($fieldName, $typeName);
-        }
+        return $typeName === 'json';
+    }
 
-        if ($this->isRequired($typeName)) {
-            return $this->getProperty($fieldName, $typeName);
-        }
+    protected function isRequired(string $typeName): bool
+    {
+        return Str::afterLast($typeName, '-') === 'required';
+    }
 
-        if ($this->isNullable($typeName)) {
-            return $this->getProperty($fieldName, $typeName, true);
-        }
+    protected function isNullable(string $typeName): bool
+    {
+        return !strpos($typeName, '-');
     }
 }
