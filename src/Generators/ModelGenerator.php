@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 
 class ModelGenerator extends EntityGenerator
 {
@@ -169,11 +170,9 @@ class ModelGenerator extends EntityGenerator
             return $this->getProperty($fieldName, $typeName);
         }
 
-        if ($this->isNullable($typeName)) {
-            return $this->getProperty($fieldName, $typeName, true);
-        }
+        return $this->getProperty($fieldName, $typeName, true);
     }
-
+    
     protected function getProperty(string $fieldName, string $typeName, bool $isNullable = false): string
     {
         $typeNames = [
