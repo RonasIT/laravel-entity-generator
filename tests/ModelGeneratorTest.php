@@ -100,7 +100,7 @@ class ModelGeneratorTest extends TestCase
         );
     }
 
-    public function testModelGeneratedByArtisan()
+    public function testCreateModelByCommand()
     {
         $this
             ->artisan('make:entity Post -S name -t reviewed_at -T publiched_at --only-model')
