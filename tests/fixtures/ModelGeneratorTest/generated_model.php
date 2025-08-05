@@ -10,27 +10,15 @@ class Post extends Model
     use ModelTrait;
 
     protected $fillable = [
-        'media_id',
-        'is_published',
+        'name',
         'reviewed_at',
-        'published_at',
+        'publiched_at',
     ];
 
     protected $hidden = ['pivot'];
 
     protected $casts = [
-        'is_published' => 'boolean',
         'reviewed_at' => 'datetime',
-        'published_at' => 'datetime',
+        'publiched_at' => 'datetime',
     ];
-
-    public function comment()
-    {
-        return $this->hasOne(Comment::class);
-    }
-
-    public function users()
-    {
-        return $this->hasMany(User::class);
-    }
 }

@@ -62,6 +62,8 @@ class ModelGeneratorTest extends TestCase
             ->setFields([
                 'integer-required' => ['media_id'],
                 'boolean-required' => ['is_published'],
+                'timestamp' => ['reviewed_at'],
+                'timestamp-required' => ['published_at'],
             ])
             ->setRelations(new RelationsDTO(
                 hasOne: ['Comment'],
@@ -95,6 +97,20 @@ class ModelGeneratorTest extends TestCase
         $this->assertEventPushed(
             className: WarningEvent::class,
             message: 'Generation of model has been skipped cause the view incorrect_stub from the config entity-generator.stubs.model is not exists. Please check that config has the correct view name value.',
+        );
+    }
+
+    public function testCreateModelByCommand()
+    {
+        $this
+            ->artisan('make:entity Post -S name -t reviewed_at -T publiched_at --only-model')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('generated_model.php', 'app/Models/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
         );
     }
 
