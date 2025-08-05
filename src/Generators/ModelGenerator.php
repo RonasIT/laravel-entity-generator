@@ -202,9 +202,4 @@ class ModelGenerator extends EntityGenerator
     {
         return Str::afterLast($typeName, '-') === 'required';
     }
-
-    protected function isNullable(string $typeName): bool
-    {
-        return !strpos($typeName, '-');
-    }
 }
