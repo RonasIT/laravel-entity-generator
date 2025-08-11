@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "php": "^8.3",
+    "php": "^8.2",
     "laravel/framework": ">=11.31.0",
     "ronasit/laravel-helpers": ">=3.4",
     "laravel/legacy-factories": ">=1.4.0",
