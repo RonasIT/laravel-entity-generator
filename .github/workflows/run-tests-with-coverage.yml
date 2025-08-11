@@ -22,7 +22,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+        run: composer install
       - name: Execute unit tests via PHPUnit with coverage
         run: vendor/bin/phpunit --coverage-clover build/logs/clover.xml
       - name: Export coverage report
