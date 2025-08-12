@@ -103,10 +103,10 @@ class ModelGeneratorTest extends TestCase
     public function testCreateModelByCommand()
     {
         $this
-            ->artisan('make:entity Post -S name -t reviewed_at -T publiched_at --only-model')
+            ->artisan('make:entity Post -I media_id -B is_published -t reviewed_at -T published_at -a Comment -A User --only-model')
             ->assertSuccessful();
 
-        $this->assertGeneratedFileEquals('generated_model.php', 'app/Models/Post.php');
+        $this->assertGeneratedFileEquals('new_model.php', 'app/Models/Post.php');
 
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
