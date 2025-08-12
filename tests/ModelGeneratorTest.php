@@ -111,7 +111,8 @@ class ModelGeneratorTest extends TestCase
             message: 'The "-l" option does not exist.',
         );
 
-        $this->artisan('make:entity Post -S name -l unknown-type')
+        $this
+            ->artisan('make:entity Post -S name -l unknown-type')
             ->assertFailed();
     }
     

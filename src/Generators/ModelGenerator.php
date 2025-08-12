@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 
 class ModelGenerator extends EntityGenerator
 {
@@ -157,25 +156,19 @@ class ModelGenerator extends EntityGenerator
             }
         }
 
-        return $result;
+        return Arr::collapse($result);
     }
 
-    protected function getPropertyLine(string $fieldName, string $typeName): string
+    protected function getPropertyLine(string $fieldName, string $fieldType): array
     {
-        if ($this->isJson($typeName)) {
-            return $this->getProperty($fieldName, $typeName);
-        }
+        $isNullable = !$this->isJson($fieldType) && !$this->isRequired($fieldType);
 
-        if ($this->isRequired($typeName)) {
-            return $this->getProperty($fieldName, $typeName);
-        }
-
-        return $this->getProperty($fieldName, $typeName, true);
+        return $this->getProperty($fieldName, $fieldType, $isNullable);
     }
     
-    protected function getProperty(string $fieldName, string $typeName, bool $isNullable = false): string
+    protected function getProperty(string $fieldName, string $typeName, bool $isNullable = false): array
     {
-        $typeNames = [
+        $typesMap = [
             'integer' => 'int',
             'float' => 'float',
             'string' => 'string',
@@ -184,13 +177,13 @@ class ModelGenerator extends EntityGenerator
             'json' => 'array',
         ];
 
-        $type = $typeNames[Str::before($typeName, '-')];
+        $type = $typesMap[Str::before($typeName, '-')];
 
         if ($isNullable) {
             $type .= '|null';
         }
 
-        return "* @property {$type} {$fieldName}";
+        return [$fieldName => $type];
     }
 
     protected function isJson(string $typeName): bool
@@ -200,6 +193,6 @@ class ModelGenerator extends EntityGenerator
 
     protected function isRequired(string $typeName): bool
     {
-        return Str::afterLast($typeName, '-') === 'required';
+        return Str::endsWith($typeName, 'required');
     }
 }

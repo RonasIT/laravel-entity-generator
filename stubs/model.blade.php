@@ -5,8 +5,8 @@ use RonasIT\Support\Traits\ModelTrait;
 
 @if(!empty($anotationProperties))
 /**
-@foreach($anotationProperties as $fieldNames)
- {{$fieldNames}}
+@foreach($anotationProperties as $key => $value)
+ * @property {{$value}} {{$key}}
 @endforeach
  */
 @else
