@@ -135,6 +135,20 @@ class ModelGeneratorTest extends TestCase
         );
     }
 
+    public function testCreateModelByCommand()
+    {
+        $this
+            ->artisan('make:entity Post -I media_id -B is_published -t reviewed_at -T published_at -a Comment -A User --only-model')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('new_model.php', 'app/Models/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
     public function testCreateModelWithoutRelationsRelationStubNotExist()
     {
         config(['entity-generator.stubs.relation' => 'incorrect_stub']);

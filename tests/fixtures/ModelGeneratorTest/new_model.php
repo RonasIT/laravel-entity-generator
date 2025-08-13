@@ -46,6 +46,8 @@ class Post extends Model
         'is_published' => 'boolean',
         'is_reviewed' => 'boolean',
         'meta' => 'array',
+        'reviewed_at' => 'datetime',
+        'published_at' => 'datetime',
     ];
 
     public function comment()
