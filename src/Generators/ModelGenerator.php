@@ -116,7 +116,9 @@ class ModelGenerator extends EntityGenerator
         $casts = [
             'boolean-required' => 'boolean',
             'boolean' => 'boolean',
-            'json' => 'array'
+            'json' => 'array',
+            'timestamp-required' => 'datetime',
+            'timestamp' => 'datetime'
         ];
 
         $result = [];
