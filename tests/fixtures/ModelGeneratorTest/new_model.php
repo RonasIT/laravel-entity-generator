@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
 /**
- * @property int media_id
  * @property int|null priority
- * @property string title
- * @property string|null description
- * @property float rating
+ * @property int media_id
  * @property float|null seo_score
- * @property bool is_published
+ * @property float rating
+ * @property string|null description
+ * @property string title
  * @property bool|null is_reviewed
+ * @property bool is_published
  * @property Carbon|null reviewed_at
  * @property Carbon|null created_at
  * @property Carbon|null updated_at
@@ -25,14 +25,14 @@ class Post extends Model
     use ModelTrait;
 
     protected $fillable = [
-        'media_id',
         'priority',
-        'title',
-        'description',
-        'rating',
+        'media_id',
         'seo_score',
-        'is_published',
+        'rating',
+        'description',
+        'title',
         'is_reviewed',
+        'is_published',
         'reviewed_at',
         'created_at',
         'updated_at',
@@ -43,11 +43,13 @@ class Post extends Model
     protected $hidden = ['pivot'];
 
     protected $casts = [
-        'is_published' => 'boolean',
         'is_reviewed' => 'boolean',
-        'meta' => 'array',
+        'is_published' => 'boolean',
         'reviewed_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
         'published_at' => 'datetime',
+        'meta' => 'array',
     ];
 
     public function comment()

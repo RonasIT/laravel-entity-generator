@@ -61,14 +61,14 @@ class ModelGeneratorTest extends TestCase
         app(ModelGenerator::class)
             ->setModel('Post')
             ->setFields([
-                'integer-required' => ['media_id'],
                 'integer' => ['priority'],
-                'string-required' => ['title'],
-                'string' => ['description'],
-                'float-required' => ['rating'],
+                'integer-required' => ['media_id'],
                 'float' => ['seo_score'],
-                'boolean-required' => ['is_published'],
+                'float-required' => ['rating'],
+                'string' => ['description'],
+                'string-required' => ['title'],
                 'boolean' => ['is_reviewed'],
+                'boolean-required' => ['is_published'],
                 'timestamp' => ['reviewed_at', 'created_at', 'updated_at'],
                 'timestamp-required' => ['published_at'],
                 'json' => ['meta'],
@@ -138,7 +138,7 @@ class ModelGeneratorTest extends TestCase
     public function testCreateModelByCommand()
     {
         $this
-            ->artisan('make:entity Post -I media_id -B is_published -t reviewed_at -T published_at -a Comment -A User --only-model')
+            ->artisan('make:entity Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -t reviewed_at -t created_at -t updated_at -T published_at -j meta -a Comment -A User --only-model')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_model.php', 'app/Models/Post.php');
