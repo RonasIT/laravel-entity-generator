@@ -152,21 +152,21 @@ class ModelGenerator extends EntityGenerator
 
         foreach ($fields as $typeName => $fieldNames) {
             foreach ($fieldNames as $fieldName) {
-                $result[] = $this->getPropertyLine($fieldName, $typeName);
+                $result[$fieldName] = $this->getFieldType($typeName);
             }
         }
 
-        return Arr::collapse($result);
+        return $result;
     }
 
-    protected function getPropertyLine(string $fieldName, string $fieldType): array
+    protected function getFieldType(string $fieldType): string
     {
         $isNullable = !$this->isJson($fieldType) && !$this->isRequired($fieldType);
 
-        return $this->getProperty($fieldName, $fieldType, $isNullable);
+        return $this->getProperty($fieldType, $isNullable);
     }
     
-    protected function getProperty(string $fieldName, string $typeName, bool $isNullable = false): array
+    protected function getProperty(string $typeName, bool $isNullable = false): string
     {
         $typesMap = [
             'integer' => 'int',
@@ -183,7 +183,7 @@ class ModelGenerator extends EntityGenerator
             $type .= '|null';
         }
 
-        return [$fieldName => $type];
+        return $type;
     }
 
     protected function isJson(string $typeName): bool
