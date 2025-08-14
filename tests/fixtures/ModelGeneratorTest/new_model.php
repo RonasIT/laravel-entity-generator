@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
+use Carbon\Carbon;
 
 /**
  * @property int|null priority

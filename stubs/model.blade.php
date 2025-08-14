@@ -2,6 +2,9 @@ namespace {{$namespace}};
 
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
+@if(in_array('Carbon',$anotationProperties) || in_array('Carbon|null',$anotationProperties))
+use Carbon\Carbon;
+@endif
 
 @if(!empty($anotationProperties))
 /**
