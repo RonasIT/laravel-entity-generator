@@ -48,6 +48,7 @@ class ModelGenerator extends EntityGenerator
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->getOrCreateNamespace('models'),
+            'anotationProperties' => $this->generateAnnotationProperties($this->fields),
         ]);
     }
 
@@ -145,5 +146,55 @@ class ModelGenerator extends EntityGenerator
         }
 
         return $relationName;
+    }
+
+    protected function generateAnnotationProperties(array $fields): array
+    {
+        $result = [];
+
+        foreach ($fields as $typeName => $fieldNames) {
+            foreach ($fieldNames as $fieldName) {
+                $result[$fieldName] = $this->getFieldType($typeName);
+            }
+        }
+
+        return $result;
+    }
+
+    protected function getFieldType(string $fieldType): string
+    {
+        $isNullable = !$this->isJson($fieldType) && !$this->isRequired($fieldType);
+
+        return $this->getProperty($fieldType, $isNullable);
+    }
+    
+    protected function getProperty(string $typeName, bool $isNullable = false): string
+    {
+        $typesMap = [
+            'integer' => 'int',
+            'float' => 'float',
+            'string' => 'string',
+            'boolean' => 'bool',
+            'timestamp' => 'Carbon',
+            'json' => 'array',
+        ];
+
+        $type = $typesMap[Str::before($typeName, '-')];
+
+        if ($isNullable) {
+            $type .= '|null';
+        }
+
+        return $type;
+    }
+
+    protected function isJson(string $typeName): bool
+    {
+        return $typeName === 'json';
+    }
+
+    protected function isRequired(string $typeName): bool
+    {
+        return Str::endsWith($typeName, 'required');
     }
 }
