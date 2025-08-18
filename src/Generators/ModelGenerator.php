@@ -49,6 +49,7 @@ class ModelGenerator extends EntityGenerator
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->getOrCreateNamespace('models'),
             'anotationProperties' => $this->generateAnnotationProperties($this->fields),
+            'hasCarbonField' => !empty($this->fields['timestamp']) || !empty($this->fields['timestamp-required']),
         ]);
     }
 
