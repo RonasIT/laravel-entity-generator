@@ -49,6 +49,7 @@ class ModelGenerator extends EntityGenerator
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->getOrCreateNamespace('models'),
             'anotationProperties' => $this->generateAnnotationProperties($this->fields),
+            'hasCarbonField' => $this->hasCarbonField($this->fields),
         ]);
     }
 
@@ -196,5 +197,16 @@ class ModelGenerator extends EntityGenerator
     protected function isRequired(string $typeName): bool
     {
         return Str::endsWith($typeName, 'required');
+    }
+
+    protected function hasCarbonField(array $fields): bool
+    {   
+        foreach ($fields as $fieldType => $names) {
+            if (str_contains($fieldType, 'timestamp') && !empty($names)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
