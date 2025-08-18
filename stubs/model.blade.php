@@ -2,7 +2,7 @@ namespace {{$namespace}};
 
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
-@if($hasCarbonField !== false)
+@if($hasCarbonField)
 use Carbon\Carbon;
 @endif
 
