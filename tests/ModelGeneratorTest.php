@@ -149,6 +149,20 @@ class ModelGeneratorTest extends TestCase
         );
     }
 
+    public function testCreateModelWithoutDateFields()
+    {
+        $this
+            ->artisan('make:entity Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -j meta --only-model')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('new_model_without_date_fields.php', 'app/Models/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
     public function testCreateModelWithoutRelationsRelationStubNotExist()
     {
         config(['entity-generator.stubs.relation' => 'incorrect_stub']);
