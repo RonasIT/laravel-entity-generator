@@ -1,8 +1,10 @@
+@inject('arr', 'Illuminate\Support\Arr')
+
 namespace {{$namespace}};
 
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
-@if(in_array('Carbon',$anotationProperties) || in_array('Carbon|null',$anotationProperties))
+@if($arr::hasAny($anotationProperties, ['Carbon', 'Carbon|null']))
 use Carbon\Carbon;
 @endif
 
