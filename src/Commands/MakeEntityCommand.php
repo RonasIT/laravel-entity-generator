@@ -31,6 +31,8 @@ use UnexpectedValueException;
 
 class MakeEntityCommand extends Command
 {
+    private string $nameEntity;
+
     const CRUD_OPTIONS = [
         'C', 'R', 'U', 'D'
     ];
@@ -192,6 +194,7 @@ class MakeEntityCommand extends Command
     protected function validateInput()
     {
         $this->validateNameEntity();
+        $this->extractEntityNameAndPath();
         $this->validateOnlyApiOption();
         $this->validateCrudOptions();
     }
@@ -216,7 +219,7 @@ class MakeEntityCommand extends Command
     protected function runGeneration($generator)
     {
         app($generator)
-            ->setModel($this->argument('name'))
+            ->setModel($this->nameEntity)
             ->setFields($this->getFields())
             ->setRelations($this->getRelations())
             ->setCrudOptions($this->getCrudOptions())
@@ -245,8 +248,31 @@ class MakeEntityCommand extends Command
 
     protected function validateNameEntity()
     {
-        if (!preg_match('/^[A-Za-z0-9\\\\]+$/', $this->argument('name'))) {
+        if (!preg_match('/^[A-Za-z0-9\/]+$/', $this->argument('name'))) {
             throw new InvalidArgumentException("Invalid entity name {$this->argument('name')}");
+        }
+    }
+
+    protected function extractEntityNameAndPath()
+    {
+        $this->nameEntity = $this->getNameEntity();
+
+        $this->setModelPath();
+    }
+
+    protected function getNameEntity()
+    {
+        return class_basename($this->argument('name'));
+    }
+    
+    protected function setModelPath()
+    {
+        $entityPath = Str::before($this->argument('name'), $this->nameEntity);
+        $trimmedPath = Str::trim($entityPath, '/');
+
+        if ($trimmedPath) {
+            $currentModelPath = Config::get('entity-generator.paths.models');
+            Config::set('entity-generator.paths.models', "{$currentModelPath}/{$trimmedPath}");
         }
     }
 
@@ -264,7 +290,7 @@ class MakeEntityCommand extends Command
     protected function validateOnlyApiOption()
     {
         if ($this->option('only-api')) {
-            $modelName = Str::studly($this->argument('name'));
+            $modelName = Str::studly($this->nameEntity);
             if (!$this->classExists('services', "{$modelName}Service")) {
                 throw new ClassNotExistsException('Cannot create API without entity.');
             }
