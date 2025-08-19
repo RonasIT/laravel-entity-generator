@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -190,6 +191,7 @@ class MakeEntityCommand extends Command
 
     protected function validateInput()
     {
+        $this->validateNameEntity();
         $this->validateOnlyApiOption();
         $this->validateCrudOptions();
     }
@@ -239,6 +241,13 @@ class MakeEntityCommand extends Command
     protected function getFields()
     {
         return Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
+    }
+
+    protected function validateNameEntity()
+    {
+        if (!preg_match('/^[A-Za-z0-9\\\\]+$/', $this->argument('name'))) {
+            throw new InvalidArgumentException("Invalid entity name {$this->argument('name')}");
+        }
     }
 
     protected function validateCrudOptions()
