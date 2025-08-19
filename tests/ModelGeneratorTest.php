@@ -155,7 +155,7 @@ class ModelGeneratorTest extends TestCase
             ->artisan('make:entity Forum/Post -I media_id -i priority -S title -s description')
             ->assertSuccessful();
 
-        $this->assertGeneratedFileEquals('new_subfolders_model.php', 'app/Models/Forum/Post.php', true);
+        $this->assertGeneratedFileEquals('new_subfolders_model.php', 'app/Models/Forum/Post.php');
 
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
