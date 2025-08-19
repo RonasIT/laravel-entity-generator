@@ -8,7 +8,6 @@ use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Tests\Support\Command\CommandMockTrait;
 use RonasIT\Support\Tests\Support\Command\Models\Post;
 use UnexpectedValueException;
-use InvalidArgumentException;
 
 class CommandTest extends TestCase
 {
@@ -19,16 +18,6 @@ class CommandTest extends TestCase
         parent::setUp();
 
         $this->mockFilesystem();
-    }
-
-    public function testCallWithInvalidNameEntity()
-    {
-        $this->assertExceptionThrew(
-            className: InvalidArgumentException::class,
-            message: 'Invalid entity name Post.php',
-        );
-
-        $this->artisan('make:entity Post.php');
     }
 
     public function testCallWithInvalidCrudOption()

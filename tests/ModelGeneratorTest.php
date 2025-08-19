@@ -149,6 +149,20 @@ class ModelGeneratorTest extends TestCase
         );
     }
 
+    public function testCreateSubFoldersModel()
+    {
+        $this
+            ->artisan('make:entity Forum/Post -I media_id -i priority -S title -s description')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('new_subfolders_model.php', 'app/Models/Forum/Post.php', true);
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
     public function testCreateModelWithoutDateFields()
     {
         $this
