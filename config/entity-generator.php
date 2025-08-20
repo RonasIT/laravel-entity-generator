@@ -2,7 +2,6 @@
 
 return [
     'paths' => [
-        'base_models' => 'app/Models',
         'models' => 'app/Models',
         'services' => 'app/Services',
         'requests' => 'app/Http/Requests',

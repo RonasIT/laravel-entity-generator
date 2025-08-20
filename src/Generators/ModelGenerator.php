@@ -64,7 +64,7 @@ class ModelGenerator extends EntityGenerator
 
         foreach ($this->relations as $type => $relationsByType) {
             foreach ($relationsByType as $relation) {
-                if (!$this->classExists('base_models', $relation)) {
+                if (!$this->classExists('models', $relation)) {
                     $this->throwFailureException(
                         exceptionClass: ClassNotExistsException::class,
                         failureMessage: "Cannot create {$this->model} Model cause relation model {$relation} does not exist.",
