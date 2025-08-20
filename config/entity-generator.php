@@ -3,6 +3,8 @@
 return [
     'paths' => [
         'models' => 'app/Models',
+        'model_entity' => 'app/Models',
+        'model_relation' => 'app/Models',
         'services' => 'app/Services',
         'requests' => 'app/Http/Requests',
         'controllers' => 'app/Http/Controllers',

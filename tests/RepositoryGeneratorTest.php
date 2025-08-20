@@ -22,7 +22,7 @@ class RepositoryGeneratorTest extends TestCase
     public function testModelNotExist()
     {
         $this->mockClass(RepositoryGenerator::class, [
-            $this->classExistsMethodCall(['models', 'Post'], false),
+            $this->classExistsMethodCall(['model_entity', 'Post'], false),
         ]);
 
         $this->assertExceptionThrew(

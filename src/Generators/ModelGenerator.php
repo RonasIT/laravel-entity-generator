@@ -17,7 +17,7 @@ class ModelGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        if ($this->classExists('models', $this->model)) {
+        if ($this->classExists('model_entity', $this->model)) {
             $this->throwFailureException(
                 exceptionClass: ClassAlreadyExistsException::class,
                 failureMessage: "Cannot create {$this->model} Model cause {$this->model} Model already exists.",
@@ -29,7 +29,7 @@ class ModelGenerator extends EntityGenerator
             $this->prepareRelatedModels();
             $modelContent = $this->getNewModelContent();
 
-            $this->saveClass('models', $this->model, $modelContent);
+            $this->saveClass('model_entity', $this->model, $modelContent);
 
             event(new SuccessCreateMessage("Created a new Model: {$this->model}"));
         }
@@ -47,7 +47,7 @@ class ModelGenerator extends EntityGenerator
             'fields' => Arr::collapse($this->fields),
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
-            'namespace' => $this->getOrCreateNamespace('models'),
+            'namespace' => $this->getOrCreateNamespace('model_entity'),
             'anotationProperties' => $this->generateAnnotationProperties($this->fields),
             'hasCarbonField' => !empty($this->fields['timestamp']) || !empty($this->fields['timestamp-required']),
         ]);

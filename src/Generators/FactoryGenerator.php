@@ -27,7 +27,7 @@ class FactoryGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        if (!$this->classExists('models', $this->model)) {
+        if (!$this->classExists('model_entity', $this->model)) {
             $this->throwFailureException(
                 exceptionClass: ClassNotExistsException::class,
                 failureMessage: "Cannot create {$this->model}Factory cause {$this->model} Model does not exists.",
@@ -51,7 +51,7 @@ class FactoryGenerator extends EntityGenerator
             'namespace' => $this->getOrCreateNamespace('factories'),
             'entity' => $this->model,
             'fields' => $this->prepareFields(),
-            'modelNamespace' => $this->getOrCreateNamespace('models'),
+            'modelNamespace' => $this->getOrCreateNamespace('model_entity'),
         ]);
 
         $this->saveClass('factories', "{$this->model}Factory", $factoryContent);

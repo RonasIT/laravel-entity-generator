@@ -257,22 +257,26 @@ class MakeEntityCommand extends Command
     {
         $this->nameEntity = $this->getNameEntity();
 
-        $this->setModelPath();
+        $this->setEntityPath();
     }
 
     protected function getNameEntity()
     {
         return class_basename($this->argument('name'));
     }
-    
-    protected function setModelPath()
+
+    protected function setEntityPath()
     {
         $entityPath = Str::before($this->argument('name'), $this->nameEntity);
         $trimmedPath = Str::trim($entityPath, '/');
 
+        $baseModelPath = Config::get('entity-generator.paths.models');
+
         if ($trimmedPath) {
-            $currentModelPath = Config::get('entity-generator.paths.models');
-            Config::set('entity-generator.paths.models', "{$currentModelPath}/{$trimmedPath}");
+            Config::set('entity-generator.paths.model_entity', "{$baseModelPath}/{$trimmedPath}");
+
+        } else {
+            Config::set('entity-generator.paths.model_entity', $baseModelPath);
         }
     }
 

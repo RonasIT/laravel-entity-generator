@@ -9,7 +9,7 @@ class RepositoryGenerator extends EntityGenerator
 {
     public function generate(): void
     {
-        if (!$this->classExists('models', $this->model)) {
+        if (!$this->classExists('model_entity', $this->model)) {
             $this->throwFailureException(
                 ClassNotExistsException::class,
                 "Cannot create {$this->model}Repository cause {$this->model} Model does not exists.",
@@ -24,7 +24,7 @@ class RepositoryGenerator extends EntityGenerator
         $repositoryContent = $this->getStub('repository', [
             'entity' => $this->model,
             'namespace' => $this->getOrCreateNamespace('repositories'),
-            'modelNamespace' => $this->getOrCreateNamespace('models')
+            'modelNamespace' => $this->getOrCreateNamespace('model_entity')
         ]);
 
         $this->saveClass('repositories', "{$this->model}Repository", $repositoryContent);
