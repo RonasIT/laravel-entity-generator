@@ -71,7 +71,7 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockNovaRequestClassCall();
 
         config([
-            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+            'entity-generator.paths.model_entity' => 'RonasIT/Support/Tests/Support/Models',
             'entity-generator.stubs.nova_test' => 'incorrect_stub',
         ]);
 
@@ -101,6 +101,7 @@ class NovaTestGeneratorTest extends TestCase
 
         config([
             'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+            'entity-generator.paths.model_entity' => 'RonasIT/Support/Tests/Support/Models',
             'entity-generator.stubs.dump' => 'incorrect_stub',
         ]);
 
@@ -123,7 +124,7 @@ class NovaTestGeneratorTest extends TestCase
     public function testSuccess()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+            'entity-generator.paths.model_entity' => 'RonasIT/Support/Tests/Support/Models',
         ]);
 
         $this->mockDBTransactionStartRollback();

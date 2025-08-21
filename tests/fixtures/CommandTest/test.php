@@ -92,35 +92,4 @@ class PostTest extends TestCase
 
         $response->assertNotFound();
     }
-
-    public static function getSearchFilters(): array
-    {
-        return [
-            [
-                'filter' => ['all' => 1],
-                'fixture' => 'search_all',
-            ],
-            [
-                'filter' => [
-                    'page' => 2,
-                    'per_page' => 2,
-                ],
-                'fixture' => 'search_by_page_per_page',
-            ],
-        ];
-    }
-
-    #[DataProvider('getSearchFilters')]
-    public function testSearch(array $filter, string $fixture)
-    {
-        $response = $this->actingAs(self::$user)->json('get', '/posts', $filter);
-
-        $response->assertOk();
-
-        // TODO: Need to remove after first successful start
-        $this->exportJson($fixture, $response->json());
-
-        $this->assertEqualsFixture($fixture, $response->json());
-    }
-
 }

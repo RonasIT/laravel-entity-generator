@@ -50,7 +50,7 @@ class FactoryGeneratorTest extends TestCase
         );
 
         $this->mockFactoryGenerator(
-            $this->classExistsMethodCall(['models', 'Post']),
+            $this->classExistsMethodCall(['model_entity', 'Post']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         );
 
