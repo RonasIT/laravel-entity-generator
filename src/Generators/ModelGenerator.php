@@ -48,6 +48,7 @@ class ModelGenerator extends EntityGenerator
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->getOrCreateNamespace('model_entity'),
+            'importRelations' => $this->getImportRelations(),
             'anotationProperties' => $this->generateAnnotationProperties($this->fields),
             'hasCarbonField' => !empty($this->fields['timestamp']) || !empty($this->fields['timestamp-required']),
         ]);
@@ -74,6 +75,11 @@ class ModelGenerator extends EntityGenerator
 
                 $content = $this->getModelContent($relation);
 
+                if ($this->shouldImportRelation($relation, 'model_entity')) {
+                    $importRelation = $this->buildImportRelation($this->model, 'model_entity');
+                    $content = $this->insertUseForRelation($content, $importRelation);
+                }
+
                 $newRelation = $this->getStub('relation', [
                     'name' => $this->getRelationName($this->model, $types[$type]),
                     'type' => $types[$type],
@@ -94,6 +100,19 @@ class ModelGenerator extends EntityGenerator
         return file_get_contents($modelPath);
     }
 
+    function insertUseForRelation(string $content, string $class): string
+    {
+        $newUse = "use {$class};";
+
+        if (Str::contains($content, $newUse)) {
+            return $content;
+        }
+
+        $content = preg_replace('/(namespace\s+[^;]+;\s*)/', "$1{$newUse}\n", $content, 1);
+
+        return $content;
+    }
+
     public function prepareRelations(): array
     {
         $result = [];
@@ -101,10 +120,13 @@ class ModelGenerator extends EntityGenerator
         foreach ($this->relations as $type => $relations) {
             foreach ($relations as $relation) {
                 if (!empty($relation)) {
+
+                    $entity = class_basename($relation);
+
                     $result[] = [
-                        'name' => $this->getRelationName($relation, $type),
+                        'name' => $this->getRelationName($entity, $type),
                         'type' => $type,
-                        'entity' => $relation,
+                        'entity' => $entity,
                     ];
                 }
             }
@@ -140,14 +162,50 @@ class ModelGenerator extends EntityGenerator
 
     private function getRelationName(string $relation, string $type): string
     {
-        $relationName = class_basename($relation);
-        $relationNameNormilize = Str::snake($relationName);
+        $relationName = Str::snake($relation);
 
         if (in_array($type, self::PLURAL_NUMBER_REQUIRED)) {
-            $relationNameNormilize = Str::plural($relationNameNormilize);
+            $relationName = Str::plural($relationName);
         }
 
-        return $relationNameNormilize;
+        return $relationName;
+    }
+
+    protected function getImportRelations(): array
+    {
+        $result = [];
+
+        foreach ($this->relations as $relations) {
+            foreach ($relations as $relation) {
+                if (empty($relation)) {
+                    continue;
+                }
+
+                if ($this->shouldImportRelation($relation, 'model_entity')) {
+                    $result[] = $this->buildImportRelation($relation, 'models');
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    protected function shouldImportRelation(string $relation, string $path): bool
+    {
+        $entity = class_basename($relation);
+        $namespace = Str::trim(Str::before($relation, $entity), '/');
+
+        $currentModelPath = rtrim("{$this->paths['models']}/{$namespace}", '/');
+
+        return $currentModelPath !== $this->paths[$path];
+    }
+
+    protected function buildImportRelation(string $relation, string $path): string
+    {
+        $importBase = $this->getOrCreateNamespace($path);
+        $normalizedRelation = Str::replace('/', '\\', Str::trim($relation, '/'));
+
+        return "{$importBase}\\{$normalizedRelation}";
     }
 
     protected function generateAnnotationProperties(array $fields): array
