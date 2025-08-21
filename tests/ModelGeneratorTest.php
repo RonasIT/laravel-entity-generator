@@ -149,6 +149,20 @@ class ModelGeneratorTest extends TestCase
         );
     }
 
+    public function testCreateModelHasMultipleRelationsWithAnotherModel()
+    {
+        $this
+            ->artisan('make:entity Forum/Post -A User -E User --only-model')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('new_model_with_many_relations.php', 'app/Models/Forum/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
     public function testCreateSubFoldersModel()
     {
         $this

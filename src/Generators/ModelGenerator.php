@@ -187,7 +187,7 @@ class ModelGenerator extends EntityGenerator
             }
         }
 
-        return $result;
+        return array_unique($result);
     }
 
     protected function shouldImportRelation(string $relation, string $path): bool
