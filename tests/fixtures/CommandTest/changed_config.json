@@ -1,20 +1,20 @@
 {
     "paths": {
-        "models": "app\/Models",
+        "models": "app/Models",
         "model_entity": null,
-        "services": "app\/Services",
-        "requests": "app\/Http\/Requests",
-        "controllers": "app\/Http\/Controllers",
-        "migrations": "database\/migrations",
-        "seeders": "database\/seeders",
-        "database_seeder": "database\/seeders\/DatabaseSeeder.php",
-        "repositories": "app\/Repositories",
+        "services": "app/Services",
+        "requests": "app/Http/Requests",
+        "controllers": "app/Http/Controllers",
+        "migrations": "database/migrations",
+        "seeders": "database/seeders",
+        "database_seeder": "database/seeders/DatabaseSeeder.php",
+        "repositories": "app/Repositories",
         "tests": "tests",
-        "routes": "routes\/api.php",
-        "factories": "database\/factories",
-        "translations": "lang\/en\/validation.php",
-        "resources": "app\/Http\/Resources",
-        "nova": "app\/Nova"
+        "routes": "routes/api.php",
+        "factories": "database/factories",
+        "translations": "lang/en/validation.php",
+        "resources": "app/Http/Resources",
+        "nova": "app/Nova"
     },
     "stubs": {
         "model": "entity-generator::model",
