@@ -140,13 +140,14 @@ class ModelGenerator extends EntityGenerator
 
     private function getRelationName(string $relation, string $type): string
     {
-        $relationName = Str::snake($relation);
+        $relationName = class_basename($relation);
+        $relationNameNormilize = Str::snake($relationName);
 
         if (in_array($type, self::PLURAL_NUMBER_REQUIRED)) {
-            $relationName = Str::plural($relationName);
+            $relationNameNormilize = Str::plural($relationNameNormilize);
         }
 
-        return $relationName;
+        return $relationNameNormilize;
     }
 
     protected function generateAnnotationProperties(array $fields): array
