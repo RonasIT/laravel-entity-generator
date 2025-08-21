@@ -177,11 +177,7 @@ class ModelGenerator extends EntityGenerator
 
         foreach ($this->relations as $relations) {
             foreach ($relations as $relation) {
-                if (empty($relation)) {
-                    continue;
-                }
-
-                if ($this->shouldImportRelation($relation, 'model_entity')) {
+                if (!empty($relation) && $this->shouldImportRelation($relation, 'model_entity')) {
                     $result[] = $this->buildImportRelation($relation, 'models');
                 }
             }
