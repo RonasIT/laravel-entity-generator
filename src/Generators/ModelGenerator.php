@@ -188,8 +188,9 @@ class ModelGenerator extends EntityGenerator
 
     protected function shouldImportRelation(string $relation, string $path): bool
     {
-        $entity = class_basename($relation);
-        $namespace = Str::trim(Str::before($relation, $entity), '/');
+        list(, $namespace) = extract_last_part($relation, '/');
+
+        $namespace = Str::trim($namespace);
 
         $currentModelPath = rtrim("{$this->paths['models']}/{$namespace}", '/');
 
