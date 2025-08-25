@@ -45,6 +45,7 @@ class TestGeneratorTest extends TestCase
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.model_entity' => 'RonasIT\Support\Tests\Support\Test\Models',
             'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
         ]);
 
@@ -88,6 +89,7 @@ class TestGeneratorTest extends TestCase
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.model_entity' => 'RonasIT\Support\Tests\Support\Test\Models',
             'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
         ]);
 
@@ -123,6 +125,7 @@ class TestGeneratorTest extends TestCase
     {
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.model_entity' => 'RonasIT\Support\Tests\Support\Test\Models',
             'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
             'entity-generator.stubs.dump' => 'incorrect_stub',
         ]);
@@ -160,6 +163,7 @@ class TestGeneratorTest extends TestCase
     {
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.model_entity' => 'RonasIT\Support\Tests\Support\Test\Models',
             'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
             'entity-generator.stubs.test' => 'incorrect_stub',
         ]);
@@ -213,6 +217,7 @@ class TestGeneratorTest extends TestCase
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.model_entity' => 'RonasIT\Support\Tests\Support\Test\Models',
         ]);
 
         $this->mockClass(TestsGenerator::class, [

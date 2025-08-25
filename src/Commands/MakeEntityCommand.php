@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -30,6 +31,8 @@ use UnexpectedValueException;
 
 class MakeEntityCommand extends Command
 {
+    private string $entityName;
+
     const CRUD_OPTIONS = [
         'C', 'R', 'U', 'D'
     ];
@@ -190,6 +193,8 @@ class MakeEntityCommand extends Command
 
     protected function validateInput()
     {
+        $this->validateEntityName();
+        $this->extractEntityNameAndPath();
         $this->validateOnlyApiOption();
         $this->validateCrudOptions();
     }
@@ -214,7 +219,7 @@ class MakeEntityCommand extends Command
     protected function runGeneration($generator)
     {
         app($generator)
-            ->setModel($this->argument('name'))
+            ->setModel($this->entityName)
             ->setFields($this->getFields())
             ->setRelations($this->getRelations())
             ->setCrudOptions($this->getCrudOptions())
@@ -241,6 +246,31 @@ class MakeEntityCommand extends Command
         return Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
     }
 
+    protected function validateEntityName()
+    {
+        if (!preg_match('/^[A-Za-z0-9\/]+$/', $this->argument('name'))) {
+            throw new InvalidArgumentException("Invalid entity name {$this->argument('name')}");
+        }
+    }
+
+    protected function extractEntityNameAndPath()
+    {
+        list($this->entityName, $entityPath) = extract_last_part($this->argument('name'), '/');
+
+        $this->setEntityPath($entityPath);
+    }
+
+    protected function setEntityPath(?string $path): void
+    {
+        $trimmedPath = Str::trim($path, '/');
+
+        $baseModelPath = Config::get('entity-generator.paths.models');
+
+        $modelEntityPath = $trimmedPath ? "{$baseModelPath}/{$trimmedPath}" : $baseModelPath;
+
+        Config::set('entity-generator.paths.model_entity', $modelEntityPath);
+    }
+
     protected function validateCrudOptions()
     {
         $crudOptions = $this->getCrudOptions();
@@ -255,7 +285,7 @@ class MakeEntityCommand extends Command
     protected function validateOnlyApiOption()
     {
         if ($this->option('only-api')) {
-            $modelName = Str::studly($this->argument('name'));
+            $modelName = Str::studly($this->entityName);
             if (!$this->classExists('services', "{$modelName}Service")) {
                 throw new ClassNotExistsException('Cannot create API without entity.');
             }
