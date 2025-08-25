@@ -116,7 +116,7 @@ class CommandTest extends TestCase
             ->artisan('make:entity Forum/Post')
             ->assertSuccessful();
 
-        $this->assertGeneratedFileEquals('subfolder/model.php', 'RonasIT/Support/Tests/Support/Command/Models/Forum/Post.php', true);
+        $this->assertGeneratedFileEquals('subfolder/model.php', 'RonasIT/Support/Tests/Support/Command/Models/Forum/Post.php');
         $this->assertGeneratedFileEquals('subfolder/migration.php', 'database/migrations/2016_10_20_110500_posts_create_table.php');
         $this->assertGeneratedFileEquals('subfolder/factory.php', 'RonasIT/Support/Tests/Support/Command/Factories/PostFactory.php');
         $this->assertGeneratedFileEquals('subfolder/repository.php', 'app/Repositories/PostRepository.php');
