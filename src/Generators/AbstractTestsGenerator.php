@@ -83,7 +83,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
                 'name' => $this->getTableName($model),
                 'items' => [
                     [
-                        'fields' => $this->getModelFields($model, $this->isEntity($model)),
+                        'fields' => $this->getModelFields($model, $this->getEntityNamespace($model)),
                         'values' => $this->getDumpValuesList($model)
                     ]
                 ]
@@ -144,7 +144,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function buildEntityObject($model): array
     {
-        $modelFields = $this->getModelFields($model, $this->isEntity($model));
+        $modelFields = $this->getModelFields($model, $this->getEntityNamespace($model));
         $mockEntity = $this->getMockModel($model);
 
         $result = [];
@@ -213,7 +213,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected function buildRelationsTree($models): array
     {
         foreach ($models as $model) {
-            $relations = $this->getRelatedModels($model, $this->getTestClassName(), $this->isEntity($model));
+            $relations = $this->getRelatedModels($model, $this->getTestClassName(), $this->getEntityNamespace($model));
             $relationsWithFactories = $this->getModelsWithFactories($relations);
 
             if (empty($relationsWithFactories)) {
@@ -266,7 +266,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         ]);
     }
 
-    private function isEntity(string $model): string
+    private function getEntityNamespace(string $model): string
     {
         return $model === $this->model ? 'model_entity' : 'models';
     }

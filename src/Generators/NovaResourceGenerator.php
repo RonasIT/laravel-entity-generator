@@ -55,7 +55,7 @@ class NovaResourceGenerator extends EntityGenerator
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
-            if (!$this->classExists('models', $this->model)) {
+            if (!$this->classExists('model_entity', $this->model)) {
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create {$this->model} Nova resource cause {$this->model} Model does not exists.",
@@ -81,7 +81,7 @@ class NovaResourceGenerator extends EntityGenerator
                 'model' => $this->model,
                 'fields' => $novaFields,
                 'types' => array_unique(data_get($novaFields, '*.type')),
-                'modelNamespace' => $this->getOrCreateNamespace('models'),
+                'modelNamespace' => $this->getOrCreateNamespace('model_entity'),
                 'namespace' => $this->getOrCreateNamespace('nova')
             ]);
 
