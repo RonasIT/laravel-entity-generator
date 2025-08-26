@@ -260,11 +260,7 @@ abstract class EntityGenerator
         $normalizedString = str_replace('\\', '/', $string);
         $normalizedPrefix = str_replace('\\', '/', $prefix);
 
-        if (Str::startsWith(Str::lower($normalizedString), Str::lower($normalizedPrefix) . '/')) {
-            return Str::after($normalizedString, $normalizedPrefix . '/');
-        }
-
-        return $string;
+        return Str::after($normalizedString, $normalizedPrefix . '/');
     }
 
     protected function getModelClass(string $model, string $subFolder = ""): string
