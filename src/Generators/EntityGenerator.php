@@ -96,7 +96,9 @@ abstract class EntityGenerator
         $this->relations = $relations;
 
         foreach ($relations->belongsTo as $field) {
-            $name = Str::snake($field) . '_id';
+            $relatedModel = Str::afterLast($field, '/');
+
+            $name = Str::snake($relatedModel) . '_id';
 
             $this->fields['integer-required'][] = $name;
         }
