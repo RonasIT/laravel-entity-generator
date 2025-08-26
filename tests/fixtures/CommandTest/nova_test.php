@@ -2,7 +2,7 @@
 
 namespace App\Tests;
 
-use App\Models\Post;
+use RonasIT\Support\Tests\Support\Command\Models\Post;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
