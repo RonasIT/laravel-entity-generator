@@ -36,6 +36,7 @@ abstract class EntityGenerator
 
     protected $paths = [];
     protected $model;
+    protected $modelSubFolder = '';
     protected $fields;
     protected $relations = [];
     protected $crudOptions;
@@ -58,6 +59,19 @@ abstract class EntityGenerator
     public function setModel($model)
     {
         $this->model = Str::studly($model);
+
+        return $this;
+    }
+
+    /**
+     * @param string $entityNamespace
+     * @return $this
+     */
+    public function setModelSubFolder($entityNamespace)
+    {
+        if ($entityNamespace) {
+            $this->modelSubFolder = Str::finish($entityNamespace, '/');
+        }
 
         return $this;
     }
@@ -95,9 +109,12 @@ abstract class EntityGenerator
         $this->paths = config('entity-generator.paths');
     }
 
-    protected function getOrCreateNamespace(string $configPath): string
+    protected function getOrCreateNamespace(string $configPath, string $subFolder = ""): string
     {
-        $path = $this->paths[$configPath];
+        $path = $subFolder 
+            ? Str::finish($this->paths[$configPath], '/') . Str::trim($subFolder, '/')
+            : $this->paths[$configPath];
+
         $pathParts = explode('/', $path);
 
         if (Str::endsWith(Arr::last($pathParts), '.php')) {
@@ -197,15 +214,15 @@ abstract class EntityGenerator
         throw new $exceptionClass("{$failureMessage} {$recommendedMessage}");
     }
 
-    protected function getRelatedModels(string $model, string $creatableClass): array
+    protected function getRelatedModels(string $model, string $creatableClass, string $subFolder = ""): array
     {
-        $modelClass = $this->getModelClass($model);
+        $modelClass = $this->getModelClass($model, $subFolder);
 
         if (!class_exists($modelClass)) {
             $this->throwFailureException(
                 exceptionClass: ClassNotExistsException::class,
-                failureMessage: "Cannot create {$creatableClass} cause {$model} Model does not exists.",
-                recommendedMessage: "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'.",
+                failureMessage: "Cannot create {$creatableClass} cause {$this->modelSubFolder}{$this->model} Model does not exists.",
+                recommendedMessage: "Create a {$this->modelSubFolder}{$this->model} Model by himself or run command 'php artisan make:entity {$this->modelSubFolder}{$this->model} --only-model'.",
             );
         }
 
@@ -230,7 +247,7 @@ abstract class EntityGenerator
                 continue;
             }
 
-            $relatedModels[] = class_basename(get_class($result->getRelated()));
+            $relatedModels[] = $this->removePath(get_class($result->getRelated()), $this->paths['models']);
         }
 
         DB::rollBack();
@@ -238,9 +255,21 @@ abstract class EntityGenerator
         return $relatedModels;
     }
 
-    protected function getModelClass(string $model): string
+    protected function removePath(string $string, string $prefix): string
     {
-        $modelNamespace = $this->getOrCreateNamespace('models');
+        $normalizedString = str_replace('\\', '/', $string);
+        $normalizedPrefix = str_replace('\\', '/', $prefix);
+
+        if (Str::startsWith(Str::lower($normalizedString), Str::lower($normalizedPrefix) . '/')) {
+            return Str::after($normalizedString, $normalizedPrefix . '/');
+        }
+
+        return $string;
+    }
+
+    protected function getModelClass(string $model, string $subFolder = ""): string
+    {
+        $modelNamespace = $this->getOrCreateNamespace('models', $subFolder);
 
         return "{$modelNamespace}\\{$model}";
     }

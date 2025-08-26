@@ -83,7 +83,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
                 'name' => $this->getTableName($model),
                 'items' => [
                     [
-                        'fields' => $this->getModelFields($model),
+                        'fields' => $this->getModelFields($model, $this->getEntityNamespace($model)),
                         'values' => $this->getDumpValuesList($model)
                     ]
                 ]
@@ -144,7 +144,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function buildEntityObject($model): array
     {
-        $modelFields = $this->getModelFields($model);
+        $modelFields = $this->getModelFields($model, $this->getEntityNamespace($model));
         $mockEntity = $this->getMockModel($model);
 
         $result = [];
@@ -158,9 +158,9 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getModelFields($model): array
+    protected function getModelFields(string $model, string $subFolder = ""): array
     {
-        $modelClass = $this->getModelClass($model);
+        $modelClass = $this->getModelClass($model, $subFolder);
 
         return $this->filterBadModelField($modelClass::getFields());
     }
@@ -213,7 +213,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected function buildRelationsTree($models): array
     {
         foreach ($models as $model) {
-            $relations = $this->getRelatedModels($model, $this->getTestClassName());
+            $relations = $this->getRelatedModels($model, $this->getTestClassName(), $this->getEntityNamespace($model));
             $relationsWithFactories = $this->getModelsWithFactories($relations);
 
             if (empty($relationsWithFactories)) {
@@ -264,5 +264,10 @@ abstract class AbstractTestsGenerator extends EntityGenerator
             self::CREATED_AT,
             self::UPDATED_AT,
         ]);
+    }
+
+    private function getEntityNamespace(string $model): string
+    {
+        return $model === $this->model ? $this->modelSubFolder : '';
     }
 }

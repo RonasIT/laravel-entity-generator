@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -30,6 +31,9 @@ use UnexpectedValueException;
 
 class MakeEntityCommand extends Command
 {
+    private string $entityName;
+    private string $entityNamespace;
+
     const CRUD_OPTIONS = [
         'C', 'R', 'U', 'D'
     ];
@@ -190,6 +194,8 @@ class MakeEntityCommand extends Command
 
     protected function validateInput()
     {
+        $this->validateEntityName();
+        $this->extractEntityNameAndPath();
         $this->validateOnlyApiOption();
         $this->validateCrudOptions();
     }
@@ -214,7 +220,8 @@ class MakeEntityCommand extends Command
     protected function runGeneration($generator)
     {
         app($generator)
-            ->setModel($this->argument('name'))
+            ->setModel($this->entityName)
+            ->setModelSubFolder($this->entityNamespace)
             ->setFields($this->getFields())
             ->setRelations($this->getRelations())
             ->setCrudOptions($this->getCrudOptions())
@@ -239,6 +246,20 @@ class MakeEntityCommand extends Command
     protected function getFields()
     {
         return Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
+    }
+
+    protected function validateEntityName()
+    {
+        if (!preg_match('/^[A-Za-z0-9\/]+$/', $this->argument('name'))) {
+            throw new InvalidArgumentException("Invalid entity name {$this->argument('name')}");
+        }
+    }
+
+    protected function extractEntityNameAndPath()
+    {
+        list($this->entityName, $entityPath) = extract_last_part($this->argument('name'), '/');
+
+        $this->entityNamespace = Str::trim($entityPath, '/');
     }
 
     protected function validateCrudOptions()
