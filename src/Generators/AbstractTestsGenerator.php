@@ -83,7 +83,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
                 'name' => $this->getTableName($model),
                 'items' => [
                     [
-                        'fields' => $this->getModelFields($model, $this->getEntityNamespace($model)),
+                        'fields' => $this->getModelFields($model),
                         'values' => $this->getDumpValuesList($model)
                     ]
                 ]
@@ -144,7 +144,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function buildEntityObject($model): array
     {
-        $modelFields = $this->getModelFields($model, $this->getEntityNamespace($model));
+        $modelFields = $this->getModelFields($model);
         $mockEntity = $this->getMockModel($model);
 
         $result = [];
@@ -158,9 +158,9 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getModelFields(string $model, string $subFolder = ""): array
+    protected function getModelFields(string $model): array
     {
-        $modelClass = $this->getModelClass($model, $subFolder);
+        $modelClass = $this->getModelClass($model, $this->getEntityNamespace($model));
 
         return $this->filterBadModelField($modelClass::getFields());
     }
