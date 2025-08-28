@@ -160,7 +160,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     protected function getModelFields(string $model): array
     {
-        $modelClass = $this->getModelClass($model, $this->getEntityNamespace($model));
+        $modelClass = $this->getModelClass($model);
 
         return $this->filterBadModelField($modelClass::getFields());
     }
@@ -213,7 +213,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected function buildRelationsTree($models): array
     {
         foreach ($models as $model) {
-            $relations = $this->getRelatedModels($model, $this->getTestClassName(), $this->getEntityNamespace($model));
+            $relations = $this->getRelatedModels($model, $this->getTestClassName());
             $relationsWithFactories = $this->getModelsWithFactories($relations);
 
             if (empty($relationsWithFactories)) {
@@ -264,10 +264,5 @@ abstract class AbstractTestsGenerator extends EntityGenerator
             self::CREATED_AT,
             self::UPDATED_AT,
         ]);
-    }
-
-    private function getEntityNamespace(string $model): string
-    {
-        return $model === $this->model ? $this->modelSubFolder : '';
     }
 }

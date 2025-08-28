@@ -216,9 +216,9 @@ abstract class EntityGenerator
         throw new $exceptionClass("{$failureMessage} {$recommendedMessage}");
     }
 
-    protected function getRelatedModels(string $model, string $creatableClass, string $subFolder = ""): array
+    protected function getRelatedModels(string $model, string $creatableClass): array
     {
-        $modelClass = $this->getModelClass($model, $subFolder);
+        $modelClass = $this->getModelClass($model);
 
         if (!class_exists($modelClass)) {
             $this->throwFailureException(
@@ -267,7 +267,7 @@ abstract class EntityGenerator
 
     protected function getModelClass(string $model, string $subFolder = ""): string
     {
-        $modelNamespace = $this->getOrCreateNamespace('models', $subFolder);
+        $modelNamespace = $this->getOrCreateNamespace('models', $this->getEntityNamespace($model));
 
         return "{$modelNamespace}\\{$model}";
     }
@@ -289,5 +289,10 @@ abstract class EntityGenerator
         }
 
         return true;
+    }
+
+    private function getEntityNamespace(string $model): string
+    {
+        return $model === $this->model ? $this->modelSubFolder : '';
     }
 }
