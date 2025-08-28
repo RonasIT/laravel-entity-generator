@@ -111,7 +111,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
     {
         $possibleNovaModelNames = [
             "{$this->model}NovaResource",
-            "{$this->model}Resource",
+            "{$this->modelSubFolder}{$this->model}Resource",
             $this->model
         ];
 

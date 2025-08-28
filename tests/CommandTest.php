@@ -135,7 +135,7 @@ class CommandTest extends TestCase
         $this->assertGeneratedFileEquals('subfolder/create_response.json', 'tests/fixtures/PostTest/create_post_response.json');
         $this->assertGeneratedFileEquals('subfolder/update_request.json', 'tests/fixtures/PostTest/update_post_request.json');
         $this->assertGeneratedFileEquals('subfolder/validation.php', 'lang/en/validation.php');
-        $this->assertGeneratedFileEquals('subfolder/nova_resource.php', 'app/Nova/PostResource.php');
+        $this->assertGeneratedFileEquals('subfolder/nova_resource.php', 'app/Nova/Forum/PostResource.php');
         $this->assertGeneratedFileEquals('subfolder/nova_test.php', 'tests/NovaPostTest.php');
         $this->assertGeneratedFileEquals('subfolder/nova_dump.php', 'tests/fixtures/NovaPostTest/nova_post_dump.sql');
         $this->assertGeneratedFileEquals('subfolder/create_request.json', 'tests/fixtures/NovaPostTest/create_post_request.json');

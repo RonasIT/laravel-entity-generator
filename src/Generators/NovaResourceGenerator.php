@@ -85,7 +85,7 @@ class NovaResourceGenerator extends EntityGenerator
                 'namespace' => $this->getOrCreateNamespace('nova')
             ]);
 
-            $this->saveClass('nova', "{$this->model}Resource", $fileContent);
+            $this->saveClass('nova', "{$this->model}Resource", $fileContent, $this->modelSubFolder);
 
             event(new SuccessCreateMessage("Created a new Nova Resource: {$this->model}Resource"));
         } else {
