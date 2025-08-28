@@ -100,7 +100,7 @@ class ModelGenerator extends EntityGenerator
         return file_get_contents($modelPath);
     }
 
-    function insertUseForRelation(string $content, string $class): string
+    protected function insertUseForRelation(string $content, string $class): string
     {
         $newUse = "use {$class};";
 
