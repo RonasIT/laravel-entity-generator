@@ -186,14 +186,14 @@ class ModelGenerator extends EntityGenerator
         return array_unique($result);
     }
 
-    protected function shouldImportRelation(string $relation, string $namespaceModel): bool
+    protected function shouldImportRelation(string $relation, ?string $namespaceModel): bool
     {
         list(, $namespaceRelation) = extract_last_part($relation, '/');
 
         return Str::trim($namespaceRelation) !== Str::trim($namespaceModel);
     }
 
-    protected function buildImportRelation(string $relation, string $subFolder = ""): string
+    protected function buildImportRelation(string $relation, ?string $subFolder = null): string
     {
         $importBase = $this->getOrCreateNamespace('models', $subFolder);
         $normalizedRelation = Str::replace('/', '\\', Str::trim($relation, '/'));
