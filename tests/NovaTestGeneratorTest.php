@@ -253,7 +253,7 @@ class NovaTestGeneratorTest extends TestCase
             ->setMetaData(['resource_name' => 'Resources\WelcomeBonusDraftResource'])
             ->generate();
 
-        $this->assertGeneratedFileEquals('another_created_resource_test.php', 'tests/NovaWelcomeBonusDraftResourceTest.php', true);
+        $this->assertGeneratedFileEquals('another_created_resource_test.php', 'tests/NovaWelcomeBonusDraftResourceTest.php');
         $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusDraftResourceTest/nova_welcome_bonus_dump.sql');
         $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusDraftResourceTest/create_welcome_bonus_request.json');
         $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusDraftResourceTest/create_welcome_bonus_response.json');
