@@ -20,7 +20,7 @@ class PostResource extends Resource
 
     public static function label(): string
     {
-        return 'WelcomeBonus';
+        return 'Post';
     }
 
     public function fields(NovaRequest $request): array
@@ -52,7 +52,6 @@ class PostResource extends Resource
     {
         return [
             new PublishPostAction,
-            new UnPublishPostAction,
             new UnPublishPostAction,
         ];
     }
