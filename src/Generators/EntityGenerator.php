@@ -36,7 +36,7 @@ abstract class EntityGenerator
 
     protected $paths = [];
     protected $model;
-    protected $modelSubFolder;
+    protected $modelSubFolder = null;
     protected $fields;
     protected $relations = [];
     protected $crudOptions;
@@ -58,7 +58,9 @@ abstract class EntityGenerator
 
     public function setModelSubFolder(string $entityNamespace): self
     {
-        $this->modelSubFolder = when($entityNamespace, fn () => Str::finish($entityNamespace, '/'));
+        if ($entityNamespace) {
+             $this->modelSubFolder = $entityNamespace;
+        }
 
         return $this;
     }
@@ -92,7 +94,7 @@ abstract class EntityGenerator
 
     protected function getOrCreateNamespace(string $configPath, ?string $subFolder = null): string
     {
-        $path = when($subFolder, fn () => Str::finish($this->paths[$configPath], '/') . Str::trim($subFolder, '/'), $this->paths[$configPath]);
+        $path = when($subFolder, fn () => Str::finish($this->paths[$configPath], '/') . $subFolder, $this->paths[$configPath]);
         
         $pathParts = explode('/', $path);
 
@@ -130,16 +132,20 @@ abstract class EntityGenerator
 
     abstract public function generate(): void;
 
-    protected function classExists($path, $name): bool
+    protected function classExists($path, $name, $entityFolder = false): bool
     {
         $entitiesPath = $this->paths[$path];
+
+        if ($entityFolder) {
+            $entitiesPath = $entitiesPath . "/{$entityFolder}";
+        }
 
         $classPath = base_path("{$entitiesPath}/{$name}.php");
 
         return file_exists($classPath);
     }
 
-    protected function saveClass($path, $name, $content, $additionalEntityFolder = false): string
+    protected function saveClass($path, $name, $content, $entityFolder = false): string
     {
         $entitiesPath = base_path($this->paths[$path]);
 
@@ -149,8 +155,8 @@ abstract class EntityGenerator
             $entitiesPath = implode('/', $pathParts);
         }
 
-        if ($additionalEntityFolder) {
-            $entitiesPath = $entitiesPath . "/{$additionalEntityFolder}";
+        if ($entityFolder) {
+            $entitiesPath = $entitiesPath . "/{$entityFolder}";
         }
 
         $classPath = "{$entitiesPath}/{$name}.php";
@@ -200,8 +206,8 @@ abstract class EntityGenerator
         if (!class_exists($modelClass)) {
             $this->throwFailureException(
                 exceptionClass: ClassNotExistsException::class,
-                failureMessage: "Cannot create {$creatableClass} cause {$this->modelSubFolder}{$this->model} Model does not exists.",
-                recommendedMessage: "Create a {$this->modelSubFolder}{$this->model} Model by himself or run command 'php artisan make:entity {$this->modelSubFolder}{$this->model} --only-model'.",
+                failureMessage: "Cannot create {$creatableClass} cause {$this->model} Model does not exists.",
+                recommendedMessage: "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'.",
             );
         }
 

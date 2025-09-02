@@ -21,7 +21,7 @@ class MigrationGenerator extends EntityGenerator
             'class' => $this->getPluralName($this->model),
             'entity' => $this->model,
             'entities' => $entities,
-            'relations' => $this->getRelations(),
+            'relations' => $this->prepareRelations(),
             'fields' => $this->fields,
             'table' => $this->generateTable($this->fields)
         ]);
@@ -33,14 +33,14 @@ class MigrationGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Migration: {$entities}_create_table"));
     }
 
-    protected function getRelations(): array
+    protected function prepareRelations(): array
     {
         $result = [];
 
         foreach ($this->relations->toArray() as $relationType => $relations) {
             $result[$relationType] = array_map(
-                fn($relation) => Str::afterLast($relation, '/'),
-                $relations
+                fn ($relation) => Str::afterLast($relation, '/'),
+                $relations,
             );
         }
 

@@ -60,7 +60,7 @@ class SeederGenerator extends EntityGenerator
     {
         $content = "<?php\n\n" . $this->getStub('seeder', [
             'entity' => $this->model,
-            'relations' => $this->getRelations(),
+            'relations' => $this->prepareRelations(),
             'namespace' => $this->getOrCreateNamespace('seeders'),
             'factoryNamespace' => $this->getOrCreateNamespace('factories'),
         ]) . "\n";
@@ -74,7 +74,7 @@ class SeederGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function getRelations(): array
+    protected function prepareRelations(): array
     {
         $result = [];
 

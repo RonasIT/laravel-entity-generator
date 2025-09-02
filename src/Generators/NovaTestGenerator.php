@@ -49,7 +49,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
         $fileContent = $this->getStub('nova_test', [
             'url_path' => Str::kebab($this->model) . '-resources',
-            'namespace' => $this->getOrCreateNamespace('models', $this->modelSubFolder),
+            'entity_namespace' => $this->getOrCreateNamespace('models', $this->modelSubFolder),
             'entity' => $this->model,
             'entities' => $this->getPluralName($this->model),
             'snake_entity' => Str::snake($this->model),
@@ -109,9 +109,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function doesNovaResourceExists(): bool
     {
+        $subFolder = $this->modelSubFolder ? $this->modelSubFolder . '/' : '';
+
         $possibleNovaModelNames = [
             "{$this->model}NovaResource",
-            "{$this->modelSubFolder}{$this->model}Resource",
+            "{$subFolder}{$this->model}Resource",
             $this->model
         ];
 

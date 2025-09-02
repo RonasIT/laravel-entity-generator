@@ -159,7 +159,7 @@ class ModelGeneratorTest extends TestCase
 
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
-            message: 'Created a new Model: Forum/Post',
+            message: 'Created a new Model: Post',
         );
     }
 
@@ -173,7 +173,7 @@ class ModelGeneratorTest extends TestCase
 
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
-            message: 'Created a new Model: Forum/Post',
+            message: 'Created a new Model: Post',
         );
     }
 

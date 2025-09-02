@@ -1,6 +1,6 @@
 namespace App\Tests;
 
-use {{$namespace}}\{{$entity}};
+use {{$entity_namespace}}\{{$entity}};
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
