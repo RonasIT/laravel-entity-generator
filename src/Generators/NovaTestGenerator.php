@@ -41,7 +41,19 @@ class NovaTestGenerator extends AbstractTestsGenerator
                 );
             }
 
-            $this->isNovaResourceExists();
+            $resource = $this->resourceName ?? $this->getNovaResource();
+
+            $this->shortNovaResourceName = Str::afterLast($resource, '\\');
+
+            $this->fullNovaResourcePath = "App\\Nova\\{$resource}";
+
+            if (!class_exists($this->fullNovaResourcePath)) {
+                $this->throwFailureException(
+                    ClassNotExistsException::class,
+                    "Cannot create Nova{$this->shortNovaResourceName}Test cause {$this->resourceName} Nova resource does not exist.",
+                    "Create {$this->resourceName} Nova resource."
+                );
+            }
 
             if ($this->classExists('nova', "Nova{$this->shortNovaResourceName}Test")) {
                 $this->throwFailureException(
@@ -132,78 +144,59 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return true;
     }
 
-    protected function isNovaResourceExists(): void
+    protected function getNovaResource(): string
     {
-        $resource = $this->getNovaResource();
+        $commonResources = $this->getCommonNovaResources();
 
-        $this->shortNovaResourceName = Str::afterLast($resource, '\\');
-        $this->fullNovaResourcePath = "App\\Nova\\{$resource}";
+        if (count($commonResources) > 1) {
+            $commonResources = implode(', ', $commonResources);
 
-        if (!class_exists($this->fullNovaResourcePath)) {
             $this->throwFailureException(
-                ClassNotExistsException::class,
-                "Cannot create Nova{$this->shortNovaResourceName}Test cause {$this->resourceName} Nova resource does not exist.",
-                "Create {$this->resourceName} Nova resource."
+                EntityCreateException::class,
+                "Cannot create Nova{$this->model}Resource Test cause was found a lot of suitable resources: $commonResources",
+                "Please, use --resource-name option"
             );
         }
+
+        return array_pop($commonResources);
     }
 
-    protected function getNovaResource(): ?string
-    {
-        if (!empty($this->resourceName)) {
-            return $this->resourceName;
-        } else {
-            $commonResources = $this->getCommonNovaResources();
-
-            if (count($commonResources) > 1) {
-                $commonResources = implode(', ', $commonResources);
-
-                $this->throwFailureException(
-                    EntityCreateException::class,
-                    "Cannot create Nova{$this->model}Resource Test cause was found a lot of suitable resources: $commonResources",
-                    "Please, use --resource-name option"
-                );
-            }
-
-            return $commonResources[0];
-        }
-    }
-
-    protected function allCommonNovaResources(): Generator
+    protected function getNovaFiles(): Generator
     {
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->novaPath));
 
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
-                $relativePath = Str::after($file->getPathname(), $this->novaPath . DIRECTORY_SEPARATOR);
-
-                $class = str_replace(['/', '.php'], ['\\', ''], $relativePath);
-
-                if ($this->isValidCommonResourceCheck($class)) {
-                    yield $class;
-                }
+                yield $file;
             }
         }
     }
 
     protected function getCommonNovaResources(): array
     {
-        $commonNovaResources = $this->allCommonNovaResources();
-
         $resources = [];
 
-        foreach ($commonNovaResources as $resource) {
-            $resources[] = $resource;
+        foreach ($this->getNovaFiles() as $file) {
+            $relativePath = Str::after($file->getPathname(), $this->novaPath . DIRECTORY_SEPARATOR);
+
+            $class = str_replace(['/', '.php'], ['\\', ''], $relativePath);
+
+            if ($this->isNovaResource($class) && $this->isResourceNameContainModel($class)) {
+                $resources[] = $class;
+            }
         }
 
         return $resources;
     }
 
-    protected function isValidCommonResourceCheck(string $resource)
+    protected function isNovaResource(string $resource): bool
     {
-        $isContainModel = Str::afterLast(str_replace('Resource', '', $resource), '\\') === $this->model;
+        return is_subclass_of("App\\Nova\\{$resource}", "Laravel\\Nova\\Resource");
+    }
 
-        return is_subclass_of("App\\Nova\\{$resource}", "Laravel\\Nova\\Resource") && $isContainModel;
+    protected function isResourceNameContainModel(string $resource): bool
+    {
+        return Str::afterLast(str_replace('Resource', '', $resource), '\\') === $this->model;
     }
 
     protected function collectFilters(): array
