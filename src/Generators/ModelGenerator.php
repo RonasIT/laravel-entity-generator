@@ -77,7 +77,7 @@ class ModelGenerator extends EntityGenerator
 
                 if ($this->shouldImportRelation($relation)) {
                     $importRelation = $this->buildImportRelation($this->model, $this->modelSubFolder);
-                    $content = $this->insertImport($content, $importRelation);
+                    $this->insertImport($content, $importRelation);
                 }
 
                 $newRelation = $this->getStub('relation', [
@@ -105,7 +105,7 @@ class ModelGenerator extends EntityGenerator
         $import = "use {$import};";
 
         if (!Str::contains($classContent, $import)) {
-            preg_replace('/(namespace\s+[^;]+;\s*)/', "$1{$import}\n", $classContent, 1);
+            $classContent = preg_replace('/(namespace\s+[^;]+;\s*)/', "$1{$import}\n", $classContent, 1);
         }
     }
 
@@ -189,7 +189,7 @@ class ModelGenerator extends EntityGenerator
     protected function buildImportRelation(string $relation, ?string $subFolder = null): string
     {
         $importBase = $this->getOrCreateNamespace('models', $subFolder);
-        $normalizedRelation = Str::replace('/', '\\', $relation);
+        $normalizedRelation = Str::replace('/', '\\', Str::trim($relation, '/'));
 
         return "{$importBase}\\{$normalizedRelation}";
     }
