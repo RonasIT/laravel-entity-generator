@@ -18,6 +18,7 @@ class ModelGenerator extends EntityGenerator
     public function generate(): void
     {
         if ($this->classExists('models', $this->model, $this->modelSubFolder)) {
+            // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/
             $this->throwFailureException(
                 exceptionClass: ClassAlreadyExistsException::class,
                 failureMessage: "Cannot create {$this->model} Model cause {$this->model} Model already exists.",
@@ -66,6 +67,7 @@ class ModelGenerator extends EntityGenerator
         foreach ($this->relations as $type => $relationsByType) {
             foreach ($relationsByType as $relation) {
                 if (!$this->classExists('models', $relation)) {
+                    // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/
                     $this->throwFailureException(
                         exceptionClass: ClassNotExistsException::class,
                         failureMessage: "Cannot create {$this->model} Model cause relation model {$relation} does not exist.",
@@ -181,15 +183,15 @@ class ModelGenerator extends EntityGenerator
 
     protected function shouldImportRelation(string $relation): bool
     {
-        list(, $namespaceRelation) = extract_last_part($relation, '/');
+        $namespaceRelation = when(Str::contains($relation, '/'), fn () => Str::beforeLast($relation, '/'), '');
 
-        return Str::trim($namespaceRelation) != $this->modelSubFolder;
+        return $namespaceRelation != $this->modelSubFolder;
     }
 
     protected function buildImportRelation(string $relation, ?string $subFolder = null): string
     {
         $importBase = $this->getOrCreateNamespace('models', $subFolder);
-        $normalizedRelation = Str::replace('/', '\\', Str::trim($relation, '/'));
+        $normalizedRelation = Str::replace('/', '\\', $relation, '/');
 
         return "{$importBase}\\{$normalizedRelation}";
     }

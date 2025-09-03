@@ -236,10 +236,18 @@ class MakeEntityCommand extends Command
     protected function getRelations()
     {
         return new RelationsDTO(
-            hasOne: $this->option('has-one'),
-            hasMany: $this->option('has-many'),
-            belongsTo: $this->option('belongs-to'),
-            belongsToMany: $this->option('belongs-to-many'),
+            hasOne: $this->trimRelations($this->option('has-one')),
+            hasMany: $this->trimRelations($this->option('has-many')),
+            belongsTo: $this->trimRelations($this->option('belongs-to')),
+            belongsToMany: $this->trimRelations($this->option('belongs-to-many')),
+        );
+    }
+
+    protected function trimRelations(array $relations): array
+    {
+        return array_map(
+            fn ($relation) => when(is_string($relation), fn ()  => Str::trim($relation)),
+            $relations
         );
     }
 

@@ -204,6 +204,7 @@ abstract class EntityGenerator
         $modelClass = $this->getModelClass($model);
 
         if (!class_exists($modelClass)) {
+            // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/
             $this->throwFailureException(
                 exceptionClass: ClassNotExistsException::class,
                 failureMessage: "Cannot create {$creatableClass} cause {$this->model} Model does not exists.",
