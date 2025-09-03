@@ -28,7 +28,7 @@ class FactoryGenerator extends EntityGenerator
     public function generate(): void
     {
         if (!$this->classExists('models', $this->model, $this->modelSubFolder)) {
-            // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/
+            // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
             $this->throwFailureException(
                 exceptionClass: ClassNotExistsException::class,
                 failureMessage: "Cannot create {$this->model}Factory cause {$this->model} Model does not exists.",

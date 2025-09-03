@@ -56,7 +56,7 @@ class NovaResourceGenerator extends EntityGenerator
     {
         if (class_exists(NovaServiceProvider::class)) {
             if (!$this->classExists('models', $this->model, $this->modelSubFolder)) {
-                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/
+                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create {$this->model} Nova resource cause {$this->model} Model does not exists.",
@@ -65,7 +65,7 @@ class NovaResourceGenerator extends EntityGenerator
             }
 
             if ($this->classExists('nova', "{$this->model}Resource")) {
-                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/
+                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
                 $this->throwFailureException(
                     ClassAlreadyExistsException::class,
                     "Cannot create {$this->model}Resource cause {$this->model}Resource already exists.",
