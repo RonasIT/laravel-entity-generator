@@ -56,11 +56,9 @@ abstract class EntityGenerator
         return $this;
     }
 
-    public function setModelSubFolder(string $entityNamespace): self
+    public function setModelSubFolder(string $folder): self
     {
-        if ($entityNamespace) {
-             $this->modelSubFolder = $entityNamespace;
-        }
+        $this->modelSubFolder = $folder;
 
         return $this;
     }
@@ -132,12 +130,12 @@ abstract class EntityGenerator
 
     abstract public function generate(): void;
 
-    protected function classExists($path, $name, $entityFolder = false): bool
+    protected function classExists(string $path, string $name, ?string $subFolder = null): bool
     {
         $entitiesPath = $this->paths[$path];
 
-        if ($entityFolder) {
-            $entitiesPath = $entitiesPath . "/{$entityFolder}";
+        if (!empty($subFolder)) {
+            $entitiesPath = "{$entitiesPath}/{$subFolder}";
         }
 
         $classPath = base_path("{$entitiesPath}/{$name}.php");
@@ -145,18 +143,16 @@ abstract class EntityGenerator
         return file_exists($classPath);
     }
 
-    protected function saveClass($path, $name, $content, $entityFolder = false): string
+    protected function saveClass($path, $name, $content, ?string $entityFolder = null): string
     {
         $entitiesPath = base_path($this->paths[$path]);
 
         if (Str::endsWith($entitiesPath, '.php')) {
-            $pathParts = explode('/', $entitiesPath);
-            array_pop($pathParts);
-            $entitiesPath = implode('/', $pathParts);
+            list(, $entitiesPath) = extract_last_part($entitiesPath, '/');
         }
 
-        if ($entityFolder) {
-            $entitiesPath = $entitiesPath . "/{$entityFolder}";
+        if (!empty($entityFolder)) {
+            $entitiesPath = "{$entitiesPath}/{$entityFolder}";
         }
 
         $classPath = "{$entitiesPath}/{$name}.php";
@@ -204,11 +200,10 @@ abstract class EntityGenerator
         $modelClass = $this->getModelClass($model);
 
         if (!class_exists($modelClass)) {
-            // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
             $this->throwFailureException(
                 exceptionClass: ClassNotExistsException::class,
-                failureMessage: "Cannot create {$creatableClass} cause {$this->model} Model does not exists.",
-                recommendedMessage: "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'.",
+                failureMessage: "Cannot create {$creatableClass} cause {$model} Model does not exists.",
+                recommendedMessage: "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'.",
             );
         }
 
@@ -251,7 +246,7 @@ abstract class EntityGenerator
 
     protected function getModelClass(string $model): string
     {
-        $modelNamespace = $this->getOrCreateNamespace('models', $this->getEntityNamespace($model));
+        $modelNamespace = $this->getOrCreateNamespace('models', $this->getEntitySubFolder($model));
 
         return "{$modelNamespace}\\{$model}";
     }
@@ -275,7 +270,7 @@ abstract class EntityGenerator
         return true;
     }
 
-    private function getEntityNamespace(string $model): ?string
+    private function getEntitySubFolder(string $model): ?string
     {
         return when($model === $this->model, $this->modelSubFolder);
     }

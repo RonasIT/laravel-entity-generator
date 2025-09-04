@@ -33,6 +33,7 @@ class MakeEntityCommand extends Command
 {
     private string $entityName;
     private string $entityNamespace;
+    private RelationsDTO $relations;
 
     const CRUD_OPTIONS = [
         'C', 'R', 'U', 'D'
@@ -122,6 +123,7 @@ class MakeEntityCommand extends Command
         $this->validateInput();
         $this->checkConfigs();
         $this->listenEvents();
+        $this->getRelations();
 
         try {
             $this->generate();
@@ -130,7 +132,7 @@ class MakeEntityCommand extends Command
         }
     }
 
-    protected function checkConfigs()
+    protected function checkConfigs(): void
     {
         $packageConfigPath = __DIR__ . '/../../config/entity-generator.php';
         $packageConfigs = require $packageConfigPath;
@@ -146,7 +148,7 @@ class MakeEntityCommand extends Command
         }
     }
 
-    protected function outputNewConfig($packageConfigs, $projectConfigs)
+    protected function outputNewConfig(array $packageConfigs, array $projectConfigs): array
     {
         $flattenedPackageConfigs = Arr::dot($packageConfigs);
         $flattenedProjectConfigs = Arr::dot($projectConfigs);
@@ -162,7 +164,7 @@ class MakeEntityCommand extends Command
         return array_undot($newConfig);
     }
 
-    protected function customVarExport($expression)
+    protected function customVarExport(array $expression): string
     {
         $defaultExpression = var_export($expression, true);
 
@@ -181,7 +183,7 @@ class MakeEntityCommand extends Command
         return preg_replace(array_keys($patterns), array_values($patterns), $defaultExpression);
     }
 
-    protected function classExists($path, $name)
+    protected function classExists(string $path, string $name): bool
     {
         $paths = config('entity-generator.paths');
 
@@ -192,7 +194,7 @@ class MakeEntityCommand extends Command
         return file_exists($classPath);
     }
 
-    protected function validateInput()
+    protected function validateInput(): void
     {
         $this->validateEntityName();
         $this->extractEntityNameAndPath();
@@ -200,7 +202,7 @@ class MakeEntityCommand extends Command
         $this->validateCrudOptions();
     }
 
-    protected function generate()
+    protected function generate(): void
     {
         foreach ($this->rules['only'] as $option => $generators) {
             if ($this->option($option)) {
@@ -217,25 +219,25 @@ class MakeEntityCommand extends Command
         }
     }
 
-    protected function runGeneration($generator)
+    protected function runGeneration(mixed $generator): void
     {
         app($generator)
             ->setModel($this->entityName)
             ->setModelSubFolder($this->entityNamespace)
             ->setFields($this->getFields())
-            ->setRelations($this->getRelations())
+            ->setRelations($this->relations)
             ->setCrudOptions($this->getCrudOptions())
             ->generate();
     }
 
-    protected function getCrudOptions()
+    protected function getCrudOptions(): array
     {
         return str_split($this->option('methods'));
     }
 
-    protected function getRelations()
+    protected function getRelations(): void
     {
-        return new RelationsDTO(
+        $this->relations = new RelationsDTO(
             hasOne: $this->trimRelations($this->option('has-one')),
             hasMany: $this->trimRelations($this->option('has-many')),
             belongsTo: $this->trimRelations($this->option('belongs-to')),
@@ -246,31 +248,31 @@ class MakeEntityCommand extends Command
     protected function trimRelations(array $relations): array
     {
         return array_map(
-            fn ($relation) => when(is_string($relation), fn () => Str::trim($relation, '/')),
-            $relations
+            callback: fn ($relation) => when(is_string($relation), fn () => Str::trim($relation, '/')),
+            array: $relations,
         );
     }
 
-    protected function getFields()
+    protected function getFields(): array
     {
         return Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
     }
 
-    protected function validateEntityName()
+    protected function validateEntityName(): void
     {
         if (!preg_match('/^[A-Za-z0-9\/]+$/', $this->argument('name'))) {
             throw new InvalidArgumentException("Invalid entity name {$this->argument('name')}");
         }
     }
 
-    protected function extractEntityNameAndPath()
+    protected function extractEntityNameAndPath(): void
     {
         list($this->entityName, $entityPath) = extract_last_part($this->argument('name'), '/');
 
         $this->entityNamespace = Str::trim($entityPath, '/');
     }
 
-    protected function validateCrudOptions()
+    protected function validateCrudOptions(): void
     {
         $crudOptions = $this->getCrudOptions();
 
@@ -281,7 +283,7 @@ class MakeEntityCommand extends Command
         }
     }
 
-    protected function validateOnlyApiOption()
+    protected function validateOnlyApiOption(): void
     {
         if ($this->option('only-api')) {
             $modelName = Str::studly($this->argument('name'));
