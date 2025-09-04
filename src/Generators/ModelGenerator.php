@@ -191,7 +191,7 @@ class ModelGenerator extends EntityGenerator
     protected function buildImportRelation(string $relation, ?string $subFolder = null): string
     {
         $importBase = $this->getOrCreateNamespace('models', $subFolder);
-        $normalizedRelation = Str::replace('/', '\\', $relation, '/');
+        $normalizedRelation = Str::replace('/', '\\', $relation);
 
         return "{$importBase}\\{$normalizedRelation}";
     }
