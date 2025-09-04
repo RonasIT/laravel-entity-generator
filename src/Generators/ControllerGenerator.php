@@ -12,7 +12,6 @@ class ControllerGenerator extends EntityGenerator
     public function generate(): void
     {
         if ($this->classExists('controllers', "{$this->model}Controller")) {
-            // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
             $this->throwFailureException(
                 ClassAlreadyExistsException::class,
                 "Cannot create {$this->model}Controller cause {$this->model}Controller already exists.",
@@ -21,7 +20,6 @@ class ControllerGenerator extends EntityGenerator
         }
 
         if (!$this->classExists('services', "{$this->model}Service")) {
-            // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
             $this->throwFailureException(
                 ClassNotExistsException::class,
                 "Cannot create {$this->model}Controller cause {$this->model}Service does not exists.",
