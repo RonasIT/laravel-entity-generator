@@ -246,7 +246,7 @@ class MakeEntityCommand extends Command
     protected function trimRelations(array $relations): array
     {
         return array_map(
-            fn ($relation) => when(is_string($relation), fn ()  => Str::trim($relation, '/')),
+            fn ($relation) => when(is_string($relation), fn () => Str::trim($relation, '/')),
             $relations
         );
     }
