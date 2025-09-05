@@ -12,7 +12,6 @@ use RonasIT\Support\Exceptions\EntityCreateException;
 use Generator;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
-use Laravel\Nova\Resource;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
