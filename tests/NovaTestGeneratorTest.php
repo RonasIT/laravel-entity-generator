@@ -10,6 +10,7 @@ use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 use Laravel\Nova\NovaServiceProvider;
+use RonasIT\Support\Exceptions\EntityCreateException;
 
 class NovaTestGeneratorTest extends TestCase
 {
@@ -27,9 +28,8 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockNovaServiceProviderExists();
 
         $this->mockClass(NovaTestGenerator::class, [
-            $this->classExistsMethodCall(['nova', 'PostNovaResource'], false),
-            $this->classExistsMethodCall(['nova', 'PostResource'], false),
-            $this->classExistsMethodCall(['nova', 'Post'], false),
+            $this->getCommonNovaResourcesMock([]),
+            $this->getCommonNovaResourcesMock([]),
         ]);
 
         $this->assertExceptionThrew(
@@ -42,13 +42,33 @@ class NovaTestGeneratorTest extends TestCase
             ->generate();
     }
 
+    public function testGenerateToManyResources(): void
+    {
+        $this->mockNovaServiceProviderExists();
+
+        $this->mockClass(NovaTestGenerator::class, [
+            $this->getCommonNovaResourcesMock([
+                1,
+                2,
+            ]),
+        ]);
+
+        $this->assertExceptionThrew(
+            className: EntityCreateException::class,
+            message: 'Cannot create NovaPostResource Test cause was found a lot of suitable resources Make test by yourself.',
+        );
+
+        app(NovaTestGenerator::class)
+            ->setModel('Post')
+            ->generate();
+    }
+
     public function testGenerateNovaTestAlreadyExists()
     {
         $this->mockNovaServiceProviderExists();
 
         $this->mockClass(NovaTestGenerator::class, [
-            $this->classExistsMethodCall(['nova', 'PostNovaResource']),
-            $this->classExistsMethodCall(['nova', 'NovaPostTest'])
+            $this->classExistsMethodCall(['nova', 'NovaPostTest']),
         ]);
 
         $this->assertExceptionThrew(

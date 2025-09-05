@@ -41,6 +41,15 @@ trait GeneratorMockTrait
         ];
     }
 
+    public function getCommonNovaResourcesMock(array $result): array
+    {
+        return [
+            'function' => 'getCommonNovaResources',
+            'arguments' => [],
+            'result' => $result,
+        ];
+    }
+
     public function nativeClassExistsMethodCall(array $arguments, bool $result = true): array
     {
         return [

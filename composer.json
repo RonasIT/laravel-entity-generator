@@ -35,7 +35,8 @@
     "psr-4": {
       "RonasIT\\Support\\Tests\\": "tests/",
       "RonasIT\\Support\\Tests\\Support\\": "tests/Support/",
-      "App\\Nova\\": "tests/Support/Nova/"
+      "App\\Nova\\": "tests/Support/Nova/",
+      "Laravel\\Nova\\": "tests/Support/NovaResource"
     },
     "files": [
       "tests/TestCase.php"

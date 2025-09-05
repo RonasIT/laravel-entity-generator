@@ -12,7 +12,7 @@ use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\TextField;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
 use Laravel\Nova\Resource;
 
-class WelcomeBonusResource extends Resource
+class PostResource extends Resource
 {
     public static $title = 'name';
 
@@ -20,7 +20,7 @@ class WelcomeBonusResource extends Resource
 
     public static function label(): string
     {
-        return 'WelcomeBonus';
+        return 'Post';
     }
 
     public function fields(NovaRequest $request): array
@@ -52,7 +52,6 @@ class WelcomeBonusResource extends Resource
     {
         return [
             new PublishPostAction,
-            new UnPublishPostAction,
             new UnPublishPostAction,
         ];
     }
