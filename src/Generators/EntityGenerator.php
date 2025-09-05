@@ -90,6 +90,11 @@ abstract class EntityGenerator
         return $this;
     }
 
+    public function setMetaData(array $data): self
+    {
+        return $this;
+    }
+
     public function __construct()
     {
         $this->paths = config('entity-generator.paths');
