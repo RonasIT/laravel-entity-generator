@@ -38,10 +38,7 @@ class MigrationGenerator extends EntityGenerator
         $result = [];
 
         foreach ($this->relations->toArray() as $relationType => $relations) {
-            $result[$relationType] = array_map(
-                fn ($relation) => Str::afterLast($relation, '/'),
-                $relations,
-            );
+            $result[$relationType] = array_map(fn ($relation) => Str::afterLast($relation, '/'), $relations);
         }
 
         return $result;
