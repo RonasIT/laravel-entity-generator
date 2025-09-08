@@ -251,7 +251,9 @@ abstract class EntityGenerator
 
     protected function getModelClass(string $model): string
     {
-        $modelNamespace = $this->getOrCreateNamespace('models', $this->getEntitySubFolder($model));
+        $subfolder = when($model === $this->model, $this->modelSubFolder);
+
+        $modelNamespace = $this->getOrCreateNamespace('models', $subfolder);
 
         return "{$modelNamespace}\\{$model}";
     }
@@ -273,10 +275,5 @@ abstract class EntityGenerator
         }
 
         return true;
-    }
-
-    private function getEntitySubFolder(string $model): ?string
-    {
-        return when($model === $this->model, $this->modelSubFolder);
     }
 }
