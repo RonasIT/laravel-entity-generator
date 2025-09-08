@@ -113,7 +113,7 @@ class CommandTest extends TestCase
         $this
             ->artisan('make:entity Forum/Post --methods=CRUD')
             ->assertSuccessful();
-
+        
         $this->assertGeneratedFileEquals('subfolder/model.php', 'RonasIT/Support/Tests/Support/Command/Models/Forum/Post.php');
         $this->assertGeneratedFileEquals('subfolder/factory.php', 'RonasIT/Support/Tests/Support/Command/Factories/PostFactory.php');
         $this->assertGeneratedFileEquals('subfolder/repository.php', 'app/Repositories/PostRepository.php');
@@ -121,6 +121,26 @@ class CommandTest extends TestCase
         $this->assertGeneratedFileEquals('subfolder/test.php', 'tests/PostTest.php');
         $this->assertGeneratedFileEquals('subfolder/nova_resource.php', 'app/Nova/Forum/PostResource.php');
         $this->assertGeneratedFileEquals('subfolder/nova_test.php', 'tests/NovaPostTest.php');
+        $this->assertGeneratedFileEquals('migration.php', 'database/migrations/2016_10_20_110500_posts_create_table.php');
+        $this->assertGeneratedFileEquals('seeder.php', 'database/seeders/PostSeeder.php');
+        $this->assertGeneratedFileEquals('service.php', 'app/Services/PostService.php');
+        $this->assertGeneratedFileEquals('create_request.php', 'app/Http/Requests/Post/CreatePostRequest.php');
+        $this->assertGeneratedFileEquals('get_request.php', 'app/Http/Requests/Post/GetPostRequest.php');
+        $this->assertGeneratedFileEquals('search_request.php', 'app/Http/Requests/Post/SearchPostsRequest.php');
+        $this->assertGeneratedFileEquals('update_request.php', 'app/Http/Requests/Post/UpdatePostRequest.php');
+        $this->assertGeneratedFileEquals('delete_request.php', 'app/Http/Requests/Post/DeletePostRequest.php');
+        $this->assertGeneratedFileEquals('controller.php', 'app/Http/Controllers/PostController.php');
+        $this->assertGeneratedFileEquals('resource_collection.php', 'app/Http/Resources/Post/PostsCollectionResource.php');
+        $this->assertGeneratedFileEquals('routes.php', 'routes/api.php');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/PostTest/dump.sql');
+        $this->assertGeneratedFileEquals('create_request.json', 'tests/fixtures/PostTest/create_post_request.json');
+        $this->assertGeneratedFileEquals('create_response.json', 'tests/fixtures/PostTest/create_post_response.json');
+        $this->assertGeneratedFileEquals('update_request.json', 'tests/fixtures/PostTest/update_post_request.json');
+        $this->assertGeneratedFileEquals('validation.php', 'lang/en/validation.php');
+        $this->assertGeneratedFileEquals('nova_dump.php', 'tests/fixtures/NovaPostTest/nova_post_dump.sql');
+        $this->assertGeneratedFileEquals('create_request.json', 'tests/fixtures/NovaPostTest/create_post_request.json');
+        $this->assertGeneratedFileEquals('create_response.json', 'tests/fixtures/NovaPostTest/create_post_response.json');
+        $this->assertGeneratedFileEquals('update_request.json', 'tests/fixtures/NovaPostTest/update_post_request.json');
     }
 
     public function testMakeOnly()
