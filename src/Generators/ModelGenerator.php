@@ -185,7 +185,7 @@ class ModelGenerator extends EntityGenerator
     {
         $relationNamespace = when(Str::contains($relation, '/'), fn () => Str::beforeLast($relation, '/'), '');
 
-        return $relationNamespace !== $this->modelSubFolder;
+        return $relationNamespace != $this->modelSubFolder;
     }
 
     protected function generateClassNamespace(string $className, ?string $folder = null): string
