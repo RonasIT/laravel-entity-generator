@@ -238,7 +238,10 @@ abstract class EntityGenerator
 
     protected function generateRelativePath(string $namespace, string $basePath): string
     {
-        return Str::after($this->namespaceToPath($namespace), $this->namespaceToPath($basePath) . '/');
+        return Str::after(
+            subject: $this->namespaceToPath($namespace), 
+            search: $this->namespaceToPath($basePath) . '/',
+        );
     }
 
     protected function namespaceToPath(string $namespace): string
