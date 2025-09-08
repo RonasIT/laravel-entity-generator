@@ -276,4 +276,15 @@ abstract class EntityGenerator
 
         return true;
     }
+
+    protected function prepareRelations(): array
+    {
+        $result = [];
+
+        foreach ($this->relations as $relationType => $relations) {
+            $result[$relationType] = array_map(fn ($relation) => class_basename($relation), $relations);
+        }
+
+        return $result;
+    }
 }

@@ -111,7 +111,7 @@ class ModelGenerator extends EntityGenerator
         }
     }
 
-    public function prepareRelations(): array
+    protected function prepareRelations(): array
     {
         $result = [];
 
