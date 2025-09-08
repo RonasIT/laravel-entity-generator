@@ -36,7 +36,7 @@ class TranslationsGenerator extends EntityGenerator
     {
         $stubPath = config('entity-generator.stubs.validation');
 
-        $content = "<?php \n\n" . view($stubPath)->render();
+        $content = "<?php\n\n" . view($stubPath)->render();
 
         file_put_contents($this->translationPath, $content);
 

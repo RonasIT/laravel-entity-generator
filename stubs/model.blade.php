@@ -2,6 +2,9 @@ namespace {{$namespace}};
 
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
+@foreach($importRelations as $value)
+use {{$value}};
+@endforeach
 @if($hasCarbonField)
 use Carbon\Carbon;
 @endif

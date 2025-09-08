@@ -2,10 +2,10 @@ namespace App\Tests;
 
 @if ($hasModificationEndpoints && (!$withAuth || $entity !== 'User'))
 use RonasIT\Support\Testing\ModelTestState;
-use {{$modelsNamespace}}\{{$entity}};
+use {{$entityNamespace}}\{{$entity}};
 @endif
 @if ($withAuth)
-use {{$modelsNamespace}}\User;
+use {{$userNamespace}}\User;
 @endif
 @if (in_array('R', $options))
 use PHPUnit\Framework\Attributes\DataProvider;
