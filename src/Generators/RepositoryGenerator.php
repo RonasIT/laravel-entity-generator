@@ -9,7 +9,8 @@ class RepositoryGenerator extends EntityGenerator
 {
     public function generate(): void
     {
-        if (!$this->classExists('models', $this->model)) {
+        if (!$this->classExists('models', $this->model, $this->modelSubFolder)) {
+            // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
             $this->throwFailureException(
                 ClassNotExistsException::class,
                 "Cannot create {$this->model}Repository cause {$this->model} Model does not exists.",
@@ -24,7 +25,7 @@ class RepositoryGenerator extends EntityGenerator
         $repositoryContent = $this->getStub('repository', [
             'entity' => $this->model,
             'namespace' => $this->getOrCreateNamespace('repositories'),
-            'modelNamespace' => $this->getOrCreateNamespace('models')
+            'modelNamespace' => $this->getOrCreateNamespace('models', $this->modelSubFolder)
         ]);
 
         $this->saveClass('repositories', "{$this->model}Repository", $repositoryContent);

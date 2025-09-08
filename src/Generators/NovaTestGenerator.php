@@ -17,6 +17,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
     {
         if (class_exists(NovaServiceProvider::class)) {
             if (!$this->doesNovaResourceExists()) {
+                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create Nova{$this->model}Test cause {$this->model} Nova resource does not exist.",
@@ -49,6 +50,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
         $fileContent = $this->getStub('nova_test', [
             'url_path' => Str::kebab($this->model) . '-resources',
+            'entity_namespace' => $this->getOrCreateNamespace('models', $this->modelSubFolder),
             'entity' => $this->model,
             'entities' => $this->getPluralName($this->model),
             'snake_entity' => Str::snake($this->model),
@@ -108,9 +110,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function doesNovaResourceExists(): bool
     {
+        $subFolder = $this->modelSubFolder ? $this->modelSubFolder . '/' : '';
+
         $possibleNovaModelNames = [
             "{$this->model}NovaResource",
-            "{$this->model}Resource",
+            "{$subFolder}{$this->model}Resource",
             $this->model
         ];
 
