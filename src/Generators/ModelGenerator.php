@@ -78,8 +78,8 @@ class ModelGenerator extends EntityGenerator
                 $content = $this->getModelContent($relation);
 
                 if ($this->shouldImportRelation($relation)) {
-                    $importRelation = $this->buildImportRelation($this->model, $this->modelSubFolder);
-                    $this->insertImport($content, $importRelation);
+                    $namespace = $this->generateClassNamespace($this->model, $this->modelSubFolder);
+                    $this->insertImport($content, $namespace);
                 }
 
                 $newRelation = $this->getStub('relation', [
@@ -173,7 +173,7 @@ class ModelGenerator extends EntityGenerator
         foreach ($this->relations as $relations) {
             foreach ($relations as $relation) {
                 if ($this->shouldImportRelation($relation)) {
-                    $result[] = $this->buildImportRelation($relation);
+                    $result[] = $this->generateClassNamespace($relation);
                 }
             }
         }
@@ -183,17 +183,17 @@ class ModelGenerator extends EntityGenerator
 
     protected function shouldImportRelation(string $relation): bool
     {
-        $namespaceRelation = when(Str::contains($relation, '/'), fn () => Str::beforeLast($relation, '/'), '');
+        $relationNamespace = when(Str::contains($relation, '/'), fn () => Str::beforeLast($relation, '/'), '');
 
-        return $namespaceRelation != $this->modelSubFolder;
+        return $relationNamespace != $this->modelSubFolder;
     }
 
-    protected function buildImportRelation(string $relation, ?string $subFolder = null): string
+    protected function generateClassNamespace(string $className, ?string $folder = null): string
     {
-        $importBase = $this->getOrCreateNamespace('models', $subFolder);
-        $normalizedRelation = Str::replace('/', '\\', $relation);
+        $path = $this->getOrCreateNamespace('models', $folder);
+        $psrPath = Str::replace('/', '\\', $className);
 
-        return "{$importBase}\\{$normalizedRelation}";
+        return "{$path}\\{$psrPath}";
     }
 
     protected function generateAnnotationProperties(array $fields): array
