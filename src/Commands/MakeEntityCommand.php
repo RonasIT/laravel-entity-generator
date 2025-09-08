@@ -219,7 +219,7 @@ class MakeEntityCommand extends Command
         }
     }
 
-    protected function runGeneration(mixed $generator): void
+    protected function runGeneration(string $generator): void
     {
         app($generator)
             ->setModel($this->entityName)
@@ -248,7 +248,7 @@ class MakeEntityCommand extends Command
     protected function trimRelations(array $relations): array
     {
         return array_map(
-            callback: fn ($relation) => when(is_string($relation), fn () => Str::trim($relation, '/')),
+            callback: fn ($relation) => Str::trim($relation, '/'),
             array: $relations,
         );
     }
