@@ -123,7 +123,7 @@ class MakeEntityCommand extends Command
         $this->validateInput();
         $this->checkConfigs();
         $this->listenEvents();
-        $this->getRelations();
+        $this->parseRelations();
 
         try {
             $this->generate();
@@ -235,7 +235,7 @@ class MakeEntityCommand extends Command
         return str_split($this->option('methods'));
     }
 
-    protected function getRelations(): void
+    protected function parseRelations(): void
     {
         $this->relations = new RelationsDTO(
             hasOne: $this->trimRelations($this->option('has-one')),
