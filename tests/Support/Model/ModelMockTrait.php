@@ -28,6 +28,7 @@ trait ModelMockTrait
         $fileSystemMock->models = [
             'Comment.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
             'User.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
+            'Forum/Author.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
         ];
 
         $fileSystemMock->setStructure();
