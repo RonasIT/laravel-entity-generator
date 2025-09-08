@@ -228,7 +228,7 @@ abstract class EntityGenerator
                 continue;
             }
 
-            $relatedModels[] = $this->removePath(get_class($result->getRelated()), $this->paths['models']);
+            $relatedModels[] = $this->generateRelativePath(get_class($result->getRelated()), $this->paths['models']);
         }
 
         DB::rollBack();
@@ -236,12 +236,14 @@ abstract class EntityGenerator
         return $relatedModels;
     }
 
-    protected function removePath(string $string, string $prefix): string
+    protected function generateRelativePath(string $namespace, string $basePath): string
     {
-        $normalizedString = str_replace('\\', '/', $string);
-        $normalizedPrefix = str_replace('\\', '/', $prefix);
+        return Str::after($this->namespaceToPath($namespace), $this->namespaceToPath($basePath) . '/');
+    }
 
-        return Str::after($normalizedString, $normalizedPrefix . '/');
+    protected function namespaceToPath(string $namespace): string
+    {
+        return str_replace('\\', '/', $namespace);
     }
 
     protected function getModelClass(string $model): string
