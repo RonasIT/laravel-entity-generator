@@ -19,7 +19,11 @@ class ModelGenerator extends EntityGenerator
     public function generate(): void
     {
         if ($this->classExists('models', $this->model, $this->modelSubFolder)) {
-            throw new ResourceAlreadyExistsException($this->model, ResourceTypeEnum::Model, $this->modelSubFolder);
+            throw new ResourceAlreadyExistsException(
+                entityName: $this->model,
+                resourceType: ResourceTypeEnum::Model,
+                entityNamespace: $this->getOrCreateNamespace('models', $this->modelSubFolder),
+            );
         }
 
         if ($this->isStubExists('model') && (!$this->hasRelations() || $this->isStubExists('relation', 'model'))) {

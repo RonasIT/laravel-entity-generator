@@ -25,16 +25,17 @@ class ModelGeneratorTest extends TestCase
     public function testModelAlreadyExists()
     {
         $this->mockClass(ModelGenerator::class, [
-            $this->classExistsMethodCall(['models', 'Post']),
+            $this->classExistsMethodCall(['models', 'Post', 'Subfolder']),
         ]);
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: 'Cannot create model cause it already exists. Remove Post model and run command again.',
+            message: 'Cannot create App\Models\Subfolder model cause it already exists. Remove Post model and run command again.',
         );
 
         app(ModelGenerator::class)
             ->setModel('Post')
+            ->setModelSubFolder('Subfolder')
             ->generate();
     }
 

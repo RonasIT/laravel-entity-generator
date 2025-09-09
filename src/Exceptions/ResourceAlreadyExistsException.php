@@ -11,11 +11,11 @@ class ResourceAlreadyExistsException extends Exception
     public function __construct(
         protected string $entityName,
         protected ResourceTypeEnum $resourceType,
-        protected ?string $entityNamespace = '',
+        protected ?string $entityNamespace = null,
     ) {
         $formattedResourceType = $this->formatResourceType($resourceType);
 
-        parent::__construct("Cannot create {$entityNamespace}{$resourceType->value} cause it already exists. Remove {$entityName}{$formattedResourceType} and run command again.");
+        parent::__construct("Cannot create {$entityNamespace} {$resourceType->value} cause it already exists. Remove {$entityName}{$formattedResourceType} and run command again.");
     }
 
     protected function formatResourceType(ResourceTypeEnum $resourceType): string
