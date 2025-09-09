@@ -33,17 +33,6 @@ class MigrationGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Migration: {$entities}_create_table"));
     }
 
-    protected function prepareRelations(): array
-    {
-        $result = [];
-
-        foreach ($this->relations->toArray() as $relationType => $relations) {
-            $result[$relationType] = array_map(fn ($relation) => Str::afterLast($relation, '/'), $relations);
-        }
-
-        return $result;
-    }
-
     protected function isJson(string $typeName): bool
     {
         return $typeName === 'json';

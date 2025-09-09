@@ -177,6 +177,20 @@ class ModelGeneratorTest extends TestCase
         );
     }
 
+    public function testCreateWithSubFoldersRelations()
+    {
+        $this
+            ->artisan('make:entity Post -S title -A Forum/Author')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('new_model_with_subfolers_relations.php', 'app/Models/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
     public function testCreateModelWithoutDateFields()
     {
         $this

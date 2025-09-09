@@ -11,9 +11,4 @@ readonly class RelationsDTO
         public array $belongsToMany = [],
     ) {
     }
-
-    public function toArray(): array
-    {
-        return get_object_vars($this);
-    }
 }

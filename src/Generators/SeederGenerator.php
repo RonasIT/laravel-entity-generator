@@ -74,21 +74,6 @@ class SeederGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function prepareRelations(): array
-    {
-        $result = [];
-
-        foreach ($this->relations as $type => $relationsByType) {
-            $result[$type] = [];
-
-            foreach ($relationsByType as $relation) {
-                $result[$type][] = class_basename($relation);
-            }
-        }
-
-        return $result;
-    }
-
     protected function appendSeederToList(): void
     {
         $content = file_get_contents($this->databaseSeederPath);
