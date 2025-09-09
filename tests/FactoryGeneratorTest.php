@@ -8,9 +8,9 @@ use Illuminate\View\ViewException;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Tests\Support\Factory\FactoryMockTrait;
 
@@ -45,8 +45,8 @@ class FactoryGeneratorTest extends TestCase
     public function testFactoryClassExists()
     {
         $this->assertExceptionThrew(
-            className: ClassAlreadyExistsException::class,
-            message: "Cannot create PostFactory cause PostFactory already exists. Remove PostFactory.",
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create factory cause it already exists. Remove Post factory and run command again.",
         );
 
         $this->mockFactoryGenerator(

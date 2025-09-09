@@ -12,6 +12,6 @@ class ResourceAlreadyExistsException extends Exception
         protected ResourceTypeEnum $resourceType,
         protected ?string $entityNamespace = null,
     ) {
-        parent::__construct("Cannot create {$entityNamespace}{$resourceType->value} cause it already exists. Remove {$entityName}{$resourceType->value} and run command again.");
+        parent::__construct("Cannot create {$entityNamespace}{$resourceType->value} cause it already exists. Remove {$entityName} {$resourceType->value} and run command again.");
     }
 }

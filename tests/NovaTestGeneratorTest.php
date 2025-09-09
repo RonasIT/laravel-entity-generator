@@ -2,10 +2,10 @@
 
 namespace RonasIT\Support\Tests;
 
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
@@ -52,8 +52,8 @@ class NovaTestGeneratorTest extends TestCase
         ]);
 
         $this->assertExceptionThrew(
-            className: ClassAlreadyExistsException::class,
-            message: "Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.",
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create nova test cause it already exists. Remove Post nova test and run command again.",
         );
 
         app(NovaTestGenerator::class)

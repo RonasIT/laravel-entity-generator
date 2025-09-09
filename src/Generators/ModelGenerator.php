@@ -4,9 +4,10 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
+use RonasIT\Support\Enums\ResourceTypeEnum;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class ModelGenerator extends EntityGenerator
 {
@@ -18,12 +19,7 @@ class ModelGenerator extends EntityGenerator
     public function generate(): void
     {
         if ($this->classExists('models', $this->model, $this->modelSubFolder)) {
-            // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
-            $this->throwFailureException(
-                exceptionClass: ClassAlreadyExistsException::class,
-                failureMessage: "Cannot create {$this->model} Model cause {$this->model} Model already exists.",
-                recommendedMessage: "Remove {$this->model} Model.",
-            );
+            throw new ResourceAlreadyExistsException($this->model, ResourceTypeEnum::Model, $this->modelSubFolder);
         }
 
         if ($this->isStubExists('model') && (!$this->hasRelations() || $this->isStubExists('relation', 'model'))) {

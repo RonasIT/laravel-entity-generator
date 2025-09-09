@@ -6,9 +6,10 @@ use Doctrine\DBAL\DriverManager;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
+use RonasIT\Support\Enums\ResourceTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Support\CommandLineNovaField;
 use RonasIT\Support\Support\DatabaseNovaField;
 
@@ -65,12 +66,7 @@ class NovaResourceGenerator extends EntityGenerator
             }
 
             if ($this->classExists('nova', "{$this->model}Resource")) {
-                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
-                $this->throwFailureException(
-                    ClassAlreadyExistsException::class,
-                    "Cannot create {$this->model}Resource cause {$this->model}Resource already exists.",
-                    "Remove {$this->model}Resource."
-                );
+                throw new ResourceAlreadyExistsException($this->model, ResourceTypeEnum::NovaResource, $this->modelSubFolder);
             }
 
             if (!$this->isStubExists('nova_resource')) {

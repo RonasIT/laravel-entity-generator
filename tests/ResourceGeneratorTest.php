@@ -4,7 +4,7 @@ namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Generators\ResourceGenerator;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 
@@ -19,8 +19,8 @@ class ResourceGeneratorTest extends TestCase
         ]);
 
         $this->assertExceptionThrew(
-            className: ClassAlreadyExistsException::class,
-            message: 'Cannot create PostResource cause PostResource already exists. Remove PostResource.',
+            className: ResourceAlreadyExistsException::class,
+            message: 'Cannot create resource cause it already exists. Remove Post resource and run command again.',
         );
 
         app(ResourceGenerator::class)
@@ -36,9 +36,8 @@ class ResourceGeneratorTest extends TestCase
         ]);
 
         $this->assertExceptionThrew(
-            className: ClassAlreadyExistsException::class,
-            message: 'Cannot create PostsCollectionResource cause PostsCollectionResource already exists. '
-            . 'Remove PostsCollectionResource.',
+            className: ResourceAlreadyExistsException::class,
+            message: 'Cannot create collection resource cause it already exists. Remove Posts collection resource and run command again.',
         );
 
         app(ResourceGenerator::class)
