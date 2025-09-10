@@ -158,7 +158,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getModelFields($model): array
+    protected function getModelFields(string $model): array
     {
         $modelClass = $this->getModelClass($model);
 

@@ -2,13 +2,12 @@
 
 namespace App\Tests;
 
-use RonasIT\Support\Tests\Support\Command\Models\Post;
+use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
-use App\Nova\PostResource;
 
-class NovaPostResourceTest extends TestCase
+class NovaPostTest extends TestCase
 {
     use NovaTestTrait;
 
@@ -27,13 +26,13 @@ class NovaPostResourceTest extends TestCase
 
     public function testCreate(): void
     {
-        $data = $this->getJsonFixture('create_post_resource_request');
+        $data = $this->getJsonFixture('create_post_request');
 
-        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(PostResource::class, $data);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(Post::class, $data);
 
         $response->assertCreated();
 
-        $this->assertEqualsFixture('create_post_resource_response', $response->json());
+        $this->assertEqualsFixture('create_post_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
         self::$postState->assertChangesEqualsFixture('create_posts_state', true);
@@ -41,7 +40,7 @@ class NovaPostResourceTest extends TestCase
 
     public function testCreateNoAuth(): void
     {
-        $response = $this->novaCreateResourceAPICall(PostResource::class);
+        $response = $this->novaCreateResourceAPICall(Post::class);
 
         $response->assertUnauthorized();
 
@@ -50,7 +49,7 @@ class NovaPostResourceTest extends TestCase
 
     public function testCreateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(PostResource::class);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(Post::class);
 
         $response->assertUnprocessable();
 
@@ -62,9 +61,9 @@ class NovaPostResourceTest extends TestCase
 
     public function testUpdate(): void
     {
-        $data = $this->getJsonFixture('update_post_resource_request');
+        $data = $this->getJsonFixture('update_post_request');
 
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(PostResource::class, 1, $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(Post::class, 1, $data);
 
         $response->assertNoContent();
 
@@ -74,23 +73,23 @@ class NovaPostResourceTest extends TestCase
 
     public function testUpdateNotExists(): void
     {
-        $data = $this->getJsonFixture('update_post_resource_request');
+        $data = $this->getJsonFixture('update_post_request');
 
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(PostResource::class, 0, $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(Post::class, 0, $data);
 
         $response->assertNotFound();
     }
 
     public function testUpdateNoAuth(): void
     {
-        $response = $this->novaUpdateResourceAPICall(PostResource::class, 1);
+        $response = $this->novaUpdateResourceAPICall(Post::class, 1);
 
         $response->assertUnauthorized();
     }
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(PostResource::class, 4);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(Post::class, 4);
 
         $response->assertUnprocessable();
 
@@ -100,7 +99,7 @@ class NovaPostResourceTest extends TestCase
 
     public function testGetUpdatableFields(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetUpdatableFieldsAPICall(PostResource::class, 1);
+        $response = $this->novaActingAs(self::$user)->novaGetUpdatableFieldsAPICall(Post::class, 1);
 
         $response->assertOk();
 
@@ -110,7 +109,7 @@ class NovaPostResourceTest extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(PostResource::class, [1, 2]);
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(Post::class, [1, 2]);
 
         $response->assertOk();
 
@@ -120,52 +119,52 @@ class NovaPostResourceTest extends TestCase
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(PostResource::class, [0]);
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(Post::class, [0]);
 
         $response->assertNotFound();
     }
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->novaDeleteResourceAPICall(PostResource::class, [1, 2]);
+        $response = $this->novaDeleteResourceAPICall(Post::class, [1, 2]);
 
         $response->assertUnauthorized();
     }
 
     public function testGet(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(PostResource::class, 1);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(Post::class, 1);
 
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('get_post_resource_response', $response->json(), true);
+        $this->assertEqualsFixture('get_post_response', $response->json(), true);
     }
 
     public function testGetNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(PostResource::class, 0);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(Post::class, 0);
 
         $response->assertNotFound();
     }
 
     public function testGetNoAuth(): void
     {
-        $response = $this->novaGetResourceAPICall(PostResource::class, 1);
+        $response = $this->novaGetResourceAPICall(Post::class, 1);
 
         $response->assertUnauthorized();
     }
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->novaSearchResourceAPICall(PostResource::class);
+        $response = $this->novaSearchResourceAPICall(Post::class);
 
         $response->assertUnauthorized();
     }
 
     public function testGetFieldsVisibleOnCreate(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetCreationFieldsAPICall(PostResource::class);
+        $response = $this->novaActingAs(self::$user)->novaGetCreationFieldsAPICall(Post::class);
 
         $response->assertOk();
 
@@ -173,16 +172,16 @@ class NovaPostResourceTest extends TestCase
         $this->assertEqualsFixture('get_fields_visible_on_create_response', $response->json(), true);
     }
 
-    public static function getRunPostResourceActionsData(): array
+    public static function getRunPostActionsData(): array
     {
         return [
         ];
     }
 
-    #[DataProvider('getRunPostResourceActionsData')]
-    public function testRunPostResourceActions($action, $request, $state): void
+    #[DataProvider('getRunPostActionsData')]
+    public function testRunPostActions($action, $request, $state): void
     {
-        $response = $this->novaActingAs(self::$user)->novaRunActionAPICall(PostResource::class, $action, $request);
+        $response = $this->novaActingAs(self::$user)->novaRunActionAPICall(Post::class, $action, $request);
 
         $response->assertOk();
 
@@ -192,16 +191,16 @@ class NovaPostResourceTest extends TestCase
         self::$postState->assertChangesEqualsFixture($state, true);
     }
 
-    public static function getPostResourceActionsData(): array
+    public static function getPostActionsData(): array
     {
         return [
         ];
     }
 
-    #[DataProvider('getPostResourceActionsData')]
-    public function testGetPostResourceActions(array $resources, string $fixture): void
+    #[DataProvider('getPostActionsData')]
+    public function testGetPostActions(array $resources, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetActionsAPICall(PostResource::class, $resources);
+        $response = $this->novaActingAs(self::$user)->novaGetActionsAPICall(Post::class, $resources);
 
         $response->assertOk();
 
@@ -209,16 +208,16 @@ class NovaPostResourceTest extends TestCase
         $this->assertEqualsFixture($fixture, $response->json(), true);
     }
 
-    public static function getPostResourceFiltersData(): array
+    public static function getPostFiltersData(): array
     {
         return [
         ];
     }
 
-    #[DataProvider('getPostResourceFiltersData')]
-    public function testFilterPostResource(array $request, string $fixture): void
+    #[DataProvider('getPostFiltersData')]
+    public function testFilterPost(array $request, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(PostResource::class, $request);
+        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(Post::class, $request);
 
         $response->assertOk();
 

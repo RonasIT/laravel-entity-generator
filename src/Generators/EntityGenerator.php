@@ -36,53 +36,48 @@ abstract class EntityGenerator
 
     protected $paths = [];
     protected $model;
+    protected $modelSubFolder = null;
     protected $fields;
     protected $relations = [];
     protected $crudOptions;
 
-    /**
-     * @param array $crudOptions
-     * @return $this
-     */
-    public function setCrudOptions($crudOptions)
+
+    public function setCrudOptions(array $crudOptions): self
     {
         $this->crudOptions = $crudOptions;
 
         return $this;
     }
 
-    /**
-     * @param string $model
-     * @return $this
-     */
-    public function setModel($model)
+    public function setModel(string $model): self
     {
         $this->model = Str::studly($model);
 
         return $this;
     }
 
-    /**
-     * @param array $fields
-     * @return $this
-     */
-    public function setFields($fields)
+    public function setModelSubFolder(string $folder): self
+    {
+        $this->modelSubFolder = $folder;
+
+        return $this;
+    }
+
+    public function setFields(array $fields): self
     {
         $this->fields = $fields;
 
         return $this;
     }
 
-    /**
-     * @param array $relations
-     * @return $this
-     */
-    public function setRelations(RelationsDTO $relations)
+    public function setRelations(RelationsDTO $relations): self
     {
         $this->relations = $relations;
 
         foreach ($relations->belongsTo as $field) {
-            $name = Str::snake($field) . '_id';
+            $relatedModel = Str::afterLast($field, '/');
+
+            $name = Str::snake($relatedModel) . '_id';
 
             $this->fields['integer-required'][] = $name;
         }
@@ -95,9 +90,10 @@ abstract class EntityGenerator
         $this->paths = config('entity-generator.paths');
     }
 
-    protected function getOrCreateNamespace(string $configPath): string
+    protected function getOrCreateNamespace(string $configPath, ?string $subFolder = null): string
     {
-        $path = $this->paths[$configPath];
+        $path = when($subFolder, fn () => Str::finish($this->paths[$configPath], '/') . $subFolder, $this->paths[$configPath]);
+        
         $pathParts = explode('/', $path);
 
         if (Str::endsWith(Arr::last($pathParts), '.php')) {
@@ -134,27 +130,29 @@ abstract class EntityGenerator
 
     abstract public function generate(): void;
 
-    protected function classExists($path, $name): bool
+    protected function classExists(string $path, string $name, ?string $subFolder = null): bool
     {
         $entitiesPath = $this->paths[$path];
+
+        if (!empty($subFolder)) {
+            $entitiesPath = "{$entitiesPath}/{$subFolder}";
+        }
 
         $classPath = base_path("{$entitiesPath}/{$name}.php");
 
         return file_exists($classPath);
     }
 
-    protected function saveClass($path, $name, $content, $additionalEntityFolder = false): string
+    protected function saveClass($path, $name, $content, ?string $entityFolder = null): string
     {
         $entitiesPath = base_path($this->paths[$path]);
 
         if (Str::endsWith($entitiesPath, '.php')) {
-            $pathParts = explode('/', $entitiesPath);
-            array_pop($pathParts);
-            $entitiesPath = implode('/', $pathParts);
+            list(, $entitiesPath) = extract_last_part($entitiesPath, '/');
         }
 
-        if ($additionalEntityFolder) {
-            $entitiesPath = $entitiesPath . "/{$additionalEntityFolder}";
+        if (!empty($entityFolder)) {
+            $entitiesPath = "{$entitiesPath}/{$entityFolder}";
         }
 
         $classPath = "{$entitiesPath}/{$name}.php";
@@ -230,7 +228,7 @@ abstract class EntityGenerator
                 continue;
             }
 
-            $relatedModels[] = class_basename(get_class($result->getRelated()));
+            $relatedModels[] = $this->generateRelativePath(get_class($result->getRelated()), $this->paths['models']);
         }
 
         DB::rollBack();
@@ -238,9 +236,24 @@ abstract class EntityGenerator
         return $relatedModels;
     }
 
+    protected function generateRelativePath(string $namespace, string $basePath): string
+    {
+        return Str::after(
+            subject: $this->namespaceToPath($namespace), 
+            search: $this->namespaceToPath($basePath) . '/',
+        );
+    }
+
+    protected function namespaceToPath(string $namespace): string
+    {
+        return str_replace('\\', '/', $namespace);
+    }
+
     protected function getModelClass(string $model): string
     {
-        $modelNamespace = $this->getOrCreateNamespace('models');
+        $subfolder = when($model === $this->model, $this->modelSubFolder);
+
+        $modelNamespace = $this->getOrCreateNamespace('models', $subfolder);
 
         return "{$modelNamespace}\\{$model}";
     }

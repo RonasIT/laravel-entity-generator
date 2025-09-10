@@ -34,6 +34,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             if (count($novaResources) > 1){
                 $foundedResources = implode(', ', $novaResources);
 
+                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
                 $this->throwFailureException(
                     EntityCreateException::class,
                     "Cannot create Nova{$this->model}Resource Test cause was found a lot of suitable resources: {$foundedResources}.",
@@ -76,6 +77,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
         $fileContent = $this->getStub('nova_test', [
             'url_path' => Str::kebab($this->model) . '-resources',
+            'entity_namespace' => $this->getOrCreateNamespace('models', $this->modelSubFolder),
             'entity' => $this->model,
             'resource' => $this->novaResourceName,
             'resource_path' => "App\\Nova\\{$this->novaResourceName}",
@@ -174,6 +176,25 @@ class NovaTestGenerator extends AbstractTestsGenerator
     protected function isFixtureNeeded($type): bool
     {
         return true;
+    }
+
+    protected function doesNovaResourceExists(): bool
+    {
+        $possibleNovaModelNames = [
+            "{$this->model}NovaResource",
+            "{$this->model}Resource",
+            $this->model
+        ];
+
+        foreach ($possibleNovaModelNames as $modelName) {
+            if ($this->classExists('nova', $modelName)) {
+                $this->novaModelName = $modelName;
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected function collectFilters(): array
