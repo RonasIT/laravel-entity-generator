@@ -27,11 +27,7 @@ trait CommandMockTrait
 
         $fileSystemMock->routes = ['api.php' => $this->mockPhpFileContent()];
         $fileSystemMock->config = ['entity-generator.php' => ''];
-        $fileSystemMock->novaModels = [
-            'PostResource.php' => file_get_contents(
-                'tests/fixtures/CommandTest/nova_resource.php'
-            )
-        ];
+
 
         $fileSystemMock->translations = [];
 

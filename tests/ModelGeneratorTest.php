@@ -11,7 +11,7 @@ use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Tests\Support\Model\ModelMockTrait;
 use Symfony\Component\Console\Exception\RuntimeException;
 
-class ModelGeneratorTest extends TestCase
+class  ModelGeneratorTest extends TestCase
 {
     use ModelMockTrait;
 

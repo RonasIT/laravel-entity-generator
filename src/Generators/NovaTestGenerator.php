@@ -19,9 +19,10 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     public function generate(): void
     {
-        $novaResources = $this->getCommonNovaResources();
 
         if (class_exists(NovaServiceProvider::class)) {
+            $novaResources = $this->getCommonNovaResources();
+
             if (count($novaResources) > 1){
                 $foundedResources = implode(', ', $novaResources);
 
@@ -103,7 +104,9 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function getNovaFiles(): Generator
     {
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->paths['nova']));
+        $novaPath = base_path($this->paths['nova']);
+
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($novaPath));
 
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {

@@ -211,7 +211,7 @@ class MakeEntityCommand extends Command
         }
     }
 
-    protected function runGeneration($generator)
+    protected function runGeneration($generator): void
     {
         app($generator)
             ->setModel($this->argument('name'))
