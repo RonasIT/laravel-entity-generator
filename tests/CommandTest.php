@@ -121,7 +121,7 @@ class CommandTest extends TestCase
         $this->assertGeneratedFileEquals('subfolder/resource.php', 'app/Http/Resources/Post/PostResource.php');
         $this->assertGeneratedFileEquals('subfolder/test.php', 'tests/PostTest.php');
         $this->assertGeneratedFileEquals('subfolder/nova_resource.php', 'app/Nova/Forum/PostResource.php');
-        $this->assertGeneratedFileEquals('subfolder/nova_test.php', 'tests/NovaPostTest.php');
+        $this->assertGeneratedFileEquals('subfolder/nova_test.php', 'tests/NovaPostResourceTest.php');
         $this->assertGeneratedFileEquals('migration.php', 'database/migrations/2016_10_20_110500_posts_create_table.php');
         $this->assertGeneratedFileEquals('seeder.php', 'database/seeders/PostSeeder.php');
         $this->assertGeneratedFileEquals('service.php', 'app/Services/PostService.php');

@@ -75,21 +75,23 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $actions = $this->getActions();
         $filters = $this->collectFilters();
 
+        $resourceClass = Str::afterLast($this->novaResourceName, '\\');
+
         $fileContent = $this->getStub('nova_test', [
             'url_path' => Str::kebab($this->model) . '-resources',
             'entity_namespace' => $this->getOrCreateNamespace('models', $this->modelSubFolder),
             'entity' => $this->model,
-            'resource' => $this->novaResourceName,
+            'resource' => $resourceClass,
             'resource_path' => "App\\Nova\\{$this->novaResourceName}",
             'entities' => $this->getPluralName($this->model),
-            'snake_resource' => Str::snake($this->novaResourceName),
+            'snake_resource' => Str::snake($resourceClass),
             'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
         ]);
 
-        $this->saveClass('tests', "Nova{$this->novaResourceName}Test", $fileContent);
+        $this->saveClass('tests', "Nova{$resourceClass}Test", $fileContent);
 
         event(new SuccessCreateMessage("Created a new Nova test: Nova{$this->novaResourceName}Test"));
     }
