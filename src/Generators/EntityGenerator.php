@@ -98,7 +98,6 @@ abstract class EntityGenerator
     protected function getOrCreateNamespace(string $configPath): string
     {
         $path = $this->paths[$configPath];
-
         $pathParts = explode('/', $path);
 
         if (Str::endsWith(Arr::last($pathParts), '.php')) {
