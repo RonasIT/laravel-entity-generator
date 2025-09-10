@@ -93,7 +93,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
         $this->saveClass('tests', "Nova{$resourceClass}Test", $fileContent);
 
-        event(new SuccessCreateMessage("Created a new Nova test: Nova{$this->novaResourceName}Test"));
+        event(new SuccessCreateMessage("Created a new Nova test: Nova{$resourceClass}Test"));
     }
 
     protected function getActions(): array
