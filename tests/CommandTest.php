@@ -45,7 +45,6 @@ class CommandTest extends TestCase
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
             'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
-            'entity-generator.paths.nova' => 'vfs://root/app/Nova',
         ]);
 
         Carbon::setTestNow('2016-10-20 11:05:00');

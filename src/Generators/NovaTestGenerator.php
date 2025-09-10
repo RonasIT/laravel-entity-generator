@@ -17,11 +17,20 @@ class NovaTestGenerator extends AbstractTestsGenerator
 {
     protected $novaResourceName;
 
+    protected string $novaPath;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->novaPath = base_path($this->paths['nova']);
+    }
+
     public function generate(): void
     {
-        $novaResources = $this->getCommonNovaResources();
-
         if (class_exists(NovaServiceProvider::class)) {
+            $novaResources = $this->getCommonNovaResources();
+
             if (count($novaResources) > 1){
                 $foundedResources = implode(', ', $novaResources);
 
@@ -103,7 +112,8 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function getNovaFiles(): Generator
     {
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->paths['nova']));
+
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->novaPath));
 
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
@@ -117,7 +127,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $resources = [];
 
         foreach ($this->getNovaFiles() as $file) {
-            $relativePath = Str::after($file->getPathname(), $this->paths['nova'] . DIRECTORY_SEPARATOR);
+            $relativePath = Str::after($file->getPathname(), $this->novaPath . DIRECTORY_SEPARATOR);
 
             $class = str_replace(['/', '.php'], ['\\', ''], $relativePath);
 

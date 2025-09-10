@@ -11,7 +11,6 @@ use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Exceptions\EntityCreateException;
-use Illuminate\Support\Facades\Config;
 
 class NovaTestGeneratorTest extends TestCase
 {
@@ -20,8 +19,6 @@ class NovaTestGeneratorTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-
-        Config::set('entity-generator.paths.nova', 'vfs://root/app/Nova');
 
         $this->mockFilesystem();
     }
