@@ -36,7 +36,7 @@
       "RonasIT\\Support\\Tests\\": "tests/",
       "RonasIT\\Support\\Tests\\Support\\": "tests/Support/",
       "App\\Nova\\": "tests/Support/Nova/",
-      "Laravel\\Nova\\": "tests/Support/NovaResource"
+      "Laravel\\Nova\\": "tests/Support/NovaResource/"
     },
     "files": [
       "tests/TestCase.php"

@@ -11,6 +11,7 @@ use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Exceptions\EntityCreateException;
+use Illuminate\Support\Facades\Config;
 
 class NovaTestGeneratorTest extends TestCase
 {
@@ -20,6 +21,8 @@ class NovaTestGeneratorTest extends TestCase
     {
         parent::setUp();
 
+        Config::set('entity-generator.paths.nova', 'vfs://root/app/Nova');
+
         $this->mockFilesystem();
     }
 
@@ -28,7 +31,6 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockNovaServiceProviderExists();
 
         $this->mockClass(NovaTestGenerator::class, [
-            $this->getCommonNovaResourcesMock([]),
             $this->getCommonNovaResourcesMock([]),
         ]);
 
@@ -48,14 +50,14 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockClass(NovaTestGenerator::class, [
             $this->getCommonNovaResourcesMock([
-                1,
-                2,
+                'BasePostResource',
+                'PublishPostResource',
             ]),
         ]);
 
         $this->assertExceptionThrew(
             className: EntityCreateException::class,
-            message: 'Cannot create NovaPostResource Test cause was found a lot of suitable resources Make test by yourself.',
+            message: 'Cannot create NovaPostResource Test cause was found a lot of suitable resources: BasePostResource, PublishPostResource. Make test by yourself.',
         );
 
         app(NovaTestGenerator::class)

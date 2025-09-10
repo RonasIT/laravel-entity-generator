@@ -15,35 +15,32 @@ use RecursiveDirectoryIterator;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
-    protected $novaModelName;
-
-    protected string $novaPath;
-
-    public function __construct()
-    {
-        $this->novaPath = app_path('Nova');
-
-        parent::__construct();
-    }
+    protected $novaResourceName;
 
     public function generate(): void
     {
+        $novaResources = $this->getCommonNovaResources();
+
         if (class_exists(NovaServiceProvider::class)) {
-            if (count($this->getCommonNovaResources()) > 1){
+            if (count($novaResources) > 1){
+                $foundedResources = implode(', ', $novaResources);
+
                 $this->throwFailureException(
                     EntityCreateException::class,
-                    "Cannot create Nova{$this->model}Resource Test cause was found a lot of suitable resources",
+                    "Cannot create Nova{$this->model}Resource Test cause was found a lot of suitable resources: {$foundedResources}.",
                     'Make test by yourself.'
                 );
             }
 
-            if (!$this->doesNovaResourceExists()) {
+            if (empty($novaResources)) {
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create Nova{$this->model}Test cause {$this->model} Nova resource does not exist.",
                     "Create {$this->model} Nova resource."
                 );
             }
+
+            $this->novaResourceName = array_pop($novaResources);
 
             if ($this->classExists('nova', "Nova{$this->model}Test")) {
                 $this->throwFailureException(
@@ -71,19 +68,19 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $fileContent = $this->getStub('nova_test', [
             'url_path' => Str::kebab($this->model) . '-resources',
             'entity' => $this->model,
-            'resource' => $this->novaModelName,
-            'resource_path' => "App\\Nova\\{$this->novaModelName}",
+            'resource' => $this->novaResourceName,
+            'resource_path' => "App\\Nova\\{$this->novaResourceName}",
             'entities' => $this->getPluralName($this->model),
-            'snake_resource' => Str::snake($this->novaModelName),
+            'snake_resource' => Str::snake($this->novaResourceName),
             'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
         ]);
 
-        $this->saveClass('tests', "Nova{$this->novaModelName}Test", $fileContent);
+        $this->saveClass('tests', "Nova{$this->novaResourceName}Test", $fileContent);
 
-        event(new SuccessCreateMessage("Created a new Nova test: Nova{$this->novaModelName}Test"));
+        event(new SuccessCreateMessage("Created a new Nova test: Nova{$this->novaResourceName}Test"));
     }
 
     protected function getActions(): array
@@ -106,7 +103,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function getNovaFiles(): Generator
     {
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->novaPath));
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->paths['nova']));
 
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
@@ -120,7 +117,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $resources = [];
 
         foreach ($this->getNovaFiles() as $file) {
-            $relativePath = Str::after($file->getPathname(), $this->novaPath . DIRECTORY_SEPARATOR);
+            $relativePath = Str::after($file->getPathname(), $this->paths['nova'] . DIRECTORY_SEPARATOR);
 
             $class = str_replace(['/', '.php'], ['\\', ''], $relativePath);
 
@@ -139,22 +136,24 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function isResourceNameContainModel(string $resource): bool
     {
-        return Str::afterLast(str_replace('Resource', '', $resource), '\\') === $this->model;
+        $resource = str_replace('Resource', '', $resource);
+
+        return Str::afterLast($resource, '\\') === $this->model;
     }
 
     protected function loadNovaActions()
     {
-        return app("\\App\\Nova\\{$this->novaModelName}")->actions(new NovaRequest());
+        return app("\\App\\Nova\\{$this->novaResourceName}")->actions(new NovaRequest());
     }
 
     protected function loadNovaFields()
     {
-        return app("\\App\\Nova\\{$this->novaModelName}")->fields(new NovaRequest());
+        return app("\\App\\Nova\\{$this->novaResourceName}")->fields(new NovaRequest());
     }
 
     protected function loadNovaFilters()
     {
-        return app("\\App\\Nova\\{$this->novaModelName}")->filters(new NovaRequest());
+        return app("\\App\\Nova\\{$this->novaResourceName}")->filters(new NovaRequest());
     }
 
     public function getTestClassName(): string
@@ -165,19 +164,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
     protected function isFixtureNeeded($type): bool
     {
         return true;
-    }
-
-    protected function doesNovaResourceExists(): bool
-    {
-        $commonResources = $this->getCommonNovaResources();
-
-        if (!empty($commonResources)){
-            $this->novaModelName = array_pop($commonResources);
-
-            return true;
-        }
-
-        return false;
     }
 
     protected function collectFilters(): array
