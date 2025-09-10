@@ -98,6 +98,11 @@ abstract class EntityGenerator
     protected function getOrCreateNamespace(string $configPath): string
     {
         $path = $this->paths[$configPath];
+
+        if (config('package.env') !== 'production' && Str::contains($path, 'vfs')) {
+            $path = Str::replaceFirst('vfs://root', '', $path);
+        }
+
         $pathParts = explode('/', $path);
 
         if (Str::endsWith(Arr::last($pathParts), '.php')) {

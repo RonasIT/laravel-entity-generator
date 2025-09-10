@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\Config;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Tests\Support\Command\CommandMockTrait;
 use RonasIT\Support\Tests\Support\Command\Models\Post;
-use App\Nova\PostResource;
 use UnexpectedValueException;
 
 class CommandTest extends TestCase
@@ -46,13 +45,14 @@ class CommandTest extends TestCase
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
             'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+            'entity-generator.paths.nova' => 'vfs://root/app/Nova',
         ]);
 
         Carbon::setTestNow('2016-10-20 11:05:00');
 
         $this->mockGenerator();
         $this->mockGettingModelInstance(new Post());
-        $this->app->instance(PostResource::class, new PostResource());
+
         $this->mockDBTransactionStartRollback(2);
 
         $this
