@@ -39,7 +39,7 @@ class {{ $entity }}Seeder extends Seeder
 @endforeach
 @foreach($relations['belongsToMany'] as $relation)
         $list = \{{ $factoryNamespace }}\{{ $relation }}Factory::new()->count(10)->create()->pluck('id');
-        ${{ strtolower($entity) }}->{{ strtolower($relation )}}s()->sync($list);
+        ${{ strtolower($entity) }}->{{ strtolower($relation) }}s()->sync($list);
 @endforeach
     }
 }
