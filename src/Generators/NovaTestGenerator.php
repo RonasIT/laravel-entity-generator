@@ -179,26 +179,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
     {
         return true;
     }
-
-    protected function doesNovaResourceExists(): bool
-    {
-        $possibleNovaModelNames = [
-            "{$this->model}NovaResource",
-            "{$this->model}Resource",
-            $this->model
-        ];
-
-        foreach ($possibleNovaModelNames as $modelName) {
-            if ($this->classExists('nova', $modelName)) {
-                $this->novaModelName = $modelName;
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
+    
     protected function collectFilters(): array
     {
         $filtersFromFields = $this->getFiltersFromFields();
