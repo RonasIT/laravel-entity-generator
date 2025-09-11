@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Nova;
+namespace App\Nova\Forum;
 
 use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Resource;
 
 class PostResource extends Resource
 {

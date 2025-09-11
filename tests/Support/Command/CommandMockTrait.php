@@ -25,8 +25,9 @@ trait CommandMockTrait
     {
         $fileSystemMock = new FileSystemMock();
 
-        $fileSystemMock->routes = [ 'api.php' => $this->mockPhpFileContent()];
+        $fileSystemMock->routes = ['api.php' => $this->mockPhpFileContent()];
         $fileSystemMock->config = ['entity-generator.php' => ''];
+        
         $fileSystemMock->translations = [];
 
         $fileSystemMock->setStructure();

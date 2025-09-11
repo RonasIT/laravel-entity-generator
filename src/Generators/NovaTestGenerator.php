@@ -8,22 +8,49 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\EntityCreateException;
+use Generator;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
-    protected $novaModelName;
+    protected $novaResourceName;
+
+    protected string $novaPath;
+
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->novaPath = base_path($this->paths['nova']);
+    }
 
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
-            if (!$this->doesNovaResourceExists()) {
+            $novaResources = $this->getCommonNovaResources();
+
+            if (count($novaResources) > 1){
+                $foundedResources = implode(', ', $novaResources);
+
                 // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
+                $this->throwFailureException(
+                    EntityCreateException::class,
+                    "Cannot create Nova{$this->model}Resource Test cause was found a lot of suitable resources: {$foundedResources}.",
+                    'Make test by yourself.'
+                );
+            }
+
+            if (empty($novaResources)) {
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create Nova{$this->model}Test cause {$this->model} Nova resource does not exist.",
                     "Create {$this->model} Nova resource."
                 );
             }
+
+            $this->novaResourceName = array_pop($novaResources);
 
             if ($this->classExists('nova', "Nova{$this->model}Test")) {
                 $this->throwFailureException(
@@ -48,21 +75,25 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $actions = $this->getActions();
         $filters = $this->collectFilters();
 
+        $resourceClass = Str::afterLast($this->novaResourceName, '\\');
+
         $fileContent = $this->getStub('nova_test', [
             'url_path' => Str::kebab($this->model) . '-resources',
             'entity_namespace' => $this->getOrCreateNamespace('models', $this->modelSubFolder),
             'entity' => $this->model,
+            'resource' => $resourceClass,
+            'resource_path' => "App\\Nova\\{$this->novaResourceName}",
             'entities' => $this->getPluralName($this->model),
-            'snake_entity' => Str::snake($this->model),
+            'snake_resource' => Str::snake($resourceClass),
             'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
         ]);
 
-        $this->saveClass('tests', "Nova{$this->model}Test", $fileContent);
+        $this->saveClass('tests', "Nova{$resourceClass}Test", $fileContent);
 
-        event(new SuccessCreateMessage("Created a new Nova test: Nova{$this->model}Test"));
+        event(new SuccessCreateMessage("Created a new Nova test: Nova{$resourceClass}Test"));
     }
 
     protected function getActions(): array
@@ -83,19 +114,60 @@ class NovaTestGenerator extends AbstractTestsGenerator
         }, $actions);
     }
 
+    protected function getNovaFiles(): Generator
+    {
+
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->novaPath));
+
+        foreach ($iterator as $file) {
+            if ($file->isFile() && $file->getExtension() === 'php') {
+                yield $file;
+            }
+        }
+    }
+
+    protected function getCommonNovaResources(): array
+    {
+        $resources = [];
+
+        foreach ($this->getNovaFiles() as $file) {
+            $relativePath = Str::after($file->getPathname(), $this->novaPath . DIRECTORY_SEPARATOR);
+
+            $class = str_replace(['/', '.php'], ['\\', ''], $relativePath);
+
+            if ($this->isNovaResource($class) && $this->isResourceNameContainModel($class)) {
+                $resources[] = $class;
+            }
+        }
+
+        return $resources;
+    }
+
+    protected function isNovaResource(string $resource): bool
+    {
+        return is_subclass_of("App\\Nova\\{$resource}", 'Laravel\\Nova\\Resource');
+    }
+
+    protected function isResourceNameContainModel(string $resource): bool
+    {
+        $resource = str_replace('Resource', '', $resource);
+
+        return Str::afterLast($resource, '\\') === $this->model;
+    }
+
     protected function loadNovaActions()
     {
-        return app("\\App\\Nova\\{$this->novaModelName}")->actions(new NovaRequest());
+        return app("\\App\\Nova\\{$this->novaResourceName}")->actions(new NovaRequest());
     }
 
     protected function loadNovaFields()
     {
-        return app("\\App\\Nova\\{$this->novaModelName}")->fields(new NovaRequest());
+        return app("\\App\\Nova\\{$this->novaResourceName}")->fields(new NovaRequest());
     }
 
     protected function loadNovaFilters()
     {
-        return app("\\App\\Nova\\{$this->novaModelName}")->filters(new NovaRequest());
+        return app("\\App\\Nova\\{$this->novaResourceName}")->filters(new NovaRequest());
     }
 
     public function getTestClassName(): string
@@ -107,28 +179,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
     {
         return true;
     }
-
-    protected function doesNovaResourceExists(): bool
-    {
-        $subFolder = $this->modelSubFolder ? $this->modelSubFolder . '/' : '';
-
-        $possibleNovaModelNames = [
-            "{$this->model}NovaResource",
-            "{$subFolder}{$this->model}Resource",
-            $this->model
-        ];
-
-        foreach ($possibleNovaModelNames as $modelName) {
-            if ($this->classExists('nova', $modelName)) {
-                $this->novaModelName = $modelName;
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
+    
     protected function collectFilters(): array
     {
         $filtersFromFields = $this->getFiltersFromFields();
