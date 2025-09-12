@@ -1,6 +1,6 @@
-namespace {{$namespace}};
+namespace {{ $namespace }};
 
-use {{$modelsNamespace}}\{{$entity}};
+use {{ $modelsNamespace }}\{{ $entity }};
 use Illuminate\Pagination\LengthAwarePaginator;
 use RonasIT\Support\Traits\EntityControlTrait;
 {{--
@@ -15,13 +15,13 @@ echo <<<PHPDOC
 
 PHPDOC;
 @endphp
-class {{$entity}}Service
+class {{ $entity }}Service
 {
     use EntityControlTrait;
 
     public function __construct()
     {
-        $this->setModel({{$entity}}::class);
+        $this->setModel({{ $entity }}::class);
     }
 
     public function search(array $filters = []): LengthAwarePaginator
@@ -29,7 +29,7 @@ class {{$entity}}Service
         return $this
             ->searchQuery($filters)
 @foreach($fields['simple_search'] as $field)
-            ->filterBy('{{$field}}')
+            ->filterBy('{{ $field }}')
 @endforeach
 @if(!empty($fields['search_by_query']))
             ->filterByQuery(['{!! implode('\', \'', $fields['search_by_query']) !!}'])
