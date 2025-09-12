@@ -90,7 +90,7 @@ class MakeEntityCommand extends Command
     protected $rules = [
         'only' => [
             'only-api' => [ResourceGenerator::class, ControllerGenerator::class, RequestsGenerator::class, TestsGenerator::class],
-            'only-entity' => [MigrationGenerator::class, ModelGenerator::class, ServiceGenerator::class, RepositoryGenerator::class, FactoryGenerator::class, SeederGenerator::class],
+            'only-entity' => [MigrationGenerator::class, ModelGenerator::class, RepositoryGenerator::class, ServiceGenerator::class, FactoryGenerator::class, SeederGenerator::class],
             'only-model' => [ModelGenerator::class],
             'only-repository' => [RepositoryGenerator::class],
             'only-service' => [ServiceGenerator::class],
