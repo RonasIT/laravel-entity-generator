@@ -1,6 +1,6 @@
-namespace {{$namespace}};
+namespace {{ $namespace }};
 
-use {{$modelNamespace}}\{{$entity}};
+use {{ $modelNamespace }}\{{ $entity }};
 @if(!empty($fields['json']))
 use Illuminate\Support\Arr;
 @endif
@@ -17,10 +17,10 @@ echo <<<PHPDOC
 
 PHPDOC;
 @endphp
-class {{$entity}}Repository extends BaseRepository
+class {{ $entity }}Repository extends BaseRepository
 {
     public function __construct()
     {
-        $this->setModel({{$entity}}::class);
+        $this->setModel({{ $entity }}::class);
     }
 }

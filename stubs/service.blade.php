@@ -1,6 +1,6 @@
-namespace {{$namespace}};
+namespace {{ $namespace }};
 
-use {{$repositoriesNamespace}}\{{$entity}}Repository;
+use {{ $repositoriesNamespace }}\{{ $entity }}Repository;
 use Illuminate\Support\Arr;
 use RonasIT\Support\Services\EntityService;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -17,11 +17,11 @@ echo <<<PHPDOC
 
 PHPDOC;
 @endphp
-class {{$entity}}Service extends EntityService
+class {{ $entity }}Service extends EntityService
 {
     public function __construct()
     {
-        $this->setRepository({{$entity}}Repository::class);
+        $this->setRepository({{ $entity }}Repository::class);
     }
 
     public function search(array $filters = []): LengthAwarePaginator
@@ -31,7 +31,7 @@ class {{$entity}}Service extends EntityService
             ->withCount(Arr::get($filters, 'with_count', []))
             ->searchQuery($filters)
 @foreach($fields['simple_search'] as $field)
-            ->filterBy('{{$field}}')
+            ->filterBy('{{ $field }}')
 @endforeach
 @if(!empty($fields['search_by_query']))
             ->filterByQuery(['{!! implode('\', \'', $fields['search_by_query']) !!}'])
