@@ -6,10 +6,11 @@ use Faker\Generator as Faker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use RonasIT\Support\Enums\ResourceTypeEnum;
 use RonasIT\Support\Exceptions\FakerMethodNotFoundException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class FactoryGenerator extends EntityGenerator
 {
@@ -37,11 +38,7 @@ class FactoryGenerator extends EntityGenerator
         }
 
         if ($this->classExists('factories', "{$this->model}Factory")) {
-            $this->throwFailureException(
-                exceptionClass: ClassAlreadyExistsException::class,
-                failureMessage: "Cannot create {$this->model}Factory cause {$this->model}Factory already exists.",
-                recommendedMessage: "Remove {$this->model}Factory.",
-            );
+            throw new ResourceAlreadyExistsException($this->model, ResourceTypeEnum::Factory);
         }
 
         if (!$this->isStubExists('factory')) {

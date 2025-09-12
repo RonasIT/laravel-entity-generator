@@ -3,20 +3,17 @@
 namespace RonasIT\Support\Generators;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
+use RonasIT\Support\Enums\ResourceTypeEnum;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class ControllerGenerator extends EntityGenerator
 {
     public function generate(): void
     {
         if ($this->classExists('controllers', "{$this->model}Controller")) {
-            $this->throwFailureException(
-                ClassAlreadyExistsException::class,
-                "Cannot create {$this->model}Controller cause {$this->model}Controller already exists.",
-                "Remove {$this->model}Controller.",
-            );
+            throw new ResourceAlreadyExistsException($this->model, ResourceTypeEnum::Controller);
         }
 
         if (!$this->classExists('services', "{$this->model}Service")) {
