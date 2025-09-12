@@ -30,7 +30,7 @@ class ControllerGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: 'Cannot create  controller cause it already exists. Remove PostController and run command again.',
+            message: 'Cannot create controller cause it already exists. Remove PostController and run command again.',
         );
 
         app(ControllerGenerator::class)
