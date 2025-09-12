@@ -12,7 +12,7 @@ use Carbon\Carbon;
 @if(!empty($anotationProperties))
 /**
 @foreach($anotationProperties as $key => $value)
- * @property {{ $value }} {{ $key }}
+ * @property {{ $value }} ${{ $key }}
 @endforeach
  */
 @else
