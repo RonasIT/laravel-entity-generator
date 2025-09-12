@@ -27,6 +27,8 @@ class ModelGenerator extends EntityGenerator
         }
 
         if ($this->isStubExists('model') && (!$this->hasRelations() || $this->isStubExists('relation', 'model'))) {
+            $this->createNamespace('models', $this->modelSubFolder);
+
             $this->prepareRelatedModels();
             $modelContent = $this->getNewModelContent();
 
@@ -48,7 +50,7 @@ class ModelGenerator extends EntityGenerator
             'fields' => Arr::collapse($this->fields),
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
-            'namespace' => $this->getOrCreateNamespace('models', $this->modelSubFolder),
+            'namespace' => $this->getNamespace('models', $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
             'anotationProperties' => $this->generateAnnotationProperties($this->fields),
             'hasCarbonField' => !empty($this->fields['timestamp']) || !empty($this->fields['timestamp-required']),
@@ -190,7 +192,7 @@ class ModelGenerator extends EntityGenerator
 
     protected function generateClassNamespace(string $className, ?string $folder = null): string
     {
-        $path = $this->getOrCreateNamespace('models', $folder);
+        $path = $this->getNamespace('models', $folder);
         $psrPath = Str::replace('/', '\\', $className);
 
         return "{$path}\\{$psrPath}";
