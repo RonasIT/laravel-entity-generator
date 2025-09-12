@@ -28,6 +28,8 @@ class SeederGenerator extends EntityGenerator
             mkdir($this->seedsPath);
         }
 
+        $this->createNamespace('seeders');
+
         if (!file_exists($this->databaseSeederPath)) {
             list($basePath, $databaseSeederDir) = extract_last_part($this->databaseSeederPath, '/');
 
@@ -46,7 +48,7 @@ class SeederGenerator extends EntityGenerator
     protected function createDatabaseSeeder(): void
     {
         $content = "<?php\n\n" . $this->getStub('database_empty_seeder', [
-            'namespace' => $this->getOrCreateNamespace('seeders')
+            'namespace' => $this->getNamespace('seeders')
         ]);
 
         file_put_contents($this->databaseSeederPath, $content);
@@ -61,8 +63,8 @@ class SeederGenerator extends EntityGenerator
         $content = "<?php\n\n" . $this->getStub('seeder', [
             'entity' => $this->model,
             'relations' => $this->prepareRelations(),
-            'namespace' => $this->getOrCreateNamespace('seeders'),
-            'factoryNamespace' => $this->getOrCreateNamespace('factories'),
+            'namespace' => $this->getNamespace('seeders'),
+            'factoryNamespace' => $this->getNamespace('factories'),
         ]) . "\n";
 
         $seederPath = "{$this->seedsPath}/{$this->model}Seeder.php";
