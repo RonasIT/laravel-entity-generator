@@ -24,21 +24,9 @@ class SeederGenerator extends EntityGenerator
             return;
         }
 
-        if (!file_exists($this->seedsPath)) {
-            mkdir($this->seedsPath);
-        }
-
         $this->createNamespace('seeders');
 
-        if (!file_exists($this->databaseSeederPath)) {
-            list($basePath, $databaseSeederDir) = extract_last_part($this->databaseSeederPath, '/');
-
-            if (!is_dir($databaseSeederDir)) {
-                mkdir($databaseSeederDir);
-            }
-
-            $this->createDatabaseSeeder();
-        }
+        $this->createDatabaseSeeder();
 
         $this->createEntitySeeder();
 
