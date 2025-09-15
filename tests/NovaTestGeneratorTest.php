@@ -33,7 +33,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
-            message: 'Cannot create NovaPostTest cause Post Nova resource does not exist. Create Post Nova resource.',
+            message: 'Cannot create NovaPostResourceTest cause Post Nova resource does not exist. Create Post Nova resource.',
         );
 
         app(NovaTestGenerator::class)
@@ -54,7 +54,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: EntityCreateException::class,
-            message: 'Cannot create NovaPostResource Test cause was found a lot of suitable resources: BasePostResource, PublishPostResource. Make test by yourself.',
+            message: 'Cannot create NovaPostResourceTest cause was found a lot of suitable resources: BasePostResource, PublishPostResource. Make test by yourself.',
         );
 
         app(NovaTestGenerator::class)
@@ -72,7 +72,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ClassAlreadyExistsException::class,
-            message: "Cannot create NovaPostTest cause it's already exist. Remove NovaPostTest.",
+            message: "Cannot create NovaPostResourceTest cause it's already exist. Remove NovaPostResourceTest.",
         );
 
         app(NovaTestGenerator::class)

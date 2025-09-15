@@ -37,7 +37,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
                 // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
                 $this->throwFailureException(
                     EntityCreateException::class,
-                    "Cannot create Nova{$this->model}Resource Test cause was found a lot of suitable resources: {$foundedResources}.",
+                    "Cannot create Nova{$this->model}ResourceTest cause was found a lot of suitable resources: {$foundedResources}.",
                     'Make test by yourself.'
                 );
             }
@@ -45,7 +45,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             if (empty($novaResources)) {
                 $this->throwFailureException(
                     ClassNotExistsException::class,
-                    "Cannot create Nova{$this->model}Test cause {$this->model} Nova resource does not exist.",
+                    "Cannot create Nova{$this->model}ResourceTest cause {$this->model} Nova resource does not exist.",
                     "Create {$this->model} Nova resource."
                 );
             }
@@ -55,8 +55,8 @@ class NovaTestGenerator extends AbstractTestsGenerator
             if ($this->classExists('nova', "Nova{$this->model}Test")) {
                 $this->throwFailureException(
                     ClassAlreadyExistsException::class,
-                    "Cannot create Nova{$this->model}Test cause it's already exist.",
-                    "Remove Nova{$this->model}Test."
+                    "Cannot create Nova{$this->model}ResourceTest cause it's already exist.",
+                    "Remove Nova{$this->model}ResourceTest."
                 );
             }
 
@@ -116,7 +116,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function getNovaFiles(): Generator
     {
-
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->novaPath));
 
         foreach ($iterator as $file) {
