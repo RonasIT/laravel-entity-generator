@@ -1,13 +1,13 @@
 @inject('requestsGenerator', 'RonasIT\Support\Generators\RequestsGenerator')
-namespace {{$namespace}}\{{$requestsFolder}};
+namespace {{ $namespace }}\{{ $requestsFolder }};
 
-use {{$namespace}}\Request;
+use {{ $namespace }}\Request;
 @if($needToValidate)
-use {{$servicesNamespace}}\{{$entity}}Service;
+use {{ $servicesNamespace }}\{{ $entity }}Service;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 @endif
 
-class {{$method}}{{$entity}}Request extends Request
+class {{ $method }}{{ $entity }}Request extends Request
 {
 @if($method !== $requestsGenerator::DELETE_METHOD)
     public function rules(): array
@@ -15,7 +15,7 @@ class {{$method}}{{$entity}}Request extends Request
 @if(!empty($parameters))
         return [
 @foreach($parameters as $parameter)
-            '{{$parameter['name']}}' => '{{implode('|', $parameter['rules'])}}',
+            '{{ $parameter['name'] }}' => '{{ implode('|', $parameter['rules']) }}',
 @endforeach
         ];
 @else
@@ -31,10 +31,10 @@ class {{$method}}{{$entity}}Request extends Request
     {
         parent::validateResolved();
 
-        $service = app({{$entity}}Service::class);
+        $service = app({{ $entity }}Service::class);
 
         if (!$service->exists($this->route('id'))) {
-            throw new NotFoundHttpException(__('validation.exceptions.not_found', ['entity' => '{{$entity}}']));
+            throw new NotFoundHttpException(__('validation.exceptions.not_found', ['entity' => '{{ $entity }}']));
         }
     }
 @endif

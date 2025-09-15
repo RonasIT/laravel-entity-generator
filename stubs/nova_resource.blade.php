@@ -1,16 +1,16 @@
-namespace {{$namespace}};
+namespace {{ $namespace }};
 
 @inject('str', 'Illuminate\Support\Str')
-use {{$modelNamespace}}\{{$model}};
+use {{ $modelNamespace }}\{{ $model }};
 use Illuminate\Http\Request;
 @foreach($types as $fieldType)
-use Laravel\Nova\Fields\{{$fieldType}};
+use Laravel\Nova\Fields\{{ $fieldType }};
 @endforeach
 use Laravel\Nova\Resource;
 
-class {{$model}}Resource extends Resource
+class {{ $model }}Resource extends Resource
 {
-    public static $model = {{$model}}::class;
+    public static $model = {{ $model }}::class;
 
     //TODO change field for the title if it required
     public static $title = 'name';
@@ -20,7 +20,7 @@ class {{$model}}Resource extends Resource
 
     public static function label(): string
     {
-        return '{{Str::plural($model)}}';
+        return '{{ Str::plural($model) }}';
     }
 
     public function fields(Request $request): array
@@ -28,7 +28,7 @@ class {{$model}}Resource extends Resource
         return [
 @foreach($fields as $fieldName => $fieldOptions)
 @php($name = ctype_upper($fieldName) ? $fieldName : Str::headline($fieldName))
-            {{$fieldOptions['type']}}::make('{{$name}}')
+            {{ $fieldOptions['type'] }}::make('{{ $name }}')
 @if($fieldOptions['is_required'])
                 ->required()
 @endif
