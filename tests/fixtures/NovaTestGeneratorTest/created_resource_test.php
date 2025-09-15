@@ -2,12 +2,13 @@
 
 namespace App\Tests;
 
-use App\Models\WelcomeBonus;
+use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
+use App\Nova\WelcomeBonusResource;
 
-class NovaWelcomeBonusTest extends TestCase
+class NovaWelcomeBonusResourceTest extends TestCase
 {
     use NovaTestTrait;
 
@@ -26,13 +27,13 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testCreate(): void
     {
-        $data = $this->getJsonFixture('create_welcome_bonus_request');
+        $data = $this->getJsonFixture('create_welcome_bonus_resource_request');
 
-        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(WelcomeBonus::class, $data);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(WelcomeBonusResource::class, $data);
 
         $response->assertCreated();
 
-        $this->assertEqualsFixture('create_welcome_bonus_response', $response->json());
+        $this->assertEqualsFixture('create_welcome_bonus_resource_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
         self::$welcomeBonusState->assertChangesEqualsFixture('create_welcome_bonuses_state', true);
@@ -40,7 +41,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testCreateNoAuth(): void
     {
-        $response = $this->novaCreateResourceAPICall(WelcomeBonus::class);
+        $response = $this->novaCreateResourceAPICall(WelcomeBonusResource::class);
 
         $response->assertUnauthorized();
 
@@ -49,7 +50,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testCreateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(WelcomeBonus::class);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(WelcomeBonusResource::class);
 
         $response->assertUnprocessable();
 
@@ -61,9 +62,9 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testUpdate(): void
     {
-        $data = $this->getJsonFixture('update_welcome_bonus_request');
+        $data = $this->getJsonFixture('update_welcome_bonus_resource_request');
 
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonus::class, 1, $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonusResource::class, 1, $data);
 
         $response->assertNoContent();
 
@@ -73,23 +74,23 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testUpdateNotExists(): void
     {
-        $data = $this->getJsonFixture('update_welcome_bonus_request');
+        $data = $this->getJsonFixture('update_welcome_bonus_resource_request');
 
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonus::class, 0, $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonusResource::class, 0, $data);
 
         $response->assertNotFound();
     }
 
     public function testUpdateNoAuth(): void
     {
-        $response = $this->novaUpdateResourceAPICall(WelcomeBonus::class, 1);
+        $response = $this->novaUpdateResourceAPICall(WelcomeBonusResource::class, 1);
 
         $response->assertUnauthorized();
     }
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonus::class, 4);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonusResource::class, 4);
 
         $response->assertUnprocessable();
 
@@ -99,7 +100,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testGetUpdatableFields(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetUpdatableFieldsAPICall(WelcomeBonus::class, 1);
+        $response = $this->novaActingAs(self::$user)->novaGetUpdatableFieldsAPICall(WelcomeBonusResource::class, 1);
 
         $response->assertOk();
 
@@ -109,7 +110,7 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(WelcomeBonus::class, [1, 2]);
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(WelcomeBonusResource::class, [1, 2]);
 
         $response->assertOk();
 
@@ -119,52 +120,52 @@ class NovaWelcomeBonusTest extends TestCase
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(WelcomeBonus::class, [0]);
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(WelcomeBonusResource::class, [0]);
 
         $response->assertNotFound();
     }
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->novaDeleteResourceAPICall(WelcomeBonus::class, [1, 2]);
+        $response = $this->novaDeleteResourceAPICall(WelcomeBonusResource::class, [1, 2]);
 
         $response->assertUnauthorized();
     }
 
     public function testGet(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(WelcomeBonus::class, 1);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(WelcomeBonusResource::class, 1);
 
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('get_welcome_bonus_response', $response->json(), true);
+        $this->assertEqualsFixture('get_welcome_bonus_resource_response', $response->json(), true);
     }
 
     public function testGetNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(WelcomeBonus::class, 0);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(WelcomeBonusResource::class, 0);
 
         $response->assertNotFound();
     }
 
     public function testGetNoAuth(): void
     {
-        $response = $this->novaGetResourceAPICall(WelcomeBonus::class, 1);
+        $response = $this->novaGetResourceAPICall(WelcomeBonusResource::class, 1);
 
         $response->assertUnauthorized();
     }
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->novaSearchResourceAPICall(WelcomeBonus::class);
+        $response = $this->novaSearchResourceAPICall(WelcomeBonusResource::class);
 
         $response->assertUnauthorized();
     }
 
     public function testGetFieldsVisibleOnCreate(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetCreationFieldsAPICall(WelcomeBonus::class);
+        $response = $this->novaActingAs(self::$user)->novaGetCreationFieldsAPICall(WelcomeBonusResource::class);
 
         $response->assertOk();
 
@@ -172,7 +173,7 @@ class NovaWelcomeBonusTest extends TestCase
         $this->assertEqualsFixture('get_fields_visible_on_create_response', $response->json(), true);
     }
 
-    public static function getRunWelcomeBonusActionsData(): array
+    public static function getRunWelcomeBonusResourceActionsData(): array
     {
         return [
             [
@@ -192,10 +193,10 @@ class NovaWelcomeBonusTest extends TestCase
         ];
     }
 
-    #[DataProvider('getRunWelcomeBonusActionsData')]
-    public function testRunWelcomeBonusActions($action, $request, $state): void
+    #[DataProvider('getRunWelcomeBonusResourceActionsData')]
+    public function testRunWelcomeBonusResourceActions($action, $request, $state): void
     {
-        $response = $this->novaActingAs(self::$user)->novaRunActionAPICall(WelcomeBonus::class, $action, $request);
+        $response = $this->novaActingAs(self::$user)->novaRunActionAPICall(WelcomeBonusResource::class, $action, $request);
 
         $response->assertOk();
 
@@ -205,24 +206,24 @@ class NovaWelcomeBonusTest extends TestCase
         self::$welcomeBonusState->assertChangesEqualsFixture($state, true);
     }
 
-    public static function getWelcomeBonusActionsData(): array
+    public static function getWelcomeBonusResourceActionsData(): array
     {
         return [
             [
                 'resources' => [1, 2],
-                'fixture' => 'get_welcome_bonus_actions_publish_post_action',
+                'fixture' => 'get_welcome_bonus_resource_actions_publish_post_action',
             ],
             [
                 'resources' => [1, 2],
-                'fixture' => 'get_welcome_bonus_actions_un_publish_post_action',
+                'fixture' => 'get_welcome_bonus_resource_actions_un_publish_post_action',
             ],
         ];
     }
 
-    #[DataProvider('getWelcomeBonusActionsData')]
-    public function testGetWelcomeBonusActions(array $resources, string $fixture): void
+    #[DataProvider('getWelcomeBonusResourceActionsData')]
+    public function testGetWelcomeBonusResourceActions(array $resources, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetActionsAPICall(WelcomeBonus::class, $resources);
+        $response = $this->novaActingAs(self::$user)->novaGetActionsAPICall(WelcomeBonusResource::class, $resources);
 
         $response->assertOk();
 
@@ -230,28 +231,28 @@ class NovaWelcomeBonusTest extends TestCase
         $this->assertEqualsFixture($fixture, $response->json(), true);
     }
 
-    public static function getWelcomeBonusFiltersData(): array
+    public static function getWelcomeBonusResourceFiltersData(): array
     {
         return [
             [
                 'request' => [
                     'TextField:description_field' => $this->novaSearchParams(['search term']),
                 ],
-                'fixture' => 'filter_welcome_bonus_by_text_field',
+                'fixture' => 'filter_welcome_bonus_resource_by_text_field',
             ],
             [
                 'request' => [
                     'RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
-                'fixture' => 'filter_welcome_bonus_by_created_at_filter',
+                'fixture' => 'filter_welcome_bonus_resource_by_created_at_filter',
             ],
         ];
     }
 
-    #[DataProvider('getWelcomeBonusFiltersData')]
-    public function testFilterWelcomeBonus(array $request, string $fixture): void
+    #[DataProvider('getWelcomeBonusResourceFiltersData')]
+    public function testFilterWelcomeBonusResource(array $request, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(WelcomeBonus::class, $request);
+        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(WelcomeBonusResource::class, $request);
 
         $response->assertOk();
 

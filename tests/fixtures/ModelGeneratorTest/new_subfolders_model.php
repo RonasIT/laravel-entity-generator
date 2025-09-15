@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Forum;
 
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
+use App\Models\Comment;
+use App\Models\User;
 use Carbon\Carbon;
 
 /**

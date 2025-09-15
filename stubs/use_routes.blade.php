@@ -1,1 +1,1 @@
-use {{$namespace}}\{{$entity}}Controller;
+use {{ $namespace }}\{{ $entity }}Controller;

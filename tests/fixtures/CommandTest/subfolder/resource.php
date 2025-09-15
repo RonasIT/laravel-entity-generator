@@ -1,12 +1,14 @@
-namespace {{ $namespace }}\{{ $entity }};
+<?php
+
+namespace App\Http\Resources\Post;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use {{ $model_namespace }}\{{ $entity }};
+use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
 
 /**
- * @property {{ $entity }} $resource
+ * @property Post $resource
  */
-class {{ $entity }}Resource extends JsonResource
+class PostResource extends JsonResource
 {
     public static $wrap = null;
 

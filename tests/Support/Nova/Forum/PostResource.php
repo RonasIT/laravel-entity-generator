@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Nova;
+namespace App\Nova\Forum;
 
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;

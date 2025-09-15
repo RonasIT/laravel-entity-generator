@@ -17,7 +17,8 @@ class ModelGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        if ($this->classExists('models', $this->model)) {
+        if ($this->classExists('models', $this->model, $this->modelSubFolder)) {
+            // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
             $this->throwFailureException(
                 exceptionClass: ClassAlreadyExistsException::class,
                 failureMessage: "Cannot create {$this->model} Model cause {$this->model} Model already exists.",
@@ -29,7 +30,7 @@ class ModelGenerator extends EntityGenerator
             $this->prepareRelatedModels();
             $modelContent = $this->getNewModelContent();
 
-            $this->saveClass('models', $this->model, $modelContent);
+            $this->saveClass('models', $this->model, $modelContent, $this->modelSubFolder);
 
             event(new SuccessCreateMessage("Created a new Model: {$this->model}"));
         }
@@ -47,7 +48,10 @@ class ModelGenerator extends EntityGenerator
             'fields' => Arr::collapse($this->fields),
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
-            'namespace' => $this->getOrCreateNamespace('models'),
+            'namespace' => $this->getOrCreateNamespace('models', $this->modelSubFolder),
+            'importRelations' => $this->getImportedRelations(),
+            'anotationProperties' => $this->generateAnnotationProperties($this->fields),
+            'hasCarbonField' => !empty($this->fields['timestamp']) || !empty($this->fields['timestamp-required']),
         ]);
     }
 
@@ -63,6 +67,7 @@ class ModelGenerator extends EntityGenerator
         foreach ($this->relations as $type => $relationsByType) {
             foreach ($relationsByType as $relation) {
                 if (!$this->classExists('models', $relation)) {
+                    // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
                     $this->throwFailureException(
                         exceptionClass: ClassNotExistsException::class,
                         failureMessage: "Cannot create {$this->model} Model cause relation model {$relation} does not exist.",
@@ -71,6 +76,11 @@ class ModelGenerator extends EntityGenerator
                 }
 
                 $content = $this->getModelContent($relation);
+
+                if ($this->shouldImportRelation($relation)) {
+                    $namespace = $this->generateClassNamespace($this->model, $this->modelSubFolder);
+                    $this->insertImport($content, $namespace);
+                }
 
                 $newRelation = $this->getStub('relation', [
                     'name' => $this->getRelationName($this->model, $types[$type]),
@@ -92,19 +102,28 @@ class ModelGenerator extends EntityGenerator
         return file_get_contents($modelPath);
     }
 
+    protected function insertImport(string &$classContent, string $import): void
+    {
+        $import = "use {$import};";
+
+        if (!Str::contains($classContent, $import)) {
+            $classContent = preg_replace('/(namespace\s+[^;]+;\s*)/', "$1{$import}\n", $classContent, 1);
+        }
+    }
+
     public function prepareRelations(): array
     {
         $result = [];
 
         foreach ($this->relations as $type => $relations) {
             foreach ($relations as $relation) {
-                if (!empty($relation)) {
-                    $result[] = [
-                        'name' => $this->getRelationName($relation, $type),
-                        'type' => $type,
-                        'entity' => $relation,
-                    ];
-                }
+                $relation = class_basename($relation);
+
+                $result[] = [
+                    'name' => $this->getRelationName($relation, $type),
+                    'type' => $type,
+                    'entity' => $relation,
+                ];
             }
         }
 
@@ -116,7 +135,9 @@ class ModelGenerator extends EntityGenerator
         $casts = [
             'boolean-required' => 'boolean',
             'boolean' => 'boolean',
-            'json' => 'array'
+            'json' => 'array',
+            'timestamp-required' => 'datetime',
+            'timestamp' => 'datetime'
         ];
 
         $result = [];
@@ -143,5 +164,85 @@ class ModelGenerator extends EntityGenerator
         }
 
         return $relationName;
+    }
+
+    protected function getImportedRelations(): array
+    {
+        $result = [];
+
+        foreach ($this->relations as $relations) {
+            foreach ($relations as $relation) {
+                if ($this->shouldImportRelation($relation)) {
+                    $result[] = $this->generateClassNamespace($relation);
+                }
+            }
+        }
+
+        return array_unique($result);
+    }
+
+    protected function shouldImportRelation(string $relation): bool
+    {
+        $relationNamespace = when(Str::contains($relation, '/'), fn () => Str::beforeLast($relation, '/'), '');
+
+        return $relationNamespace != $this->modelSubFolder;
+    }
+
+    protected function generateClassNamespace(string $className, ?string $folder = null): string
+    {
+        $path = $this->getOrCreateNamespace('models', $folder);
+        $psrPath = Str::replace('/', '\\', $className);
+
+        return "{$path}\\{$psrPath}";
+    }
+
+    protected function generateAnnotationProperties(array $fields): array
+    {
+        $result = [];
+
+        foreach ($fields as $typeName => $fieldNames) {
+            foreach ($fieldNames as $fieldName) {
+                $result[$fieldName] = $this->getFieldType($typeName);
+            }
+        }
+
+        return $result;
+    }
+
+    protected function getFieldType(string $fieldType): string
+    {
+        $isNullable = !$this->isJson($fieldType) && !$this->isRequired($fieldType);
+
+        return $this->getProperty($fieldType, $isNullable);
+    }
+    
+    protected function getProperty(string $typeName, bool $isNullable = false): string
+    {
+        $typesMap = [
+            'integer' => 'int',
+            'float' => 'float',
+            'string' => 'string',
+            'boolean' => 'bool',
+            'timestamp' => 'Carbon',
+            'json' => 'array',
+        ];
+
+        $type = $typesMap[Str::before($typeName, '-')];
+
+        if ($isNullable) {
+            $type .= '|null';
+        }
+
+        return $type;
+    }
+
+    protected function isJson(string $typeName): bool
+    {
+        return $typeName === 'json';
+    }
+
+    protected function isRequired(string $typeName): bool
+    {
+        return Str::endsWith($typeName, 'required');
     }
 }

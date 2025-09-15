@@ -21,7 +21,7 @@ class MigrationGenerator extends EntityGenerator
             'class' => $this->getPluralName($this->model),
             'entity' => $this->model,
             'entities' => $entities,
-            'relations' => $this->relations->toArray(),
+            'relations' => $this->prepareRelations(),
             'fields' => $this->fields,
             'table' => $this->generateTable($this->fields)
         ]);
@@ -31,6 +31,17 @@ class MigrationGenerator extends EntityGenerator
         $this->saveClass('migrations', "{$now}_{$entities}_create_table", $content);
 
         event(new SuccessCreateMessage("Created a new Migration: {$entities}_create_table"));
+    }
+
+    protected function prepareRelations(): array
+    {
+        $result = [];
+
+        foreach ($this->relations->toArray() as $relationType => $relations) {
+            $result[$relationType] = array_map(fn ($relation) => Str::afterLast($relation, '/'), $relations);
+        }
+
+        return $result;
     }
 
     protected function isJson(string $typeName): bool

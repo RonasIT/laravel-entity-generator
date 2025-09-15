@@ -9,6 +9,7 @@ use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Tests\Support\Model\ModelMockTrait;
+use Symfony\Component\Console\Exception\RuntimeException;
 
 class ModelGeneratorTest extends TestCase
 {
@@ -60,8 +61,17 @@ class ModelGeneratorTest extends TestCase
         app(ModelGenerator::class)
             ->setModel('Post')
             ->setFields([
+                'integer' => ['priority'],
                 'integer-required' => ['media_id'],
+                'float' => ['seo_score'],
+                'float-required' => ['rating'],
+                'string' => ['description'],
+                'string-required' => ['title'],
+                'boolean' => ['is_reviewed'],
                 'boolean-required' => ['is_published'],
+                'timestamp' => ['reviewed_at', 'created_at', 'updated_at'],
+                'timestamp-required' => ['published_at'],
+                'json' => ['meta'],
             ])
             ->setRelations(new RelationsDTO(
                 hasOne: ['Comment'],
@@ -79,6 +89,33 @@ class ModelGeneratorTest extends TestCase
         );
     }
 
+    public function testCreateModelWithoutFields()
+    {
+        app(ModelGenerator::class)
+            ->setModel('Post')
+            ->setFields([])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('new_model_without_fields.php', 'app/Models/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
+    public function testSetUnknownFieldType()
+    {
+        $this->assertExceptionThrew(
+            className: RuntimeException::class,
+            message: 'The "-l" option does not exist.',
+        );
+
+        $this
+            ->artisan('make:entity Post -S name -l unknown-type')
+            ->assertFailed();
+    }
+    
     public function testCreateModelStubNotExist()
     {
         config(['entity-generator.stubs.model' => 'incorrect_stub']);
@@ -95,6 +132,62 @@ class ModelGeneratorTest extends TestCase
         $this->assertEventPushed(
             className: WarningEvent::class,
             message: 'Generation of model has been skipped cause the view incorrect_stub from the config entity-generator.stubs.model is not exists. Please check that config has the correct view name value.',
+        );
+    }
+
+    public function testCreateModelByCommand()
+    {
+        $this
+            ->artisan('make:entity Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -t reviewed_at -t created_at -t updated_at -T published_at -j meta -a Comment -A User --only-model')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('new_model.php', 'app/Models/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
+    public function testCreateModelHasMultipleRelationsWithAnotherModel()
+    {
+        $this
+            ->artisan('make:entity Forum/Post -A User -E User --only-model')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('new_model_with_many_relations.php', 'app/Models/Forum/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
+    public function testCreateSubFoldersModel()
+    {
+        $this
+            ->artisan('make:entity Forum/Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -t reviewed_at -t created_at -t updated_at -T published_at -j meta -a Comment -A User')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('new_subfolders_model.php', 'app/Models/Forum/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
+        );
+    }
+
+    public function testCreateModelWithoutDateFields()
+    {
+        $this
+            ->artisan('make:entity Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -j meta --only-model')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('new_model_without_date_fields.php', 'app/Models/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Post',
         );
     }
 

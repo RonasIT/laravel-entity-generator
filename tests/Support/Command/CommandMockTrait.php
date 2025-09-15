@@ -98,4 +98,29 @@ trait CommandMockTrait
             $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
         );
     }
+
+    public function mockGeneratorSubFolders(): void
+    {
+        $this->mockClass(NovaTestGenerator::class, [
+            $this->functionCall(
+                name: 'loadNovaActions',
+                result: [],
+            ),
+            $this->functionCall(
+                name: 'loadNovaFields',
+                result: [],
+            ),
+            $this->functionCall(
+                name: 'loadNovaFilters',
+                result: [],
+            ),
+        ]);
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Forum\Post', true]),
+            $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
+            $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
+            $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Forum\Post', true]),
+        );
+    }
 }

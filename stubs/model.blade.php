@@ -1,15 +1,32 @@
-namespace {{$namespace}};
+namespace {{ $namespace }};
 
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
+@foreach($importRelations as $value)
+use {{ $value }};
+@endforeach
+@if($hasCarbonField)
+use Carbon\Carbon;
+@endif
 
-class {{$entity}} extends Model
+@if(!empty($anotationProperties))
+/**
+@foreach($anotationProperties as $key => $value)
+ * @property {{ $value }} ${{ $key }}
+@endforeach
+ */
+@else
+//TODO: add @property annotation for each model's field
+/**
+ */
+@endif
+class {{ $entity }} extends Model
 {
     use ModelTrait;
 
     protected $fillable = [
 @foreach($fields as $field)
-        '{{$field}}',
+        '{{ $field }}',
 @endforeach
     ];
 
@@ -18,7 +35,7 @@ class {{$entity}} extends Model
 
     protected $casts = [
 @foreach($casts as $fieldName => $cast)
-        '{{$fieldName}}' => '{{$cast}}',
+        '{{ $fieldName }}' => '{{ $cast }}',
 @endforeach
     ];
 @endif
