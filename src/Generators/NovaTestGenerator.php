@@ -116,7 +116,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function getNovaFiles(): Generator
     {
-
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->novaPath));
 
         foreach ($iterator as $file) {
