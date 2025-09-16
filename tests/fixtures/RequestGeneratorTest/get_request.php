@@ -5,8 +5,9 @@ namespace App\Http\Requests\Post;
 use App\Http\Requests\Request;
 use App\Services\PostService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use RonasIT\Support\Http\BaseRequest;
 
-class GetPostRequest extends Request
+class GetPostRequest extends BaseRequest
 {
     public function rules(): array
     {

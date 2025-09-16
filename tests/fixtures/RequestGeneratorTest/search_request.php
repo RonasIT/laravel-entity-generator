@@ -3,8 +3,10 @@
 namespace App\Http\Requests\Post;
 
 use App\Http\Requests\Request;
+use App\Models\Post;
+use RonasIT\Support\Http\BaseRequest;
 
-class SearchPostsRequest extends Request
+class SearchPostsRequest extends BaseRequest
 {
     public function rules(): array
     {
@@ -16,7 +18,7 @@ class SearchPostsRequest extends Request
             'desc' => 'boolean',
             'all' => 'boolean',
             'with' => 'array',
-            'order_by' => 'string',
+            'order_by' => 'string|in:' . self::getOrderableFields(Post::class),
             'query' => 'string|nullable',
             'with.*' => 'string',
         ];

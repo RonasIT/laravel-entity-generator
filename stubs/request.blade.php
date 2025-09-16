@@ -6,8 +6,12 @@ use {{ $namespace }}\Request;
 use {{ $servicesNamespace }}\{{ $entity }}Service;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 @endif
+@if($method === $requestsGenerator::SEARCH_METHOD)
+use {{ $entityNamespace }};
+@endif
+use RonasIT\Support\Http\BaseRequest;
 
-class {{ $method }}{{ $entity }}Request extends Request
+class {{ $method }}{{ $entity }}Request extends BaseRequest
 {
 @if($method !== $requestsGenerator::DELETE_METHOD)
     public function rules(): array
@@ -15,7 +19,11 @@ class {{ $method }}{{ $entity }}Request extends Request
 @if(!empty($parameters))
         return [
 @foreach($parameters as $parameter)
-            '{{ $parameter['name'] }}' => '{{ implode('|', $parameter['rules']) }}',
+    @if($parameter['name'] === 'order_by')
+        '{{ $parameter['name'] }}' => '{{ implode('|', $parameter['rules']) }}|in:' . self::getOrderableFields({{ Str::singular($entity) }}::class),
+@continue;
+    @endif
+        '{{ $parameter['name'] }}' => '{{ implode('|', $parameter['rules']) }}',
 @endforeach
         ];
 @else

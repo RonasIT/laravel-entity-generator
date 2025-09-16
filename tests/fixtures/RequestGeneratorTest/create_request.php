@@ -3,8 +3,9 @@
 namespace App\Http\Requests\Post;
 
 use App\Http\Requests\Request;
+use RonasIT\Support\Http\BaseRequest;
 
-class CreatePostRequest extends Request
+class CreatePostRequest extends BaseRequest
 {
     public function rules(): array
     {
