@@ -27,7 +27,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             }
 
             if ($this->classExists('nova', "Nova{$this->model}Test")) {
-                throw new ResourceAlreadyExistsException("Nova{$this->model}", ResourceTypeEnum::NovaTest);
+                throw new ResourceAlreadyExistsException($this->model, ResourceTypeEnum::NovaTest);
             }
 
             parent::generate();

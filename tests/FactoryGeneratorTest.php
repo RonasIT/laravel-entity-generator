@@ -46,7 +46,7 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create factory cause it already exists. Remove PostFactory and run command again.",
+            message: 'Cannot create PostFactory cause it already exists. Remove PostFactory and run command again.',
         );
 
         $this->mockFactoryGenerator(

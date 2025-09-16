@@ -53,7 +53,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create nova test cause it already exists. Remove NovaPostTest and run command again.",
+            message: "Cannot create NovaPostTest cause it already exists. Remove NovaPostTest and run command again.",
         );
 
         app(NovaTestGenerator::class)
