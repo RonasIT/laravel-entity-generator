@@ -53,7 +53,6 @@ class WelcomeBonus extends Resource
         return [
             new PublishPostAction,
             new UnPublishPostAction,
-            new UnPublishPostAction,
         ];
     }
 }

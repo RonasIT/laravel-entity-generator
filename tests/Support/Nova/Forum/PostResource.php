@@ -2,57 +2,59 @@
 
 namespace App\Nova\Forum;
 
+use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
+use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\DateField;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\PublishPostAction;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\TextField;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
 use Laravel\Nova\Resource;
 
 class PostResource extends Resource
 {
+    public static $model = Post::class;
+
+    //TODO change field for the title if it required
     public static $title = 'name';
 
+    //TODO change query fields if it required
     public static $search = ['id', 'name'];
 
     public static function label(): string
     {
-        return 'Post';
+        return 'Posts';
     }
 
-    public function fields(NovaRequest $request): array
+    public function fields(Request $request): array
     {
         return [
-            new TextField,
-            new DateField,
+            ID::make('Id')
+                ->required()
+                ->sortable(),
+            Text::make('Title')
+                ->required()
+                ->sortable(),
+            Text::make('Created At')
+                ->required()
+                ->sortable(),
         ];
     }
 
-    public function cards(NovaRequest $request): array
+    public function cards(Request $request): array
     {
         return [];
     }
 
-    public function filters(NovaRequest $request): array
-    {
-        return [
-            new CreatedAtFilter,
-        ];
-    }
-
-    public function lenses(NovaRequest $request): array
+    public function filters(Request $request): array
     {
         return [];
     }
 
-    public function actions(NovaRequest $request): array
+    public function lenses(Request $request): array
     {
-        return [
-            new PublishPostAction,
-            new UnPublishPostAction,
-        ];
+        return [];
+    }
+
+    public function actions(Request $request): array
+    {
+        return [];
     }
 }

@@ -45,10 +45,6 @@ trait NovaTestGeneratorMockTrait
             'News.php' => $this->mockPhpFileContent(),
         ];
 
-        $fileSystemMock->testFixtures = [
-            'NovaWelcomeBonusTest' => []
-        ];
-
         $fileSystemMock->setStructure();
     }
 }

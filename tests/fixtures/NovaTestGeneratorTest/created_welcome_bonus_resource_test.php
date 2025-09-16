@@ -2,95 +2,95 @@
 
 namespace App\Tests;
 
-use RonasIT\Support\Tests\Support\Models\Post;
+use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
-use App\Nova\Resources\PostResource;
+use App\Nova\WelcomeBonusResource;
 
-class NovaPostResourceTest extends TestCase
+class NovaWelcomeBonusResourceTest extends TestCase
 {
     use NovaTestTrait;
 
     protected static User $user;
-    protected static ModelTestState $postState;
+    protected static ModelTestState $welcomeBonusState;
 
     public function setUp(): void
     {
         parent::setUp();
 
         self::$user ??= User::find(1);
-        self::$postState ??= new ModelTestState(Post::class);
+        self::$welcomeBonusState ??= new ModelTestState(WelcomeBonus::class);
 
         $this->skipDocumentationCollecting();
     }
 
     public function testCreate(): void
     {
-        $data = $this->getJsonFixture('create_post_resource_request');
+        $data = $this->getJsonFixture('create_welcome_bonus_resource_request');
 
-        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(PostResource::class, $data);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(WelcomeBonusResource::class, $data);
 
         $response->assertCreated();
 
-        $this->assertEqualsFixture('create_post_resource_response', $response->json());
+        $this->assertEqualsFixture('create_welcome_bonus_resource_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('create_posts_state', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('create_welcome_bonuses_state', true);
     }
 
     public function testCreateNoAuth(): void
     {
-        $response = $this->novaCreateResourceAPICall(PostResource::class);
+        $response = $this->novaCreateResourceAPICall(WelcomeBonusResource::class);
 
         $response->assertUnauthorized();
 
-        self::$postState->assertNotChanged();
+        self::$welcomeBonusState->assertNotChanged();
     }
 
     public function testCreateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(PostResource::class);
+        $response = $this->novaActingAs(self::$user)->novaCreateResourceAPICall(WelcomeBonusResource::class);
 
         $response->assertUnprocessable();
 
         // TODO: Need to remove last argument after first successful start
         $this->assertEqualsFixture('create_validation_response', $response->json(), true);
 
-        self::$postState->assertNotChanged();
+        self::$welcomeBonusState->assertNotChanged();
     }
 
     public function testUpdate(): void
     {
-        $data = $this->getJsonFixture('update_post_resource_request');
+        $data = $this->getJsonFixture('update_welcome_bonus_resource_request');
 
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(PostResource::class, 1, $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonusResource::class, 1, $data);
 
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('update_posts_state', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('update_welcome_bonuses_state', true);
     }
 
     public function testUpdateNotExists(): void
     {
-        $data = $this->getJsonFixture('update_post_resource_request');
+        $data = $this->getJsonFixture('update_welcome_bonus_resource_request');
 
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(PostResource::class, 0, $data);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonusResource::class, 0, $data);
 
         $response->assertNotFound();
     }
 
     public function testUpdateNoAuth(): void
     {
-        $response = $this->novaUpdateResourceAPICall(PostResource::class, 1);
+        $response = $this->novaUpdateResourceAPICall(WelcomeBonusResource::class, 1);
 
         $response->assertUnauthorized();
     }
 
     public function testUpdateValidationError(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(PostResource::class, 4);
+        $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonusResource::class, 4);
 
         $response->assertUnprocessable();
 
@@ -100,7 +100,7 @@ class NovaPostResourceTest extends TestCase
 
     public function testGetUpdatableFields(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetUpdatableFieldsAPICall(PostResource::class, 1);
+        $response = $this->novaActingAs(self::$user)->novaGetUpdatableFieldsAPICall(WelcomeBonusResource::class, 1);
 
         $response->assertOk();
 
@@ -110,62 +110,62 @@ class NovaPostResourceTest extends TestCase
 
     public function testDelete(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(PostResource::class, [1, 2]);
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(WelcomeBonusResource::class, [1, 2]);
 
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('delete_posts_state', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('delete_welcome_bonuses_state', true);
     }
 
     public function testDeleteNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(PostResource::class, [0]);
+        $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(WelcomeBonusResource::class, [0]);
 
         $response->assertNotFound();
     }
 
     public function testDeleteNoAuth(): void
     {
-        $response = $this->novaDeleteResourceAPICall(PostResource::class, [1, 2]);
+        $response = $this->novaDeleteResourceAPICall(WelcomeBonusResource::class, [1, 2]);
 
         $response->assertUnauthorized();
     }
 
     public function testGet(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(PostResource::class, 1);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(WelcomeBonusResource::class, 1);
 
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('get_post_resource_response', $response->json(), true);
+        $this->assertEqualsFixture('get_welcome_bonus_resource_response', $response->json(), true);
     }
 
     public function testGetNotExists(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(PostResource::class, 0);
+        $response = $this->novaActingAs(self::$user)->novaGetResourceAPICall(WelcomeBonusResource::class, 0);
 
         $response->assertNotFound();
     }
 
     public function testGetNoAuth(): void
     {
-        $response = $this->novaGetResourceAPICall(PostResource::class, 1);
+        $response = $this->novaGetResourceAPICall(WelcomeBonusResource::class, 1);
 
         $response->assertUnauthorized();
     }
 
     public function testSearchUnauthorized(): void
     {
-        $response = $this->novaSearchResourceAPICall(PostResource::class);
+        $response = $this->novaSearchResourceAPICall(WelcomeBonusResource::class);
 
         $response->assertUnauthorized();
     }
 
     public function testGetFieldsVisibleOnCreate(): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetCreationFieldsAPICall(PostResource::class);
+        $response = $this->novaActingAs(self::$user)->novaGetCreationFieldsAPICall(WelcomeBonusResource::class);
 
         $response->assertOk();
 
@@ -173,7 +173,7 @@ class NovaPostResourceTest extends TestCase
         $this->assertEqualsFixture('get_fields_visible_on_create_response', $response->json(), true);
     }
 
-    public static function getRunPostResourceActionsData(): array
+    public static function getRunWelcomeBonusResourceActionsData(): array
     {
         return [
             [
@@ -193,37 +193,37 @@ class NovaPostResourceTest extends TestCase
         ];
     }
 
-    #[DataProvider('getRunPostResourceActionsData')]
-    public function testRunPostResourceActions($action, $request, $state): void
+    #[DataProvider('getRunWelcomeBonusResourceActionsData')]
+    public function testRunWelcomeBonusResourceActions($action, $request, $state): void
     {
-        $response = $this->novaActingAs(self::$user)->novaRunActionAPICall(PostResource::class, $action, $request);
+        $response = $this->novaActingAs(self::$user)->novaRunActionAPICall(WelcomeBonusResource::class, $action, $request);
 
         $response->assertOk();
 
         $this->assertEmpty($response->getContent());
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture($state, true);
+        self::$welcomeBonusState->assertChangesEqualsFixture($state, true);
     }
 
-    public static function getPostResourceActionsData(): array
+    public static function getWelcomeBonusResourceActionsData(): array
     {
         return [
             [
                 'resources' => [1, 2],
-                'fixture' => 'get_post_resource_actions_publish_post_action',
+                'fixture' => 'get_welcome_bonus_resource_actions_publish_post_action',
             ],
             [
                 'resources' => [1, 2],
-                'fixture' => 'get_post_resource_actions_un_publish_post_action',
+                'fixture' => 'get_welcome_bonus_resource_actions_un_publish_post_action',
             ],
         ];
     }
 
-    #[DataProvider('getPostResourceActionsData')]
-    public function testGetPostResourceActions(array $resources, string $fixture): void
+    #[DataProvider('getWelcomeBonusResourceActionsData')]
+    public function testGetWelcomeBonusResourceActions(array $resources, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaGetActionsAPICall(PostResource::class, $resources);
+        $response = $this->novaActingAs(self::$user)->novaGetActionsAPICall(WelcomeBonusResource::class, $resources);
 
         $response->assertOk();
 
@@ -231,28 +231,28 @@ class NovaPostResourceTest extends TestCase
         $this->assertEqualsFixture($fixture, $response->json(), true);
     }
 
-    public static function getPostResourceFiltersData(): array
+    public static function getWelcomeBonusResourceFiltersData(): array
     {
         return [
             [
                 'request' => [
                     'TextField:description_field' => $this->novaSearchParams(['search term']),
                 ],
-                'fixture' => 'filter_post_resource_by_text_field',
+                'fixture' => 'filter_welcome_bonus_resource_by_text_field',
             ],
             [
                 'request' => [
                     'RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
-                'fixture' => 'filter_post_resource_by_created_at_filter',
+                'fixture' => 'filter_welcome_bonus_resource_by_created_at_filter',
             ],
         ];
     }
 
-    #[DataProvider('getPostResourceFiltersData')]
-    public function testFilterPostResource(array $request, string $fixture): void
+    #[DataProvider('getWelcomeBonusResourceFiltersData')]
+    public function testFilterWelcomeBonusResource(array $request, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(PostResource::class, $request);
+        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(WelcomeBonusResource::class, $request);
 
         $response->assertOk();
 
