@@ -9,9 +9,8 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 @if($method === $requestsGenerator::SEARCH_METHOD)
 use {{ $entityNamespace }};
 @endif
-use RonasIT\Support\Http\BaseRequest;
 
-class {{ $method }}{{ $entity }}Request extends BaseRequest
+class {{ $method }}{{ $entity }}Request extends Request
 {
 @if($method !== $requestsGenerator::DELETE_METHOD)
     public function rules(): array

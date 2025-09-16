@@ -4,9 +4,8 @@ namespace App\Http\Requests\Post;
 
 use App\Http\Requests\Request;
 use App\Models\Post;
-use RonasIT\Support\Http\BaseRequest;
 
-class SearchPostsRequest extends BaseRequest
+class SearchPostsRequest extends Request
 {
     public function rules(): array
     {
