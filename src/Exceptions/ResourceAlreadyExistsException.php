@@ -13,11 +13,11 @@ class ResourceAlreadyExistsException extends Exception
         protected ResourceTypeEnum $resourceType,
         protected ?string $entityNamespace = '',
     ) {
-        $formattedResourceType = $this->formatEntityName($resourceType, $entityName);
+        $formattedEntityName = $this->formatEntityName($resourceType, $entityName);
 
         $entityPlaceholder = $entityNamespace
-            ? "{$entityNamespace}\\{$formattedResourceType}"
-            : $formattedResourceType;
+            ? "{$entityNamespace}\\{$formattedEntityName}"
+            : $formattedEntityName;
 
         parent::__construct("Cannot create {$entityPlaceholder} cause it already exists. Remove {$entityPlaceholder} and run command again.");
     }
