@@ -101,7 +101,7 @@ abstract class EntityGenerator
 
     protected function createNamespace(string $configPath, ?string $subFolder = null): void
     {
-        $path =  $this->getNamespacePath($configPath, $subFolder);
+        $path = $this->getPath($configPath, $subFolder);
 
         $fullPath = base_path($path);
 
@@ -112,7 +112,7 @@ abstract class EntityGenerator
 
     protected function getNamespacePathParts(string $configPath, ?string $subFolder = null): array
     {
-        $pathParts = explode('/', $this->getNamespacePath($configPath, $subFolder));
+        $pathParts = explode('/', $this->getPath($configPath, $subFolder));
 
         if (Str::endsWith(Arr::last($pathParts), '.php')) {
             array_pop($pathParts);
@@ -127,7 +127,7 @@ abstract class EntityGenerator
         return $pathParts;
     }
 
-    protected function getNamespacePath(string $configPath, ?string $subFolder = null): string
+    protected function getPath(string $configPath, ?string $subFolder = null): string
     {
         return when($subFolder, fn () => Str::finish($this->paths[$configPath], '/') . $subFolder, $this->paths[$configPath]);
     }
@@ -265,8 +265,6 @@ abstract class EntityGenerator
     protected function getModelClass(string $model): string
     {
         $subfolder = when($model === $this->model, $this->modelSubFolder);
-
-        $this->createNamespace('models', $subfolder);
 
         $modelNamespace = $this->getNamespace('models', $subfolder);
 
