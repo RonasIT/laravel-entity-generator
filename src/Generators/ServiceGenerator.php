@@ -10,33 +10,25 @@ class ServiceGenerator extends EntityGenerator
 {
     public function generate(): void
     {
-        if ($this->classExists('repositories', "{$this->model}Repository")) {
-            $stub = 'service';
-        } else {
-            $stub = 'service_with_trait';
-
-            if (!$this->classExists('models', $this->model)) {
-                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
-                $this->throwFailureException(
-                    exceptionClass: ClassNotExistsException::class,
-                    failureMessage: "Cannot create {$this->model}Service cause {$this->model} Model does not exists.",
-                    recommendedMessage: "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'.",
-                );
-            }
+        if (!$this->classExists('repositories', "{$this->model}Repository")) {
+            $this->throwFailureException(
+                exceptionClass: ClassNotExistsException::class,
+                failureMessage: "Cannot create {$this->model}Service cause {$this->model}Repository does not exists.",
+                recommendedMessage: "Create a {$this->model}Repository by himself or run command 'php artisan make:entity {$this->model} --only-repository'.",
+            );
         }
 
-        if (!$this->isStubExists($stub)) {
+        if (!$this->isStubExists('service')) {
             return;
         }
 
         $this->createNamespace('services');
 
-        $serviceContent = $this->getStub($stub, [
+        $serviceContent = $this->getStub('service', [
             'entity' => $this->model,
             'fields' => $this->getFields(),
             'namespace' => $this->getNamespace('services'),
             'repositoriesNamespace' => $this->getNamespace('repositories'),
-            'modelsNamespace' => $this->getNamespace('models')
         ]);
 
         $this->saveClass('services', "{$this->model}Service", $serviceContent);
