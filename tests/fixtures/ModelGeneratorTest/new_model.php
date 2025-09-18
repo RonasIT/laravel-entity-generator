@@ -7,19 +7,19 @@ use RonasIT\Support\Traits\ModelTrait;
 use Carbon\Carbon;
 
 /**
- * @property int|null priority
- * @property int media_id
- * @property float|null seo_score
- * @property float rating
- * @property string|null description
- * @property string title
- * @property bool|null is_reviewed
- * @property bool is_published
- * @property Carbon|null reviewed_at
- * @property Carbon|null created_at
- * @property Carbon|null updated_at
- * @property Carbon published_at
- * @property array meta
+ * @property int|null $priority
+ * @property int $media_id
+ * @property float|null $seo_score
+ * @property float $rating
+ * @property string|null $description
+ * @property string $title
+ * @property bool|null $is_reviewed
+ * @property bool $is_published
+ * @property Carbon|null $reviewed_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property Carbon $published_at
+ * @property array $meta
  */
 class Post extends Model
 {
