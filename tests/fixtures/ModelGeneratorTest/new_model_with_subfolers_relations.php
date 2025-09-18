@@ -7,7 +7,7 @@ use RonasIT\Support\Traits\ModelTrait;
 use App\Models\Forum\Author;
 
 /**
- * @property string title
+ * @property string $title
  */
 class Post extends Model
 {
