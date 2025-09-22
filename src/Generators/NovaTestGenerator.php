@@ -132,7 +132,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $resources = [];
 
         foreach ($this->getNovaFiles() as $file) {
-            list($relativePath,) = extract_last_part($file->getPathname(), '/Nova/');
+            $relativePath = Str::after($file->getPathname(), $this->novaPath . DIRECTORY_SEPARATOR);
 
             $class = Str::before(str_replace('/', '\\', $relativePath), '.');
 
