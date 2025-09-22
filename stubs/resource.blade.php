@@ -1,12 +1,12 @@
-namespace {{$namespace}}\{{$entity}};
+namespace {{ $namespace }}\{{ $entity }};
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use {{$model_namespace}}\{{$entity}};
+use {{ $model_namespace }}\{{ $entity }};
 
 /**
- * @property {{$entity}} $resource
+ * @property {{ $entity }} $resource
  */
-class {{$entity}}Resource extends JsonResource
+class {{ $entity }}Resource extends JsonResource
 {
     public static $wrap = null;
 
