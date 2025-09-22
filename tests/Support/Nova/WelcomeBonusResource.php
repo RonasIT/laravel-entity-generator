@@ -10,9 +10,8 @@ use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\DateField;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\PublishPostAction;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\TextField;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
-use Laravel\Nova\Resource;
 
-class WelcomeBonusResource extends Resource
+class WelcomeBonusResource
 {
     public static $title = 'name';
 

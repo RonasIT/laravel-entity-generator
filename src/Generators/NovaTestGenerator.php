@@ -12,12 +12,15 @@ use RonasIT\Support\Exceptions\EntityCreateException;
 use Generator;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
+use Illuminate\Support\Arr;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
     protected $novaResourceName;
 
     protected string $novaPath;
+
+    protected string $fullNovaResourceNamePath;
 
     public function __construct()
     {
@@ -31,10 +34,10 @@ class NovaTestGenerator extends AbstractTestsGenerator
         if (class_exists(NovaServiceProvider::class)) {
             $novaResources = $this->getCommonNovaResources();
 
-            if (count($novaResources) > 1){
+            if (count($novaResources) > 1) {
                 $foundedResources = implode(', ', $novaResources);
 
-                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
+                // TODO: Change exception message after https://github.com/RonasIT/laravel-entity-generator/issues/159 will be ready
                 $this->throwFailureException(
                     EntityCreateException::class,
                     "Cannot create Nova{$this->model}ResourceTest cause was found a lot of suitable resources: {$foundedResources}.",
@@ -50,7 +53,8 @@ class NovaTestGenerator extends AbstractTestsGenerator
                 );
             }
 
-            $this->novaResourceName = array_pop($novaResources);
+            $this->novaResourceName = Arr::first($novaResources);
+            $this->fullNovaResourceNamePath = "App\\Nova\\{$this->novaResourceName}";
 
             if ($this->classExists('nova', "Nova{$this->model}Test")) {
                 $this->throwFailureException(
@@ -78,12 +82,10 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $resourceClass = Str::afterLast($this->novaResourceName, '\\');
 
         $fileContent = $this->getStub('nova_test', [
-            'url_path' => Str::kebab($this->model) . '-resources',
             'entity_namespace' => $this->getOrCreateNamespace('models', $this->modelSubFolder),
             'entity' => $this->model,
             'resource' => $resourceClass,
-            'resource_path' => "App\\Nova\\{$this->novaResourceName}",
-            'entities' => $this->getPluralName($this->model),
+            'resource_path' => $this->fullNovaResourceNamePath,
             'snake_resource' => Str::snake($resourceClass),
             'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
@@ -130,11 +132,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $resources = [];
 
         foreach ($this->getNovaFiles() as $file) {
-            $relativePath = Str::after($file->getPathname(), $this->novaPath . DIRECTORY_SEPARATOR);
+            list($relativePath,) = extract_last_part($file->getPathname(), '/Nova/');
 
-            $class = str_replace(['/', '.php'], ['\\', ''], $relativePath);
+            $class = Str::before(str_replace('/', '\\', $relativePath), '.');
 
-            if ($this->isNovaResource($class) && $this->isResourceNameContainModel($class)) {
+            if ($this->isResourceNameContainModel($class) && $this->isNovaResource($class)) {
                 $resources[] = $class;
             }
         }
@@ -142,31 +144,31 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return $resources;
     }
 
-    protected function isNovaResource(string $resource): bool
-    {
-        return is_subclass_of("App\\Nova\\{$resource}", 'Laravel\\Nova\\Resource');
-    }
-
     protected function isResourceNameContainModel(string $resource): bool
     {
         $resource = str_replace('Resource', '', $resource);
 
-        return Str::afterLast($resource, '\\') === $this->model;
+        return str_contains(Str::afterLast($resource, '\\'), $this->model);
+    }
+
+    protected function isNovaResource(string $class): bool
+    {
+        return str_contains($class, 'Resource');
     }
 
     protected function loadNovaActions()
     {
-        return app("\\App\\Nova\\{$this->novaResourceName}")->actions(new NovaRequest());
+        return app($this->fullNovaResourceNamePath)->actions(new NovaRequest());
     }
 
     protected function loadNovaFields()
     {
-        return app("\\App\\Nova\\{$this->novaResourceName}")->fields(new NovaRequest());
+        return app($this->fullNovaResourceNamePath)->fields(new NovaRequest());
     }
 
     protected function loadNovaFilters()
     {
-        return app("\\App\\Nova\\{$this->novaResourceName}")->filters(new NovaRequest());
+        return app($this->fullNovaResourceNamePath)->filters(new NovaRequest());
     }
 
     public function getTestClassName(): string

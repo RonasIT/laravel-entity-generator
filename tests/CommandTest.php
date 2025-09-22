@@ -62,7 +62,6 @@ class CommandTest extends TestCase
 
         $this->mockGenerator();
         $this->mockGettingModelInstance(new Post());
-
         $this->mockDBTransactionStartRollback(2);
 
         $this
