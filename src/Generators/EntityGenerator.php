@@ -36,7 +36,7 @@ abstract class EntityGenerator
 
     protected $paths = [];
     protected $model;
-    protected $modelSubFolder = null;
+    protected $modelSubFolder = '';
     protected $fields;
     protected $relations = [];
     protected $crudOptions;
@@ -288,5 +288,16 @@ abstract class EntityGenerator
         }
 
         return true;
+    }
+
+    protected function prepareRelations(): array
+    {
+        $result = [];
+
+        foreach ($this->relations as $relationType => $relations) {
+            $result[$relationType] = array_map(fn ($relation) => class_basename($relation), $relations);
+        }
+
+        return $result;
     }
 }
