@@ -14,17 +14,16 @@ class ServiceGeneratorTest extends TestCase
 {
     use GeneratorMockTrait;
 
-    public function testMissingModel()
+    public function testMissingRepository()
     {
         $this->mockClass(ServiceGenerator::class, [
             $this->classExistsMethodCall(['repositories', 'PostRepository'], false),
-            $this->classExistsMethodCall(['models', 'Post'], false),
         ]);
 
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
-            message: 'Cannot create PostService cause Post Model does not exists. '
-            . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'",
+            message: 'Cannot create PostService cause PostRepository does not exists. '
+            . "Create a PostRepository by himself or run command 'php artisan make:entity Post --only-repository'",
         );
 
         app(ServiceGenerator::class)
@@ -34,57 +33,7 @@ class ServiceGeneratorTest extends TestCase
         Event::assertNothingDispatched();
     }
 
-    public function testCreateWithTrait()
-    {
-        $this->mockClass(ServiceGenerator::class, [
-            $this->classExistsMethodCall(['repositories', 'PostRepository'], false),
-            $this->classExistsMethodCall(['models', 'Post']),
-        ]);
-
-        app(ServiceGenerator::class)
-            ->setRelations(new RelationsDTO(
-                hasMany: ['Comment'],
-                belongsTo: ['User'],
-            ))
-            ->setFields([
-                'integer-required' => ['media_id'],
-                'string-required' => ['body'],
-                'string' => ['title']
-            ])
-            ->setModel('Post')
-            ->generate();
-
-        $this->assertGeneratedFileEquals('service_with_trait.php', 'app/Services/PostService.php');
-
-        $this->assertEventPushed(
-            className: SuccessCreateMessage::class,
-            message: 'Created a new Service: PostService',
-        );
-    }
-
-    public function testCreateWithTraitStubNotExist()
-    {
-        config(['entity-generator.stubs.service_with_trait' => 'incorrect_stub']);
-
-        $this->mockClass(ServiceGenerator::class, [
-            $this->classExistsMethodCall(['repositories', 'PostRepository'], false),
-            $this->classExistsMethodCall(['models', 'Post']),
-        ]);
-
-        app(ServiceGenerator::class)
-            ->setFields([])
-            ->setModel('Post')
-            ->generate();
-
-        $this->assertFileDoesNotExist('app/Services/PostService.php');
-
-        $this->assertEventPushed(
-            className: WarningEvent::class,
-            message: 'Generation of service with trait has been skipped cause the view incorrect_stub from the config entity-generator.stubs.service_with_trait is not exists. Please check that config has the correct view name value.',
-        );
-    }
-
-    public function testCreateWithoutTrait()
+    public function testCreate()
     {
         $this->mockClass(ServiceGenerator::class, [
             $this->classExistsMethodCall(['repositories', 'PostRepository']),
@@ -104,7 +53,7 @@ class ServiceGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->assertGeneratedFileEquals('service_without_trait.php', 'app/Services/PostService.php');
+        $this->assertGeneratedFileEquals('service.php', 'app/Services/PostService.php');
 
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
@@ -112,7 +61,7 @@ class ServiceGeneratorTest extends TestCase
         );
     }
 
-    public function testCreateWithoutTraitStubNotExist()
+    public function testCreateStubNotExist()
     {
         config(['entity-generator.stubs.service' => 'incorrect_stub']);
 
