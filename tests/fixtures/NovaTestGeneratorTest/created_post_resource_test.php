@@ -2,11 +2,11 @@
 
 namespace App\Tests;
 
-use RonasIT\Support\Tests\Support\Command\Models\Post;
+use RonasIT\Support\Tests\Support\Models\Post;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
-use App\Nova\PostResource;
+use App\Nova\Resources\PostResource;
 
 class NovaPostResourceTest extends TestCase
 {
@@ -176,6 +176,20 @@ class NovaPostResourceTest extends TestCase
     public static function getRunPostResourceActionsData(): array
     {
         return [
+            [
+                'action' => PublishPostAction::class,
+                'request' => [
+                    'resources' => '1,2',
+                ],
+                'state' => 'run_publish_post_action_state',
+            ],
+            [
+                'action' => UnPublishPostAction::class,
+                'request' => [
+                    'resources' => '1,2',
+                ],
+                'state' => 'run_un_publish_post_action_state',
+            ],
         ];
     }
 
@@ -195,6 +209,14 @@ class NovaPostResourceTest extends TestCase
     public static function getPostResourceActionsData(): array
     {
         return [
+            [
+                'resources' => [1, 2],
+                'fixture' => 'get_post_resource_actions_publish_post_action',
+            ],
+            [
+                'resources' => [1, 2],
+                'fixture' => 'get_post_resource_actions_un_publish_post_action',
+            ],
         ];
     }
 
@@ -212,6 +234,18 @@ class NovaPostResourceTest extends TestCase
     public static function getPostResourceFiltersData(): array
     {
         return [
+            [
+                'request' => [
+                    'TextField:description_field' => $this->novaSearchParams(['search term']),
+                ],
+                'fixture' => 'filter_post_resource_by_text_field',
+            ],
+            [
+                'request' => [
+                    'RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
+                ],
+                'fixture' => 'filter_post_resource_by_created_at_filter',
+            ],
         ];
     }
 
