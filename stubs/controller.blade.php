@@ -1,4 +1,4 @@
-namespace {{$namespace}};
+namespace {{ $namespace }};
 
 @inject('str', 'Illuminate\Support\Str')
 use {{ $resourcesNamespace }}\{{ $entity }}\{{ $str::plural($entity) }}CollectionResource;
@@ -30,7 +30,7 @@ class {{ $entity }}Controller extends Controller
 
         $result = $service->create($data);
 
-        return {{$entity}}Resource::make($result);
+        return {{ $entity }}Resource::make($result);
     }
 
 @endif

@@ -22,11 +22,13 @@ class ServiceGenerator extends EntityGenerator
             return;
         }
 
+        $this->createNamespace('services');
+
         $serviceContent = $this->getStub('service', [
             'entity' => $this->model,
             'fields' => $this->getFields(),
-            'namespace' => $this->getOrCreateNamespace('services'),
-            'repositoriesNamespace' => $this->getOrCreateNamespace('repositories'),
+            'namespace' => $this->getNamespace('services'),
+            'repositoriesNamespace' => $this->getNamespace('repositories'),
         ]);
 
         $this->saveClass('services', "{$this->model}Service", $serviceContent);
