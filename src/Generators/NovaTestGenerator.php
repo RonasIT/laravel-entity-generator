@@ -121,7 +121,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         foreach ($possibleNovaModelNames as $modelName) {
             if ($this->classExists('nova', $modelName)) {
                 $this->novaModelName = Str::replace('/', '\\', $modelName);
-                
+
                 return true;
             }
         }
