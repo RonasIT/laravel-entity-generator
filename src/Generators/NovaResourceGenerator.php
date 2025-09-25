@@ -186,7 +186,7 @@ class NovaResourceGenerator extends EntityGenerator
         ];
 
         if (!empty($this->modelSubFolder)) {
-            array_push($imports, "{$this->getNamespace('nova')}\\Resource");
+            $imports[] = "{$this->getNamespace('nova')}\\Resource";
         } 
 
         return $imports;
