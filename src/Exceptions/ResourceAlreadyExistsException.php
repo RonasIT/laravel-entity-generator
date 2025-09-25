@@ -28,9 +28,6 @@ class ResourceAlreadyExistsException extends Exception
             case ResourceTypeEnum::Model:
                 return "{$entityName} {$resourceType->value}";
 
-            case ResourceTypeEnum::NovaResource:
-                return $entityName . Str::ucfirst(ResourceTypeEnum::Resource->value);
-
             case ResourceTypeEnum::NovaTest:
                 return "Nova{$entityName}Test";
         }

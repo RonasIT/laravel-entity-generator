@@ -22,7 +22,7 @@ class ModelGenerator extends EntityGenerator
             throw new ResourceAlreadyExistsException(
                 entityName: $this->model,
                 resourceType: ResourceTypeEnum::Model,
-                entityNamespace: $this->getOrCreateNamespace('models', $this->modelSubFolder),
+                entityNamespace: $this->getNamespace('models', $this->modelSubFolder),
             );
         }
 
