@@ -25,6 +25,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
     public function generate(): void
     {
+        $this->createNamespace('factories');
+
         if ($this->canGenerateUserData()) {
             $this->withAuth = true;
         }
@@ -173,7 +175,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
             return [];
         }
 
-        $factoryNamespace = "{$this->getOrCreateNamespace('factories')}\\{$model}Factory";
+        $factoryNamespace = "{$this->getNamespace('factories')}\\{$model}Factory";
         $factory = $factoryNamespace::new();
 
         return $factory
