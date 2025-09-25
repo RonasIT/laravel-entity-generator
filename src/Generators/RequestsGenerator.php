@@ -22,6 +22,8 @@ class RequestsGenerator extends EntityGenerator
             return;
         }
 
+        $this->createNamespace('requests');
+
         $this->relationFields = array_map(function ($field) {
             return Str::snake($field) . '_id';
         }, $this->relations->belongsTo);
@@ -71,8 +73,8 @@ class RequestsGenerator extends EntityGenerator
             'parameters' => $parameters,
             'needToValidate' => $needToValidate,
             'requestsFolder' => $requestsFolder,
-            'namespace' => $this->getOrCreateNamespace('requests'),
-            'servicesNamespace' => $this->getOrCreateNamespace('services'),
+            'namespace' => $this->getNamespace('requests'),
+            'servicesNamespace' => $this->getNamespace('services'),
             'entityNamespace' => $this->getModelClass($this->model),
         ]);
 

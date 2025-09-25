@@ -22,7 +22,6 @@ return [
         'relation' => 'entity-generator::relation',
         'repository' => 'entity-generator::repository',
         'service' => 'entity-generator::service',
-        'service_with_trait' => 'entity-generator::service_with_trait',
         'controller' => 'entity-generator::controller',
         'request' => 'entity-generator::request',
         'routes' => 'entity-generator::routes',
