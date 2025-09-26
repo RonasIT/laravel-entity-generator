@@ -195,6 +195,10 @@ class RequestsGenerator extends EntityGenerator
             $rules[] = 'present';
         }
 
+        if ($name === 'order_by') {
+            $rules[] = 'in:';
+        }
+
         return [
             'name' => $name,
             'rules' => $rules

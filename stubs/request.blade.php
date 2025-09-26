@@ -18,11 +18,7 @@ class {{ $method }}{{ $entity }}Request extends Request
 @if(!empty($parameters))
         return [
 @foreach($parameters as $parameter)
-    @if($method === $requestsGenerator::SEARCH_METHOD && $parameter['name'] === 'order_by')
-        '{{ $parameter['name'] }}' => '{{ implode('|', $parameter['rules']) }}|in:' . self::getOrderableFields({{ Str::singular($entity) }}::class),
-@continue;
-    @endif
-        '{{ $parameter['name'] }}' => '{{ implode('|', $parameter['rules']) }}',
+            '{{ $parameter['name'] }}' => '{!! implode('|', $parameter['rules']) !!}'@if ($parameter['name'] === 'order_by') . $this->getOrderableFields({{ Str::singular($entity) }}::class)@endif,
 @endforeach
         ];
 @else

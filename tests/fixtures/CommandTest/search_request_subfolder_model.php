@@ -12,7 +12,7 @@ class SearchPostsRequest extends Request
         return [
             'page' => 'integer',
             'per_page' => 'integer',
-            'order_by' => 'string|in:' . self::getOrderableFields(Post::class),
+            'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'desc' => 'boolean',
             'all' => 'boolean',
             'with' => 'array',

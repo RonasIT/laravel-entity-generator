@@ -126,7 +126,7 @@ class CommandTest extends TestCase
         $this->assertGeneratedFileEquals('service.php', 'app/Services/PostService.php');
         $this->assertGeneratedFileEquals('create_request.php', 'app/Http/Requests/Post/CreatePostRequest.php');
         $this->assertGeneratedFileEquals('get_request.php', 'app/Http/Requests/Post/GetPostRequest.php');
-        $this->assertGeneratedFileEquals('subfolder/search_request.php', 'app/Http/Requests/Post/SearchPostsRequest.php');
+        $this->assertGeneratedFileEquals('search_request_subfolder_model.php', 'app/Http/Requests/Post/SearchPostsRequest.php');
         $this->assertGeneratedFileEquals('update_request.php', 'app/Http/Requests/Post/UpdatePostRequest.php');
         $this->assertGeneratedFileEquals('delete_request.php', 'app/Http/Requests/Post/DeletePostRequest.php');
         $this->assertGeneratedFileEquals('controller.php', 'app/Http/Controllers/PostController.php');
