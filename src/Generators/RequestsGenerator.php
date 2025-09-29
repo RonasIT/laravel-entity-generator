@@ -74,7 +74,8 @@ class RequestsGenerator extends EntityGenerator
             'needToValidate' => $needToValidate,
             'requestsFolder' => $requestsFolder,
             'namespace' => $this->getNamespace('requests'),
-            'servicesNamespace' => $this->getNamespace('services')
+            'servicesNamespace' => $this->getNamespace('services'),
+            'entityNamespace' => $this->getModelClass($this->model),
         ]);
 
         $this->saveClass('requests', "{$method}{$modelName}Request",
@@ -192,6 +193,10 @@ class RequestsGenerator extends EntityGenerator
 
         if ($present) {
             $rules[] = 'present';
+        }
+
+        if ($name === 'order_by') {
+            $rules[] = 'in:';
         }
 
         return [

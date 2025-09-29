@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Post;
 
 use App\Http\Requests\Request;
+use App\Models\Post;
 
 class SearchPostsRequest extends Request
 {
@@ -16,7 +17,7 @@ class SearchPostsRequest extends Request
             'desc' => 'boolean',
             'all' => 'boolean',
             'with' => 'array',
-            'order_by' => 'string',
+            'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'query' => 'string|nullable',
             'with.*' => 'string',
         ];
