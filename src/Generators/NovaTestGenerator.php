@@ -146,9 +146,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function isResourceNameContainModel(string $resource): bool
     {
-        $resource = str_replace('Resource', '', $resource);
-
-        return str_contains(Str::afterLast($resource, '\\'), $this->model);
+        return str_contains($resource, $this->model);
     }
 
     protected function isNovaResource(string $class): bool
