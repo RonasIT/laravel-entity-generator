@@ -3,6 +3,7 @@
 namespace App\Nova\Forum;
 
 use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
+use App\Nova\Resource;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;

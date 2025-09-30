@@ -36,7 +36,7 @@ abstract class EntityGenerator
 
     protected $paths = [];
     protected $model;
-    protected $modelSubFolder = null;
+    protected $modelSubFolder = '';
     protected $fields;
     protected $relations = [];
     protected $crudOptions;
@@ -90,11 +90,29 @@ abstract class EntityGenerator
         $this->paths = config('entity-generator.paths');
     }
 
-    protected function getOrCreateNamespace(string $configPath, ?string $subFolder = null): string
+    protected function getNamespace(string $configPath, ?string $subFolder = null): string
     {
-        $path = when($subFolder, fn () => Str::finish($this->paths[$configPath], '/') . $subFolder, $this->paths[$configPath]);
-        
-        $pathParts = explode('/', $path);
+        $pathParts = $this->getNamespacePathParts($configPath, $subFolder);
+
+        $namespace = array_map(fn (string $part) => ucfirst($part), $pathParts);
+
+        return implode('\\', $namespace);
+    }
+
+    protected function createNamespace(string $configPath, ?string $subFolder = null): void
+    {
+        $path = $this->getPath($configPath, $subFolder);
+
+        $fullPath = base_path($path);
+
+        if (!file_exists($fullPath)) {
+            mkdir($fullPath, 0777, true);
+        }
+    }
+
+    protected function getNamespacePathParts(string $configPath, ?string $subFolder = null): array
+    {
+        $pathParts = explode('/', $this->getPath($configPath, $subFolder));
 
         if (Str::endsWith(Arr::last($pathParts), '.php')) {
             array_pop($pathParts);
@@ -106,17 +124,12 @@ abstract class EntityGenerator
             }
         }
 
-        $namespace = array_map(function (string $part) {
-            return ucfirst($part);
-        }, $pathParts);
+        return $pathParts;
+    }
 
-        $fullPath = base_path($path);
-
-        if (!file_exists($fullPath)) {
-            mkdir($fullPath, 0777, true);
-        }
-
-        return implode('\\', $namespace);
+    protected function getPath(string $configPath, ?string $subFolder = null): string
+    {
+        return when($subFolder, fn () => Str::finish($this->paths[$configPath], '/') . $subFolder, $this->paths[$configPath]);
     }
 
     protected function isFolderHasCorrectCase(string $folder, string $configPath): bool
@@ -239,7 +252,7 @@ abstract class EntityGenerator
     protected function generateRelativePath(string $namespace, string $basePath): string
     {
         return Str::after(
-            subject: $this->namespaceToPath($namespace), 
+            subject: $this->namespaceToPath($namespace),
             search: $this->namespaceToPath($basePath) . '/',
         );
     }
@@ -253,7 +266,7 @@ abstract class EntityGenerator
     {
         $subfolder = when($model === $this->model, $this->modelSubFolder);
 
-        $modelNamespace = $this->getOrCreateNamespace('models', $subfolder);
+        $modelNamespace = $this->getNamespace('models', $subfolder);
 
         return "{$modelNamespace}\\{$model}";
     }
@@ -275,5 +288,21 @@ abstract class EntityGenerator
         }
 
         return true;
+    }
+
+    protected function prepareRelations(): array
+    {
+        $result = [];
+
+        foreach ($this->relations as $relationType => $relations) {
+            $result[$relationType] = array_map(fn ($relation) => class_basename($relation), $relations);
+        }
+
+        return $result;
+    }
+
+    protected function pathToNamespace(string $name): string
+    {
+        return Str::replace('/', '\\', $name);
     }
 }
