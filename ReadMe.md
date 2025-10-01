@@ -137,7 +137,7 @@ But what if we need to create the interface only for updating and reading the en
 php artisan make:entity Post --methods=RU
 ```
 
-Feel free to use any combinations of actions in any order. Each action has it own character:
+Feel free to use any combinations of actions in any order. Each action has its own character:
 - `C` create
 - `U` update
 - `D` delete
