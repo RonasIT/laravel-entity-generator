@@ -73,7 +73,7 @@ Relation may be placed in the subfolder, in this case - set the relative namespa
 php artisan make:entity Post -A Blog/Comment -A Forum/Common/Reaction
 ```
 
-Next options available to set relations:
+The following options are available to set relations:
 
 | Type  | Short Option | Full Option |
 | -------- | ------- | ------- |
