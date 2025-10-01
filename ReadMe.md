@@ -43,7 +43,7 @@ The `make:entity` provides an ability to set the entity's fields, which will be 
 php artisan make:entity Post -S title -S text -t published_at
 ```
 
-Next field types available to use:
+The following field types are available to use:
 
 | Type | Modificator | Short Option | Full Option |
 | -------- | -------- | ------- | ------- |
