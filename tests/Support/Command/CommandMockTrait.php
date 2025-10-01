@@ -36,6 +36,10 @@ trait CommandMockTrait
     {
         $this->mockClass(NovaTestGenerator::class, [
             $this->functionCall(
+                name: 'isNovaResource',
+                arguments: ['PostResource'],
+            ),
+            $this->functionCall(
                 name: 'loadNovaActions',
                 result: [],
             ),
@@ -60,6 +64,10 @@ trait CommandMockTrait
     public function mockGeneratorSubFolders(): void
     {
         $this->mockClass(NovaTestGenerator::class, [
+            $this->functionCall(
+                name: 'isNovaResource',
+                arguments: ['Forum\PostResource'],
+            ),
             $this->functionCall(
                 name: 'loadNovaActions',
                 result: [],

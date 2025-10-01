@@ -46,6 +46,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             }
 
             if (empty($novaResources)) {
+                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create Nova{$this->model}ResourceTest cause {$this->model} Nova resource does not exist.",
@@ -56,7 +57,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             $this->novaResourceName = Arr::first($novaResources);
             $this->fullNovaResourceNamePath = "App\\Nova\\{$this->novaResourceName}";
 
-            if ($this->classExists('nova', "Nova{$this->model}Test")) {
+            if ($this->classExists('nova', "Nova{$this->model}ResourceTest")) {
                 $this->throwFailureException(
                     ClassAlreadyExistsException::class,
                     "Cannot create Nova{$this->model}ResourceTest cause it's already exist.",
@@ -84,8 +85,8 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $fileContent = $this->getStub('nova_test', [
             'entity_namespace' => $this->getNamespace('models', $this->modelSubFolder),
             'entity' => $this->model,
-            'resource' => $resourceClass,
-            'resource_path' => $this->fullNovaResourceNamePath,
+            'resource_name' => $resourceClass,
+            'resource_namespace' => $this->fullNovaResourceNamePath,
             'snake_resource' => Str::snake($resourceClass),
             'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
@@ -93,9 +94,9 @@ class NovaTestGenerator extends AbstractTestsGenerator
             'filters' => $filters,
         ]);
 
-        $this->saveClass('tests', "Nova{$resourceClass}Test", $fileContent);
+        $this->saveClass('tests', "Nova{$this->model}ResourceTest", $fileContent);
 
-        event(new SuccessCreateMessage("Created a new Nova test: Nova{$resourceClass}Test"));
+        event(new SuccessCreateMessage("Created a new Nova test: Nova{$this->model}ResourceTest"));
     }
 
     protected function getActions(): array
@@ -149,9 +150,9 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return str_contains($resource, $this->model);
     }
 
-    protected function isNovaResource(string $class): bool
+    protected function isNovaResource(string $resource): bool
     {
-        return str_contains($class, 'Resource');
+        return is_subclass_of("App\\Nova\\{$resource}", 'App\\Nova\\Resource');
     }
 
     protected function loadNovaActions()
