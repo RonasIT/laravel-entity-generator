@@ -37,7 +37,7 @@ php artisan make:entity Forum/Blog/Post
 
 #### Fields definition options
 
-The `make:entity` provides an ability to set the entity's fields, which will be used in all created class (e.g. Model, Create/Update requests, Test fixtures, etc.)
+The `make:entity` provides an ability to set the entity's fields, which will be used in all created classes (e.g. Model, Create/Update requests, Test fixtures, etc.)
 
 ```bash
 php artisan make:entity Post -S title -S text -t published_at
