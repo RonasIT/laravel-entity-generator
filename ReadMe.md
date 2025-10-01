@@ -4,139 +4,144 @@
 
 Laravel-Entity-Generator - This generator is used to create a standard class stack for a new entity.
 
-### Install
+## Installation
 
-We're highly recommending to install package for only dev environment
-
-```bash
-    composer require ronasit/laravel-entity-generator --dev
-```
-
-If you're on Laravel 5.5 or later the package will be auto-discovered.
-Otherwise, you will need to manually configure it in your config/app.php.
-
-```php
-'providers' => [
-    // ...
-    RonasIT\Support\EntityGeneratorServiceProvider::class,
-],
-```
-
-For dev installation provider should be registered optionally
-
-```php
-class AppServiceProvider
-{
-    public function boot(): void
-    {
-        // ...
-        if (config('app.env') === 'local') {
-            App::register(\RonasIT\Support\EntityGeneratorServiceProvider::class);
-        }
-    }
-}
-```
-
-And publish.
+Install package using `dev` mode
 
 ```bash
-    php artisan vendor:publish --provider="RonasIT\Support\EntityGeneratorServiceProvider"
+composer require ronasit/laravel-entity-generator --dev
 ```
 
-### Examples
-```bash
-    php artisan make:entity EntityName \ 
-        -S required_string_field \
-        --integer=not_required_integer_field \
-        --boolean-required=required_boolean_field \
-        -j data \
-        -e AnotherEntityName
-```
-
-### Documentation
-
-`make:entity` artisan command - generate stack of classes to work with the new entity in project.
-
-Syntax: 
+Publish package's resources.
 
 ```bash
-> php artisan make:entity [entity-name] [options]
+php artisan vendor:publish --provider="RonasIT\Support\EntityGeneratorServiceProvider"
 ```
 
-`entity-name` - Name of the Entity, recommended to use `CamelCase` naming style e.g. `WhitelistedDomain`
+## Usage
 
-`options` - one or more options from the lists below
+### Entity generation
+
+Call `make:entity` artisan command to run the generation command for the full stack of the entity classes:
+
+```bash
+php artisan make:entity Post
+```
+
+Entity name may contains the subfolder, in this case generated `model` and `nova resource` will be placed to
+the subfolder as well:
+
+```bash
+php artisan make:entity Forum/Blog/Post
+```
 
 #### Fields definition options
 
-    -i|--integer               : Add integer field to entity.
+The `make:entity` provides an ability to set the entity's fields, which will be used in all created class (e.g. Model, Create/Update requests, Test fixtures, etc.)
 
-    -I|--integer-required      : Add required integer field to entity. If you want to specify default value you have to do it manually.
+```bash
+php artisan make:entity Post -S title -S text -t published_at
+```
 
-    -f|--float                 : Add float field to entity.
+Next field types available to use:
 
-    -F|--float-required        : Add required float field to entity. If you want to specify default value you have to do it manually.
-
-    -s|--string                : Add string field to entity. Default type is VARCHAR(255) but you can change it manually in migration.
-
-    -S|--string-required       : Add required string field to entity. If you want to specify default value ir size you have to do it manually.
-
-    -b|--boolean               : Add boolean field to entity.
-
-    -B|--boolean-required      : Add boolean field to entity. If you want to specify default value you have to do it manually.
-
-    -t|--timestamp             : Add timestamp field to entity.
-
-    -T|--timestamp-required    : Add timestamp field to entity. If you want to specify default value you have to do it manually.
-
-    -j|--json                  : Add json field to entity.
+| Type | Modificator | Short Option | Full Option |
+| -------- | -------- | ------- | ------- |
+| `integer` | | `-i` | `--integer` |
+| `integer` | required | `-I` | `--integer-required` |
+| `float` | | `-f` | `--float` |
+| `float` | required | `-F` | `--float-required` |
+| `string` | | `-s` | `--string` |
+| `string` | required | `-S` | `--string-required` |
+| `boolean` | | `-b` | `--boolean` |
+| `boolean` | required | `-B` | `--boolean-required` |
+| `datetime` | | `-t` | `--timestamp` |
+| `datetime` | required | `-T` | `--timestamp-required` |
+| `json` | | `-j` | `--json` |
 
 #### Relations definitions options
 
-    -a|--has-one               : Set hasOne relations between you entity and existed entity.
+Command also provides an abiity to set relations, which will be add to the model
 
-    -A|--has-many              : Set hasMany relations between you entity and existed entity.
+```bash
+php artisan make:entity Post -A Comment -A Reaction
+```
 
-    -e|--belongs-to            : Set belongsTo relations between you entity and existed entity.
+Relation may be placed in the subfolder, in this case - set the relative namespace from the model directory:
 
-    -E|--belongs-to-many       : Set belongsToMany relations between you entity and existed entity.   
+```bash
+php artisan make:entity Post -A Blog/Comment -A Forum/Common/Reaction
+```
+
+Next options available to set relations:
+
+| Type  | Short Option | Full Option |
+| -------- | ------- | ------- |
+| Has one | `-a` | `--has-one` |
+| Has many | `-A` | `--has-many` |
+| Belongs to | `-e` | `--belongs-to` |
+| Belongs to many | `-E` | `--belongs-to-many` |
 
 #### Single class generation mode options
 
-    --only-model               : Set this flag if you want to create only model. This flag is a higher priority than --only-migration, --only-tests and --only-repository.
+Command allows to generate only single entity-related class
 
-    --only-repository          : Set this flag if you want to create only repository. This flag is a higher priority than --only-tests and --only-migration.
+```bash
+php artisan make:entity Post --only-tests
+```
 
-    --only-service             : Set this flag if you want to create only service.
+Next options available:
 
-    --only-controller          : Set this flag if you want to create only controller.
-
-    --only-requests            : Set this flag if you want to create only requests.
-
-    --only-migration           : Set this flag if you want to create only repository. This flag is a higher priority than --only-tests.
-
-    --only-factory             : Set this flag if you want to create only factory.
-
-    --only-tests               : Set this flag if you want to create only tests.
-
-    --only-seeder              : Set this flag if you want to create only seeder.
-
-    --only-resource            : Set this flag if you want to create only resource.
+- `--only-model`
+- `--only-repository`
+- `--only-service`
+- `--only-controller`
+- `--only-requests`
+- `--only-migration`
+- `--only-factory`
+- `--only-tests`
+- `--only-seeder`
+- `--only-resource`
 
 #### Mode combination options
 
-    --only-entity              : Generate stack of classes to work with entity inside the app (Migration/Model/Service/Repository)
+Sometimes you need to generate the stack of classes to work with some entity only inside the application without
+the ability to manipulate it using API, or you need to create only API for already existed entity.
 
-    --only-api                 : Generate stack of classes to implement API part to work with entity (routes/Controller/Requests/Tests)
+For this task, there are two mutually exclusive options:
 
-#### Additional generation options
+1. `--only-entity`, generate stack of classes to work with entity only inside the app, it includes:
+- `migration`
+- `model`
+- `service`
+- `repository`
 
-    --methods=[default: CRUD]  : Don't work for `--only-entity` option. Will generate API classes (routes, controller's
-                                 methods, requests, tests) only for choosed methods.
-                                 C - created
-                                 R - read (search and get by id)
-                                 U - update
-                                 D - delete
+2. `--only-api`, generate stack of classes to implement API part to work with already existed entity:
+- `routes`
+- `controller`
+- `requests`
+- `tests`
+
+#### Methods setting options
+
+By default, the command generate all methods from the CRUD stack which includes:
+- create
+- update
+- delete
+- search
+- get by id
+
+But what if we need to create the interface only for updating and reading the entity? Just use the `methods` option for it:
+
+```bash
+php artisan make:entity Post --methods=RU
+```
+
+Feel free to use any combinations of actions in any order. Each action has it own character:
+- `C` create
+- `U` update
+- `D` delete
+- `R` read (search and get by id)
 
 ## Release notes
 
