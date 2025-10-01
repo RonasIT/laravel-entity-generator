@@ -28,7 +28,7 @@ Call `make:entity` artisan command to run the generation command for the full st
 php artisan make:entity Post
 ```
 
-Entity name may contains the subfolder, in this case generated `model` and `nova resource` will be placed to
+Entity name may contain the subfolder, in this case generated `model` and `nova resource` will be placed to
 the subfolder as well:
 
 ```bash
