@@ -61,7 +61,7 @@ Next field types available to use:
 
 #### Relations definitions options
 
-Command also provides an abiity to set relations, which will be add to the model
+Command also provides an ability to set relations, which will be added to the model
 
 ```bash
 php artisan make:entity Post -A Comment -A Reaction
