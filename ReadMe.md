@@ -90,7 +90,7 @@ Command allows to generate only single entity-related class
 php artisan make:entity Post --only-tests
 ```
 
-Next options available:
+The following options are available:
 
 - `--only-model`
 - `--only-repository`
