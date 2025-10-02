@@ -2,16 +2,14 @@
 
 namespace App\Http\Resources\Post;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use RonasIT\Support\Http\BaseResource;
 use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
 
 /**
  * @property Post $resource
  */
-class PostResource extends JsonResource
+class PostResource extends BaseResource
 {
-    public static $wrap = null;
-
     //TODO implement custom serialization logic or remove method redefining
     public function toArray($request): array
     {
