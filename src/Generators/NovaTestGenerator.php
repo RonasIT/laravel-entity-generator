@@ -16,8 +16,6 @@ use Illuminate\Support\Arr;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
-    protected $novaResourceName;
-
     protected string $novaPath;
 
     protected string $fullNovaResourceNamePath;
@@ -54,8 +52,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
                 );
             }
 
-            $this->novaResourceName = Arr::first($novaResources);
-            $this->fullNovaResourceNamePath = "App\\Nova\\{$this->novaResourceName}";
+            $this->fullNovaResourceNamePath = "App\\Nova\\" . Arr::first($novaResources);
 
             if ($this->classExists('nova', "Nova{$this->model}ResourceTest")) {
                 $this->throwFailureException(
@@ -80,7 +77,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $actions = $this->getActions();
         $filters = $this->collectFilters();
 
-        $resourceClass = Str::afterLast($this->novaResourceName, '\\');
+        $resourceClass = Str::afterLast($this->fullNovaResourceNamePath, '\\');
 
         $fileContent = $this->getStub('nova_test', [
             'entity_namespace' => $this->getNamespace('models', $this->modelSubFolder),
