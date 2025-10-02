@@ -142,14 +142,14 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return $resources;
     }
 
-    protected function isResourceNameContainModel(string $resource): bool
+    protected function isResourceNameContainModel(string $class): bool
     {
-        return str_contains($resource, $this->model);
+        return str_contains($class, $this->model);
     }
 
-    protected function isNovaResource(string $resource): bool
+    protected function isNovaResource(string $class): bool
     {
-        return is_subclass_of("App\\Nova\\{$resource}", 'App\\Nova\\Resource');
+        return is_subclass_of("App\\Nova\\{$class}", 'App\\Nova\\Resource');
     }
 
     protected function loadNovaActions()
