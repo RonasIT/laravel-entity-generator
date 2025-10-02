@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Exceptions;
 
 use Exception;
+use Illuminate\Support\Str;
 use RonasIT\Support\Enums\ResourceTypeEnum;
 
 class ResourceAlreadyExistsException extends Exception
@@ -10,8 +11,27 @@ class ResourceAlreadyExistsException extends Exception
     public function __construct(
         protected string $entityName,
         protected ResourceTypeEnum $resourceType,
-        protected ?string $entityNamespace = null,
+        protected ?string $entityNamespace = '',
     ) {
-        parent::__construct("Cannot create {$entityNamespace}{$resourceType->value} cause it already exists. Remove {$entityName}{$resourceType->value} and run command again.");
+        $formattedEntityName = $this->formatEntityName($resourceType, $entityName);
+
+        $entityPlaceholder = $entityNamespace
+            ? "{$entityNamespace}\\{$formattedEntityName}"
+            : $formattedEntityName;
+
+        parent::__construct("Cannot create {$entityPlaceholder} cause it already exists. Remove {$entityPlaceholder} and run command again.");
+    }
+
+    protected function formatEntityName(ResourceTypeEnum $resourceType, string $entityName): string
+    {
+        switch ($resourceType) {
+            case ResourceTypeEnum::Model:
+                return "{$entityName} {$resourceType->value}";
+
+            case ResourceTypeEnum::NovaTest:
+                return "Nova{$entityName}Test";
+        }
+
+        return $entityName . Str::studly($resourceType->value);
     }
 }
