@@ -30,6 +30,7 @@ trait NovaTestGeneratorMockTrait
 
         $fileSystemMock->novaModels = [
             'WelcomeBonusResource.php' => $this->mockPhpFileContent(),
+            'PostResource.php' => $this->mockPhpFileContent(),
         ];
 
         $fileSystemMock->models = [
@@ -41,5 +42,10 @@ trait NovaTestGeneratorMockTrait
         ];
 
         $fileSystemMock->setStructure();
+    }
+
+    public function getCommonNovaResourcesMock(array $result = []): array
+    {
+        return $this->functionCall('getCommonNovaResources', [], $result);
     }
 }
