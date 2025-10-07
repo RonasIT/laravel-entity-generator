@@ -28,7 +28,7 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockNovaServiceProviderExists();
 
         $this->mockClass(NovaTestGenerator::class, [
-            $this->getCommonNovaResourcesMock([]),
+            $this->getCommonNovaResourcesMock(),
         ]);
 
         $this->assertExceptionThrew(
@@ -87,6 +87,7 @@ class NovaTestGeneratorTest extends TestCase
     {
         config([
             'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+            'entity-generator.stubs.nova_test' => 'incorrect_stub',
         ]);
 
         $this->mockNativeGeneratorFunctions(
@@ -101,11 +102,6 @@ class NovaTestGeneratorTest extends TestCase
         ]);
 
         $this->mockNovaRequestClassCall();
-
-        config([
-            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
-            'entity-generator.stubs.nova_test' => 'incorrect_stub',
-        ]);
 
         $this->mockDBTransactionStartRollback();
 
