@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Exceptions;
 
 use Exception;
-use Illuminate\Support\Str;
 use RonasIT\Support\Enums\ResourceTypeEnum;
 
 class ResourceAlreadyExistsException extends Exception
@@ -24,14 +23,10 @@ class ResourceAlreadyExistsException extends Exception
 
     protected function formatEntityName(ResourceTypeEnum $resourceType, string $entityName): string
     {
-        switch ($resourceType) {
-            case ResourceTypeEnum::Model:
-                return "{$entityName} {$resourceType->value}";
-
-            case ResourceTypeEnum::NovaTest:
-                return "Nova{$entityName}Test";
-        }
-
-        return $entityName . Str::studly($resourceType->value);
+        return match ($resourceType) {
+            ResourceTypeEnum::Model => "{$entityName} {$resourceType->value}",
+            ResourceTypeEnum::NovaTest => "Nova{$entityName}Test",
+            default => $entityName . $resourceType->name,
+        };
     }
 }

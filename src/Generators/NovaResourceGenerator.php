@@ -68,7 +68,7 @@ class NovaResourceGenerator extends EntityGenerator
             if ($this->classExists('nova', "{$this->model}Resource")) {
                 throw new ResourceAlreadyExistsException(
                     entityName: $this->model,
-                    resourceType: ResourceTypeEnum::Resource,
+                    resourceType: ResourceTypeEnum::NovaResource,
                     entityNamespace:  $this->getNamespace('nova', $this->modelSubFolder),
                 );
             }
