@@ -85,8 +85,8 @@ class NovaResourceGenerator extends EntityGenerator
                 'model' => $this->model,
                 'fields' => $novaFields,
                 'types' => array_unique(data_get($novaFields, '*.type')),
-                'modelNamespace' => $this->getNamespace('models', $this->modelSubFolder),
-                'namespace' => $this->getNamespace('nova')
+                'imports' => $this->getImports(),
+                'namespace' => $this->getNamespace('nova', $this->modelSubFolder),
             ]);
 
             $this->saveClass('nova', "{$this->model}Resource", $fileContent, $this->modelSubFolder);
@@ -108,12 +108,12 @@ class NovaResourceGenerator extends EntityGenerator
             } else if (Arr::has($this->specialFieldNamesMap, $field->name)) {
                 $result[$field->name] = [
                     'type' => $this->specialFieldNamesMap[$field->name],
-                    'is_required' => $field->isRequired
+                    'is_required' => $field->isRequired,
                 ];
             } else {
                 $result[$field->name] = [
                     'type' => $fieldTypesMap[$field->type],
-                    'is_required' => $field->isRequired
+                    'is_required' => $field->isRequired,
                 ];
             }
         }
@@ -177,5 +177,18 @@ class NovaResourceGenerator extends EntityGenerator
         return $dbalConnection
             ->createSchemaManager()
             ->listTableColumns($table);
+    }
+
+    protected function getImports(): array
+    {
+        $imports = [
+            "{$this->getNamespace('models', $this->modelSubFolder)}\\{$this->model}",
+        ];
+
+        if (!empty($this->modelSubFolder)) {
+            $imports[] = "{$this->getNamespace('nova')}\\Resource";
+        }
+
+        return $imports;
     }
 }

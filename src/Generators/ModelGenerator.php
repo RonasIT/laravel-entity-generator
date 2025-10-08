@@ -193,7 +193,7 @@ class ModelGenerator extends EntityGenerator
     protected function generateClassNamespace(string $className, ?string $folder = null): string
     {
         $path = $this->getNamespace('models', $folder);
-        $psrPath = Str::replace('/', '\\', $className);
+        $psrPath = $this->pathToNamespace($className);
 
         return "{$path}\\{$psrPath}";
     }

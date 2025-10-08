@@ -117,7 +117,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
         foreach ($possibleNovaModelNames as $modelName) {
             if ($this->classExists('nova', $modelName)) {
-                $this->novaModelName = $modelName;
+                $this->novaModelName = $this->pathToNamespace($modelName);
 
                 return true;
             }
