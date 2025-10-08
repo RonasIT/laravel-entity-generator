@@ -134,24 +134,24 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
             $class = Str::before($relativePath, '.');
 
-            $className = Str::ucfirst($this->pathToNamespace($this->novaPath . $class));
+            $className = $this->pathToNamespace($this->novaPath . DIRECTORY_SEPARATOR . $class);
 
             if ($this->isResourceNameContainModel($className) && $this->isNovaResource($className)) {
-                $resources[] = $class;
+                $resources[] = $className;
             }
         }
 
         return $resources;
     }
 
-    protected function isResourceNameContainModel(string $class): bool
+    protected function isResourceNameContainModel(string $className): bool
     {
-        return str_contains($class, $this->model);
+        return str_contains($className, $this->model);
     }
 
-    protected function isNovaResource(string $class): bool
+    protected function isNovaResource(string $className): bool
     {
-        return is_subclass_of("App\\Nova\\{$class}", 'Laravel\\Nova\\Resource');
+        return is_subclass_of($className, 'Laravel\\Nova\\Resource');
     }
 
     protected function loadNovaActions()

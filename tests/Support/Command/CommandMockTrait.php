@@ -36,8 +36,13 @@ trait CommandMockTrait
     {
         $this->mockClass(NovaTestGenerator::class, [
             $this->functionCall(
+                name: 'pathToNamespace',
+                arguments: ['vfs://root/app/Nova/PostResource'],
+                result: 'App\Nova\PostResource',
+            ),
+            $this->functionCall(
                 name: 'isNovaResource',
-                arguments: ['PostResource'],
+                arguments: ['App\Nova\PostResource'],
             ),
             $this->functionCall(
                 name: 'loadNovaActions',
@@ -65,8 +70,13 @@ trait CommandMockTrait
     {
         $this->mockClass(NovaTestGenerator::class, [
             $this->functionCall(
+                name: 'pathToNamespace',
+                arguments: ['vfs://root/app/Nova/Forum/PostResource'],
+                result: 'App\Nova\Forum\PostResource',
+            ),
+            $this->functionCall(
                 name: 'isNovaResource',
-                arguments: ['Forum\PostResource'],
+                arguments: ['App\Nova\Forum\PostResource'],
             ),
             $this->functionCall(
                 name: 'loadNovaActions',

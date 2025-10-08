@@ -134,7 +134,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockClass(NovaTestGenerator::class, [
             $this->getCommonNovaResourcesMock([
-                'WelcomeBonusResource',
+                'App\Nova\WelcomeBonusResource',
             ]),
         ]);
 
@@ -169,7 +169,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockClass(NovaTestGenerator::class, [
             $this->getCommonNovaResourcesMock([
-                'WelcomeBonusResource',
+                'App\Nova\WelcomeBonusResource',
             ]),
         ]);
 
