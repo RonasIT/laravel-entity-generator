@@ -6,6 +6,9 @@ use {{ $namespace }}\Request;
 use {{ $servicesNamespace }}\{{ $entity }}Service;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 @endif
+@if($method === $requestsGenerator::SEARCH_METHOD)
+use {{ $entityNamespace }};
+@endif
 
 class {{ $method }}{{ $entity }}Request extends Request
 {
@@ -15,7 +18,7 @@ class {{ $method }}{{ $entity }}Request extends Request
 @if(!empty($parameters))
         return [
 @foreach($parameters as $parameter)
-            '{{ $parameter['name'] }}' => '{{ implode('|', $parameter['rules']) }}',
+            '{{ $parameter['name'] }}' => '{!! implode('|', $parameter['rules']) !!}'@if ($parameter['name'] === 'order_by') . $this->getOrderableFields({{ Str::singular($entity) }}::class)@endif,
 @endforeach
         ];
 @else

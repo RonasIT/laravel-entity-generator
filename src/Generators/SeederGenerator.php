@@ -24,19 +24,9 @@ class SeederGenerator extends EntityGenerator
             return;
         }
 
-        if (!file_exists($this->seedsPath)) {
-            mkdir($this->seedsPath);
-        }
+        $this->createNamespace('seeders');
 
-        if (!file_exists($this->databaseSeederPath)) {
-            list($basePath, $databaseSeederDir) = extract_last_part($this->databaseSeederPath, '/');
-
-            if (!is_dir($databaseSeederDir)) {
-                mkdir($databaseSeederDir);
-            }
-
-            $this->createDatabaseSeeder();
-        }
+        $this->createDatabaseSeeder();
 
         $this->createEntitySeeder();
 
@@ -46,7 +36,7 @@ class SeederGenerator extends EntityGenerator
     protected function createDatabaseSeeder(): void
     {
         $content = "<?php\n\n" . $this->getStub('database_empty_seeder', [
-            'namespace' => $this->getOrCreateNamespace('seeders')
+            'namespace' => $this->getNamespace('seeders')
         ]);
 
         file_put_contents($this->databaseSeederPath, $content);
@@ -61,8 +51,8 @@ class SeederGenerator extends EntityGenerator
         $content = "<?php\n\n" . $this->getStub('seeder', [
             'entity' => $this->model,
             'relations' => $this->prepareRelations(),
-            'namespace' => $this->getOrCreateNamespace('seeders'),
-            'factoryNamespace' => $this->getOrCreateNamespace('factories'),
+            'namespace' => $this->getNamespace('seeders'),
+            'factoryNamespace' => $this->getNamespace('factories'),
         ]) . "\n";
 
         $seederPath = "{$this->seedsPath}/{$this->model}Seeder.php";
@@ -72,21 +62,6 @@ class SeederGenerator extends EntityGenerator
         $createMessage = "Created a new Seeder on path: {$seederPath}";
 
         event(new SuccessCreateMessage($createMessage));
-    }
-
-    protected function prepareRelations(): array
-    {
-        $result = [];
-
-        foreach ($this->relations as $type => $relationsByType) {
-            $result[$type] = [];
-
-            foreach ($relationsByType as $relation) {
-                $result[$type][] = class_basename($relation);
-            }
-        }
-
-        return $result;
     }
 
     protected function appendSeederToList(): void

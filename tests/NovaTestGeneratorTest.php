@@ -29,7 +29,7 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockNovaServiceProviderExists();
 
         $this->mockClass(NovaTestGenerator::class, [
-            $this->getCommonNovaResourcesMock([]),
+            $this->getCommonNovaResourcesMock(),
         ]);
 
         $this->assertExceptionThrew(
@@ -86,12 +86,13 @@ class NovaTestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'WelcomeBonusFactory'], false),
         ]);
 
-        $this->mockNovaRequestClassCall();
-
-        config([
-            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
-            'entity-generator.stubs.nova_test' => 'incorrect_stub',
+        $this->mockClass(NovaTestGenerator::class, [
+            $this->getCommonNovaResourcesMock([
+                'WelcomeBonusResource',
+            ]),
         ]);
+
+        $this->mockNovaRequestClassCall();
 
         $this->mockDBTransactionStartRollback();
 
@@ -132,6 +133,12 @@ class NovaTestGeneratorTest extends TestCase
             $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
             $this->nativeClassExistsMethodCall(["App\Nova\WelcomeBonusResource"]),
         );
+
+        $this->mockClass(NovaTestGenerator::class, [
+            $this->getCommonNovaResourcesMock([
+                'App\Nova\WelcomeBonusResource',
+            ]),
+        ]);
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')
@@ -267,6 +274,12 @@ class NovaTestGeneratorTest extends TestCase
             $this->nativeClassExistsMethodCall(['App\Nova\Resources\WelcomeBonusDraftResource']),
             $this->nativeClassExistsMethodCall([WelcomeBonus::class, true]),
         );
+
+        $this->mockClass(NovaTestGenerator::class, [
+            $this->getCommonNovaResourcesMock([
+                'App\Nova\WelcomeBonusResource',
+            ]),
+        ]);
 
         $this->mockNovaRequestClassCall();
 

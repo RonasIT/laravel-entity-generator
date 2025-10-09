@@ -47,4 +47,9 @@ trait NovaTestGeneratorMockTrait
 
         $fileSystemMock->setStructure();
     }
+
+    public function getCommonNovaResourcesMock(array $result = []): array
+    {
+        return $this->functionCall('getCommonNovaResources', [], $result);
+    }
 }

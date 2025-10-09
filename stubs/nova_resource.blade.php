@@ -1,12 +1,13 @@
 namespace {{ $namespace }};
 
 @inject('str', 'Illuminate\Support\Str')
-use {{ $modelNamespace }}\{{ $model }};
+@foreach($imports as $import)
+use {{ $import }};
+@endforeach
 use Illuminate\Http\Request;
 @foreach($types as $fieldType)
 use Laravel\Nova\Fields\{{ $fieldType }};
 @endforeach
-use Laravel\Nova\Resource;
 
 class {{ $model }}Resource extends Resource
 {

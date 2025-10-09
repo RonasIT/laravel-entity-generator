@@ -20,17 +20,6 @@ trait CommandMockTrait
         $fileSystemMock->setStructure();
     }
 
-    public function mockFilesystemWithPostModelAndResource(): void
-    {
-        $fileSystemMock = new FileSystemMock();
-
-        $fileSystemMock->models = ['Post.php' => $this->mockPhpFileContent()];
-        $fileSystemMock->novaModels = ['PostResource.php' => $this->mockPhpFileContent()];
-        $fileSystemMock->config = ['entity-generator.php' => ''];
-
-        $fileSystemMock->setStructure();
-    }
-
     public function mockFilesystem(): void
     {
         $fileSystemMock = new FileSystemMock();
@@ -63,38 +52,8 @@ trait CommandMockTrait
             $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
-            $this->nativeClassExistsMethodCall(['App\Nova\PostResource']),
-            $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
-        );
-    }
-
-    public function mockGeneratorOnlyNovaTests(): void
-    {
-        $this->mockClass(NovaTestGenerator::class, [
-            $this->functionCall(
-                name: 'loadNovaActions',
-                result: [],
-            ),
-            $this->functionCall(
-                name: 'loadNovaFields',
-                result: [],
-            ),
-            $this->functionCall(
-                name: 'loadNovaFilters',
-                result: [],
-            ),
-            $this->classExistsMethodCall(['models', 'Post']),
-            $this->classExistsMethodCall(['nova', 'NovaPostResourceTest'], false),
-            $this->classExistsMethodCall(['models', 'User'], false),
-            $this->classExistsMethodCall(['factories', 'PostFactory']),
-            $this->classExistsMethodCall(['factories', 'PostFactory']),
-        ]);
-
-        $this->mockDBTransactionStartRollback();
-
-        $this->mockNativeGeneratorFunctions(
-            $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
-            $this->nativeClassExistsMethodCall(['App\Nova\PostResource']),
+            $this->nativeUcwordsMethodCall(['vfs:\\\\root\\app\\Nova\\PostResource', '\\'], 'App\Nova\PostResource'),
+            $this->nativeIsSubClassOfMethodCall(['App\Nova\PostResource', 'Laravel\\Nova\\Resource']),
             $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
         );
     }
@@ -120,8 +79,27 @@ trait CommandMockTrait
             $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Forum\Post', true]),
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
-            $this->nativeClassExistsMethodCall(['App\Nova\Forum\PostResource']),
+            $this->nativeUcwordsMethodCall(['vfs:\\\\root\\app\\Nova\\Forum\\PostResource', '\\'], 'App\Nova\Forum\PostResource'),
+            $this->nativeIsSubClassOfMethodCall(['App\Nova\Forum\PostResource', 'Laravel\\Nova\\Resource']),
             $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Forum\Post', true]),
         );
+    }
+
+    public function nativeIsSubClassOfMethodCall(array $arguments, bool $result = true): array
+    {
+        return [
+            'function' => 'is_subclass_of',
+            'arguments' => $arguments,
+            'result' => $result,
+        ];
+    }
+
+    public function nativeUcwordsMethodCall(array $arguments, string $result): array
+    {
+        return [
+            'function' => 'ucwords',
+            'arguments' => $arguments,
+            'result' => $result,
+        ];
     }
 }
