@@ -301,4 +301,9 @@ abstract class EntityGenerator
 
         return $result;
     }
+
+    protected function pathToNamespace(string $name): string
+    {
+        return Str::replace('/', '\\', $name);
+    }
 }
