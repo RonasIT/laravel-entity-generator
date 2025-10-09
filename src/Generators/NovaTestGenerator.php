@@ -30,6 +30,14 @@ class NovaTestGenerator extends AbstractTestsGenerator
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
+            if ($this->classExists('nova', "Nova{$this->model}ResourceTest")) {
+                $this->throwFailureException(
+                    ClassAlreadyExistsException::class,
+                    "Cannot create Nova{$this->model}ResourceTest cause it's already exist.",
+                    "Remove Nova{$this->model}ResourceTest."
+                );
+            }
+
             $novaResources = $this->getCommonNovaResources();
 
             if (count($novaResources) > 1) {
@@ -53,14 +61,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
             }
 
             $this->novaResourceClassName = Arr::first($novaResources);
-
-            if ($this->classExists('nova', "Nova{$this->model}ResourceTest")) {
-                $this->throwFailureException(
-                    ClassAlreadyExistsException::class,
-                    "Cannot create Nova{$this->model}ResourceTest cause it's already exist.",
-                    "Remove Nova{$this->model}ResourceTest."
-                );
-            }
 
             parent::generate();
         } else {
