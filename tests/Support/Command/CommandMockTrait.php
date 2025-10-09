@@ -5,7 +5,6 @@ namespace RonasIT\Support\Tests\Support\Command;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
-use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\SchemaManager;
 
 trait CommandMockTrait
 {
