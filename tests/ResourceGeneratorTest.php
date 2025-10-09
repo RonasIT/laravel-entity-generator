@@ -20,7 +20,7 @@ class ResourceGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: 'Cannot create PostResource cause it already exists. Remove PostResource and run command again.',
+            message: 'Cannot create PostResource cause it already exists. Remove vfs://root/app/Http/Resources/PostResource.php and run command again.',
         );
 
         app(ResourceGenerator::class)
@@ -37,7 +37,7 @@ class ResourceGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: 'Cannot create PostsCollectionResource cause it already exists. Remove PostsCollectionResource and run command again.',
+            message: 'Cannot create PostsCollectionResource cause it already exists. Remove vfs://root/app/Http/Resources/PostsCollectionResource.php and run command again.',
         );
 
         app(ResourceGenerator::class)

@@ -6,7 +6,6 @@ use Doctrine\DBAL\DriverManager;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
-use RonasIT\Support\Enums\ResourceTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
@@ -66,11 +65,9 @@ class NovaResourceGenerator extends EntityGenerator
             }
 
             if ($this->classExists('nova', "{$this->model}Resource")) {
-                throw new ResourceAlreadyExistsException(
-                    entityName: $this->model,
-                    resourceType: ResourceTypeEnum::NovaResource,
-                    entityNamespace:  $this->getNamespace('nova', $this->modelSubFolder),
-                );
+                $path = $this->getClassPath('nova', "{$this->model}Resource", $this->modelSubFolder);
+
+                throw new ResourceAlreadyExistsException($path);
             }
 
             if (!$this->isStubExists('nova_resource')) {

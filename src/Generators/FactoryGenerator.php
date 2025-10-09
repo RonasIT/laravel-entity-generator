@@ -6,7 +6,6 @@ use Faker\Generator as Faker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use RonasIT\Support\Enums\ResourceTypeEnum;
 use RonasIT\Support\Exceptions\FakerMethodNotFoundException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
@@ -38,7 +37,9 @@ class FactoryGenerator extends EntityGenerator
         }
 
         if ($this->classExists('factories', "{$this->model}Factory")) {
-            throw new ResourceAlreadyExistsException($this->model, ResourceTypeEnum::Factory);
+            $path = $this->getClassPath('factories', "{$this->model}Factory");
+
+            throw new ResourceAlreadyExistsException($path);
         }
 
         if (!$this->isStubExists('factory')) {

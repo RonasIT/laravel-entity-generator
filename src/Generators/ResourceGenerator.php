@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Generators;
 
-use RonasIT\Support\Enums\ResourceTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
@@ -26,7 +25,9 @@ class ResourceGenerator extends EntityGenerator
         $pluralName = $this->getPluralName($this->model);
 
         if ($this->classExists('resources', "{$pluralName}CollectionResource")) {
-            throw new ResourceAlreadyExistsException($pluralName, ResourceTypeEnum::CollectionResource);
+            $path = $this->getClassPath('resources', "{$pluralName}CollectionResource");
+
+            throw new ResourceAlreadyExistsException($path);
         }
 
         $collectionResourceContent = $this->getStub('collection_resource', [
@@ -43,7 +44,9 @@ class ResourceGenerator extends EntityGenerator
     public function generateResource(): void
     {
         if ($this->classExists('resources', "{$this->model}Resource")) {
-            throw new ResourceAlreadyExistsException($this->model, ResourceTypeEnum::Resource);
+            $path = $this->getClassPath('resources', "{$this->model}Resource");
+
+            throw new ResourceAlreadyExistsException($path);
         }
 
         $resourceContent = $this->getStub('resource', [

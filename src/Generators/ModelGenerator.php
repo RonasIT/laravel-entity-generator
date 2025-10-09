@@ -4,7 +4,6 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RonasIT\Support\Enums\ResourceTypeEnum;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
@@ -19,11 +18,9 @@ class ModelGenerator extends EntityGenerator
     public function generate(): void
     {
         if ($this->classExists('models', $this->model, $this->modelSubFolder)) {
-            throw new ResourceAlreadyExistsException(
-                entityName: $this->model,
-                resourceType: ResourceTypeEnum::Model,
-                entityNamespace: $this->getNamespace('models', $this->modelSubFolder),
-            );
+            $path = $this->getClassPath('models', $this->model, $this->modelSubFolder);
+
+            throw new ResourceAlreadyExistsException($path);
         }
 
         if ($this->isStubExists('model') && (!$this->hasRelations() || $this->isStubExists('relation', 'model'))) {

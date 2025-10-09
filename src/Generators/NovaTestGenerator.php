@@ -5,7 +5,6 @@ namespace RonasIT\Support\Generators;
 use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
 use Laravel\Nova\Http\Requests\NovaRequest;
-use RonasIT\Support\Enums\ResourceTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
@@ -27,7 +26,9 @@ class NovaTestGenerator extends AbstractTestsGenerator
             }
 
             if ($this->classExists('nova', "Nova{$this->model}Test")) {
-                throw new ResourceAlreadyExistsException($this->model, ResourceTypeEnum::NovaTest);
+                $path = $this->getClassPath('nova', "Nova{$this->model}Test");
+
+                throw new ResourceAlreadyExistsException($path);
             }
 
             parent::generate();
