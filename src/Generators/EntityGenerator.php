@@ -155,7 +155,6 @@ abstract class EntityGenerator
         $path = $this->getPath($path, $subFolder);
 
         return base_path("{$path}/{$name}.php");
-
     }
 
     protected function saveClass($path, $name, $content, ?string $entityFolder = null): string
