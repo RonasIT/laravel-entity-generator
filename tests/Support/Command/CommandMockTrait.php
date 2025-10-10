@@ -92,10 +92,6 @@ trait CommandMockTrait
 
     public function nativeUcwordsMethodCall(array $arguments, string $result): array
     {
-        return [
-            'function' => 'ucwords',
-            'arguments' => $arguments,
-            'result' => $result,
-        ];
+        return $this->functionCall('ucwords', $arguments, $result);
     }
 }
