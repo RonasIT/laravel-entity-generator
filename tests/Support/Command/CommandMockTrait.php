@@ -87,11 +87,7 @@ trait CommandMockTrait
 
     public function nativeIsSubClassOfMethodCall(array $arguments, bool $result = true): array
     {
-        return [
-            'function' => 'is_subclass_of',
-            'arguments' => $arguments,
-            'result' => $result,
-        ];
+        return $this->functionCall('is_subclass_of', $arguments, $result);
     }
 
     public function nativeUcwordsMethodCall(array $arguments, string $result): array
