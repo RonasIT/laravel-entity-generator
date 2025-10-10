@@ -7,6 +7,7 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Tests\Support\Test\TestMockTrait;
 
