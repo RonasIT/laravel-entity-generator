@@ -8,8 +8,8 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RonasIT\Support\Exceptions\FakerMethodNotFoundException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class FactoryGenerator extends EntityGenerator
 {
@@ -37,11 +37,9 @@ class FactoryGenerator extends EntityGenerator
         }
 
         if ($this->classExists('factories', "{$this->model}Factory")) {
-            $this->throwFailureException(
-                exceptionClass: ClassAlreadyExistsException::class,
-                failureMessage: "Cannot create {$this->model}Factory cause {$this->model}Factory already exists.",
-                recommendedMessage: "Remove {$this->model}Factory.",
-            );
+            $path = $this->getClassPath('factories', "{$this->model}Factory");
+
+            throw new ResourceAlreadyExistsException($path);
         }
 
         if (!$this->isStubExists('factory')) {
