@@ -304,6 +304,6 @@ abstract class EntityGenerator
 
     protected function pathToNamespace(string $name): string
     {
-        return Str::replace('/', '\\', $name);
+        return ucwords(Str::replace('/', '\\', $name), '\\');
     }
 }
