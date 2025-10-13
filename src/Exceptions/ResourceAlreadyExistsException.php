@@ -12,7 +12,7 @@ class ResourceAlreadyExistsException extends Exception
     ) {
         $entity = $this->getEntity();
 
-        parent::__construct("Cannot create {$entity} cause it already exists. Remove {$this->$filePath} and run command again.");
+        parent::__construct("Cannot create {$entity} cause it already exists. Remove {$this->filePath} and run command again.");
     }
 
     protected function getEntity(): string
