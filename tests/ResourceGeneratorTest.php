@@ -74,10 +74,17 @@ class ResourceGeneratorTest extends TestCase
         app(ResourceGenerator::class)
             ->setModel('Post')
             ->setFields([
-                'id',
-                'title',
-                'description',
-                'owner_id',
+                'integer' => ['priority'],
+                'integer-required' => ['media_id'],
+                'float' => ['seo_score'],
+                'float-required' => ['rating'],
+                'string' => ['description'],
+                'string-required' => ['title'],
+                'boolean' => ['is_reviewed'],
+                'boolean-required' => ['is_published'],
+                'timestamp' => ['reviewed_at', 'created_at', 'updated_at'],
+                'timestamp-required' => ['published_at'],
+                'json' => ['meta'],
             ])
             ->generate();
 
