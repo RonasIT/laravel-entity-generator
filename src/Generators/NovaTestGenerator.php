@@ -134,7 +134,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
             $class = Str::before($relativePath, '.');
 
-            $className = $this->pathToNamespace($this->novaPath . DIRECTORY_SEPARATOR . $class);
+            $className = $this->pathToNamespace($this->paths['nova'] . DIRECTORY_SEPARATOR . $class);
 
             if ($this->isResourceNameContainModel($className) && $this->isNovaResource($className)) {
                 $resources[] = $className;
