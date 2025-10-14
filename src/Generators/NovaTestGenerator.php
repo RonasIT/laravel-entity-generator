@@ -13,6 +13,7 @@ use Generator;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Illuminate\Support\Arr;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
@@ -31,11 +32,10 @@ class NovaTestGenerator extends AbstractTestsGenerator
     {
         if (class_exists(NovaServiceProvider::class)) {
             if ($this->classExists('nova', "Nova{$this->model}ResourceTest")) {
-                $this->throwFailureException(
-                    ClassAlreadyExistsException::class,
-                    "Cannot create Nova{$this->model}ResourceTest cause it's already exist.",
-                    "Remove Nova{$this->model}ResourceTest."
-                );
+
+                $path = $this->getClassPath('nova', "Nova{$this->model}ResourceTest");
+
+                throw new ResourceAlreadyExistsException($path);
             }
 
             $novaResources = $this->getCommonNovaResources();
@@ -178,7 +178,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
     {
         return true;
     }
-    
+
     protected function collectFilters(): array
     {
         $filtersFromFields = $this->getFiltersFromFields();
