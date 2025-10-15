@@ -4,8 +4,8 @@ namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Generators\NovaResourceGenerator;
 use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\NovaResourceGeneratorMockTrait;
 use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\Post;
@@ -62,8 +62,8 @@ class NovaResourceGeneratorTest extends TestCase
         ]);
 
         $this->assertExceptionThrew(
-            className: ClassAlreadyExistsException::class,
-            message: 'Cannot create PostResource cause PostResource already exists. Remove PostResource.',
+            className: ResourceAlreadyExistsException::class,
+            message: 'Cannot create PostResource cause it already exists. Remove vfs://root/app/Nova/PostResource.php and run command again.',
         );
 
         app(NovaResourceGenerator::class)

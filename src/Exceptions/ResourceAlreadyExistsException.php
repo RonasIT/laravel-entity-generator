@@ -3,15 +3,22 @@
 namespace RonasIT\Support\Exceptions;
 
 use Exception;
-use RonasIT\Support\Enums\ResourceTypeEnum;
+use Illuminate\Support\Str;
 
 class ResourceAlreadyExistsException extends Exception
 {
     public function __construct(
-        protected string $entityName,
-        protected ResourceTypeEnum $resourceType,
-        protected ?string $entityNamespace = null,
+        protected string $filePath,
     ) {
-        parent::__construct("Cannot create {$entityNamespace}{$resourceType->value} cause it already exists. Remove {$entityName}{$resourceType->value} and run command again.");
+        $entity = $this->getEntity();
+
+        parent::__construct("Cannot create {$entity} cause it already exists. Remove {$this->filePath} and run command again.");
+    }
+
+    protected function getEntity(): string
+    {
+        $fileName = Str::afterLast($this->filePath, '/');
+
+        return Str::before($fileName, '.php');
     }
 }

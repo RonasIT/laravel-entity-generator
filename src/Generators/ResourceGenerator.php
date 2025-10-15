@@ -2,8 +2,9 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class ResourceGenerator extends EntityGenerator
 {
@@ -25,11 +26,9 @@ class ResourceGenerator extends EntityGenerator
         $pluralName = $this->getPluralName($this->model);
 
         if ($this->classExists('resources', "{$pluralName}CollectionResource")) {
-            $this->throwFailureException(
-                ClassAlreadyExistsException::class,
-                "Cannot create {$pluralName}CollectionResource cause {$pluralName}CollectionResource already exists.",
-                "Remove {$pluralName}CollectionResource."
-            );
+            $path = $this->getClassPath('resources', "{$pluralName}CollectionResource");
+
+            throw new ResourceAlreadyExistsException($path);
         }
 
         $collectionResourceContent = $this->getStub('collection_resource', [
@@ -46,17 +45,16 @@ class ResourceGenerator extends EntityGenerator
     public function generateResource(): void
     {
         if ($this->classExists('resources', "{$this->model}Resource")) {
-            $this->throwFailureException(
-                ClassAlreadyExistsException::class,
-                "Cannot create {$this->model}Resource cause {$this->model}Resource already exists.",
-                "Remove {$this->model}Resource."
-            );
+            $path = $this->getClassPath('resources', "{$this->model}Resource");
+
+            throw new ResourceAlreadyExistsException($path);
         }
 
         $resourceContent = $this->getStub('resource', [
             'entity' => $this->model,
             'namespace' => $this->getNamespace('resources'),
             'model_namespace' => $this->getNamespace('models', $this->modelSubFolder),
+            'fields' => when($this->fields, fn () => Arr::flatten($this->fields)),
         ]);
 
         $this->saveClass('resources', "{$this->model}Resource", $resourceContent, $this->model);
