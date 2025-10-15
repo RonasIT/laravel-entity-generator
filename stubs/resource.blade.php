@@ -8,9 +8,19 @@ use {{ $model_namespace }}\{{ $entity }};
  */
 class {{ $entity }}Resource extends BaseResource
 {
+@if (empty($fields))
     //TODO implement custom serialization logic or remove method redefining
+@endif
     public function toArray($request): array
     {
-        return parent::toArray($request);
-    }
+    @if (!empty($fields))
+    return [
+    @foreach($fields as $field)
+        '{{ $field }}' => $this->resource->{{ $field }},
+    @endforeach
+    ];
+    @else
+    return parent::toArray($request);
+    @endif
+}
 }
