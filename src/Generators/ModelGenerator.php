@@ -51,6 +51,7 @@ class ModelGenerator extends EntityGenerator
             'importRelations' => $this->getImportedRelations(),
             'anotationProperties' => $this->generateAnnotationProperties($this->fields),
             'hasCarbonField' => !empty($this->fields['timestamp']) || !empty($this->fields['timestamp-required']),
+            'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
     }
 
@@ -205,6 +206,14 @@ class ModelGenerator extends EntityGenerator
             }
         }
 
+        foreach ($this->relations as $type => $relations) {
+            foreach ($relations as $relation) {
+                $relation = class_basename($relation);
+
+                $result[$this->getRelationName($relation, $type)] = $this->getRelationType($relation, $type);
+            }
+        }
+
         return $result;
     }
 
@@ -243,5 +252,14 @@ class ModelGenerator extends EntityGenerator
     protected function isRequired(string $typeName): bool
     {
         return Str::endsWith($typeName, 'required');
+    }
+
+    protected function getRelationType(string $relation, string $type): string
+    {
+        if (in_array($type, self::PLURAL_NUMBER_REQUIRED)) {
+            return "Collection|$relation";
+        }
+
+        return "{$relation}|null";
     }
 }
