@@ -69,6 +69,36 @@ class ResourceGeneratorTest extends TestCase
         ]);
     }
 
+    public function testCreateResourcesWithFields()
+    {
+        app(ResourceGenerator::class)
+            ->setModel('Post')
+            ->setFields([
+                'integer' => ['priority'],
+                'integer-required' => ['media_id'],
+                'float' => ['seo_score'],
+                'float-required' => ['rating'],
+                'string' => ['description'],
+                'string-required' => ['title'],
+                'boolean' => ['is_reviewed'],
+                'boolean-required' => ['is_published'],
+                'timestamp' => ['reviewed_at', 'created_at', 'updated_at'],
+                'timestamp-required' => ['published_at'],
+                'json' => ['meta'],
+            ])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('post_resource_with_fields.php', 'app/Http/Resources/Post/PostResource.php');
+        $this->assertGeneratedFileEquals('post_collection_resource.php', 'app/Http/Resources/Post/PostsCollectionResource.php');
+
+        $this->assertEventPushedChain([
+            SuccessCreateMessage::class => [
+                'Created a new Resource: PostResource',
+                'Created a new CollectionResource: PostsCollectionResource',
+            ],
+        ]);
+    }
+
     public function testCreateResourcesResourceStubNotExist()
     {
         config(['entity-generator.stubs.resource' => 'incorrect_stub']);

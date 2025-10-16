@@ -17,16 +17,7 @@ use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
-    protected string $novaPath;
-
     protected string $novaResourceClassName;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->novaPath = base_path($this->paths['nova']);
-    }
 
     public function generate(): void
     {
@@ -116,7 +107,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function getNovaFiles(): Generator
     {
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->novaPath));
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(base_path($this->paths['nova'])));
 
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
@@ -130,11 +121,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $resources = [];
 
         foreach ($this->getNovaFiles() as $file) {
-            $relativePath = Str::after($file->getPathname(), $this->novaPath . DIRECTORY_SEPARATOR);
+            $relativePath = Str::after($file->getPathname(), $this->paths['nova'] . DIRECTORY_SEPARATOR);
 
             $class = Str::before($relativePath, '.');
 
-            $className = $this->pathToNamespace($this->novaPath . DIRECTORY_SEPARATOR . $class);
+            $className = $this->pathToNamespace($this->paths['nova'] . DIRECTORY_SEPARATOR . $class);
 
             if ($this->isResourceNameContainModel($className) && $this->isNovaResource($className)) {
                 $resources[] = $className;

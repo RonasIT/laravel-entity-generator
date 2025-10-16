@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
@@ -53,6 +54,7 @@ class ResourceGenerator extends EntityGenerator
             'entity' => $this->model,
             'namespace' => $this->getNamespace('resources'),
             'model_namespace' => $this->getNamespace('models', $this->modelSubFolder),
+            'fields' => when($this->fields, fn () => Arr::flatten($this->fields)),
         ]);
 
         $this->saveClass('resources', "{$this->model}Resource", $resourceContent, $this->model);
