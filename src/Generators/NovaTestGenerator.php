@@ -35,11 +35,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
                 $foundedResources = implode(', ', $novaResources);
 
                 // TODO: Change exception message after https://github.com/RonasIT/laravel-entity-generator/issues/159 will be ready
-                $this->throwFailureException(
-                    EntityCreateException::class,
-                    "Cannot create Nova{$this->model}ResourceTest cause was found a lot of suitable resources: {$foundedResources}.",
-                    'Make test by yourself.'
-                );
+                    $this->throwFailureException(
+                        EntityCreateException::class,
+                        "Cannot create Nova{$this->model}ResourceTest cause was found a lot of suitable resources: {$foundedResources}.",
+                        'Please, use --resource-name option.'
+                    );
             }
 
             if (empty($novaResources)) {
@@ -57,6 +57,13 @@ class NovaTestGenerator extends AbstractTestsGenerator
         } else {
             event(new SuccessCreateMessage("Nova is not installed and NovaTest is skipped"));
         }
+    }
+
+    public function setMetaData(array $data): self
+    {
+        $this->novaResourceName = !empty($data['resource_name']) ? Str::studly($data['resource_name']) : null;
+
+        return $this;
     }
 
     public function generateTests(): void

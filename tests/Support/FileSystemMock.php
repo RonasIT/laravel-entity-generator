@@ -8,6 +8,7 @@ use org\bovigo\vfs\vfsStream;
 class FileSystemMock
 {
     public ?array $novaModels = null;
+    public ?array $novaResources = null;
     public ?array $novaActions = null;
     public ?array $models = null;
     public ?array $controllers = null;
@@ -29,6 +30,18 @@ class FileSystemMock
 
             foreach ($this->novaModels as $novaModel => $content) {
                 $structure['app']['Nova'][$novaModel] = $content;
+            }
+        }
+
+        if (!is_null($this->novaResources)) {
+            if (!array_key_exists('Nova', $structure['app'])) {
+                $structure['app']['Nova'] = [];
+            }
+
+            $structure['app']['Nova']['Resources'] = [];
+
+            foreach ($this->novaResources as $novaResource => $content) {
+                $structure['app']['Nova']['Resources'][$novaResource] = $content;
             }
         }
 
