@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use Generator;
@@ -43,6 +42,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             }
 
             if (empty($novaResources)) {
+                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create Nova{$this->model}ResourceTest cause {$this->model} Nova resource does not exist.",
