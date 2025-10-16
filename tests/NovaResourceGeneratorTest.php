@@ -63,7 +63,7 @@ class NovaResourceGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: 'Cannot create PostResource cause it already exists. Remove vfs://root/app/Nova/PostResource.php and run command again.',
+            message: 'Cannot create PostResource cause it already exists. Remove app/Nova/PostResource.php and run command again.',
         );
 
         app(NovaResourceGenerator::class)
