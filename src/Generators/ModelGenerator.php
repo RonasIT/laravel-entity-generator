@@ -42,14 +42,16 @@ class ModelGenerator extends EntityGenerator
 
     protected function getNewModelContent(): string
     {
+        $relations = $this->prepareRelations();
+
         return $this->getStub('model', [
             'entity' => $this->model,
             'fields' => Arr::collapse($this->fields),
-            'relations' => $this->prepareRelations(),
+            'relations' => $relations,
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->getNamespace('models', $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
-            'anotationProperties' => $this->generateAnnotationProperties($this->fields),
+            'annotationProperties' => $this->generateAnnotationProperties($this->fields, $relations),
             'hasCarbonField' => !empty($this->fields['timestamp']) || !empty($this->fields['timestamp-required']),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
@@ -82,13 +84,17 @@ class ModelGenerator extends EntityGenerator
                     $this->insertImport($content, $namespace);
                 }
 
+                $relationName = $this->getRelationName($this->model, $types[$type]);
+
                 $newRelation = $this->getStub('relation', [
-                    'name' => $this->getRelationName($this->model, $types[$type]),
+                    'name' => $relationName,
                     'type' => $types[$type],
                     'entity' => $this->model,
                 ]);
 
                 $fixedContent = preg_replace('/\}$/', "\n    {$newRelation}\n}", $content);
+
+                $this->insertPropertyAnnotation($fixedContent, $this->getRelationType($this->model, $types[$type]), $relationName);
 
                 $this->saveClass('models', $relation, $fixedContent);
             }
@@ -196,7 +202,7 @@ class ModelGenerator extends EntityGenerator
         return "{$path}\\{$psrPath}";
     }
 
-    protected function generateAnnotationProperties(array $fields): array
+    protected function generateAnnotationProperties(array $fields, array $relations): array
     {
         $result = [];
 
@@ -206,12 +212,8 @@ class ModelGenerator extends EntityGenerator
             }
         }
 
-        foreach ($this->relations as $type => $relations) {
-            foreach ($relations as $relation) {
-                $relation = class_basename($relation);
-
-                $result[$this->getRelationName($relation, $type)] = $this->getRelationType($relation, $type);
-            }
+        foreach ($relations as $relation) {
+            $result[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);
         }
 
         return $result;
@@ -254,12 +256,27 @@ class ModelGenerator extends EntityGenerator
         return Str::endsWith($typeName, 'required');
     }
 
-    protected function getRelationType(string $relation, string $type): string
+    protected function getRelationType(string $model, string $relation): string
     {
-        if (in_array($type, self::PLURAL_NUMBER_REQUIRED)) {
-            return "Collection|$relation";
+        if (in_array($relation, self::PLURAL_NUMBER_REQUIRED)) {
+            return "Collection<int, $model>";
         }
 
-        return "{$relation}|null";
+        return "{$model}|null";
+    }
+
+    protected function insertPropertyAnnotation(string &$content, string $propertyDataType, string $propertyName): void
+    {
+        $annotation = "* @property {$propertyDataType} \${$propertyName}";
+
+        if (!Str::contains($content, '/**')) {
+            $content = preg_replace('/^\s*class.*\n/m', "\n/**\n {$annotation}\n */$0", $content);
+        } else {
+            $content = preg_replace('/\*\/\n/', "{$annotation}\n $0", $content);
+        }
+
+        if (Str::contains($propertyDataType, 'Collection')) {
+            $this->insertImport($content, 'Illuminate\Database\Eloquent\Collection');
+        }
     }
 }

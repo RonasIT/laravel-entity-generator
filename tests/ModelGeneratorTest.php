@@ -41,7 +41,9 @@ class ModelGeneratorTest extends TestCase
 
     public function testRelationModelMissing()
     {
-        $this->mockFileSystemWithoutCommentModel();
+        $this->mockFilesystem([
+            'User.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
+        ]);
         
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
@@ -242,6 +244,28 @@ class ModelGeneratorTest extends TestCase
         $this->assertEventPushed(
             className: WarningEvent::class,
             message: 'Generation of model has been skipped cause the view incorrect_stub from the config entity-generator.stubs.relation is not exists. Please check that config has the correct view name value.',
+        );
+    }
+
+    public function testAddPropertyAnnotationToRelatedModel()
+    {
+        $this->mockFilesystem([
+            'Post.php' => $this->getFixture('new_model_without_fields.php'),
+        ]);
+
+        app(ModelGenerator::class)
+            ->setModel('Category')
+            ->setFields([])
+            ->setRelations(new RelationsDTO(
+                belongsToMany: ['Post'],
+            ))
+            ->generate();
+
+        $this->assertGeneratedFileEquals('related_model_with_property.php', 'app/Models/Post.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Category',
         );
     }
 }

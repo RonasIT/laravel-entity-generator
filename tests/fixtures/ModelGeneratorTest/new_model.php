@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Collection;
  * @property Carbon $published_at
  * @property array $meta
  * @property Comment|null $comment
- * @property Collection|User $users
+ * @property Collection<int, User> $users
  */
 class Post extends Model
 {
