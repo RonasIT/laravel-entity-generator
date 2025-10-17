@@ -87,6 +87,8 @@ class ModelGenerator extends EntityGenerator
                     'entity' => $this->model,
                 ]);
 
+                $this->insertImport($content, 'Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($types[$type]));
+
                 $fixedContent = preg_replace('/\}$/', "\n    {$newRelation}\n}", $content);
 
                 $this->saveClass('models', $relation, $fixedContent);
@@ -169,11 +171,13 @@ class ModelGenerator extends EntityGenerator
     {
         $result = [];
 
-        foreach ($this->relations as $relations) {
+        foreach ($this->relations as $relationName => $relations) {
             foreach ($relations as $relation) {
                 if ($this->shouldImportRelation($relation)) {
                     $result[] = $this->generateClassNamespace($relation);
                 }
+
+                $result[] = 'Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($relationName);
             }
         }
 

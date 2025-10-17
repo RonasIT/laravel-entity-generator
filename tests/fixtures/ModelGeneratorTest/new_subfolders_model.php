@@ -5,7 +5,9 @@ namespace App\Models\Forum;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 use App\Models\Comment;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Carbon\Carbon;
 
 /**
@@ -55,12 +57,12 @@ class Post extends Model
         'meta' => 'array',
     ];
 
-    public function comment()
+    public function comment(): HasOne
     {
         return $this->hasOne(Comment::class);
     }
 
-    public function users()
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
