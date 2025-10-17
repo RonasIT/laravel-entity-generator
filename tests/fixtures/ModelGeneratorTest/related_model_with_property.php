@@ -2,27 +2,25 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
-use App\Models\Forum\Author;
-use Illuminate\Database\Eloquent\Collection;
 
+//TODO: add @property annotation for each model's field
 /**
- * @property string $title
- * @property Collection<int, Author> $authors
+ * @property Collection<int, Category> $categories
  */
 class Post extends Model
 {
     use ModelTrait;
 
     protected $fillable = [
-        'title',
     ];
 
     protected $hidden = ['pivot'];
 
-    public function authors()
+    public function categories()
     {
-        return $this->hasMany(Author::class);
+        return $this->belongsToMany(Category::class);
     }
 }

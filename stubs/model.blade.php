@@ -8,11 +8,14 @@ use {{ $value }};
 @if($hasCarbonField)
 use Carbon\Carbon;
 @endif
+@if($hasCollectionType)
+use Illuminate\Database\Eloquent\Collection;
+@endif
 
-@if(!empty($anotationProperties))
+@if(!empty($annotationProperties))
 /**
-@foreach($anotationProperties as $key => $value)
- * @property {{ $value }} ${{ $key }}
+@foreach($annotationProperties as $key => $value)
+ * @property {!! $value !!} ${{ $key }}
 @endforeach
  */
 @else
