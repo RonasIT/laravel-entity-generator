@@ -51,10 +51,10 @@ class FactoryGenerator extends EntityGenerator
         $this->createNamespace('factories');
 
         $factoryContent = $this->getStub('factory', [
-            'namespace' => $this->getNamespace('factories'),
+            'namespace' => $this->generateNamespace($this->paths['factories']),
             'entity' => $this->model,
             'fields' => $this->prepareFields(),
-            'modelNamespace' => $this->getNamespace('models', $this->modelSubFolder),
+            'modelNamespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
         ]);
 
         $this->saveClass('factories', "{$this->model}Factory", $factoryContent);

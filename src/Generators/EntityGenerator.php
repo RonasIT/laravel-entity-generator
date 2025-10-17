@@ -32,6 +32,7 @@ abstract class EntityGenerator
         'database_seeder' => 'database/seeders',
         'tests' => 'tests',
         'routes' => 'routes',
+        'translations' => 'lang/en',
     ];
 
     protected $paths = [];
@@ -88,11 +89,21 @@ abstract class EntityGenerator
     public function __construct()
     {
         $this->paths = config('entity-generator.paths');
+
+        foreach ($this->paths as $configPath => $path) {
+            $pathParts = $this->getNamespacePathParts($path);
+
+            foreach ($pathParts as $part) {
+                if (!$this->isFolderHasCorrectCase($part, $configPath)) {
+                    throw new IncorrectClassPathException("Incorrect path to {$configPath}, {$part} folder must start with a capital letter, please specify the path according to the PSR.");
+                }
+            }
+        }
     }
 
-    protected function getNamespace(string $configPath, ?string $subFolder = null): string
+    protected function generateNamespace(string $path, ?string $additionalSubFolder = null): string
     {
-        $pathParts = $this->getNamespacePathParts($configPath, $subFolder);
+        $pathParts = $this->getNamespacePathParts($path, $additionalSubFolder);
 
         $namespace = array_map(fn (string $part) => ucfirst($part), $pathParts);
 
@@ -101,7 +112,7 @@ abstract class EntityGenerator
 
     protected function createNamespace(string $configPath, ?string $subFolder = null): void
     {
-        $path = $this->getPath($configPath, $subFolder);
+        $path = $this->getPath($this->paths[$configPath], $subFolder);
 
         $fullPath = base_path($path);
 
@@ -110,26 +121,20 @@ abstract class EntityGenerator
         }
     }
 
-    protected function getNamespacePathParts(string $configPath, ?string $subFolder = null): array
+    protected function getNamespacePathParts(string $path, ?string $additionalSubFolder = null): array
     {
-        $pathParts = explode('/', $this->getPath($configPath, $subFolder));
+        $pathParts = explode('/', $this->getPath($path, $additionalSubFolder));
 
         if (Str::endsWith(Arr::last($pathParts), '.php')) {
             array_pop($pathParts);
         }
 
-        foreach ($pathParts as $part) {
-            if (!$this->isFolderHasCorrectCase($part, $configPath)) {
-                throw new IncorrectClassPathException("Incorrect path to {$configPath}, {$part} folder must start with a capital letter, please specify the path according to the PSR.");
-            }
-        }
-
         return $pathParts;
     }
 
-    protected function getPath(string $configPath, ?string $subFolder = null): string
+    protected function getPath(string $path, ?string $subFolder = null): string
     {
-        return when($subFolder, fn () => Str::finish($this->paths[$configPath], '/') . $subFolder, $this->paths[$configPath]);
+        return when($subFolder, fn () => Str::finish($path, '/') . $subFolder, $path);
     }
 
     protected function isFolderHasCorrectCase(string $folder, string $configPath): bool
@@ -266,7 +271,7 @@ abstract class EntityGenerator
     {
         $subfolder = when($model === $this->model, $this->modelSubFolder);
 
-        $modelNamespace = $this->getNamespace('models', $subfolder);
+        $modelNamespace = $this->generateNamespace($this->paths['models'], $subfolder);
 
         return "{$modelNamespace}\\{$model}";
     }
