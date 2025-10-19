@@ -16,9 +16,13 @@ class {{ $method }}{{ $entity }}Request extends Request
     public function rules(): array
     {
 @if(!empty($parameters))
+@if($needToValidateWith)
+        $availableRelations  = implode(',', $this->getAvailableRelations());
+
+@endif
         return [
 @foreach($parameters as $parameter)
-            '{{ $parameter['name'] }}' => '{!! implode('|', $parameter['rules']) !!}'@if ($parameter['name'] === 'order_by') . $this->getOrderableFields({{ Str::singular($entity) }}::class)@endif,
+            '{{ $parameter['name'] }}' => '{!! implode('|', $parameter['rules']) !!}'@if ($parameter['name'] === 'order_by') . $this->getOrderableFields({{ Str::singular($entity) }}::class)@elseif($parameter['name'] === 'with.*'){{ ' . $availableRelations' }}@endif,
 @endforeach
         ];
 @else
@@ -39,6 +43,16 @@ class {{ $method }}{{ $entity }}Request extends Request
         if (!$service->exists($this->route('id'))) {
             throw new NotFoundHttpException(__('validation.exceptions.not_found', ['entity' => '{{ $entity }}']));
         }
+    }
+@endif
+@if($needToValidateWith)
+
+    //TODO: don't forget to review relations list
+    protected function getAvailableRelations(): array
+    {
+        return [
+            'role',
+        ];
     }
 @endif
 }

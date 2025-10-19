@@ -9,6 +9,8 @@ class SearchPostsRequest extends Request
 {
     public function rules(): array
     {
+        $availableRelations  = implode(',', $this->getAvailableRelations());
+
         return [
             'page' => 'integer',
             'per_page' => 'integer',
@@ -17,7 +19,15 @@ class SearchPostsRequest extends Request
             'all' => 'boolean',
             'with' => 'array',
             'query' => 'string|nullable',
-            'with.*' => 'string',
+            'with.*' => 'string|in:' . $availableRelations,
+        ];
+    }
+
+    //TODO: don't forget to review relations list
+    protected function getAvailableRelations(): array
+    {
+        return [
+            'role',
         ];
     }
 }
