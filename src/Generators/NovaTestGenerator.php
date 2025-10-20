@@ -51,6 +51,8 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
             $this->novaResourceClassName = Arr::first($novaResources);
 
+            $this->entity = Str::afterLast($this->novaResourceClassName, '\\');
+
             parent::generate();
         } else {
             event(new SuccessCreateMessage("Nova is not installed and NovaTest is skipped"));
@@ -66,14 +68,12 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $actions = $this->getActions();
         $filters = $this->collectFilters();
 
-        $resourceClass = Str::afterLast($this->novaResourceClassName, '\\');
-
         $fileContent = $this->getStub('nova_test', [
             'entity_namespace' => $this->getNamespace('models', $this->modelSubFolder),
             'entity' => $this->model,
-            'resource_name' => $resourceClass,
+            'resource_name' => $this->entity,
             'resource_namespace' => $this->novaResourceClassName,
-            'snake_resource' => Str::snake($resourceClass),
+            'snake_resource' => Str::snake($this->entity),
             'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
@@ -160,7 +160,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     public function getTestClassName(): string
     {
-        return "Nova{$this->model}Test";
+        return "Nova{$this->entity}Test";
     }
 
     protected function isFixtureNeeded($type): bool
@@ -218,8 +218,8 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function getDumpName(): string
     {
-        $modelName = Str::snake($this->model);
+        $entityName = Str::snake($this->entity);
 
-        return "nova_{$modelName}_dump.sql";
+        return "nova_{$entityName}_dump.sql";
     }
 }
