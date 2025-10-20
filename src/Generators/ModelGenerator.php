@@ -89,6 +89,7 @@ class ModelGenerator extends EntityGenerator
 
                 $this->insertImport($content, 'Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($types[$type]));
 
+//                TODO: use ronasit/larabuilder instead
                 $fixedContent = preg_replace('/\}$/', "\n    {$newRelation}\n}", $content);
 
                 $this->saveClass('models', $relation, $fixedContent);
@@ -108,6 +109,7 @@ class ModelGenerator extends EntityGenerator
         $import = "use {$import};";
 
         if (!Str::contains($classContent, $import)) {
+//                TODO: use ronasit/larabuilder instead
             $classContent = preg_replace('/(namespace\s+[^;]+;\s*)/', "$1{$import}\n", $classContent, 1);
         }
     }
