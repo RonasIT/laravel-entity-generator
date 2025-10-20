@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use Generator;
@@ -43,7 +42,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
             }
 
             if (empty($novaResources)) {
-                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create Nova{$this->model}ResourceTest cause {$this->model} Nova resource does not exist.",
@@ -52,6 +50,8 @@ class NovaTestGenerator extends AbstractTestsGenerator
             }
 
             $this->novaResourceClassName = Arr::first($novaResources);
+
+            $this->entity = Str::afterLast($this->novaResourceClassName, '\\');
 
             parent::generate();
         } else {
@@ -75,14 +75,12 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $actions = $this->getActions();
         $filters = $this->collectFilters();
 
-        $resourceClass = Str::afterLast($this->novaResourceClassName, '\\');
-
         $fileContent = $this->getStub('nova_test', [
             'entity_namespace' => $this->getNamespace('models', $this->modelSubFolder),
             'entity' => $this->model,
-            'resource_name' => $resourceClass,
+            'resource_name' => $this->entity,
             'resource_namespace' => $this->novaResourceClassName,
-            'snake_resource' => Str::snake($resourceClass),
+            'snake_resource' => Str::snake($this->entity),
             'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
@@ -169,7 +167,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     public function getTestClassName(): string
     {
-        return "Nova{$this->model}Test";
+        return "Nova{$this->entity}Test";
     }
 
     protected function isFixtureNeeded($type): bool
@@ -227,8 +225,8 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function getDumpName(): string
     {
-        $modelName = Str::snake($this->model);
+        $entityName = Str::snake($this->entity);
 
-        return "nova_{$modelName}_dump.sql";
+        return "nova_{$entityName}_dump.sql";
     }
 }
