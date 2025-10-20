@@ -7,6 +7,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 use App\Nova\WelcomeBonusResource;
+use App\Models\User;
 
 class NovaWelcomeBonusResourceTest extends TestCase
 {
