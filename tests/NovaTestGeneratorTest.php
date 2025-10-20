@@ -3,7 +3,7 @@
 namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\Models\WelcomeBonus;
+use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -83,7 +83,7 @@ class NovaTestGeneratorTest extends TestCase
     public function testNovaTestStubNotExist()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/NovaTestGeneratorTest/Models',
+            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
             'entity-generator.stubs.nova_test' => 'incorrect_stub',
         ]);
 
@@ -125,7 +125,7 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockNovaRequestClassCall();
 
         config([
-            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/NovaTestGeneratorTest/Models',
+            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
             'entity-generator.stubs.dump' => 'incorrect_stub',
         ]);
 
@@ -154,7 +154,7 @@ class NovaTestGeneratorTest extends TestCase
     public function testSuccess()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/NovaTestGeneratorTest/Models',
+            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
         ]);
 
         $this->mockDBTransactionStartRollback();
