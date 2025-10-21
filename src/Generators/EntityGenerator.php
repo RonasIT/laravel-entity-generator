@@ -151,7 +151,7 @@ abstract class EntityGenerator
 
     protected function getClassPath(string $path, string $name, ?string $subFolder = null): string
     {
-        $path = $this->getPath($path, $subFolder);
+        $path = $this->getPath($this->paths[$path], $subFolder);
 
         return "{$path}/{$name}.php";
     }
