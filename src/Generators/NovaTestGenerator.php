@@ -6,36 +6,26 @@ use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use Generator;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Illuminate\Support\Arr;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
-    protected string $novaPath;
-
     protected string $novaResourceClassName;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->novaPath = base_path($this->paths['nova']);
-    }
 
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
             if ($this->classExists('nova', "Nova{$this->model}ResourceTest")) {
-                $this->throwFailureException(
-                    ClassAlreadyExistsException::class,
-                    "Cannot create Nova{$this->model}ResourceTest cause it's already exist.",
-                    "Remove Nova{$this->model}ResourceTest."
-                );
+
+                $path = $this->getClassPath('nova', "Nova{$this->model}ResourceTest");
+
+                throw new ResourceAlreadyExistsException($path);
             }
 
             $novaResources = $this->getCommonNovaResources();
@@ -52,7 +42,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
             }
 
             if (empty($novaResources)) {
-                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create Nova{$this->model}ResourceTest cause {$this->model} Nova resource does not exist.",
@@ -116,7 +105,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function getNovaFiles(): Generator
     {
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($this->novaPath));
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(base_path($this->paths['nova'])));
 
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {
@@ -130,11 +119,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $resources = [];
 
         foreach ($this->getNovaFiles() as $file) {
-            $relativePath = Str::after($file->getPathname(), $this->novaPath . DIRECTORY_SEPARATOR);
+            $relativePath = Str::after($file->getPathname(), $this->paths['nova'] . DIRECTORY_SEPARATOR);
 
             $class = Str::before($relativePath, '.');
 
-            $className = $this->pathToNamespace($this->novaPath . DIRECTORY_SEPARATOR . $class);
+            $className = $this->pathToNamespace($this->paths['nova'] . DIRECTORY_SEPARATOR . $class);
 
             if ($this->isResourceNameContainModel($className) && $this->isNovaResource($className)) {
                 $resources[] = $className;
@@ -178,7 +167,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
     {
         return true;
     }
-    
+
     protected function collectFilters(): array
     {
         $filtersFromFields = $this->getFiltersFromFields();

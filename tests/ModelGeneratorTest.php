@@ -5,8 +5,8 @@ namespace RonasIT\Support\Tests;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Tests\Support\Model\ModelMockTrait;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -25,16 +25,17 @@ class ModelGeneratorTest extends TestCase
     public function testModelAlreadyExists()
     {
         $this->mockClass(ModelGenerator::class, [
-            $this->classExistsMethodCall(['models', 'Post']),
+            $this->classExistsMethodCall(['models', 'Post', 'Blog']),
         ]);
 
         $this->assertExceptionThrew(
-            className: ClassAlreadyExistsException::class,
-            message: 'Cannot create Post Model cause Post Model already exists. Remove Post Model.',
+            className: ResourceAlreadyExistsException::class,
+            message: 'Cannot create Post cause it already exists. Remove app/Models/Blog/Post.php and run command again.',
         );
 
         app(ModelGenerator::class)
             ->setModel('Post')
+            ->setModelSubFolder('Blog')
             ->generate();
     }
 

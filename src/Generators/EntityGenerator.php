@@ -142,15 +142,18 @@ abstract class EntityGenerator
 
     protected function classExists(string $path, string $name, ?string $subFolder = null): bool
     {
-        $entitiesPath = $this->paths[$path];
+        $relativePath = $this->getClassPath($path, $name, $subFolder);
 
-        if (!empty($subFolder)) {
-            $entitiesPath = "{$entitiesPath}/{$subFolder}";
-        }
+        $absolutePath = base_path($relativePath);
 
-        $classPath = base_path("{$entitiesPath}/{$name}.php");
+        return file_exists($absolutePath);
+    }
 
-        return file_exists($classPath);
+    protected function getClassPath(string $path, string $name, ?string $subFolder = null): string
+    {
+        $path = $this->getPath($path, $subFolder);
+
+        return "{$path}/{$name}.php";
     }
 
     protected function saveClass($path, $name, $content, ?string $entityFolder = null): string
