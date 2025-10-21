@@ -90,15 +90,7 @@ abstract class EntityGenerator
     {
         $this->paths = config('entity-generator.paths');
 
-        foreach ($this->paths as $configPath => $path) {
-            $pathParts = $this->getNamespacePathParts($path);
-
-            foreach ($pathParts as $part) {
-                if (!$this->isFolderHasCorrectCase($part, $configPath)) {
-                    throw new IncorrectClassPathException("Incorrect path to {$configPath}, {$part} folder must start with a capital letter, please specify the path according to the PSR.");
-                }
-            }
-        }
+        $this->checkConfigHasCorrectPaths();
     }
 
     protected function generateNamespace(string $path, ?string $additionalSubFolder = null): string
@@ -309,5 +301,18 @@ abstract class EntityGenerator
     protected function pathToNamespace(string $name): string
     {
         return ucwords(Str::replace('/', '\\', $name), '\\');
+    }
+
+    protected function checkConfigHasCorrectPaths(): void
+    {
+        foreach ($this->paths as $configPath => $path) {
+            $pathParts = $this->getNamespacePathParts($path);
+
+            foreach ($pathParts as $part) {
+                if (!$this->isFolderHasCorrectCase($part, $configPath)) {
+                    throw new IncorrectClassPathException("Incorrect path to {$configPath}, {$part} folder must start with a capital letter, please specify the path according to the PSR.");
+                }
+            }
+        }
     }
 }
