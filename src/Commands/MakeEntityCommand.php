@@ -60,7 +60,8 @@ class MakeEntityCommand extends Command
         {--only-seeder : Set this flag if you want to create only seeder.}
         {--only-nova-resource : Set this flag if you want to create only nova resource.}
         {--only-nova-tests : Set this flag if you want to create only nova resource tests.}
-
+        {--resource-name= : Override the default Nova resource name. Used only with --only-nova-tests.}
+        
         {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
         {--i|integer=* : Add integer field to entity.}
@@ -227,6 +228,7 @@ class MakeEntityCommand extends Command
             ->setFields($this->getFields())
             ->setRelations($this->relations)
             ->setCrudOptions($this->getCrudOptions())
+            ->setMetaData(['resource_name' => $this->option('resource-name')])
             ->generate();
     }
 
