@@ -51,7 +51,6 @@ class {{ $method }}{{ $entity }}Request extends Request
     protected function getAvailableRelations(): array
     {
         return [
-            'role',
         ];
     }
 @endif
