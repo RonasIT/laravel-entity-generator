@@ -17,7 +17,7 @@ class {{ $method }}{{ $entity }}Request extends Request
     {
 @if(!empty($parameters))
 @if($needToValidateWith)
-        $availableRelations  = implode(',', $this->getAvailableRelations());
+        $availableRelations = implode(',', $this->getAvailableRelations());
 
 @endif
         return [
