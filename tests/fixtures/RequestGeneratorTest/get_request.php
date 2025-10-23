@@ -10,7 +10,7 @@ class GetPostRequest extends Request
 {
     public function rules(): array
     {
-        $availableRelations  = implode(',', $this->getAvailableRelations());
+        $availableRelations = implode(',', $this->getAvailableRelations());
 
         return [
             'with' => 'array',
