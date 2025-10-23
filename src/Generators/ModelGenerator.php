@@ -92,7 +92,7 @@ class ModelGenerator extends EntityGenerator
                     'entity' => $this->model,
                 ]);
 
-//              TODO: use ronasit/larabuilder instead
+                // TODO: use ronasit/larabuilder instead regexp
                 $fixedContent = preg_replace('/\}$/', "\n    {$newRelation}\n}", $content);
 
                 $this->insertPropertyAnnotation($fixedContent, $this->getRelationType($this->model, $types[$type]), $relationName);
@@ -114,7 +114,7 @@ class ModelGenerator extends EntityGenerator
         $import = "use {$import};";
 
         if (!Str::contains($classContent, $import)) {
-//          TODO: use ronasit/larabuilder instead
+            // TODO: use ronasit/larabuilder instead regexp
             $classContent = preg_replace('/(namespace\s+[^;]+;\s*)/', "$1{$import}\n", $classContent, 1);
         }
     }
@@ -271,7 +271,7 @@ class ModelGenerator extends EntityGenerator
     {
         $annotation = "* @property {$propertyDataType} \${$propertyName}";
 
-//      TODO: use ronasit/larabuilder instead
+        // TODO: use ronasit/larabuilder instead regexp
         if (!Str::contains($content, '/**')) {
             $content = preg_replace('/^\s*class.*\n/m', "\n/**\n {$annotation}\n */$0", $content);
         } else {

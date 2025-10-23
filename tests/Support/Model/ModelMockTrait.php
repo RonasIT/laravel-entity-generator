@@ -13,7 +13,7 @@ trait ModelMockTrait
     {
         $fileSystemMock = new FileSystemMock;
 
-        if (!empty ($models)) {
+        if (!empty($models)) {
             $fileSystemMock->models = $models;
         } else {
             $fileSystemMock->models = [
