@@ -30,7 +30,7 @@ class ModelGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: 'Cannot create Post cause it already exists. Remove vfs://root/app/Models/Blog/Post.php and run command again.',
+            message: 'Cannot create Post cause it already exists. Remove app/Models/Blog/Post.php and run command again.',
         );
 
         app(ModelGenerator::class)
