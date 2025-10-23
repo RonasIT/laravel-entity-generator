@@ -6,6 +6,13 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class TestsGenerator extends AbstractTestsGenerator
 {
+    public function generate(): void
+    {
+        $this->entity = $this->model;
+
+        parent::generate();
+    }
+
     public function getTestClassName(): string
     {
         return "{$this->model}Test";
@@ -52,5 +59,10 @@ class TestsGenerator extends AbstractTestsGenerator
         $this->saveClass('tests', $testName, $content);
 
         event(new SuccessCreateMessage($createMessage));
+    }
+
+    protected function getTestingEntityName(): string
+    {
+        return $this->model;
     }
 }
