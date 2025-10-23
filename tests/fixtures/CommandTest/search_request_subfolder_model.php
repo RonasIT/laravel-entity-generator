@@ -27,7 +27,6 @@ class SearchPostsRequest extends Request
     protected function getAvailableRelations(): array
     {
         return [
-            'role',
         ];
     }
 }
