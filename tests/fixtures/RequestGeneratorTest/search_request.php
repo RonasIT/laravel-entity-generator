@@ -9,7 +9,7 @@ class SearchPostsRequest extends Request
 {
     public function rules(): array
     {
-        $availableRelations  = implode(',', $this->getAvailableRelations());
+        $availableRelations = implode(',', $this->getAvailableRelations());
 
         return [
             'user_id' => 'integer|exists:users,id|required',
