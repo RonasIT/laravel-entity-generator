@@ -60,4 +60,9 @@ class TestsGenerator extends AbstractTestsGenerator
 
         event(new SuccessCreateMessage($createMessage));
     }
+
+    protected function getTestingEntityName(): string
+    {
+        return $this->model;
+    }
 }

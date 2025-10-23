@@ -13,7 +13,6 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected array $fakerProperties = [];
     protected array $getFields = [];
     protected bool $withAuth = false;
-    protected string $entity;
 
     const array FIXTURE_TYPES = [
         'create' => ['request', 'response'],
@@ -195,7 +194,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
                 foreach ($modifications as $modification) {
                     $excepts = ($modification === 'request') ? ['id'] : [];
 
-                    $this->generateFixture("{$type}_" . Str::snake($this->entity) . "_{$modification}.json", Arr::except($object, $excepts));
+                    $this->generateFixture("{$type}_" . Str::snake($this->getTestingEntityName()) . "_{$modification}.json", Arr::except($object, $excepts));
                 }
             }
         }
@@ -258,6 +257,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     abstract protected function isFixtureNeeded($type): bool;
 
     abstract protected function generateTests(): void;
+
+    abstract protected function getTestingEntityName(): string;
 
     private function filterBadModelField($fields): array
     {

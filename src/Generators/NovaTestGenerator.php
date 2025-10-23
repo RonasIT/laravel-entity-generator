@@ -21,13 +21,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
-            if ($this->classExists('nova', "Nova{$this->model}ResourceTest")) {
-
-                $path = $this->getClassPath('nova', "Nova{$this->model}ResourceTest");
-
-                throw new ResourceAlreadyExistsException($path);
-            }
-
             $novaResources = $this->getCommonNovaResources();
 
             if (count($novaResources) > 1) {
@@ -51,7 +44,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
             $this->novaResourceClassName = Arr::first($novaResources);
 
-            $this->entity = Str::afterLast($this->novaResourceClassName, '\\');
+            if ($this->classExists('nova', "Nova{$this->getTestingEntityName()}Test")) {
+                $path = $this->getClassPath('nova', "Nova{$this->getTestingEntityName()}Test");
+
+                throw new ResourceAlreadyExistsException($path);
+            }
 
             parent::generate();
         } else {
@@ -71,9 +68,9 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $fileContent = $this->getStub('nova_test', [
             'entity_namespace' => $this->getNamespace('models', $this->modelSubFolder),
             'entity' => $this->model,
-            'resource_name' => $this->entity,
+            'resource_name' => $this->getTestingEntityName(),
             'resource_namespace' => $this->novaResourceClassName,
-            'snake_resource' => Str::snake($this->entity),
+            'snake_resource' => Str::snake($this->getTestingEntityName()),
             'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
@@ -81,9 +78,9 @@ class NovaTestGenerator extends AbstractTestsGenerator
             'models_namespace' => $this->getNamespace('models'),
         ]);
 
-        $this->saveClass('tests', "Nova{$this->model}ResourceTest", $fileContent);
+        $this->saveClass('tests', $this->getTestClassName(), $fileContent);
 
-        event(new SuccessCreateMessage("Created a new Nova test: Nova{$this->model}ResourceTest"));
+        event(new SuccessCreateMessage("Created a new Nova test: {$this->getTestClassName()}"));
     }
 
     protected function getActions(): array
@@ -161,7 +158,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     public function getTestClassName(): string
     {
-        return "Nova{$this->entity}Test";
+        return "Nova{$this->getTestingEntityName()}Test";
     }
 
     protected function isFixtureNeeded($type): bool
@@ -219,8 +216,13 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function getDumpName(): string
     {
-        $entityName = Str::snake($this->entity);
+        $entityName = Str::snake($this->getTestingEntityName());
 
         return "nova_{$entityName}_dump.sql";
+    }
+
+    protected function getTestingEntityName(): string
+    {
+        return Str::afterLast($this->novaResourceClassName, '\\');
     }
 }
