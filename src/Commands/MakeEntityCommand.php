@@ -200,6 +200,7 @@ class MakeEntityCommand extends Command
         $this->extractEntityNameAndPath();
         $this->validateOnlyApiOption();
         $this->validateCrudOptions();
+        $this->entityName = $this->convertToPascalCase($this->entityName);
     }
 
     protected function generate(): void
@@ -238,19 +239,20 @@ class MakeEntityCommand extends Command
     protected function parseRelations(): void
     {
         $this->relations = new RelationsDTO(
-            hasOne: $this->trimRelations($this->option('has-one')),
-            hasMany: $this->trimRelations($this->option('has-many')),
-            belongsTo: $this->trimRelations($this->option('belongs-to')),
-            belongsToMany: $this->trimRelations($this->option('belongs-to-many')),
+            hasOne: $this->prepareRelations($this->option('has-one')),
+            hasMany: $this->prepareRelations($this->option('has-many')),
+            belongsTo: $this->prepareRelations($this->option('belongs-to')),
+            belongsToMany: $this->prepareRelations($this->option('belongs-to-many')),
         );
     }
 
-    protected function trimRelations(array $relations): array
+    protected function prepareRelations(array $relations): array
     {
-        return array_map(
-            callback: fn ($relation) => Str::trim($relation, '/'),
-            array: $relations,
-        );
+        return array_map(function ($relation) {
+            $relation = Str::trim($relation, '/');
+
+            return $this->convertToPascalCase($relation);
+        }, $relations);
     }
 
     protected function getFields(): array
@@ -304,5 +306,16 @@ class MakeEntityCommand extends Command
             events: WarningEvent::class,
             listener: fn (WarningEvent $event) => $this->warn($event->message),
         );
+    }
+
+    protected function convertToPascalCase(string $entityName): string
+    {
+        $pascalEntityName = Str::studly($entityName);
+
+        if ($entityName !== $pascalEntityName) {
+            $this->info("{$entityName} was converted to pascal case {$pascalEntityName}");
+        }
+
+        return $pascalEntityName;
     }
 }
