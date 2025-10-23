@@ -76,6 +76,7 @@ class RequestsGenerator extends EntityGenerator
             'namespace' => $this->generateNamespace($this->paths['requests']),
             'servicesNamespace' => $this->generateNamespace($this->paths['services']),
             'entityNamespace' => $this->getModelClass($this->model),
+            'needToValidateWith' => !is_null(Arr::first($parameters, fn ($parameter) => $parameter['name'] === 'with.*')),
         ]);
 
         $this->saveClass('requests', "{$method}{$modelName}Request",
@@ -195,7 +196,7 @@ class RequestsGenerator extends EntityGenerator
             $rules[] = 'present';
         }
 
-        if ($name === 'order_by') {
+        if (in_array($name, ['order_by', 'with.*'])) {
             $rules[] = 'in:';
         }
 
