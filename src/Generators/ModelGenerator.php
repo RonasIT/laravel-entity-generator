@@ -47,7 +47,7 @@ class ModelGenerator extends EntityGenerator
             'fields' => Arr::collapse($this->fields),
             'relations' => $this->prepareRelations(),
             'casts' => $this->getCasts($this->fields),
-            'namespace' => $this->getNamespace('models', $this->modelSubFolder),
+            'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
             'anotationProperties' => $this->generateAnnotationProperties($this->fields),
             'hasCarbonField' => !empty($this->fields['timestamp']) || !empty($this->fields['timestamp-required']),
@@ -189,7 +189,7 @@ class ModelGenerator extends EntityGenerator
 
     protected function generateClassNamespace(string $className, ?string $folder = null): string
     {
-        $path = $this->getNamespace('models', $folder);
+        $path = $this->generateNamespace($this->paths['models'], $folder);
         $psrPath = $this->pathToNamespace($className);
 
         return "{$path}\\{$psrPath}";

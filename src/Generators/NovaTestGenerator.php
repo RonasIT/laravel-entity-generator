@@ -69,7 +69,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $resourceClass = Str::afterLast($this->novaResourceClassName, '\\');
 
         $fileContent = $this->getStub('nova_test', [
-            'entity_namespace' => $this->getNamespace('models', $this->modelSubFolder),
+            'entity_namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'entity' => $this->model,
             'resource_name' => $resourceClass,
             'resource_namespace' => $this->novaResourceClassName,
@@ -78,7 +78,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
-            'models_namespace' => $this->getNamespace('models'),
+            'models_namespace' => $this->generateNamespace($this->paths['models']),
         ]);
 
         $this->saveClass('tests', "Nova{$this->model}ResourceTest", $fileContent);

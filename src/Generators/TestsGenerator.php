@@ -41,8 +41,8 @@ class TestsGenerator extends AbstractTestsGenerator
             'databaseTableName' => $this->getTableName($this->model),
             'entities' => $this->getTableName($this->model, '-'),
             'withAuth' => $this->withAuth,
-            'entityNamespace' => $this->getNamespace('models', $this->modelSubFolder),
-            'userNamespace' => $this->getNamespace('models'),
+            'entityNamespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
+            'userNamespace' => $this->generateNamespace($this->paths['models']),
             'hasModificationEndpoints' => !empty(array_intersect($this->crudOptions, ['C', 'U', 'D'])),
         ]);
 
