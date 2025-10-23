@@ -33,7 +33,6 @@ class GetPostRequest extends Request
     protected function getAvailableRelations(): array
     {
         return [
-            'role',
         ];
     }
 }
