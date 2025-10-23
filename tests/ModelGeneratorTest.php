@@ -153,7 +153,10 @@ class ModelGeneratorTest extends TestCase
     public function testCreateModelHasMultipleRelationsWithAnotherModel()
     {
         $this
-            ->artisan('make:entity Forum/Post -A User -E User --only-model')
+            ->artisan('make:entity Forum/post -A user -E /user --only-model')
+            ->expectsOutput('post was converted to pascal case Post')
+            ->expectsOutput('user was converted to pascal case User')
+            ->expectsOutput('user was converted to pascal case User')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_model_with_many_relations.php', 'app/Models/Forum/Post.php');
