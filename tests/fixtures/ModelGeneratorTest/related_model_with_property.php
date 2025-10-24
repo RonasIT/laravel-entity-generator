@@ -1,23 +1,31 @@
 <?php
 
-namespace App\Models;
+namespace RonasIT\Support\Tests\Support\Models;
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
-//TODO: add @property annotation for each model's field
 /**
- * @property Collection<int, Category> $categories
+ * @property Collection<Category> $categories
  */
-class Post extends Model
+class WelcomeBonus extends Model
 {
     use ModelTrait;
 
+    public function getConnectionName(): string
+    {
+        return 'pgsql';
+    }
+
     protected $fillable = [
+        'title',
+        'name',
     ];
 
-    protected $hidden = ['pivot'];
+    public function some_relation()
+    {
+    }
 
     public function categories()
     {

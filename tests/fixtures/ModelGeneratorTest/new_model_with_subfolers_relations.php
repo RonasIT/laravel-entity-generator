@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @property string $title
- * @property Collection<int, Author> $authors
+ * @property Collection<Author> $authors
  */
 class Post extends Model
 {

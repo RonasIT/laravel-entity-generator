@@ -8,7 +8,7 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
- * @property Collection<int, User> $users
+ * @property Collection<User> $users
  */
 class Post extends Model
 {

@@ -261,7 +261,7 @@ class ModelGenerator extends EntityGenerator
     protected function getRelationType(string $model, string $relation): string
     {
         if (in_array($relation, self::PLURAL_NUMBER_REQUIRED)) {
-            return "Collection<int, $model>";
+            return "Collection<{$model}>";
         }
 
         return "{$model}|null";

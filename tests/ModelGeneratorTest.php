@@ -19,7 +19,7 @@ class ModelGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockFilesystem();
+        $this->mockDefaultFilesystem();
     }
 
     public function testModelAlreadyExists()
@@ -249,19 +249,15 @@ class ModelGeneratorTest extends TestCase
 
     public function testAddPropertyAnnotationToRelatedModel()
     {
-        $this->mockFilesystem([
-            'Post.php' => $this->getFixture('new_model_without_fields.php'),
-        ]);
-
         app(ModelGenerator::class)
             ->setModel('Category')
             ->setFields([])
             ->setRelations(new RelationsDTO(
-                belongsToMany: ['Post'],
+                belongsToMany: ['User'],
             ))
             ->generate();
 
-        $this->assertGeneratedFileEquals('related_model_with_property.php', 'app/Models/Post.php');
+        $this->assertGeneratedFileEquals('related_model_with_property.php', 'app/Models/User.php');
 
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
