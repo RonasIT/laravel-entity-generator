@@ -20,6 +20,8 @@ class SeederGenerator extends EntityGenerator
 
     public function generate(): void
     {
+        $this->throwIfResourceExists('seeders', "{$this->model}Seeder");
+
         if (!$this->isStubExists('seeder') || !$this->isStubExists('database_empty_seeder')) {
             return;
         }
