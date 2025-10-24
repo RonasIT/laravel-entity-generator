@@ -6,7 +6,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class ModelGenerator extends EntityGenerator
 {
@@ -17,11 +16,7 @@ class ModelGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        if ($this->classExists('models', $this->model, $this->modelSubFolder)) {
-            $path = $this->getClassPath('models', $this->model, $this->modelSubFolder);
-
-            throw new ResourceAlreadyExistsException($path);
-        }
+        $this->throwIfResourceExists('models', $this->model, $this->modelSubFolder);
 
         if ($this->isStubExists('model') && (!$this->hasRelations() || $this->isStubExists('relation', 'model'))) {
             $this->createNamespace('models', $this->modelSubFolder);

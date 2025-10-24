@@ -6,6 +6,13 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class TestsGenerator extends AbstractTestsGenerator
 {
+    public function generate(): void
+    {
+        $this->throwIfResourceExists('tests', "{$this->model}Test");
+
+        parent::generate();
+    }
+
     public function getTestClassName(): string
     {
         return "{$this->model}Test";
