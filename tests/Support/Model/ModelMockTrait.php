@@ -9,19 +9,7 @@ trait ModelMockTrait
 {
     use GeneratorMockTrait;
 
-
-    public function mockFileSystemWithoutCommentModel(): void
-    {
-        $fileSystemMock = new FileSystemMock();
-
-        $fileSystemMock->models = [
-            'User.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
-        ];
-
-        $fileSystemMock->setStructure();
-    }
-
-    public function mockFilesystem(): void
+    public function mockDefaultFilesystem(): void
     {
         $fileSystemMock = new FileSystemMock;
 
@@ -30,6 +18,15 @@ trait ModelMockTrait
             'User.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
             'Forum/Author.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
         ];
+
+        $fileSystemMock->setStructure();
+    }
+
+    public function mockFilesystem(array $models = []): void
+    {
+        $fileSystemMock = new FileSystemMock;
+
+        $fileSystemMock->models = $models;
 
         $fileSystemMock->setStructure();
     }
