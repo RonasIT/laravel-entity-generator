@@ -9,6 +9,8 @@ class SearchPostsRequest extends Request
 {
     public function rules(): array
     {
+        $availableRelations = implode(',', $this->getAvailableRelations());
+
         return [
             'user_id' => 'integer|exists:users,id|required',
             'page' => 'integer',
@@ -19,7 +21,14 @@ class SearchPostsRequest extends Request
             'with' => 'array',
             'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'query' => 'string|nullable',
-            'with.*' => 'string',
+            'with.*' => 'string|in:' . $availableRelations,
+        ];
+    }
+
+    //TODO: don't forget to review relations list
+    protected function getAvailableRelations(): array
+    {
+        return [
         ];
     }
 }
