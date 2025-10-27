@@ -8,7 +8,7 @@ class TestsGenerator extends AbstractTestsGenerator
 {
     public function generate(): void
     {
-        $this->throwIfResourceExists('tests', "{$this->model}Test");
+        $this->checkResourceExists('tests', "{$this->model}Test");
 
         parent::generate();
     }

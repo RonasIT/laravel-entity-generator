@@ -310,7 +310,7 @@ abstract class EntityGenerator
         return ucwords(Str::replace('/', '\\', $name), '\\');
     }
 
-    protected function throwIfResourceExists(string $path, string $resourceName, ?string $subFolder = null): void
+    protected function checkResourceExists(string $path, string $resourceName, ?string $subFolder = null): void
     {
         if ($this->classExists($path, $resourceName, $subFolder)) {
             $filePath = $this->getClassPath($path, $resourceName, $subFolder);

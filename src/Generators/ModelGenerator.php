@@ -16,7 +16,7 @@ class ModelGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        $this->throwIfResourceExists('models', $this->model, $this->modelSubFolder);
+        $this->checkResourceExists('models', $this->model, $this->modelSubFolder);
 
         if ($this->isStubExists('model') && (!$this->hasRelations() || $this->isStubExists('relation', 'model'))) {
             $this->createNamespace('models', $this->modelSubFolder);

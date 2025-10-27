@@ -63,7 +63,7 @@ class NovaResourceGenerator extends EntityGenerator
                 );
             }
 
-            $this->throwIfResourceExists('nova', "{$this->model}Resource", $this->modelSubFolder);
+            $this->checkResourceExists('nova', "{$this->model}Resource", $this->modelSubFolder);
 
             if (!$this->isStubExists('nova_resource')) {
                 return;

@@ -18,7 +18,7 @@ class ServiceGenerator extends EntityGenerator
             );
         }
 
-        $this->throwIfResourceExists('services', "{$this->model}Service");
+        $this->checkResourceExists('services', "{$this->model}Service");
 
         if (!$this->isStubExists('service')) {
             return;

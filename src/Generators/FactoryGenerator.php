@@ -35,7 +35,7 @@ class FactoryGenerator extends EntityGenerator
             );
         }
 
-        $this->throwIfResourceExists('factories', "{$this->model}Factory");
+        $this->checkResourceExists('factories', "{$this->model}Factory");
 
         if (!$this->isStubExists('factory')) {
             return;

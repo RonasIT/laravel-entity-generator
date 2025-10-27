@@ -24,7 +24,7 @@ class ResourceGenerator extends EntityGenerator
     {
         $pluralName = $this->getPluralName($this->model);
 
-        $this->throwIfResourceExists('resources', "{$this->model}/{$pluralName}CollectionResource");
+        $this->checkResourceExists('resources', "{$this->model}/{$pluralName}CollectionResource");
 
         $collectionResourceContent = $this->getStub('collection_resource', [
             'singular_name' => $this->model,
@@ -39,7 +39,7 @@ class ResourceGenerator extends EntityGenerator
 
     public function generateResource(): void
     {
-        $this->throwIfResourceExists('resources', "{$this->model}/{$this->model}Resource");
+        $this->checkResourceExists('resources', "{$this->model}/{$this->model}Resource");
 
         $resourceContent = $this->getStub('resource', [
             'entity' => $this->model,

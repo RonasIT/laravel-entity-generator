@@ -67,7 +67,7 @@ class RequestsGenerator extends EntityGenerator
         $requestsFolder = $this->model;
         $modelName = $this->getEntityName($method);
 
-        $this->throwIfResourceExists('requests', "{$requestsFolder}/{$method}{$modelName}Request");
+        $this->checkResourceExists('requests', "{$requestsFolder}/{$method}{$modelName}Request");
 
         $content = $this->getStub('request', [
             'method' => $method,

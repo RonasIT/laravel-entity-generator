@@ -10,7 +10,7 @@ class ControllerGenerator extends EntityGenerator
 {
     public function generate(): void
     {
-        $this->throwIfResourceExists('controllers', "{$this->model}Controller");
+        $this->checkResourceExists('controllers', "{$this->model}Controller");
 
         if (!$this->classExists('services', "{$this->model}Service")) {
             $this->throwFailureException(

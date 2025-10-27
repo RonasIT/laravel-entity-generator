@@ -20,7 +20,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
-            $this->throwIfResourceExists('nova', "Nova{$this->model}ResourceTest");
+            $this->checkResourceExists('nova', "Nova{$this->model}ResourceTest");
 
             $novaResources = $this->getCommonNovaResources();
 
