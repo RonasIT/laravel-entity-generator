@@ -309,12 +309,11 @@ abstract class EntityGenerator
         return ucwords(Str::replace('/', '\\', $name), '\\');
     }
 
-    protected function getRelationName(
-        string $relation,
-        string $type,
-        array $pluralRelations = ['belongsToMany', 'hasMany'],
-    ): string {
+    protected function getRelationName(string $relation, string $type): string 
+    {
         $relationName = Str::snake($relation);
+
+        $pluralRelations = ['belongsToMany', 'hasMany'];
 
         if (in_array($type, $pluralRelations)) {
             $relationName = Str::plural($relationName);
