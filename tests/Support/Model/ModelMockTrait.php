@@ -11,7 +11,7 @@ trait ModelMockTrait
 
     public function mockDefaultFilesystem(): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
 
         $fileSystemMock->models = [
             'Comment.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
@@ -22,9 +22,9 @@ trait ModelMockTrait
         $fileSystemMock->setStructure();
     }
 
-    public function mockFilesystem(array $models = []): void
+    public function mockFilesystem(array $models): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
 
         $fileSystemMock->models = $models;
 
