@@ -124,6 +124,7 @@ class MakeEntityCommand extends Command
         $this->checkConfigs();
         $this->listenEvents();
         $this->parseRelations();
+        $this->entityName = $this->convertToPascalCase($this->entityName);
 
         try {
             $this->generate();
@@ -200,7 +201,6 @@ class MakeEntityCommand extends Command
         $this->extractEntityNameAndPath();
         $this->validateOnlyApiOption();
         $this->validateCrudOptions();
-        $this->entityName = $this->convertToPascalCase($this->entityName);
     }
 
     protected function generate(): void
