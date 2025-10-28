@@ -10,11 +10,6 @@ use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class ModelGenerator extends EntityGenerator
 {
-    protected const array PLURAL_NUMBER_REQUIRED = [
-        'belongsToMany',
-        'hasMany',
-    ];
-
     public function generate(): void
     {
         if ($this->classExists('models', $this->model, $this->modelSubFolder)) {
@@ -152,17 +147,6 @@ class ModelGenerator extends EntityGenerator
         }
 
         return $result;
-    }
-
-    private function getRelationName(string $relation, string $type): string
-    {
-        $relationName = Str::snake($relation);
-
-        if (in_array($type, self::PLURAL_NUMBER_REQUIRED)) {
-            $relationName = Str::plural($relationName);
-        }
-
-        return $relationName;
     }
 
     protected function getImportedRelations(): array

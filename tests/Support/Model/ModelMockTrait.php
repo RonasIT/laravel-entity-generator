@@ -9,7 +9,6 @@ trait ModelMockTrait
 {
     use GeneratorMockTrait;
 
-
     public function mockFileSystemWithoutCommentModel(): void
     {
         $fileSystemMock = new FileSystemMock();
