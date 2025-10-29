@@ -3,20 +3,13 @@
 namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ServiceGenerator extends EntityGenerator
 {
     public function generate(): void
     {
-        if (!$this->classExists('repositories', "{$this->model}Repository")) {
-            $this->throwFailureException(
-                exceptionClass: ClassNotExistsException::class,
-                failureMessage: "Cannot create {$this->model}Service cause {$this->model}Repository does not exists.",
-                recommendedMessage: "Create a {$this->model}Repository by himself or run command 'php artisan make:entity {$this->model} --only-repository'.",
-            );
-        }
+        $this->checkResourceNotExists('repositories', "{$this->model}Service", "{$this->model}Repository");
 
         if (!$this->isStubExists('service')) {
             return;

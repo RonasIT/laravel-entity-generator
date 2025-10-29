@@ -2,18 +2,19 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Filesystem\Filesystem;
+use Throwable;
+use ReflectionClass;
+use ReflectionMethod;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Filesystem\Filesystem;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
-use Throwable;
-use ReflectionMethod;
-use ReflectionClass;
 
 /**
  * @property Filesystem $fs
@@ -307,5 +308,14 @@ abstract class EntityGenerator
     protected function pathToNamespace(string $name): string
     {
         return ucwords(Str::replace('/', '\\', $name), '\\');
+    }
+
+    protected function checkResourceNotExists(string $path, string $entity, string $resourceName, ?string $subFolder = null): void
+    {
+        if (!$this->classExists($path, $resourceName, $subFolder)) {
+            $filePath = $this->getClassPath($path, $resourceName, $subFolder);
+
+            throw new ResourceNotExistsException($entity, $filePath);
+        }
     }
 }

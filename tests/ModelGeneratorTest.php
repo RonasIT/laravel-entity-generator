@@ -3,13 +3,13 @@
 namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Generators\ModelGenerator;
+use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Tests\Support\Model\ModelMockTrait;
 use Symfony\Component\Console\Exception\RuntimeException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class ModelGeneratorTest extends TestCase
 {
@@ -44,9 +44,8 @@ class ModelGeneratorTest extends TestCase
         $this->mockFileSystemWithoutCommentModel();
         
         $this->assertExceptionThrew(
-            className: ClassNotExistsException::class,
-            message: "Cannot create Post Model cause relation model Comment does not exist. "
-            . "Create the Comment Model by himself or run command 'php artisan make:entity Comment --only-model'.",
+            className: ResourceNotExistsException::class,
+            message: 'Cannot create Post cause Comment does not exist. Create app/Models/Comment.php and run command again.',
         );
 
         app(ModelGenerator::class)
