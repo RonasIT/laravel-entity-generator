@@ -5,10 +5,13 @@ namespace RonasIT\Support\Tests;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Generators\SeederGenerator;
+use RonasIT\Support\Tests\Support\Seeder\SeederGeneratorMockTrait;
 
 class SeederGeneratorTest extends TestCase
 {
-    public function testCreateSeeder()
+    use SeederGeneratorMockTrait;
+
+    public function testCreateSeedersWhenDatabaseSeederDoesNotExist()
     {
         app(SeederGenerator::class)
             ->setRelations(new RelationsDTO(
@@ -18,7 +21,23 @@ class SeederGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->assertGeneratedFileEquals('database_seeder.php', 'database/seeders/DatabaseSeeder.php');
+        $this->assertGeneratedFileEquals('database_seeder_created.php', 'database/seeders/DatabaseSeeder.php');
+        $this->assertGeneratedFileEquals('post_seeder.php', 'database/seeders/PostSeeder.php');
+    }
+
+    public function testCreateSeederWhenDatabaseSeederExists()
+    {
+        $this->mockFilesystem();
+
+        app(SeederGenerator::class)
+            ->setRelations(new RelationsDTO(
+                hasMany: ['Comment'],
+                belongsTo: ['User'],
+            ))
+            ->setModel('Post')
+            ->generate();
+
+        $this->assertGeneratedFileEquals('database_seeder_modified.php', 'database/seeders/DatabaseSeeder.php');
         $this->assertGeneratedFileEquals('post_seeder.php', 'database/seeders/PostSeeder.php');
     }
 
