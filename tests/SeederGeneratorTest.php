@@ -11,7 +11,7 @@ class SeederGeneratorTest extends TestCase
 {
     use SeederGeneratorMockTrait;
 
-    public function testCreateSeedersWhenDatabaseSeederDoesNotExist()
+    public function testCreateSeeder()
     {
         app(SeederGenerator::class)
             ->setRelations(new RelationsDTO(
