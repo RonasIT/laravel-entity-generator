@@ -25,7 +25,7 @@ class SeederGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('post_seeder.php', 'database/seeders/PostSeeder.php');
     }
 
-    public function testCreateSeederWhenDatabaseSeederExists()
+    public function testCreateSeederDatabaseSeederExists()
     {
         $this->mockFilesystem();
 
