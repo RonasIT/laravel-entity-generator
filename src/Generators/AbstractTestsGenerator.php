@@ -189,12 +189,14 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
         $this->createFixtureFolder();
 
+        $entity = Str::snake($this->getTestingEntityName());
+
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
             if ($this->isFixtureNeeded($type)) {
                 foreach ($modifications as $modification) {
                     $excepts = ($modification === 'request') ? ['id'] : [];
 
-                    $this->generateFixture("{$type}_" . Str::snake($this->getTestingEntityName()) . "_{$modification}.json", Arr::except($object, $excepts));
+                    $this->generateFixture("{$type}_{$entity}_{$modification}.json", Arr::except($object, $excepts));
                 }
             }
         }
