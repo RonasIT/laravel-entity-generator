@@ -268,7 +268,7 @@ class ModelGenerator extends EntityGenerator
 
         // TODO: use ronasit/larabuilder instead regexp
         if (!Str::contains($content, '/**')) {
-            $content = preg_replace('/^\s*class.*\n/m', "\n/**\n {$annotation}\n */$0", $content);
+            $content = preg_replace('/^\s*class[\s\S]+?\{/m', "\n/**\n {$annotation}\n */$0", $content);
         } else {
             $content = preg_replace('/\*\/\n/', "{$annotation}\n $0", $content);
         }
