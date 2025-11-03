@@ -34,7 +34,7 @@ class ResourceGenerator extends EntityGenerator
         $collectionResourceContent = $this->getStub('collection_resource', [
             'singular_name' => $this->model,
             'plural_name' => $pluralName,
-            'namespace' => $this->getNamespace('resources')
+            'namespace' => $this->generateNamespace($this->paths['resources']),
         ]);
 
         $this->saveClass('resources', "{$pluralName}CollectionResource", $collectionResourceContent, $this->model);
@@ -52,8 +52,8 @@ class ResourceGenerator extends EntityGenerator
 
         $resourceContent = $this->getStub('resource', [
             'entity' => $this->model,
-            'namespace' => $this->getNamespace('resources'),
-            'model_namespace' => $this->getNamespace('models', $this->modelSubFolder),
+            'namespace' => $this->generateNamespace($this->paths['resources']),
+            'model_namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'fields' => when($this->fields, fn () => Arr::flatten($this->fields)),
         ]);
 
