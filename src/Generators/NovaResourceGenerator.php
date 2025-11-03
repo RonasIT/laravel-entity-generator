@@ -75,7 +75,7 @@ class NovaResourceGenerator extends EntityGenerator
                 'fields' => $novaFields,
                 'types' => array_unique(data_get($novaFields, '*.type')),
                 'imports' => $this->getImports(),
-                'namespace' => $this->getNamespace('nova', $this->modelSubFolder),
+                'namespace' => $this->generateNamespace($this->paths['nova'], $this->modelSubFolder),
             ]);
 
             $this->saveClass('nova', "{$this->model}Resource", $fileContent, $this->modelSubFolder);
@@ -171,11 +171,11 @@ class NovaResourceGenerator extends EntityGenerator
     protected function getImports(): array
     {
         $imports = [
-            "{$this->getNamespace('models', $this->modelSubFolder)}\\{$this->model}",
+            "{$this->generateNamespace($this->paths['models'], $this->modelSubFolder)}\\{$this->model}",
         ];
 
         if (!empty($this->modelSubFolder)) {
-            $imports[] = "{$this->getNamespace('nova')}\\Resource";
+            $imports[] = "{$this->generateNamespace($this->paths['nova'])}\\Resource";
         }
 
         return $imports;

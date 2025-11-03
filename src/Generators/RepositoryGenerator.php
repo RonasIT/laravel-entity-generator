@@ -18,8 +18,8 @@ class RepositoryGenerator extends EntityGenerator
 
         $repositoryContent = $this->getStub('repository', [
             'entity' => $this->model,
-            'namespace' => $this->getNamespace('repositories'),
-            'modelNamespace' => $this->getNamespace('models', $this->modelSubFolder)
+            'namespace' => $this->generateNamespace($this->paths['repositories']),
+            'modelNamespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder)
         ]);
 
         $this->saveClass('repositories', "{$this->model}Repository", $repositoryContent);
