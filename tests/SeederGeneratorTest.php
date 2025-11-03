@@ -6,6 +6,7 @@ use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Generators\SeederGenerator;
 use RonasIT\Support\Tests\Support\Seeder\SeederGeneratorMockTrait;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class SeederGeneratorTest extends TestCase
 {
@@ -81,5 +82,21 @@ class SeederGeneratorTest extends TestCase
 
         $this->assertFileDoesNotExist("{$this->generatedFileBasePath}/database/seeders/PostSeeder.php");
         $this->assertFileDoesNotExist('database/seeders/DatabaseSeeder.php');
+    }
+
+    public function testSeederAlreadyExists()
+    {
+        $this->mockClass(SeederGenerator::class, [
+            $this->classExistsMethodCall(['seeders', 'PostSeeder']),
+        ]);
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create PostSeeder cause it already exists. Remove database/seeders/PostSeeder.php and run command again.",
+        );
+
+        app(SeederGenerator::class)
+            ->setModel('Post')
+            ->generate();
     }
 }

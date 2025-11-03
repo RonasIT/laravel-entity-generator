@@ -3,9 +3,12 @@
 namespace RonasIT\Support\Tests\Support\Seeder;
 
 use org\bovigo\vfs\vfsStream;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 
 trait SeederGeneratorMockTrait
 {
+    use GeneratorMockTrait;
+
     public function mockFilesystem(): void
     {
         $structure = [
