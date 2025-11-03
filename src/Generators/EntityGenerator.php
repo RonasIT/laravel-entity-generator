@@ -53,7 +53,7 @@ abstract class EntityGenerator
 
     public function setModel(string $model): self
     {
-        $this->model = Str::studly($model);
+        $this->model = $model;
 
         return $this;
     }
