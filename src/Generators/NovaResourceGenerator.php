@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Support\CommandLineNovaField;
 use RonasIT\Support\Support\DatabaseNovaField;
 
@@ -64,11 +63,7 @@ class NovaResourceGenerator extends EntityGenerator
                 );
             }
 
-            if ($this->classExists('nova', "{$this->model}Resource")) {
-                $path = $this->getClassPath('nova', "{$this->model}Resource", $this->modelSubFolder);
-
-                throw new ResourceAlreadyExistsException($path);
-            }
+            $this->checkResourceExists('nova', "{$this->model}Resource", $this->modelSubFolder);
 
             if (!$this->isStubExists('nova_resource')) {
                 return;
@@ -83,7 +78,7 @@ class NovaResourceGenerator extends EntityGenerator
                 'fields' => $novaFields,
                 'types' => array_unique(data_get($novaFields, '*.type')),
                 'imports' => $this->getImports(),
-                'namespace' => $this->getNamespace('nova', $this->modelSubFolder),
+                'namespace' => $this->generateNamespace($this->paths['nova'], $this->modelSubFolder),
             ]);
 
             $this->saveClass('nova', "{$this->model}Resource", $fileContent, $this->modelSubFolder);
@@ -179,11 +174,11 @@ class NovaResourceGenerator extends EntityGenerator
     protected function getImports(): array
     {
         $imports = [
-            "{$this->getNamespace('models', $this->modelSubFolder)}\\{$this->model}",
+            "{$this->generateNamespace($this->paths['models'], $this->modelSubFolder)}\\{$this->model}",
         ];
 
         if (!empty($this->modelSubFolder)) {
-            $imports[] = "{$this->getNamespace('nova')}\\Resource";
+            $imports[] = "{$this->generateNamespace($this->paths['nova'])}\\Resource";
         }
 
         return $imports;
