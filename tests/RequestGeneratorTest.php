@@ -109,7 +109,7 @@ class RequestGeneratorTest extends TestCase
 
     public function testSearchRequestAlreadyExists()
     {
-        $this->mockClass(RequestsGenerator::class, [            
+        $this->mockClass(RequestsGenerator::class, [
             $this->classExistsMethodCall(['requests', 'Post/GetPostRequest'], false),
             $this->classExistsMethodCall(['requests', 'Post/SearchPostsRequest']),
         ]);
