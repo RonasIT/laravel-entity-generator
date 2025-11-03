@@ -4,11 +4,12 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
 use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class ServiceGeneratorTest extends TestCase
 {
@@ -37,6 +38,7 @@ class ServiceGeneratorTest extends TestCase
     {
         $this->mockClass(ServiceGenerator::class, [
             $this->classExistsMethodCall(['repositories', 'PostRepository']),
+            $this->classExistsMethodCall(['services', 'PostService'], false),
         ]);
 
         app(ServiceGenerator::class)
@@ -67,6 +69,7 @@ class ServiceGeneratorTest extends TestCase
 
         $this->mockClass(ServiceGenerator::class, [
             $this->classExistsMethodCall(['repositories', 'PostRepository']),
+            $this->classExistsMethodCall(['services', 'PostService'], false),
         ]);
 
         app(ServiceGenerator::class)
@@ -80,5 +83,22 @@ class ServiceGeneratorTest extends TestCase
             className: WarningEvent::class,
             message: 'Generation of service has been skipped cause the view incorrect_stub from the config entity-generator.stubs.service is not exists. Please check that config has the correct view name value.',
         );
+    }
+
+    public function testRepositoryAlreadyExists()
+    {
+        $this->mockClass(ServiceGenerator::class, [
+            $this->classExistsMethodCall(['repositories', 'PostRepository']),
+            $this->classExistsMethodCall(['services', 'PostService']),
+        ]);
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create PostService cause it already exists. Remove app/Services/PostService.php and run command again.",
+        );
+
+        app(ServiceGenerator::class)
+            ->setModel('Post')
+            ->generate();
     }
 }

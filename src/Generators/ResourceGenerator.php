@@ -4,7 +4,6 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class ResourceGenerator extends EntityGenerator
 {
@@ -25,16 +24,12 @@ class ResourceGenerator extends EntityGenerator
     {
         $pluralName = $this->getPluralName($this->model);
 
-        if ($this->classExists('resources', "{$pluralName}CollectionResource")) {
-            $path = $this->getClassPath('resources', "{$pluralName}CollectionResource");
-
-            throw new ResourceAlreadyExistsException($path);
-        }
+        $this->checkResourceExists('resources', "{$this->model}/{$pluralName}CollectionResource");
 
         $collectionResourceContent = $this->getStub('collection_resource', [
             'singular_name' => $this->model,
             'plural_name' => $pluralName,
-            'namespace' => $this->getNamespace('resources')
+            'namespace' => $this->generateNamespace($this->paths['resources']),
         ]);
 
         $this->saveClass('resources', "{$pluralName}CollectionResource", $collectionResourceContent, $this->model);
@@ -44,16 +39,12 @@ class ResourceGenerator extends EntityGenerator
 
     public function generateResource(): void
     {
-        if ($this->classExists('resources', "{$this->model}Resource")) {
-            $path = $this->getClassPath('resources', "{$this->model}Resource");
-
-            throw new ResourceAlreadyExistsException($path);
-        }
+        $this->checkResourceExists('resources', "{$this->model}/{$this->model}Resource");
 
         $resourceContent = $this->getStub('resource', [
             'entity' => $this->model,
-            'namespace' => $this->getNamespace('resources'),
-            'model_namespace' => $this->getNamespace('models', $this->modelSubFolder),
+            'namespace' => $this->generateNamespace($this->paths['resources']),
+            'model_namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'fields' => when($this->fields, fn () => Arr::flatten($this->fields)),
         ]);
 
