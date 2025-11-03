@@ -10,6 +10,8 @@ class RepositoryGenerator extends EntityGenerator
     {
         $this->checkResourceNotExists('models', "{$this->model}Repository", $this->model, $this->modelSubFolder);
 
+        $this->checkResourceExists('repositories', "{$this->model}Repository");
+
         if (!$this->isStubExists('repository')) {
             return;
         }

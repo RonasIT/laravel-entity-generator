@@ -4,6 +4,7 @@ namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Tests\Support\Repository\RepositoryMockTrait;
@@ -65,5 +66,22 @@ class RepositoryGeneratorTest extends TestCase
             className: WarningEvent::class,
             message: 'Generation of repository has been skipped cause the view incorrect_stub from the config entity-generator.stubs.repository is not exists. Please check that config has the correct view name value.',
         );
+    }
+
+    public function testRepositoryAlreadyExists()
+    {
+        $this->mockClass(RepositoryGenerator::class, [
+            $this->classExistsMethodCall(['models', 'Post']),
+            $this->classExistsMethodCall(['repositories', 'PostRepository']),
+        ]);
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create PostRepository cause it already exists. Remove app/Repositories/PostRepository.php and run command again.",
+        );
+
+        app(RepositoryGenerator::class)
+            ->setModel('Post')
+            ->generate();
     }
 }

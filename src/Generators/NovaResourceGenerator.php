@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Support\CommandLineNovaField;
 use RonasIT\Support\Support\DatabaseNovaField;
@@ -56,11 +57,7 @@ class NovaResourceGenerator extends EntityGenerator
         if (class_exists(NovaServiceProvider::class)) {
             $this->checkResourceNotExists('models', "{$this->model} Nova resource", $this->model, $this->modelSubFolder);
 
-            if ($this->classExists('nova', "{$this->model}Resource")) {
-                $path = $this->getClassPath('nova', "{$this->model}Resource", $this->modelSubFolder);
-
-                throw new ResourceAlreadyExistsException($path);
-            }
+            $this->checkResourceExists('nova', "{$this->model}Resource", $this->modelSubFolder);
 
             if (!$this->isStubExists('nova_resource')) {
                 return;

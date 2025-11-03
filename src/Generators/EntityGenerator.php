@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 /**
  * @property Filesystem $fs
@@ -317,6 +318,15 @@ abstract class EntityGenerator
                     throw new IncorrectClassPathException("Incorrect path to {$configPath}, {$part} folder must start with a capital letter, please specify the path according to the PSR.");
                 }
             }
+        }
+    }
+
+    protected function checkResourceExists(string $path, string $resourceName, ?string $subFolder = null): void
+    {
+        if ($this->classExists($path, $resourceName, $subFolder)) {
+            $filePath = $this->getClassPath($path, $resourceName, $subFolder);
+
+            throw new ResourceAlreadyExistsException($filePath);
         }
     }
 
