@@ -2,18 +2,19 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Filesystem\Filesystem;
+use Throwable;
+use ReflectionClass;
+use ReflectionMethod;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Filesystem\Filesystem;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
-use Throwable;
-use ReflectionMethod;
-use ReflectionClass;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 /**
  * @property Filesystem $fs
@@ -316,6 +317,15 @@ abstract class EntityGenerator
                     throw new IncorrectClassPathException("Incorrect path to {$configPath}, {$part} folder must start with a capital letter, please specify the path according to the PSR.");
                 }
             }
+        }
+    }
+
+    protected function checkResourceExists(string $path, string $resourceName, ?string $subFolder = null): void
+    {
+        if ($this->classExists($path, $resourceName, $subFolder)) {
+            $filePath = $this->getClassPath($path, $resourceName, $subFolder);
+
+            throw new ResourceAlreadyExistsException($filePath);
         }
     }
 }
