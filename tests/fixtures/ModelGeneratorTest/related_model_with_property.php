@@ -2,11 +2,12 @@
 
 namespace RonasIT\Support\Tests\Support\Models;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
 /**
- * @property Post|null $post
+ * @property Collection<Category> $categories
  */
 class WelcomeBonus extends Model
 {
@@ -26,8 +27,8 @@ class WelcomeBonus extends Model
     {
     }
 
-    public function post()
+    public function categories()
     {
-        return $this->belongsTo(Post::class);
+        return $this->belongsToMany(Category::class);
     }
 }

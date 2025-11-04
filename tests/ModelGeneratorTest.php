@@ -19,7 +19,7 @@ class ModelGeneratorTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockFilesystem();
+        $this->mockDefaultFilesystem();
     }
 
     public function testModelAlreadyExists()
@@ -41,7 +41,9 @@ class ModelGeneratorTest extends TestCase
 
     public function testRelationModelMissing()
     {
-        $this->mockFileSystemWithoutCommentModel();
+        $this->mockFilesystem([
+            'User.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
+        ]);
         
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
@@ -153,7 +155,10 @@ class ModelGeneratorTest extends TestCase
     public function testCreateModelHasMultipleRelationsWithAnotherModel()
     {
         $this
-            ->artisan('make:entity Forum/Post -A User -E User --only-model')
+            ->artisan('make:entity Forum/post -A user -E /user --only-model')
+            ->expectsOutput('user was converted to User')
+            ->expectsOutput('user was converted to User')
+            ->expectsOutput('post was converted to Post')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_model_with_many_relations.php', 'app/Models/Forum/Post.php');
@@ -242,6 +247,24 @@ class ModelGeneratorTest extends TestCase
         $this->assertEventPushed(
             className: WarningEvent::class,
             message: 'Generation of model has been skipped cause the view incorrect_stub from the config entity-generator.stubs.relation is not exists. Please check that config has the correct view name value.',
+        );
+    }
+
+    public function testAddPropertyAnnotationToRelatedModel()
+    {
+        app(ModelGenerator::class)
+            ->setModel('Category')
+            ->setFields([])
+            ->setRelations(new RelationsDTO(
+                belongsToMany: ['User'],
+            ))
+            ->generate();
+
+        $this->assertGeneratedFileEquals('related_model_with_property.php', 'app/Models/User.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Model: Category',
         );
     }
 }
