@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests\Support\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
@@ -26,7 +27,7 @@ class WelcomeBonus extends Model
     {
     }
 
-    public function post()
+    public function post(): BelongsTo
     {
         return $this->belongsTo(Post::class);
     }
