@@ -181,7 +181,7 @@ class ModelGenerator extends EntityGenerator
                     $result[] = $this->generateClassNamespace($relation);
                 }
 
-                $result[] = 'Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($relationName);
+                $result[] = 'Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($relationType);
             }
         }
 
