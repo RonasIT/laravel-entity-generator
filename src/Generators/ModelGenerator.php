@@ -175,7 +175,7 @@ class ModelGenerator extends EntityGenerator
     {
         $result = [];
 
-        foreach ($this->relations as $relationName => $relations) {
+        foreach ($this->relations as $relationType => $relations) {
             foreach ($relations as $relation) {
                 if ($this->shouldImportRelation($relation)) {
                     $result[] = $this->generateClassNamespace($relation);
