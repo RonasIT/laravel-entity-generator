@@ -12,7 +12,6 @@ use Generator;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Illuminate\Support\Arr;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
@@ -21,12 +20,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
-            if ($this->classExists('nova', "Nova{$this->model}ResourceTest")) {
-
-                $path = $this->getClassPath('nova', "Nova{$this->model}ResourceTest");
-
-                throw new ResourceAlreadyExistsException($path);
-            }
+            $this->checkResourceExists('nova', "Nova{$this->model}ResourceTest");
 
             $novaResources = $this->getCommonNovaResources();
 
@@ -69,7 +63,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $resourceClass = Str::afterLast($this->novaResourceClassName, '\\');
 
         $fileContent = $this->getStub('nova_test', [
-            'entity_namespace' => $this->getNamespace('models', $this->modelSubFolder),
+            'entity_namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'entity' => $this->model,
             'resource_name' => $resourceClass,
             'resource_namespace' => $this->novaResourceClassName,
@@ -78,7 +72,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
-            'models_namespace' => $this->getNamespace('models'),
+            'models_namespace' => $this->generateNamespace($this->paths['models']),
         ]);
 
         $this->saveClass('tests', "Nova{$this->model}ResourceTest", $fileContent);

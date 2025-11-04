@@ -3,12 +3,13 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
-use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\TestsGenerator;
+use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Tests\Support\Test\TestMockTrait;
+use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
 
 class TestGeneratorTest extends TestCase
 {
@@ -49,6 +50,7 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
             $this->classExistsMethodCall(['models', 'User']),
             $this->classExistsMethodCall(['factories', 'RoleFactory']),
             $this->classExistsMethodCall(['factories', 'UserFactory']),
@@ -92,6 +94,7 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
             $this->classExistsMethodCall(['models', 'User']),
             $this->classExistsMethodCall(['factories', 'RoleFactory']),
             $this->classExistsMethodCall(['factories', 'UserFactory']),
@@ -128,6 +131,7 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
             $this->classExistsMethodCall(['models', 'User']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
@@ -167,6 +171,7 @@ class TestGeneratorTest extends TestCase
         $this->mockDBTransactionStartRollback(5);
 
         $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
             $this->classExistsMethodCall(['models', 'User']),
             $this->classExistsMethodCall(['factories', 'RoleFactory']),
             $this->classExistsMethodCall(['factories', 'UserFactory']),
@@ -216,6 +221,7 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'MediaTest'], false),
             $this->classExistsMethodCall(['models', 'User']),
             $this->classExistsMethodCall(['factories', 'RoleFactory']),
             $this->classExistsMethodCall(['factories', 'MediaFactory']),
@@ -229,5 +235,21 @@ class TestGeneratorTest extends TestCase
             ->generate();
 
         Event::assertNothingDispatched();
+    }
+
+    public function testTestAlreadyExists()
+    {
+        $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'PostTest']),
+        ]);
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create PostTest cause it already exists. Remove tests/PostTest.php and run command again.",
+        );
+
+        app(TestsGenerator::class)
+            ->setModel('Post')
+            ->generate();
     }
 }

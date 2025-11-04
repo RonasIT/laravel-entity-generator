@@ -9,7 +9,6 @@ use InvalidArgumentException;
 use RonasIT\Support\Exceptions\FakerMethodNotFoundException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class FactoryGenerator extends EntityGenerator
 {
@@ -36,11 +35,7 @@ class FactoryGenerator extends EntityGenerator
             );
         }
 
-        if ($this->classExists('factories', "{$this->model}Factory")) {
-            $path = $this->getClassPath('factories', "{$this->model}Factory");
-
-            throw new ResourceAlreadyExistsException($path);
-        }
+        $this->checkResourceExists('factories', "{$this->model}Factory");
 
         if (!$this->isStubExists('factory')) {
             return;
@@ -49,10 +44,10 @@ class FactoryGenerator extends EntityGenerator
         $this->createNamespace('factories');
 
         $factoryContent = $this->getStub('factory', [
-            'namespace' => $this->getNamespace('factories'),
+            'namespace' => $this->generateNamespace($this->paths['factories']),
             'entity' => $this->model,
             'fields' => $this->prepareFields(),
-            'modelNamespace' => $this->getNamespace('models', $this->modelSubFolder),
+            'modelNamespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
         ]);
 
         $this->saveClass('factories', "{$this->model}Factory", $factoryContent);

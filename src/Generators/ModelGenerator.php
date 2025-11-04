@@ -6,17 +6,12 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class ModelGenerator extends EntityGenerator
 {
     public function generate(): void
     {
-        if ($this->classExists('models', $this->model, $this->modelSubFolder)) {
-            $path = $this->getClassPath('models', $this->model, $this->modelSubFolder);
-
-            throw new ResourceAlreadyExistsException($path);
-        }
+        $this->checkResourceExists('models', $this->model, $this->modelSubFolder);
 
         if ($this->isStubExists('model') && (!$this->hasRelations() || $this->isStubExists('relation', 'model'))) {
             $this->createNamespace('models', $this->modelSubFolder);
@@ -37,15 +32,18 @@ class ModelGenerator extends EntityGenerator
 
     protected function getNewModelContent(): string
     {
+        $relations = $this->prepareRelations();
+
         return $this->getStub('model', [
             'entity' => $this->model,
             'fields' => Arr::collapse($this->fields),
-            'relations' => $this->prepareRelations(),
+            'relations' => $relations,
             'casts' => $this->getCasts($this->fields),
-            'namespace' => $this->getNamespace('models', $this->modelSubFolder),
+            'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
-            'anotationProperties' => $this->generateAnnotationProperties($this->fields),
+            'annotationProperties' => $this->generateAnnotationProperties($this->fields, $relations),
             'hasCarbonField' => !empty($this->fields['timestamp']) || !empty($this->fields['timestamp-required']),
+            'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
     }
 
@@ -76,13 +74,18 @@ class ModelGenerator extends EntityGenerator
                     $this->insertImport($content, $namespace);
                 }
 
+                $relationName = $this->getRelationName($this->model, $types[$type]);
+
                 $newRelation = $this->getStub('relation', [
-                    'name' => $this->getRelationName($this->model, $types[$type]),
+                    'name' => $relationName,
                     'type' => $types[$type],
                     'entity' => $this->model,
                 ]);
 
+                // TODO: use ronasit/larabuilder instead regexp
                 $fixedContent = preg_replace('/\}$/', "\n    {$newRelation}\n}", $content);
+
+                $this->insertPropertyAnnotation($fixedContent, $this->getRelationType($this->model, $types[$type]), $relationName);
 
                 $this->saveClass('models', $relation, $fixedContent);
             }
@@ -101,6 +104,7 @@ class ModelGenerator extends EntityGenerator
         $import = "use {$import};";
 
         if (!Str::contains($classContent, $import)) {
+            // TODO: use ronasit/larabuilder instead regexp
             $classContent = preg_replace('/(namespace\s+[^;]+;\s*)/', "$1{$import}\n", $classContent, 1);
         }
     }
@@ -173,13 +177,13 @@ class ModelGenerator extends EntityGenerator
 
     protected function generateClassNamespace(string $className, ?string $folder = null): string
     {
-        $path = $this->getNamespace('models', $folder);
+        $path = $this->generateNamespace($this->paths['models'], $folder);
         $psrPath = $this->pathToNamespace($className);
 
         return "{$path}\\{$psrPath}";
     }
 
-    protected function generateAnnotationProperties(array $fields): array
+    protected function generateAnnotationProperties(array $fields, array $relations): array
     {
         $result = [];
 
@@ -187,6 +191,10 @@ class ModelGenerator extends EntityGenerator
             foreach ($fieldNames as $fieldName) {
                 $result[$fieldName] = $this->getFieldType($typeName);
             }
+        }
+
+        foreach ($relations as $relation) {
+            $result[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);
         }
 
         return $result;
@@ -227,5 +235,30 @@ class ModelGenerator extends EntityGenerator
     protected function isRequired(string $typeName): bool
     {
         return Str::endsWith($typeName, 'required');
+    }
+
+    protected function getRelationType(string $model, string $relation): string
+    {
+        if (in_array($relation, ['belongsToMany', 'hasMany'])) {
+            return "Collection<{$model}>";
+        }
+
+        return "{$model}|null";
+    }
+
+    protected function insertPropertyAnnotation(string &$content, string $propertyDataType, string $propertyName): void
+    {
+        $annotation = "* @property {$propertyDataType} \${$propertyName}";
+
+        // TODO: use ronasit/larabuilder instead regexp
+        if (!Str::contains($content, '/**')) {
+            $content = preg_replace('/^\s*class[\s\S]+?\{/m', "\n/**\n {$annotation}\n */$0", $content);
+        } else {
+            $content = preg_replace('/\*\//m', "{$annotation}\n $0", $content);
+        }
+
+        if (Str::contains($propertyDataType, 'Collection')) {
+            $this->insertImport($content, 'Illuminate\Database\Eloquent\Collection');
+        }
     }
 }
