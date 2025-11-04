@@ -51,10 +51,14 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
                 if (!$this->isNovaResource($this->novaResourceClassName) || !$this->isResourceNameContainModel($this->novaResourceClassName)) {
                     // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
+
+                    $entityName = $this->getTestingEntityName();
+                    $entityTestName = $this->getTestingEntityName();
+
                     $this->throwFailureException(
                         ClassNotExistsException::class,
-                        "Cannot create Nova{$this->entity}Test cause {$this->entity} Nova resource does not exist.",
-                        "Create {$this->entity} Nova resource."
+                        "Cannot create {$entityTestName} cause {$entityName} Nova resource does not exist.",
+                        "Create {$entityName} Nova resource."
                     );
                 }
             }
@@ -69,8 +73,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
     {
         if (!empty($data['resource_name'])) {
             $this->novaResourceClassName = $this->pathToNamespace($this->paths['nova'] . DIRECTORY_SEPARATOR . Str::studly($data['resource_name']));
-
-            $this->entity = Str::afterLast($this->novaResourceClassName, '\\');
         }
 
         return $this;
