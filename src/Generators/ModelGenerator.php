@@ -90,7 +90,6 @@ class ModelGenerator extends EntityGenerator
                 // TODO: use ronasit/larabuilder instead regexp
                 $fixedContent = preg_replace('/\}$/', "\n    {$newRelation}\n}", $content);
 
-                // TODO: use ronasit/larabuilder instead regexp
                 $this->insertImport($fixedContent, 'Illuminate\Database\Eloquent\Relations\\' . Str::ucfirst($types[$type]));
 
                 $this->insertPropertyAnnotation($fixedContent, $this->getRelationType($this->model, $types[$type]), $relationName);
