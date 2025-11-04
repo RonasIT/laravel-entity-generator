@@ -19,7 +19,7 @@ trait SeederGeneratorMockTrait
 
         $root = vfsStream::setup('root', null, $structure);
 
-        $databaseSeederContent = file_get_contents(getcwd() . '/tests/fixtures/SeederGeneratorTest/database_seeder_existing.php');
+        $databaseSeederContent = file_get_contents(getcwd() . '/tests/fixtures/SeederGeneratorTest/existed_database_seeder.php');
 
         vfsStream::newFile('database/seeders/DatabaseSeeder.php')
             ->at($root)
