@@ -67,15 +67,18 @@ class RequestsGenerator extends EntityGenerator
         $requestsFolder = $this->model;
         $modelName = $this->getEntityName($method);
 
+        $this->checkResourceExists('requests', "{$requestsFolder}/{$method}{$modelName}Request");
+
         $content = $this->getStub('request', [
             'method' => $method,
             'entity' => $modelName,
             'parameters' => $parameters,
             'needToValidate' => $needToValidate,
             'requestsFolder' => $requestsFolder,
-            'namespace' => $this->getNamespace('requests'),
-            'servicesNamespace' => $this->getNamespace('services'),
+            'namespace' => $this->generateNamespace($this->paths['requests']),
+            'servicesNamespace' => $this->generateNamespace($this->paths['services']),
             'entityNamespace' => $this->getModelClass($this->model),
+            'needToValidateWith' => !is_null(Arr::first($parameters, fn ($parameter) => $parameter['name'] === 'with.*')),
         ]);
 
         $this->saveClass('requests', "{$method}{$modelName}Request",
@@ -195,7 +198,7 @@ class RequestsGenerator extends EntityGenerator
             $rules[] = 'present';
         }
 
-        if ($name === 'order_by') {
+        if (in_array($name, ['order_by', 'with.*'])) {
             $rules[] = 'in:';
         }
 

@@ -5,17 +5,12 @@ namespace RonasIT\Support\Generators;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class ControllerGenerator extends EntityGenerator
 {
     public function generate(): void
     {
-        if ($this->classExists('controllers', "{$this->model}Controller")) {
-            $path = $this->getClassPath('controllers', "{$this->model}Controller");
-
-            throw new ResourceAlreadyExistsException($path);
-        }
+        $this->checkResourceExists('controllers', "{$this->model}Controller");
 
         if (!$this->classExists('services', "{$this->model}Service")) {
             $this->throwFailureException(
@@ -45,10 +40,10 @@ class ControllerGenerator extends EntityGenerator
         return $this->getStub('controller', [
             'entity' => $model,
             'requestsFolder' => $model,
-            'namespace' => $this->getNamespace('controllers'),
-            'requestsNamespace' => $this->getNamespace('requests'),
-            'resourcesNamespace' => $this->getNamespace('resources'),
-            'servicesNamespace' => $this->getNamespace('services'),
+            'namespace' => $this->generateNamespace($this->paths['controllers']),
+            'requestsNamespace' => $this->generateNamespace($this->paths['requests']),
+            'resourcesNamespace' => $this->generateNamespace($this->paths['resources']),
+            'servicesNamespace' => $this->generateNamespace($this->paths['services']),
         ]);
     }
 
@@ -98,7 +93,7 @@ class ControllerGenerator extends EntityGenerator
         $routesFileContent = file_get_contents($routesPath);
 
         $stub = $this->getStub('use_routes', [
-            'namespace' => $this->getNamespace('controllers'),
+            'namespace' => $this->generateNamespace($this->paths['controllers']),
             'entity' => $this->model
         ]);
 

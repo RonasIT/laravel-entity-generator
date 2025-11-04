@@ -6,14 +6,12 @@ use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ClassAlreadyExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use Generator;
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Illuminate\Support\Arr;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
@@ -22,12 +20,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
-            if ($this->classExists('nova', "Nova{$this->model}ResourceTest")) {
-
-                $path = $this->getClassPath('nova', "Nova{$this->model}ResourceTest");
-
-                throw new ResourceAlreadyExistsException($path);
-            }
+            $this->checkResourceExists('nova', "Nova{$this->model}ResourceTest");
 
             $novaResources = $this->getCommonNovaResources();
 
@@ -43,7 +36,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
             }
 
             if (empty($novaResources)) {
-                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
                 $this->throwFailureException(
                     ClassNotExistsException::class,
                     "Cannot create Nova{$this->model}ResourceTest cause {$this->model} Nova resource does not exist.",
@@ -71,7 +63,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $resourceClass = Str::afterLast($this->novaResourceClassName, '\\');
 
         $fileContent = $this->getStub('nova_test', [
-            'entity_namespace' => $this->getNamespace('models', $this->modelSubFolder),
+            'entity_namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'entity' => $this->model,
             'resource_name' => $resourceClass,
             'resource_namespace' => $this->novaResourceClassName,
@@ -80,6 +72,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
+            'models_namespace' => $this->generateNamespace($this->paths['models']),
         ]);
 
         $this->saveClass('tests', "Nova{$this->model}ResourceTest", $fileContent);

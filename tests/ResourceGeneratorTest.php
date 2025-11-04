@@ -15,12 +15,12 @@ class ResourceGeneratorTest extends TestCase
     public function testResourceAlreadyExists()
     {
         $this->mockClass(ResourceGenerator::class, [
-            $this->classExistsMethodCall(['resources', 'PostResource']),
+            $this->classExistsMethodCall(['resources', 'Post/PostResource']),
         ]);
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: 'Cannot create PostResource cause it already exists. Remove vfs://root/app/Http/Resources/PostResource.php and run command again.',
+            message: 'Cannot create PostResource cause it already exists. Remove app/Http/Resources/Post/PostResource.php and run command again.',
         );
 
         app(ResourceGenerator::class)
@@ -31,13 +31,13 @@ class ResourceGeneratorTest extends TestCase
     public function testCollectionResourceAlreadyExists()
     {
         $this->mockClass(ResourceGenerator::class, [
-            $this->classExistsMethodCall(['resources', 'PostResource'], false),
-            $this->classExistsMethodCall(['resources', 'PostsCollectionResource']),
+            $this->classExistsMethodCall(['resources', 'Post/PostResource'], false),
+            $this->classExistsMethodCall(['resources', 'Post/PostsCollectionResource']),
         ]);
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: 'Cannot create PostsCollectionResource cause it already exists. Remove vfs://root/app/Http/Resources/PostsCollectionResource.php and run command again.',
+            message: 'Cannot create PostsCollectionResource cause it already exists. Remove app/Http/Resources/Post/PostsCollectionResource.php and run command again.',
         );
 
         app(ResourceGenerator::class)

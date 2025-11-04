@@ -18,6 +18,8 @@ class ServiceGenerator extends EntityGenerator
             );
         }
 
+        $this->checkResourceExists('services', "{$this->model}Service");
+
         if (!$this->isStubExists('service')) {
             return;
         }
@@ -27,8 +29,8 @@ class ServiceGenerator extends EntityGenerator
         $serviceContent = $this->getStub('service', [
             'entity' => $this->model,
             'fields' => $this->getFields(),
-            'namespace' => $this->getNamespace('services'),
-            'repositoriesNamespace' => $this->getNamespace('repositories'),
+            'namespace' => $this->generateNamespace($this->paths['services']),
+            'repositoriesNamespace' => $this->generateNamespace($this->paths['repositories']),
         ]);
 
         $this->saveClass('services', "{$this->model}Service", $serviceContent);

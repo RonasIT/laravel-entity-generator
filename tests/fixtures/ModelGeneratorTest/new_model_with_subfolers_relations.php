@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 use App\Models\Forum\Author;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @property string $title
+ * @property Collection<Author> $authors
  */
 class Post extends Model
 {
