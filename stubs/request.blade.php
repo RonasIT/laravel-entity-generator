@@ -47,9 +47,7 @@ class {{ $method }}{{ $entity }}Request extends Request
 @endif
 @if($needToValidateWith)
 
-@if(empty($availableRelations))
     //TODO: don't forget to review relations list
-@endif
     protected function getAvailableRelations(): array
     {
 @if(!empty($availableRelations))

@@ -313,9 +313,7 @@ abstract class EntityGenerator
     {
         $relationName = Str::snake($relation);
 
-        $pluralRelations = ['belongsToMany', 'hasMany'];
-
-        if (in_array($type, $pluralRelations)) {
+        if (in_array($type, ['belongsToMany', 'hasMany'])) {
             $relationName = Str::plural($relationName);
         }
 

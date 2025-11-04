@@ -25,6 +25,7 @@ class SearchPostsRequest extends Request
         ];
     }
 
+    //TODO: don't forget to review relations list
     protected function getAvailableRelations(): array
     {
         return [
