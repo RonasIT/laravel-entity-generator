@@ -84,6 +84,9 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockClass(NovaTestGenerator::class, [
             $this->classExistsMethodCall(['nova', 'NovaPostResourceTest']),
+            $this->getCommonNovaResourcesMock([
+                'PostResource',
+            ]),
         ]);
 
         $this->assertExceptionThrew(
@@ -144,7 +147,7 @@ class NovaTestGeneratorTest extends TestCase
             ->setModel('WelcomeBonus')
             ->generate();
 
-        $this->assertFileDoesNotExist('tests/NovaWelcomeBonusTest.php');
+        $this->assertFileDoesNotExist('tests/NovaWelcomeBonusResourceTest.php');
         $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusResourceTest/nova_welcome_bonus_resource_dump.sql');
         $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_request.json');
         $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_response.json');

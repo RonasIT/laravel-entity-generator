@@ -8,7 +8,7 @@ class TestsGenerator extends AbstractTestsGenerator
 {
     public function generate(): void
     {
-        $this->entity = $this->model;
+        $this->checkResourceExists('tests', "{$this->model}Test");
 
         parent::generate();
     }
@@ -48,8 +48,8 @@ class TestsGenerator extends AbstractTestsGenerator
             'databaseTableName' => $this->getTableName($this->model),
             'entities' => $this->getTableName($this->model, '-'),
             'withAuth' => $this->withAuth,
-            'entityNamespace' => $this->getNamespace('models', $this->modelSubFolder),
-            'userNamespace' => $this->getNamespace('models'),
+            'entityNamespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
+            'userNamespace' => $this->generateNamespace($this->paths['models']),
             'hasModificationEndpoints' => !empty(array_intersect($this->crudOptions, ['C', 'U', 'D'])),
         ]);
 
@@ -59,5 +59,10 @@ class TestsGenerator extends AbstractTestsGenerator
         $this->saveClass('tests', $testName, $content);
 
         event(new SuccessCreateMessage($createMessage));
+    }
+
+    protected function getTestingEntityName(): string
+    {
+        return $this->model;
     }
 }

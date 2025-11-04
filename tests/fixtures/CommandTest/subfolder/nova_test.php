@@ -2,11 +2,12 @@
 
 namespace App\Tests;
 
-use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
+use Models\Forum\Post;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 use App\Nova\Forum\PostResource;
+use Models\User;
 
 class NovaPostResourceTest extends TestCase
 {
