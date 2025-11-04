@@ -43,7 +43,7 @@ class NovaResourceGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceNotExistsException::class,
-            message: 'Cannot create Post Nova resource cause Post does not exist. Create app/Models/Post.php and run command again.'
+            message: 'Cannot create PostResource cause Post does not exist. Create app/Models/Post.php and run command again.'
         );
 
         app(NovaResourceGenerator::class)
