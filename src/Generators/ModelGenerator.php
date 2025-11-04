@@ -239,7 +239,7 @@ class ModelGenerator extends EntityGenerator
 
     protected function getRelationType(string $model, string $relation): string
     {
-        if (in_array($relation, ['belongsToMany', 'hasMany'])) {
+        if ($this->isPluralRelation($relation)) {
             return "Collection<{$model}>";
         }
 

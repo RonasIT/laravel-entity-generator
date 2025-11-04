@@ -333,10 +333,15 @@ abstract class EntityGenerator
     {
         $relationName = Str::snake($relation);
 
-        if (in_array($type, ['belongsToMany', 'hasMany'])) {
+        if ($this->isPluralRelation($type)) {
             $relationName = Str::plural($relationName);
         }
 
         return $relationName;
+    }
+
+    protected function isPluralRelation(string $relation): bool
+    {
+        return in_array($relation, ['hasMany', 'belongsToMany']);
     }
 }
