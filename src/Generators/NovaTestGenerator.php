@@ -44,10 +44,8 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
             $this->novaResourceClassName = Arr::first($novaResources);
 
-            $entityName = $this->getTestingEntityName();
-            
-            if ($this->classExists('nova', "Nova{$entityName}Test")) {
-                $path = $this->getClassPath('nova', "Nova{$entityName}Test");
+            if ($this->classExists('nova', $this->getTestClassName())) {
+                $path = $this->getClassPath('nova', $this->getTestClassName());
 
                 throw new ResourceAlreadyExistsException($path);
             }
