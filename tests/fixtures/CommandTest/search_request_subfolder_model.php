@@ -19,7 +19,7 @@ class SearchPostsRequest extends Request
             'all' => 'boolean',
             'query' => 'string|nullable',
             'with' => 'array',
-            'with.*' => 'string|in:' . $availableRelations,
+            'with.*' => 'required|string|in:' . $availableRelations,
         ];
     }
 
