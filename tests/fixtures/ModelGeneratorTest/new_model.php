@@ -4,7 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @property int|null $priority
@@ -20,6 +23,8 @@ use Carbon\Carbon;
  * @property Carbon|null $updated_at
  * @property Carbon $published_at
  * @property array $meta
+ * @property Comment|null $comment
+ * @property Collection<User> $users
  */
 class Post extends Model
 {
@@ -53,12 +58,12 @@ class Post extends Model
         'meta' => 'array',
     ];
 
-    public function comment()
+    public function comment(): HasOne
     {
         return $this->hasOne(Comment::class);
     }
 
-    public function users()
+    public function users(): HasMany
     {
         return $this->hasMany(User::class);
     }
