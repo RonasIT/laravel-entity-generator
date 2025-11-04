@@ -17,8 +17,8 @@ class SearchPostsRequest extends Request
             'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'desc' => 'boolean',
             'all' => 'boolean',
-            'with' => 'array',
             'query' => 'string|nullable',
+            'with' => 'array',
             'with.*' => 'string|in:' . $availableRelations,
         ];
     }

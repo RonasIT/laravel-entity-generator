@@ -133,11 +133,11 @@ class RequestsGenerator extends EntityGenerator
             'per_page',
         ]);
 
-        $parameters['array'] = ['with'];
-
         $parameters['string'] = ['order_by'];
 
         $parameters['string-nullable'] = ['query'];
+
+        $parameters['array'] = ['with'];
 
         $parameters['string-required'] = ['with.*'];
 
@@ -185,7 +185,7 @@ class RequestsGenerator extends EntityGenerator
         }
 
         if ($required) {
-            $rules[] = 'required';
+            array_unshift($rules, 'required');
         }
 
         if ($nullable) {
