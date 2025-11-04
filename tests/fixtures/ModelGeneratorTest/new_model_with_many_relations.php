@@ -5,9 +5,10 @@ namespace App\Models\Forum;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 
-//TODO: add @property annotation for each model's field
 /**
+ * @property Collection<User> $users
  */
 class Post extends Model
 {
