@@ -84,9 +84,6 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockClass(NovaTestGenerator::class, [
             $this->classExistsMethodCall(['nova', 'NovaPostResourceTest']),
-            $this->getCommonNovaResourcesMock([
-                'PostResource',
-            ]),
         ]);
 
         $this->assertExceptionThrew(

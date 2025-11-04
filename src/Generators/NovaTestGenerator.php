@@ -53,7 +53,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
                     // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
 
                     $entityName = $this->getTestingEntityName();
-                    $entityTestName = $this->getTestingEntityName();
+                    $entityTestName = $this->getTestClassName();
 
                     $this->throwFailureException(
                         ClassNotExistsException::class,
