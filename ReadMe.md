@@ -103,6 +103,14 @@ The following options are available:
 - `--only-seeder`
 - `--only-resource`
 
+    --only-nova-resource       : Set this flag if you want to create only nova resource.
+    
+    --only-nova-tests          : Set this flag if you want to create only nova resource tests.
+
+    --resource-name[=RESOURCE-NAME] : Override the default (App\\Nova\\ModelResource) Nova resource name. Used only with --only-nova-tests.
+   
+    please, use flag variable with double screening and double quotes without Nova directory, for example --resource-name="Resources\\Banner\\BannerResource"
+
 #### Mode combination options
 
 Sometimes you need to generate the stack of classes to work with some entity only inside the application without

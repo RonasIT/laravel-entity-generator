@@ -32,6 +32,11 @@ trait GeneratorMockTrait
         );
     }
 
+    public function nativeIsSubClassOfMethodCall(array $arguments, bool $result = true): array
+    {
+        return $this->functionCall('is_subclass_of', $arguments, $result);
+    }
+
     public function classExistsMethodCall(array $arguments, bool $result = true): array
     {
         return [
