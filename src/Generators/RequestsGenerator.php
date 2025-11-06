@@ -216,10 +216,10 @@ class RequestsGenerator extends EntityGenerator
         $relations = $this->prepareRelations();
 
         foreach ($relations as $type => $entities) {
-              array_push(
-                 $availableRelations,
-                 ...Arr::map($entities, fn ($entity) => $this->getRelationName($entity, $type)),
-             );
+            array_push(
+                $availableRelations,
+                ...Arr::map($entities, fn ($entity) => $this->getRelationName($entity, $type)),
+            );
         }
 
         return $availableRelations;
