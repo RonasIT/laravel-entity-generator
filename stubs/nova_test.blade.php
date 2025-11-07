@@ -5,7 +5,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 use {{ $resource_namespace }};
-use Models\User;
+use {{ $user_model_path }};
 
 class Nova{{ $resource_name }}Test extends TestCase
 {

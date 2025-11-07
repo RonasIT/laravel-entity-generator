@@ -71,6 +71,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             'actions' => $actions,
             'filters' => $filters,
             'models_namespace' => $this->generateNamespace('models', $this->modelSubFolder),
+            'user_model_path' => $this->generateNamespace('models') . '\User',
         ]);
 
         $this->saveClass('tests', $this->getTestClassName(), $fileContent);
