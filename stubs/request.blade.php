@@ -50,8 +50,15 @@ class {{ $method }}{{ $entity }}Request extends Request
     //TODO: don't forget to review relations list
     protected function getAvailableRelations(): array
     {
+@if(!empty($availableRelations))
         return [
+@foreach($availableRelations as $relation)
+            '{{ $relation }}',
+@endforeach
         ];
+@else
+        return [];
+@endif
     }
 @endif
 }

@@ -14,7 +14,7 @@ class GetPostRequest extends Request
 
         return [
             'with' => 'array',
-            'with.*' => 'string|required|in:' . $availableRelations,
+            'with.*' => 'required|string|in:' . $availableRelations,
         ];
     }
 
@@ -32,7 +32,6 @@ class GetPostRequest extends Request
     //TODO: don't forget to review relations list
     protected function getAvailableRelations(): array
     {
-        return [
-        ];
+        return [];
     }
 }

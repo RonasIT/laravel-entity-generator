@@ -79,6 +79,7 @@ class RequestsGenerator extends EntityGenerator
             'servicesNamespace' => $this->generateNamespace($this->paths['services']),
             'entityNamespace' => $this->getModelClass($this->model),
             'needToValidateWith' => !is_null(Arr::first($parameters, fn ($parameter) => $parameter['name'] === 'with.*')),
+            'availableRelations' => $this->getAvailableRelations(),
         ]);
 
         $this->saveClass('requests', "{$method}{$modelName}Request",
@@ -135,15 +136,15 @@ class RequestsGenerator extends EntityGenerator
             'per_page',
         ]);
 
-        $parameters['array'] = ['with'];
-
         $parameters['string'] = ['order_by'];
 
         $parameters['string-nullable'] = ['query'];
 
+        $parameters['array'] = ['with'];
+
         $parameters['string-required'] = ['with.*'];
 
-        return $this->getValidationParameters($parameters, false);
+        return $this->getValidationParameters($parameters, true);
     }
 
     public function getValidationParameters($parameters, $requiredAvailable): array
@@ -187,7 +188,7 @@ class RequestsGenerator extends EntityGenerator
         }
 
         if ($required) {
-            $rules[] = 'required';
+            array_unshift($rules, 'required');
         }
 
         if ($nullable) {
@@ -206,6 +207,22 @@ class RequestsGenerator extends EntityGenerator
             'name' => $name,
             'rules' => $rules
         ];
+    }
+
+    protected function getAvailableRelations(): array
+    {
+        $availableRelations = [];
+
+        $relations = $this->prepareRelations();
+
+        foreach ($relations as $type => $entities) {
+            array_push(
+                $availableRelations,
+                ...Arr::map($entities, fn ($entity) => $this->getRelationName($entity, $type)),
+            );
+        }
+
+        return $availableRelations;
     }
 
     private function getEntityName($method): string
