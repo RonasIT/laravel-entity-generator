@@ -8,11 +8,6 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ModelGenerator extends EntityGenerator
 {
-    protected const array PLURAL_NUMBER_REQUIRED = [
-        'belongsToMany',
-        'hasMany',
-    ];
-
     public function generate(): void
     {
         $this->checkResourceExists('models', $this->model, $this->modelSubFolder);
@@ -152,17 +147,6 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    private function getRelationName(string $relation, string $type): string
-    {
-        $relationName = Str::snake($relation);
-
-        if (in_array($type, self::PLURAL_NUMBER_REQUIRED)) {
-            $relationName = Str::plural($relationName);
-        }
-
-        return $relationName;
-    }
-
     protected function getImportedRelations(): array
     {
         $result = [];
@@ -251,7 +235,7 @@ class ModelGenerator extends EntityGenerator
 
     protected function getRelationType(string $model, string $relation): string
     {
-        if (in_array($relation, self::PLURAL_NUMBER_REQUIRED)) {
+        if ($this->isPluralRelation($relation)) {
             return "Collection<{$model}>";
         }
 

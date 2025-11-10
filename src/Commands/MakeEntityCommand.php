@@ -313,7 +313,7 @@ class MakeEntityCommand extends Command
         $pascalEntityName = Str::studly($entityName);
 
         if ($entityName !== $pascalEntityName) {
-            $this->info("{$entityName} was converted to {$pascalEntityName}");
+            $this->warn("{$entityName} was converted to {$pascalEntityName}");
         }
 
         return $pascalEntityName;

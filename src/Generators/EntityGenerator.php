@@ -338,4 +338,20 @@ abstract class EntityGenerator
             throw new ResourceNotExistsException($entity, $filePath);
         }
     }
+
+    protected function getRelationName(string $relation, string $type): string
+    {
+        $relationName = Str::snake($relation);
+
+        if ($this->isPluralRelation($type)) {
+            $relationName = Str::plural($relationName);
+        }
+
+        return $relationName;
+    }
+
+    protected function isPluralRelation(string $relation): bool
+    {
+        return in_array($relation, ['hasMany', 'belongsToMany']);
+    }
 }
