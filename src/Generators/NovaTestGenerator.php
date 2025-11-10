@@ -43,7 +43,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
             $this->novaResourceClassName = Arr::first($novaResources);
 
-            $this->checkResourceExists('nova', $this->getTestClassName(), $this->modelSubFolder);
+            $this->checkResourceExists('nova', $this->getTestClassName());
 
             parent::generate();
         } else {
@@ -70,7 +70,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
-            'models_namespace' => $this->generateNamespace('models', $this->modelSubFolder),
             'user_model_path' => $this->generateNamespace('models') . '\User',
         ]);
 
