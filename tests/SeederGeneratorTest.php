@@ -5,12 +5,12 @@ namespace RonasIT\Support\Tests;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Generators\SeederGenerator;
+use RonasIT\Support\Tests\Support\Seeder\SeederGeneratorMockTrait;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Tests\Support\Repository\RepositoryMockTrait;
 
 class SeederGeneratorTest extends TestCase
 {
-    use RepositoryMockTrait;
+    use SeederGeneratorMockTrait;
 
     public function testCreateSeeder()
     {
@@ -22,7 +22,23 @@ class SeederGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
 
-        $this->assertGeneratedFileEquals('database_seeder.php', 'database/seeders/DatabaseSeeder.php');
+        $this->assertGeneratedFileEquals('database_seeder_created.php', 'database/seeders/DatabaseSeeder.php');
+        $this->assertGeneratedFileEquals('post_seeder.php', 'database/seeders/PostSeeder.php');
+    }
+
+    public function testCreateSeederDatabaseSeederExists()
+    {
+        $this->mockFilesystem();
+
+        app(SeederGenerator::class)
+            ->setRelations(new RelationsDTO(
+                hasMany: ['Comment'],
+                belongsTo: ['User'],
+            ))
+            ->setModel('Post')
+            ->generate();
+
+        $this->assertGeneratedFileEquals('database_seeder_modified.php', 'database/seeders/DatabaseSeeder.php');
         $this->assertGeneratedFileEquals('post_seeder.php', 'database/seeders/PostSeeder.php');
     }
 
