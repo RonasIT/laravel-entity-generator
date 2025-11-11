@@ -330,12 +330,12 @@ abstract class EntityGenerator
         }
     }
 
-    protected function checkResourceNotExists(string $path, string $entity, string $resourceName, ?string $subFolder = null): void
+    protected function checkResourceNotExists(string $path, string $createableResource, string $requiredResource, ?string $subFolder = null): void
     {
-        if (!$this->classExists($path, $resourceName, $subFolder)) {
-            $filePath = $this->getClassPath($path, $resourceName, $subFolder);
+        if (!$this->classExists($path, $requiredResource, $subFolder)) {
+            $filePath = $this->getClassPath($path, $requiredResource, $subFolder);
 
-            throw new ResourceNotExistsException($entity, $filePath);
+            throw new ResourceNotExistsException($createableResource, $filePath);
         }
     }
 

@@ -5,11 +5,11 @@ namespace RonasIT\Support\Exceptions;
 class ResourceNotExistsException extends AbstractResourceException
 {
     public function __construct(
-        string $entity,
-        string $filePath,
+        string $createableResource,
+        string $requiredFilePath,
     ) {
-        $resource = $this->getEntity($filePath);
+        $resource = $this->getEntity($requiredFilePath);
 
-        parent::__construct("Cannot create {$entity} cause {$resource} does not exist. Create {$filePath} and run command again.");
+        parent::__construct("Cannot create {$createableResource} cause {$resource} does not exist. Create {$requiredFilePath} and run command again.");
     }
 }
