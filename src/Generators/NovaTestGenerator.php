@@ -70,7 +70,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
             'filters' => $filters,
-            'user_model_path' => $this->generateNamespace('models') . '\User',
+            'models_namespace' => $this->generateNamespace('models'),
         ]);
 
         $this->saveClass('tests', $this->getTestClassName(), $fileContent);
