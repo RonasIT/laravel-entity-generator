@@ -28,7 +28,9 @@ class SeederGenerator extends EntityGenerator
 
         $this->createNamespace('seeders');
 
-        $this->createDatabaseSeeder();
+        if (!file_exists($this->databaseSeederPath)) {
+            $this->createDatabaseSeeder();
+        }
 
         $this->createEntitySeeder();
 

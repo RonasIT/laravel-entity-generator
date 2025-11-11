@@ -19,6 +19,7 @@ class FileSystemMock
     public ?array $factories = null;
     public ?array $translations = null;
     public ?array $config = null;
+    public ?array $seeders = null;
 
     public function setStructure(): void
     {
@@ -121,6 +122,14 @@ class FileSystemMock
 
             foreach ($this->config as $config => $content) {
                 $structure['config'][$config] = $content;
+            }
+        }
+
+        if (!is_null($this->seeders)) {
+            $structure['database']['seeders'] = [];
+
+            foreach ($this->seeders as $seeder => $content) {
+                $structure['database']['seeders'][$seeder] = $content;
             }
         }
 
