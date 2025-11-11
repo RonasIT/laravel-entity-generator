@@ -152,7 +152,6 @@ Since 1.3 version you need to add to your config/entity-generator.php following 
 ```php
     'paths' => [
         ... // your old data
-        'seeds' => 'database/seeds',
         'database_seeder' => 'database/seeds/DatabaseSeeder.php',
         'translations' => 'lang/en/validation.php'
     ],
