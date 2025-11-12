@@ -2,13 +2,13 @@
 
 namespace RonasIT\Support\Tests;
 
-use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Generators\NovaResourceGenerator;
-use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\NovaResourceGeneratorMockTrait;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\Post;
+use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\NovaResourceGeneratorMockTrait;
 
 class NovaResourceGeneratorTest extends TestCase
 {
@@ -42,9 +42,8 @@ class NovaResourceGeneratorTest extends TestCase
         $this->mockNovaServiceProviderExists();
 
         $this->assertExceptionThrew(
-            className: ClassNotExistsException::class,
-            message: 'Cannot create Post Nova resource cause Post Model does not exists. '
-            . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'"
+            className: ResourceNotExistsException::class,
+            message: 'Cannot create PostResource cause Post does not exist. Create app/Models/Post.php and run command again.'
         );
 
         app(NovaResourceGenerator::class)

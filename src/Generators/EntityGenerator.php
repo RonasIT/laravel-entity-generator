@@ -13,6 +13,7 @@ use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
@@ -326,6 +327,15 @@ abstract class EntityGenerator
             $filePath = $this->getClassPath($path, $resourceName, $subFolder);
 
             throw new ResourceAlreadyExistsException($filePath);
+        }
+    }
+
+    protected function checkResourceNotExists(string $path, string $createableResource, string $requiredResource, ?string $subFolder = null): void
+    {
+        if (!$this->classExists($path, $requiredResource, $subFolder)) {
+            $filePath = $this->getClassPath($path, $requiredResource, $subFolder);
+
+            throw new ResourceNotExistsException($createableResource, $filePath);
         }
     }
 

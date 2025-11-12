@@ -8,8 +8,8 @@ use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
 
 class ServiceGeneratorTest extends TestCase
 {
@@ -22,9 +22,8 @@ class ServiceGeneratorTest extends TestCase
         ]);
 
         $this->assertExceptionThrew(
-            className: ClassNotExistsException::class,
-            message: 'Cannot create PostService cause PostRepository does not exists. '
-            . "Create a PostRepository by himself or run command 'php artisan make:entity Post --only-repository'",
+            className: ResourceNotExistsException::class,
+            message: 'Cannot create PostService cause PostRepository does not exist. Create app/Repositories/PostRepository.php and run command again.',
         );
 
         app(ServiceGenerator::class)

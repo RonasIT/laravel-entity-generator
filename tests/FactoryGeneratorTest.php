@@ -2,17 +2,17 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Event;
 use Illuminate\View\ViewException;
+use Illuminate\Support\Facades\Event;
 use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\SuccessCreateMessage;
+use Illuminate\Support\Facades\Config;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Exceptions\IncorrectClassPathException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Generators\FactoryGenerator;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use RonasIT\Support\Tests\Support\Factory\FactoryMockTrait;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class FactoryGeneratorTest extends TestCase
 {
@@ -30,9 +30,8 @@ class FactoryGeneratorTest extends TestCase
         $this->mockFileSystemWithoutPostModel();
 
         $this->assertExceptionThrew(
-            className: ClassNotExistsException::class,
-            message: "Cannot create PostFactory cause Post Model does not exists. "
-            . "Create a Post Model by itself or run command 'php artisan make:entity Post --only-model'.",
+            className: ResourceNotExistsException::class,
+            message: 'Cannot create PostFactory cause Post does not exist. Create app/Models/Post.php and run command again.',
         );
 
         app(FactoryGenerator::class)
