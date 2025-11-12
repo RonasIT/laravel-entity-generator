@@ -68,6 +68,9 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockClass(NovaTestGenerator::class, [
             $this->classExistsMethodCall(['nova', 'NovaPostResourceTest']),
+            $this->getCommonNovaResourcesMock([
+                'PostResource',
+            ]),
         ]);
 
         $this->assertExceptionThrew(
@@ -106,11 +109,11 @@ class NovaTestGeneratorTest extends TestCase
             ->setModel('WelcomeBonus')
             ->generate();
 
-        $this->assertFileDoesNotExist('tests/NovaWelcomeBonusTest.php');
-        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusTest/nova_welcome_bonus_dump.sql');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_request.json');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_response.json');
-        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/update_welcome_bonus_request.json');
+        $this->assertFileDoesNotExist('tests/NovaWelcomeBonusResourceTest.php');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusResourceTest/nova_welcome_bonus_resource_dump.sql');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_request.json');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_response.json');
+        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/update_welcome_bonus_resource_request.json');
 
         $this->assertEventPushed(
             className: WarningEvent::class,
@@ -140,10 +143,10 @@ class NovaTestGeneratorTest extends TestCase
             ->generate();
 
         $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaWelcomeBonusResourceTest.php');
-        $this->assertFileDoesNotExist('tests/fixtures/NovaWelcomeBonusTest/nova_welcome_bonus_dump.sql');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_request.json');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_response.json');
-        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/update_welcome_bonus_request.json');
+        $this->assertFileDoesNotExist('tests/fixtures/NovaWelcomeBonusResourceTest/nova_welcome_bonus_resource_dump.sql');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_request.json');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_response.json');
+        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/update_welcome_bonus_resource_request.json');
 
         $this->assertEventPushed(
             className: WarningEvent::class,
@@ -177,10 +180,10 @@ class NovaTestGeneratorTest extends TestCase
             ->generate();
 
         $this->assertGeneratedFileEquals('created_resource_test.php', 'tests/NovaWelcomeBonusResourceTest.php');
-        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusTest/nova_welcome_bonus_dump.sql');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_request.json');
-        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusTest/create_welcome_bonus_response.json');
-        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusTest/update_welcome_bonus_request.json');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/NovaWelcomeBonusResourceTest/nova_welcome_bonus_resource_dump.sql');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_request.json');
+        $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_response.json');
+        $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/update_welcome_bonus_resource_request.json');
     }
 
     public function testGenerateNovaPackageNotInstall()

@@ -186,9 +186,10 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     protected function generateFixtures(): void
     {
         $object = $this->getFixtureValuesList($this->model);
-        $entity = Str::snake($this->model);
 
         $this->createFixtureFolder();
+
+        $entity = Str::snake($this->getTestingEntityName());
 
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
             if ($this->isFixtureNeeded($type)) {
@@ -258,6 +259,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
     abstract protected function isFixtureNeeded($type): bool;
 
     abstract protected function generateTests(): void;
+
+    abstract protected function getTestingEntityName(): string;
 
     private function filterBadModelField($fields): array
     {
