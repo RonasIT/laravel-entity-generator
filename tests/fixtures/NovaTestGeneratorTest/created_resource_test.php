@@ -2,12 +2,12 @@
 
 namespace App\Tests;
 
-use Models\WelcomeBonus;
+use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 use App\Nova\WelcomeBonusResource;
-use Models\User;
+use RonasIT\Support\Tests\Support\Models\User;
 
 class NovaWelcomeBonusResourceTest extends TestCase
 {
