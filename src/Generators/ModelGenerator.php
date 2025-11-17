@@ -4,7 +4,6 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ModelGenerator extends EntityGenerator
@@ -58,14 +57,7 @@ class ModelGenerator extends EntityGenerator
 
         foreach ($this->relations as $type => $relationsByType) {
             foreach ($relationsByType as $relation) {
-                if (!$this->classExists('models', $relation)) {
-                    // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
-                    $this->throwFailureException(
-                        exceptionClass: ClassNotExistsException::class,
-                        failureMessage: "Cannot create {$this->model} Model cause relation model {$relation} does not exist.",
-                        recommendedMessage: "Create the {$relation} Model by himself or run command 'php artisan make:entity {$relation} --only-model'.",
-                    );
-                }
+                $this->checkResourceNotExists('models', $this->model, $relation);
 
                 $content = $this->getModelContent($relation);
 
