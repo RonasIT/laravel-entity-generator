@@ -209,13 +209,6 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return $filters;
     }
 
-    protected function getDumpName(): string
-    {
-        $entityName = Str::snake($this->getTestingEntityName());
-
-        return "nova_{$entityName}_dump.sql";
-    }
-
     protected function getTestingEntityName(): string
     {
         return Str::afterLast($this->novaResourceClassName, '\\');
