@@ -201,6 +201,13 @@ class {{ $entity }}Test extends TestCase
                 ],
                 'fixture' => 'search_by_page_per_page',
             ],
+            [
+                'filter' => [
+                    'order_by' => 'id',
+                    'desc' => true,
+                ],
+                'fixture' => 'search_by_order_id',
+            ],
         ];
     }
 
