@@ -11,6 +11,6 @@ return [
     */
 
     'exceptions' => [
-        'not_found' => ':Entity does not exist',
+        'not_owner' => ':Entity is not owner',
     ],
 ];

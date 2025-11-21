@@ -1,3 +1,6 @@
+<?php
+
+return [
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes
@@ -8,7 +11,7 @@
     */
 
     'exceptions' => [
+        'not_owner' => ':Entity is not owner',
         'not_found' => ':Entity does not exist',
     ],
-
 ];
