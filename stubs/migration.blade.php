@@ -13,7 +13,7 @@ return new class extends Migration
         $this->createTable();
 @else
         Schema::create('{{ \Illuminate\Support\Str::plural(\Illuminate\Support\Str::snake($entity)) }}', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
 @foreach ($table as $row )
             {!!$row!!}
 @endforeach
@@ -59,7 +59,7 @@ return new class extends Migration
     public function createTable(): void
     {
         Schema::create('{{ \Illuminate\Support\Str::plural(\Illuminate\Support\Str::snake($entity)) }}', function (Blueprint $table) {
-            $table->increments('id');
+            $table->id();
 @foreach ($table as $row )
             {!!$row!!}
 @endforeach
