@@ -25,22 +25,11 @@ class TranslationsGenerator extends EntityGenerator
             return;
         }
 
-        $isExceptionsMissed = $this->isExceptionsMissed('validation.exceptions');
-
         $config = ArrayFile::open($this->translationPath);
 
         $config->set('exceptions.not_found', ':Entity does not exist');
 
         $config->write();
-
-        if ($isExceptionsMissed && $this->isStubExists('validation_exceptions_comment')) {
-            $this->appendExceptionComment();
-        }
-    }
-
-    protected function isExceptionsMissed($translation) : bool
-    {
-        return __($translation) === 'validation.exceptions';
     }
 
     protected function createTranslate(): void
@@ -54,18 +43,5 @@ class TranslationsGenerator extends EntityGenerator
         $createMessage = "Created a new Translations dump on path: {$this->translationPath}";
 
         event(new SuccessCreateMessage($createMessage));
-    }
-
-    protected function appendExceptionComment(): void
-    {
-        $content = file_get_contents($this->translationPath);
-
-        $stubPath = config('entity-generator.stubs.validation_exceptions_comment');
-
-        $stubContent = view($stubPath)->render();
-
-        $fixedContent = preg_replace("/(\s*)('exceptions'\s*=>)/", "\n    {$stubContent}$0", $content);
-
-        file_put_contents($this->translationPath, $fixedContent);
     }
 }

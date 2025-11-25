@@ -32,7 +32,6 @@ return [
         'migration' => 'entity-generator::migration',
         'dump' => 'entity-generator::dumps.pgsql',
         'test' => 'entity-generator::test',
-        'validation_exceptions_comment' => 'entity-generator::validation_exceptions_comment',
         'validation' => 'entity-generator::validation',
         'resource' => 'entity-generator::resource',
         'collection_resource' => 'entity-generator::collection_resource',

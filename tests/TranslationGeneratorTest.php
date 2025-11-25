@@ -65,24 +65,6 @@ class TranslationGeneratorTest extends TestCase
         Event::assertNothingDispatched();
     }
 
-    public function testAppendExceptionsCommentStubNotExist()
-    {
-        config(['entity-generator.stubs.validation_exceptions_comment' => 'incorrect_stub']);
-
-        $this->mockFilesystemForAppend('validation_without_exceptions');
-
-        app(TranslationsGenerator::class)
-            ->setModel('Post')
-            ->generate();
-
-        $this->assertFileDoesNotExist('validation.php', 'resources/lang/en/validation.php');
-
-        $this->assertEventPushed(
-            className: WarningEvent::class,
-            message: 'Generation of validation exceptions comment has been skipped cause the view incorrect_stub from the config entity-generator.stubs.validation_exceptions_comment is not exists. Please check that config has the correct view name value.',
-        );
-    }
-
     public function testAppendValidationExceptionsExist()
     {
         $this->mockFilesystemForAppend('validation_with_exceptions');
