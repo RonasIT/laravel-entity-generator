@@ -7,7 +7,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Support\CommandLineNovaField;
 use RonasIT\Support\Support\DatabaseNovaField;
 
@@ -54,14 +53,7 @@ class NovaResourceGenerator extends EntityGenerator
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
-            if (!$this->classExists('models', $this->model, $this->modelSubFolder)) {
-                // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
-                $this->throwFailureException(
-                    ClassNotExistsException::class,
-                    "Cannot create {$this->model} Nova resource cause {$this->model} Model does not exists.",
-                    "Create a {$this->model} Model by himself or run command 'php artisan make:entity {$this->model} --only-model'."
-                );
-            }
+            $this->checkResourceNotExists('models', "{$this->model}Resource", $this->model, $this->modelSubFolder);
 
             $this->checkResourceExists('nova', "{$this->model}Resource", $this->modelSubFolder);
 

@@ -2,13 +2,13 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\View;
-use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Generators\ControllerGenerator;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Tests\Support\ControllerGeneratorTest\ControllerGeneratorMockTrait;
 
 class ControllerGeneratorTest extends TestCase
@@ -46,8 +46,8 @@ class ControllerGeneratorTest extends TestCase
         ]);
 
         $this->assertExceptionThrew(
-            className: ClassNotExistsException::class,
-            message: 'Cannot create PostController cause PostService does not exists. Create a PostService by himself.',
+            className: ResourceNotExistsException::class,
+            message: 'Cannot create PostController cause PostService does not exist. Create app/Services/PostService.php and run command again.',
         );
 
         app(ControllerGenerator::class)
