@@ -12,7 +12,7 @@ use Illuminate\Filesystem\Filesystem;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
@@ -214,11 +214,7 @@ abstract class EntityGenerator
         $modelClass = $this->getModelClass($model);
 
         if (!class_exists($modelClass)) {
-            $this->throwFailureException(
-                exceptionClass: ClassNotExistsException::class,
-                failureMessage: "Cannot create {$creatableClass} cause {$model} Model does not exists.",
-                recommendedMessage: "Create a {$model} Model by himself or run command 'php artisan make:entity {$model} --only-model'.",
-            );
+            throw new ResourceNotExistsException($creatableClass, $model);
         }
 
         $instance = new $modelClass();
@@ -326,6 +322,15 @@ abstract class EntityGenerator
             $filePath = $this->getClassPath($path, $resourceName, $subFolder);
 
             throw new ResourceAlreadyExistsException($filePath);
+        }
+    }
+
+    protected function checkResourceNotExists(string $path, string $createableResource, string $requiredResource, ?string $subFolder = null): void
+    {
+        if (!$this->classExists($path, $requiredResource, $subFolder)) {
+            $filePath = $this->getClassPath($path, $requiredResource, $subFolder);
+
+            throw new ResourceNotExistsException($createableResource, $filePath);
         }
     }
 

@@ -2,23 +2,13 @@
 
 namespace RonasIT\Support\Exceptions;
 
-use Exception;
-use Illuminate\Support\Str;
-
-class ResourceAlreadyExistsException extends Exception
+class ResourceAlreadyExistsException extends AbstractResourceException
 {
     public function __construct(
-        protected string $filePath,
+        string $filePath,
     ) {
-        $entity = $this->getEntity();
+        $entity = $this->getEntity($filePath);
 
-        parent::__construct("Cannot create {$entity} cause it already exists. Remove {$this->filePath} and run command again.");
-    }
-
-    protected function getEntity(): string
-    {
-        $fileName = Str::afterLast($this->filePath, '/');
-
-        return Str::before($fileName, '.php');
+        parent::__construct("Cannot create {$entity} cause it already exists. Remove {$filePath} and run command again.");
     }
 }

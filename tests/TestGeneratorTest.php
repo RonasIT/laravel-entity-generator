@@ -8,6 +8,7 @@ use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Tests\Support\Test\TestMockTrait;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
 
@@ -30,9 +31,8 @@ class TestGeneratorTest extends TestCase
     public function testMissingModel()
     {
         $this->assertExceptionThrew(
-            className: ClassNotExistsException::class,
-            message: "Cannot create PostTest cause Post Model does not exists. "
-            . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'.",
+            className: ResourceNotExistsException::class,
+            message: 'Cannot create PostTest cause Post does not exist. Create Post and run command again.',
         );
 
         app(TestsGenerator::class)
