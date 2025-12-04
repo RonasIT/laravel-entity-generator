@@ -4,6 +4,7 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use Winter\LaravelConfigWriter\ArrayFile;
 
 class TranslationsGenerator extends EntityGenerator
@@ -19,17 +20,21 @@ class TranslationsGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        if (!file_exists($this->translationPath) && $this->isStubExists('validation')) {
+        $isTranslationFileExists = file_exists($this->translationPath);
+
+        if (!$isTranslationFileExists && $this->isStubExists('validation')) {
             $this->createTranslate();
 
             return;
         }
 
-        $config = ArrayFile::open($this->translationPath);
+        if ($isTranslationFileExists) {
+            $this->setTranslationFileValue('exceptions.not_found', ':Entity does not exist');
 
-        $config->set('exceptions.not_found', ':Entity does not exist');
+            return;
+        }
 
-        $config->write();
+        event(new WarningEvent("{$this->translationPath} file and its stub missing. Create the file or check the entity-generator.stubs.validation config"));
     }
 
     protected function createTranslate(): void
@@ -43,5 +48,14 @@ class TranslationsGenerator extends EntityGenerator
         $createMessage = "Created a new Translations dump on path: {$this->translationPath}";
 
         event(new SuccessCreateMessage($createMessage));
+    }
+
+    protected function setTranslationFileValue(string $key, string $value): void
+    {
+        $config = ArrayFile::open($this->translationPath);
+
+        $config->set($key, $value);
+
+        $config->write();
     }
 }
