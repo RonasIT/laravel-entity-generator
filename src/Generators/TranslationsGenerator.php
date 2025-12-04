@@ -4,6 +4,8 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
+use Winter\LaravelConfigWriter\ArrayFile;
 
 class TranslationsGenerator extends EntityGenerator
 {
@@ -18,18 +20,21 @@ class TranslationsGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        if (!file_exists($this->translationPath) && $this->isStubExists('validation')) {
+        $isTranslationFileExists = file_exists($this->translationPath);
+
+        if (!$isTranslationFileExists && $this->isStubExists('validation')) {
             $this->createTranslate();
+
+            return;
         }
 
-        if (file_exists($this->translationPath) && $this->isTranslationMissed('validation.exceptions.not_found') && $this->isStubExists('translation_not_found')) {
-            $this->appendNotFoundException();
-        }
-    }
+        if ($isTranslationFileExists) {
+            $this->setTranslationFileValue('exceptions.not_found', ':Entity does not exist');
 
-    protected function isTranslationMissed($translation) : bool
-    {
-        return __($translation) === 'validation.exceptions.not_found';
+            return;
+        }
+
+        event(new WarningEvent("{$this->translationPath} file and its stub missing. Create the file or check the entity-generator.stubs.validation config"));
     }
 
     protected function createTranslate(): void
@@ -45,16 +50,12 @@ class TranslationsGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function appendNotFoundException(): void
+    protected function setTranslationFileValue(string $key, string $value): void
     {
-        $content = file_get_contents($this->translationPath);
+        $config = ArrayFile::open($this->translationPath);
 
-        $stubPath = config('entity-generator.stubs.translation_not_found');
+        $config->set($key, $value);
 
-        $stubContent = view($stubPath)->render();
-
-        $fixedContent = preg_replace('/\]\;\s*$/', "\n    {$stubContent}", $content);
-
-        file_put_contents($this->translationPath, $fixedContent);
+        $config->write();
     }
 }
