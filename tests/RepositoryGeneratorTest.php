@@ -4,9 +4,9 @@ namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Generators\RepositoryGenerator;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Generators\RepositoryGenerator;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Tests\Support\Repository\RepositoryMockTrait;
 
 class RepositoryGeneratorTest extends TestCase
@@ -27,9 +27,8 @@ class RepositoryGeneratorTest extends TestCase
         ]);
 
         $this->assertExceptionThrew(
-            className: ClassNotExistsException::class,
-            message: "Cannot create PostRepository cause Post Model does not exists. "
-            . "Create a Post Model by himself or run command 'php artisan make:entity Post --only-model'.",
+            className: ResourceNotExistsException::class,
+            message: 'Cannot create PostRepository cause Post does not exist. Create app/Models/Post.php and run command again.',
         );
 
         app(RepositoryGenerator::class)

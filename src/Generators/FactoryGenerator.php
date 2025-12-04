@@ -7,7 +7,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RonasIT\Support\Exceptions\FakerMethodNotFoundException;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class FactoryGenerator extends EntityGenerator
@@ -26,14 +25,7 @@ class FactoryGenerator extends EntityGenerator
 
     public function generate(): void
     {
-        if (!$this->classExists('models', $this->model, $this->modelSubFolder)) {
-            // TODO: pass $this->modelSubfolder to Exception after refactoring in https://github.com/RonasIT/laravel-entity-generator/issues/179
-            $this->throwFailureException(
-                exceptionClass: ClassNotExistsException::class,
-                failureMessage: "Cannot create {$this->model}Factory cause {$this->model} Model does not exists.",
-                recommendedMessage: "Create a {$this->model} Model by itself or run command 'php artisan make:entity {$this->model} --only-model'.",
-            );
-        }
+        $this->checkResourceNotExists('models', "{$this->model}Factory", $this->model, $this->modelSubFolder);
 
         $this->checkResourceExists('factories', "{$this->model}Factory");
 
