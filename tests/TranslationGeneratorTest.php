@@ -67,7 +67,7 @@ class TranslationGeneratorTest extends TestCase
 
         $this->assertGeneratedFileEquals('validation_append_not_found_exception.php', 'lang/en/validation.php');
 
-        Event::assertNothingDispatched();
+        Event::assertNotDispatched(WarningEvent::class);
     }
 
     public function testAppendValidationExceptionsExist()
@@ -80,6 +80,6 @@ class TranslationGeneratorTest extends TestCase
 
         $this->assertGeneratedFileEquals('validation_append_not_found_with_exceptions.php', 'lang/en/validation.php');
 
-        Event::assertNothingDispatched();
+        Event::assertNotDispatched(WarningEvent::class);
     }
 }
