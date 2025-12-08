@@ -4,7 +4,6 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
 use Winter\LaravelConfigWriter\ArrayFile;
 
 class TranslationsGenerator extends EntityGenerator
@@ -30,11 +29,7 @@ class TranslationsGenerator extends EntityGenerator
 
         if ($isTranslationFileExists) {
             $this->setTranslationFileValue('exceptions.not_found', ':Entity does not exist');
-
-            return;
         }
-
-        event(new WarningEvent("{$this->translationPath} file and its stub missing. Create the file or check the entity-generator.stubs.validation config"));
     }
 
     protected function createTranslate(): void

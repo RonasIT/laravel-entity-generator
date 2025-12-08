@@ -50,11 +50,6 @@ class TranslationGeneratorTest extends TestCase
             className: WarningEvent::class,
             message: 'Generation of validation has been skipped cause the view incorrect_stub from the config entity-generator.stubs.validation is not exists. Please check that config has the correct view name value.',
         );
-
-        $this->assertEventPushed(
-            className: WarningEvent::class,
-            message: 'vfs://root/lang/en/validation.php file and its stub missing. Create the file or check the entity-generator.stubs.validation config',
-        );
     }
 
     public function testAppendNotFoundException()
