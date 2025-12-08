@@ -251,4 +251,41 @@ class TestGeneratorTest extends TestCase
             ->setModel('Post')
             ->generate();
     }
+
+    public function testDumpAlreadyExists()
+    {
+        $this->mockDBTransactionStartRollback();
+
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+        ]);
+
+        $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+        ]);
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeFileExistsMethodCall([base_path('RonasIT\Support\Tests\Support\Test\Factories')], false),
+            $this->nativeFileExistsMethodCall([base_path('tests/fixtures/PostTest')], false),
+            $this->nativeFileExistsMethodCall([base_path('tests/fixtures/PostTest/dump.sql')]),
+        );
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create dump.sql cause it already exists. Remove vfs://root/tests/fixtures/PostTest/dump.sql and run command again.",
+        );
+
+        app(TestsGenerator::class)
+            ->setModel('Post')
+            ->generate();
+    }
 }
