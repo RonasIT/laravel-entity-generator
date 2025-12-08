@@ -18,9 +18,9 @@ trait TranslationMockTrait
         $fileSystemMock->setStructure();
     }
 
-    public function mockFilesystemForAppend(): void
+    public function mockFilesystemForAppend(string $validationStub): void
     {
-        $validation = file_get_contents(getcwd() . '/tests/Support/Translation/validation_without_exceptions.php');
+        $validation = file_get_contents(getcwd() . "/tests/Support/Translation/{$validationStub}.php");
 
         $fileSystemMock = new FileSystemMock();
 
