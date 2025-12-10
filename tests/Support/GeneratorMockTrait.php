@@ -50,15 +50,6 @@ trait GeneratorMockTrait
         ];
     }
 
-    public function nativeFileExistsMethodCall(array $arguments, bool $result = true): array
-    {
-        return [
-            'function' => 'file_exists',
-            'arguments' => $arguments,
-            'result' => $result,
-        ];
-    }
-
     public function mockPhpFileContent(): string
     {
         return '<?php';

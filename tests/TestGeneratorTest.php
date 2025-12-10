@@ -58,6 +58,7 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'RoleFactory']),
             $this->classExistsMethodCall(['factories', 'UserFactory']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
 
@@ -102,6 +103,7 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'RoleFactory']),
             $this->classExistsMethodCall(['factories', 'UserFactory']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
 
@@ -179,6 +181,7 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'RoleFactory']),
             $this->classExistsMethodCall(['factories', 'UserFactory']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
 
@@ -254,7 +257,7 @@ class TestGeneratorTest extends TestCase
 
     public function testDumpAlreadyExists()
     {
-        $this->mockDBTransactionStartRollback();
+        $this->mockDBTransactionStartRollback(5);
 
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
@@ -271,13 +274,8 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'RoleFactory']),
             $this->classExistsMethodCall(['factories', 'UserFactory']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
-        ]);
-
-        $this->mockNativeGeneratorFunctions(
-            $this->nativeFileExistsMethodCall([base_path('RonasIT\Support\Tests\Support\Test\Factories')], false),
-            $this->nativeFileExistsMethodCall([base_path('tests/fixtures/PostTest')], false),
-            $this->nativeFileExistsMethodCall([base_path('tests/fixtures/PostTest/dump.sql')]),
-        );
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql']),
+        ]);;
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
