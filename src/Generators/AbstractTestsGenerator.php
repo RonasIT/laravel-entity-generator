@@ -64,7 +64,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $dumpPathInTests = "fixtures/{$this->getTestClassName()}/{$dumpName}";
 
         if($this->classExists('tests', $dumpPathInTests)) {
-            throw new ResourceAlreadyExistsException($this->getFixturesPath($dumpName));
+            throw new ResourceAlreadyExistsException("tests/{$dumpPathInTests}");
         }
 
         file_put_contents($this->getFixturesPath($dumpName), $content);

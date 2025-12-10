@@ -279,7 +279,7 @@ class TestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create dump.sql cause it already exists. Remove vfs://root/tests/fixtures/PostTest/dump.sql and run command again.",
+            message: "Cannot create dump.sql cause it already exists. Remove tests/fixtures/PostTest/dump.sql and run command again.",
         );
 
         app(TestsGenerator::class)
