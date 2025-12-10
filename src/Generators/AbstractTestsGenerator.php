@@ -200,6 +200,12 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
             if ($this->isFixtureNeeded($type)) {
                 foreach ($modifications as $modification) {
+                    $fixtureFilePath = "fixtures/{$this->getTestClassName()}/{$type}_{$entity}_{$modification}.json";
+
+                    if($this->classExists('tests', $fixtureFilePath)) {
+                        throw new ResourceAlreadyExistsException("tests/{$fixtureFilePath}");
+                    }
+
                     $excepts = ($modification === 'request') ? ['id'] : [];
 
                     $this->generateFixture("{$type}_{$entity}_{$modification}.json", Arr::except($object, $excepts));

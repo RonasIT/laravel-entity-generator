@@ -49,17 +49,12 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
-            $this->classExistsMethodCall(['tests', 'PostTest'], false),
-            $this->classExistsMethodCall(['models', 'User']),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'UserFactory']),
-            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'UserFactory']),
-            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            ...$this->getBaseMocksForTestGenerator(),
             $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json'], false),
         ]);
 
         app(TestsGenerator::class)
@@ -94,15 +89,7 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
-            $this->classExistsMethodCall(['tests', 'PostTest'], false),
-            $this->classExistsMethodCall(['models', 'User']),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'UserFactory']),
-            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'UserFactory']),
-            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            ...$this->getBaseMocksForTestGenerator(),
             $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
@@ -135,6 +122,9 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['tests', 'PostTest'], false),
             $this->classExistsMethodCall(['models', 'User']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json'], false),
         ]);
 
         app(TestsGenerator::class)
@@ -172,17 +162,12 @@ class TestGeneratorTest extends TestCase
         $this->mockDBTransactionStartRollback(5);
 
         $this->mockClass(TestsGenerator::class, [
-            $this->classExistsMethodCall(['tests', 'PostTest'], false),
-            $this->classExistsMethodCall(['models', 'User']),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'UserFactory']),
-            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'UserFactory']),
-            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            ...$this->getBaseMocksForTestGenerator(),
             $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json'], false),
         ]);
 
         app(TestsGenerator::class)
@@ -201,7 +186,7 @@ class TestGeneratorTest extends TestCase
                 'Created a new Test dump on path: tests/fixtures/PostTest/dump.sql',
                 'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_request.json',
                 'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_response.json',
-                'Created a new Test fixture on path: tests/fixtures/PostTest/update_post_request.json',
+                'Created a new Test fixture on path: tests/fixtures/PostTest/update_post_request.json', 
             ],
             WarningEvent::class => [
                 'Generation of test has been skipped cause the view incorrect_stub from the config entity-generator.stubs.test is not exists. Please check that config has the correct view name value.',
@@ -265,16 +250,9 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
-            $this->classExistsMethodCall(['tests', 'PostTest'], false),
-            $this->classExistsMethodCall(['models', 'User']),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'UserFactory']),
-            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'UserFactory']),
-            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            ...$this->getBaseMocksForTestGenerator(),
             $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql']),
+            
         ]);;
 
         $this->assertExceptionThrew(
@@ -285,5 +263,104 @@ class TestGeneratorTest extends TestCase
         app(TestsGenerator::class)
             ->setModel('Post')
             ->generate();
+    }
+
+    public function testCreateRequestFixtureAlreadyExists()
+    {
+        $this->mockDBTransactionStartRollback(5);
+
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+        ]);
+
+        $this->mockClass(TestsGenerator::class, [
+            ...$this->getBaseMocksForTestGenerator(),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json']),
+        ]);;
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create create_post_request.json cause it already exists. Remove tests/fixtures/PostTest/create_post_request.json and run command again.",
+        );
+
+        app(TestsGenerator::class)
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->setModel('Post')
+            ->generate();
+    }
+
+    public function testCreateResponseFixtureAlreadyExists()
+    {
+        $this->mockDBTransactionStartRollback(5);
+
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+        ]);
+
+        $this->mockClass(TestsGenerator::class, [
+            ...$this->getBaseMocksForTestGenerator(),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json']),
+        ]);;
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create create_post_response.json cause it already exists. Remove tests/fixtures/PostTest/create_post_response.json and run command again.",
+        );
+
+        app(TestsGenerator::class)
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->setModel('Post')
+            ->generate();
+    }
+
+    public function testUpdateRequestFixtureAlreadyExists()
+    {
+        $this->mockDBTransactionStartRollback(5);
+
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+        ]);
+
+        $this->mockClass(TestsGenerator::class, [
+            ...$this->getBaseMocksForTestGenerator(),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
+            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json']),
+        ]);;
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create update_post_request.json cause it already exists. Remove tests/fixtures/PostTest/update_post_request.json and run command again.",
+        );
+
+        app(TestsGenerator::class)
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->setModel('Post')
+            ->generate();
+    }
+
+    protected function getBaseMocksForTestGenerator(): array
+    {
+        return [
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+        ];
     }
 }
