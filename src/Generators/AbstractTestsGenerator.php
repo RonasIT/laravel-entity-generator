@@ -6,6 +6,7 @@ use DateTime;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
 
 abstract class AbstractTestsGenerator extends EntityGenerator
@@ -60,11 +61,16 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $this->createFixtureFolder();
 
         $dumpName = $this->getDumpName();
+        $dumpPathInTests = "fixtures/{$this->getTestClassName()}/{$dumpName}";
+
+        if($this->fileExists('tests', $dumpPathInTests)) {
+            throw new ResourceAlreadyExistsException("tests/{$dumpPathInTests}");
+        }
 
         file_put_contents($this->getFixturesPath($dumpName), $content);
 
         event(new SuccessCreateMessage("Created a new Test dump on path: "
-            . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$dumpName}"));
+            . "{$this->paths['tests']}/{$dumpPathInTests}"));
     }
 
     protected function getDumpName(): string
@@ -194,6 +200,12 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
             if ($this->isFixtureNeeded($type)) {
                 foreach ($modifications as $modification) {
+                    $fixtureFilePath = "fixtures/{$this->getTestClassName()}/{$type}_{$entity}_{$modification}.json";
+
+                    if($this->fileExists('tests', $fixtureFilePath)) {
+                        throw new ResourceAlreadyExistsException("tests/{$fixtureFilePath}");
+                    }
+
                     $excepts = ($modification === 'request') ? ['id'] : [];
 
                     $this->generateFixture("{$type}_{$entity}_{$modification}.json", Arr::except($object, $excepts));

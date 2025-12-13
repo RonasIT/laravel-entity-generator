@@ -150,6 +150,15 @@ abstract class EntityGenerator
         return file_exists($absolutePath);
     }
 
+    protected function fileExists(string $path, string $name, ?string $subFolder = null): bool
+    {
+        $relativePath = $this->getPath($this->paths[$path], $subFolder);
+
+        $absolutePath = base_path("{$relativePath}/{$name}");
+
+        return file_exists($absolutePath);
+    }
+
     protected function getClassPath(string $path, string $name, ?string $subFolder = null): string
     {
         $path = $this->getPath($this->paths[$path], $subFolder);
@@ -325,12 +334,12 @@ abstract class EntityGenerator
         }
     }
 
-    protected function checkResourceNotExists(string $path, string $createableResource, string $requiredResource, ?string $subFolder = null): void
+    protected function checkResourceNotExists(string $path, string $creatableResource, string $requiredResource, ?string $subFolder = null): void
     {
         if (!$this->classExists($path, $requiredResource, $subFolder)) {
             $filePath = $this->getClassPath($path, $requiredResource, $subFolder);
 
-            throw new ResourceNotExistsException($createableResource, $filePath);
+            throw new ResourceNotExistsException($creatableResource, $filePath);
         }
     }
 
