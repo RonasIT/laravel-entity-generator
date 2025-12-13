@@ -50,11 +50,11 @@ class TestGeneratorTest extends TestCase
 
         $this->mockClass(TestsGenerator::class, [
             ...$this->getBaseMocksForTestGenerator(),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json'], false),
         ]);
 
         app(TestsGenerator::class)
@@ -90,7 +90,7 @@ class TestGeneratorTest extends TestCase
 
         $this->mockClass(TestsGenerator::class, [
             ...$this->getBaseMocksForTestGenerator(),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
 
@@ -122,9 +122,9 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['tests', 'PostTest'], false),
             $this->classExistsMethodCall(['models', 'User']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json'], false),
         ]);
 
         app(TestsGenerator::class)
@@ -163,11 +163,11 @@ class TestGeneratorTest extends TestCase
 
         $this->mockClass(TestsGenerator::class, [
             ...$this->getBaseMocksForTestGenerator(),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json'], false),
         ]);
 
         app(TestsGenerator::class)
@@ -251,7 +251,7 @@ class TestGeneratorTest extends TestCase
 
         $this->mockClass(TestsGenerator::class, [
             ...$this->getBaseMocksForTestGenerator(),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql']),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql']),
             
         ]);;
 
@@ -276,9 +276,9 @@ class TestGeneratorTest extends TestCase
 
         $this->mockClass(TestsGenerator::class, [
             ...$this->getBaseMocksForTestGenerator(),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json']),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json']),
         ]);;
 
         $this->assertExceptionThrew(
@@ -303,10 +303,10 @@ class TestGeneratorTest extends TestCase
 
         $this->mockClass(TestsGenerator::class, [
             ...$this->getBaseMocksForTestGenerator(),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json']),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json']),
         ]);;
 
         $this->assertExceptionThrew(
@@ -331,11 +331,11 @@ class TestGeneratorTest extends TestCase
 
         $this->mockClass(TestsGenerator::class, [
             ...$this->getBaseMocksForTestGenerator(),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
-            $this->classExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json']),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
+            $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json']),
         ]);;
 
         $this->assertExceptionThrew(

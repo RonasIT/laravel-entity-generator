@@ -150,6 +150,15 @@ abstract class EntityGenerator
         return file_exists($absolutePath);
     }
 
+    protected function fileExists(string $path, string $name, ?string $subFolder = null): bool
+    {
+        $relativePath = $this->getPath($this->paths[$path], $subFolder);
+
+        $absolutePath = base_path("{$relativePath}/{$name}");
+
+        return file_exists($absolutePath);
+    }
+
     protected function getClassPath(string $path, string $name, ?string $subFolder = null): string
     {
         $path = $this->getPath($this->paths[$path], $subFolder);
