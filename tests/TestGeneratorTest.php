@@ -186,7 +186,7 @@ class TestGeneratorTest extends TestCase
                 'Created a new Test dump on path: tests/fixtures/PostTest/dump.sql',
                 'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_request.json',
                 'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_response.json',
-                'Created a new Test fixture on path: tests/fixtures/PostTest/update_post_request.json', 
+                'Created a new Test fixture on path: tests/fixtures/PostTest/update_post_request.json',
             ],
             WarningEvent::class => [
                 'Generation of test has been skipped cause the view incorrect_stub from the config entity-generator.stubs.test is not exists. Please check that config has the correct view name value.',
