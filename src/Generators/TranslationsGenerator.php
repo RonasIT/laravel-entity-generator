@@ -28,7 +28,7 @@ class TranslationsGenerator extends EntityGenerator
         }
 
         if ($isTranslationFileExists) {
-            $this->setTranslationFileValue('exceptions.not_found', ':Entity does not exist');
+            $this->setTranslations();
         }
     }
 
