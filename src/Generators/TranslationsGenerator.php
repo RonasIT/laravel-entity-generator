@@ -45,7 +45,7 @@ class TranslationsGenerator extends EntityGenerator
         event(new SuccessCreateMessage($createMessage));
     }
 
-    protected function setTranslationFileValue(string $key, string $value): void
+    protected function setTranslations(): void
     {
         $config = ArrayFile::open($this->translationPath);
 
