@@ -49,7 +49,7 @@ class TranslationsGenerator extends EntityGenerator
     {
         $config = ArrayFile::open($this->translationPath);
 
-        $config->set($key, $value);
+        $config->set('exceptions.not_found', ':Entity does not exist');
 
         $config->write();
     }
