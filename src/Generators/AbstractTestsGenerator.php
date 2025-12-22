@@ -63,7 +63,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $dumpName = $this->getDumpName();
         $dumpPathInTests = "fixtures/{$this->getTestClassName()}/{$dumpName}";
 
-        if($this->fileExists('tests', $dumpPathInTests)) {
+        if ($this->fileExists('tests', $dumpPathInTests)) {
             throw new ResourceAlreadyExistsException("tests/{$dumpPathInTests}");
         }
 
@@ -202,7 +202,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
                 foreach ($modifications as $modification) {
                     $fixtureFilePath = "fixtures/{$this->getTestClassName()}/{$type}_{$entity}_{$modification}.json";
 
-                    if($this->fileExists('tests', $fixtureFilePath)) {
+                    if ($this->fileExists('tests', $fixtureFilePath)) {
                         throw new ResourceAlreadyExistsException("tests/{$fixtureFilePath}");
                     }
 

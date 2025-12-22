@@ -252,8 +252,7 @@ class TestGeneratorTest extends TestCase
         $this->mockClass(TestsGenerator::class, [
             ...$this->getBaseMocksForTestGenerator(),
             $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql']),
-            
-        ]);;
+        ]);
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
@@ -279,7 +278,7 @@ class TestGeneratorTest extends TestCase
             $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/dump.sql'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json']),
-        ]);;
+        ]);
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
@@ -307,7 +306,7 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
             $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json']),
-        ]);;
+        ]);
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
@@ -336,7 +335,7 @@ class TestGeneratorTest extends TestCase
             $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_request.json'], false),
             $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/create_post_response.json'], false),
             $this->fileExistsMethodCall(['tests', 'fixtures/PostTest/update_post_request.json']),
-        ]);;
+        ]);
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
