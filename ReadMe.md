@@ -144,6 +144,11 @@ Feel free to use any combinations of actions in any order. Each action has its o
 - `D` delete
 - `R` read (search and get by id)
 
+
+#### Auxiliary options
+
+- --nova-resource-name - specifies the Nova resource name when generating a test.
+
 ## Release notes
 
 ### 1.3
