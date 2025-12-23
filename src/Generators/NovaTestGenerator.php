@@ -102,8 +102,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return Arr::first($novaResources);
     }
 
-    protected
-    function getCommonNovaResources(): array
+    protected function getCommonNovaResources(): array
     {
         $resources = [];
 
@@ -122,8 +121,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         return $resources;
     }
 
-    protected
-    function getActions(): array
+    protected function getActions(): array
     {
         $actions = $this->loadNovaActions();
 
