@@ -241,7 +241,6 @@ class NovaTestGeneratorTest extends TestCase
             ->setModel('WelcomeBonus')
             ->setMetaData(['resource_name' => 'SomeResource'])
             ->generate();
-
     }
 
     public function testGenerateNovaPackageNotInstall()
