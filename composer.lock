@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "06b28df5fc599471a59b373705d00f71",
+    "content-hash": "6f116e79da977ffbf1d05d242c6b0ac5",
     "packages": [
         {
             "name": "brick/math",
@@ -8446,6 +8446,67 @@
                 "source": "https://github.com/webmozarts/assert/tree/1.12.1"
             },
             "time": "2025-10-29T15:56:20+00:00"
+        },
+        {
+            "name": "winter/laravel-config-writer",
+            "version": "v1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/wintercms/laravel-config-writer.git",
+                "reference": "6c9dcb10de4f63b032a3b38f66171057cef71a10"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/wintercms/laravel-config-writer/zipball/6c9dcb10de4f63b032a3b38f66171057cef71a10",
+                "reference": "6c9dcb10de4f63b032a3b38f66171057cef71a10",
+                "shasum": ""
+            },
+            "require": {
+                "nikic/php-parser": "^5.5",
+                "php": "^7.4.0 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^1.6",
+                "phpunit/phpunit": "^9.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Winter\\LaravelConfigWriter\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jack Wilkinson",
+                    "email": "me@jackwilky.com",
+                    "role": "Original author"
+                },
+                {
+                    "name": "Winter CMS Maintainers",
+                    "homepage": "https://wintercms.com",
+                    "role": "Maintainers"
+                }
+            ],
+            "description": "Utility to create and update Laravel config and .env files",
+            "support": {
+                "issues": "https://github.com/wintercms/laravel-config-writer/issues",
+                "source": "https://github.com/wintercms/laravel-config-writer/tree/v1.2.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/wintercms",
+                    "type": "github"
+                },
+                {
+                    "url": "https://opencollective.com/wintercms",
+                    "type": "open_collective"
+                }
+            ],
+            "time": "2025-10-15T22:16:25+00:00"
         }
     ],
     "packages-dev": [
@@ -10700,13 +10761,13 @@
     ],
     "aliases": [],
     "minimum-stability": "beta",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.3",
         "ext-json": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

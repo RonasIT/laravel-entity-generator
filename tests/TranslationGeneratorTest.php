@@ -54,7 +54,7 @@ class TranslationGeneratorTest extends TestCase
 
     public function testAppendNotFoundException()
     {
-        $this->mockFilesystemForAppend();
+        $this->mockFilesystemForAppend('validation_without_exceptions');
 
         app(TranslationsGenerator::class)
             ->setModel('Post')
@@ -62,24 +62,19 @@ class TranslationGeneratorTest extends TestCase
 
         $this->assertGeneratedFileEquals('validation_append_not_found_exception.php', 'lang/en/validation.php');
 
-        Event::assertNothingDispatched();
+        Event::assertNotDispatched(WarningEvent::class);
     }
 
-    public function testAppendNotFoundExceptionStubNotExist()
+    public function testAppendValidationExceptionsExist()
     {
-        config(['entity-generator.stubs.translation_not_found' => 'incorrect_stub']);
-
-        $this->mockFilesystemForAppend();
+        $this->mockFilesystemForAppend('validation_with_exceptions');
 
         app(TranslationsGenerator::class)
             ->setModel('Post')
             ->generate();
 
-        $this->assertFileDoesNotExist('validation.php', 'resources/lang/en/validation.php');
+        $this->assertGeneratedFileEquals('validation_append_not_found_with_exceptions.php', 'lang/en/validation.php');
 
-        $this->assertEventPushed(
-            className: WarningEvent::class,
-            message: 'Generation of translation not found has been skipped cause the view incorrect_stub from the config entity-generator.stubs.translation_not_found is not exists. Please check that config has the correct view name value.',
-        );
+        Event::assertNotDispatched(WarningEvent::class);
     }
 }
