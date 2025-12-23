@@ -2,7 +2,10 @@
 
 namespace RonasIT\Support\Tests;
 
+use App\Nova\Forum\PostResource;
+use Carbon\Carbon;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
 use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -22,6 +25,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockFilesystem();
     }
+
 
     public function testGenerateResourceNotExists()
     {
@@ -184,6 +188,62 @@ class NovaTestGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_request.json');
         $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_response.json');
         $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/update_welcome_bonus_resource_request.json');
+    }
+
+    public function testCallCommandCreateNovateTestsWithResource()
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+        ]);
+
+        Carbon::setTestNow('2016-10-20 11:05:00');
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
+            $this->nativeClassExistsMethodCall([PostResource::class, true]),
+            $this->nativeClassExistsMethodCall([Post::class, true]),
+
+        );
+
+        $this->mockNovaRequestClassCall();
+
+        $this
+            ->artisan('make:entity Forum/Post --only-nova-tests --nova-resource-name=Forum/PostResource')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('created_forum_post_resource_test.php', 'tests/NovaPostResourceTest.php');
+        $this->assertGeneratedFileEquals('dump_forum_post.sql', 'tests/fixtures/NovaPostResourceTest/dump.sql');
+        $this->assertGeneratedFileEquals('create_forum_post_request.json', 'tests/fixtures/NovaPostResourceTest/create_post_resource_request.json');
+        $this->assertGeneratedFileEquals('create_forum_post_response.json', 'tests/fixtures/NovaPostResourceTest/create_post_resource_response.json');
+        $this->assertGeneratedFileEquals('update_forum_post_request.json', 'tests/fixtures/NovaPostResourceTest/update_post_resource_request.json');
+    }
+
+    public function testCallCommandCreateNovateTestsWithResourceNotFound()
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+        ]);
+
+        Carbon::setTestNow('2016-10-20 11:05:00');
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
+            $this->nativeClassExistsMethodCall(['App\Nova\PostResource', false]),
+        );
+
+        $this->mockNovaRequestClassCall();
+
+        $this
+            ->artisan('make:entity Forum/Post --only-nova-tests --nova-resource-name=PostResource')
+            ->assertSuccessful();
+
+        $this->assertFileDoesNotExist('tests/NovaPostResourceTest.php');
+        $this->assertFileDoesNotExist('tests/fixtures/NovaPostResourceTest/dump.sql');
+        $this->assertFileDoesNotExist('tests/fixtures/NovaPostResourceTest/create_post_resource_request.json');
+        $this->assertFileDoesNotExist('tests/fixtures/NovaPostResourceTest/create_post_resource_response.json');
+        $this->assertFileDoesNotExist('tests/fixtures/NovaPostResourceTest/update_post_resource_request.json');
     }
 
     public function testGenerateNovaPackageNotInstall()

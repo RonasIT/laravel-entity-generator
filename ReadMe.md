@@ -102,6 +102,7 @@ The following options are available:
 - `--only-tests`
 - `--only-seeder`
 - `--only-resource`
+- `--only-nova-tests`
 
 #### Mode combination options
 
