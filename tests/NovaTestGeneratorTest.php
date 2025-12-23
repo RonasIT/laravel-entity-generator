@@ -58,7 +58,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: EntityCreateException::class,
-            message: 'Cannot create NovaPostResourceTest cause was found a lot of suitable resources: BasePostResource, PublishPostResource. Make test by yourself.',
+            message: 'Cannot create NovaPostResourceTest cause was found a lot of suitable resources: BasePostResource, PublishPostResource. You may use --nova-resource-name option to specify a concrete resource.',
         );
 
         app(NovaTestGenerator::class)
@@ -197,13 +197,10 @@ class NovaTestGeneratorTest extends TestCase
             'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
         ]);
 
-        Carbon::setTestNow('2016-10-20 11:05:00');
-
         $this->mockNativeGeneratorFunctions(
             $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
             $this->nativeClassExistsMethodCall([PostResource::class, true]),
             $this->nativeClassExistsMethodCall([Post::class, true]),
-
         );
 
         $this->mockNovaRequestClassCall();
@@ -230,20 +227,19 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockNativeGeneratorFunctions(
             $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
-            $this->nativeClassExistsMethodCall(['App\Nova\PostResource', false]),
+            $this->nativeClassExistsMethodCall(['App\Nova\SomeResource', true], false),
         );
 
-        $this->mockNovaRequestClassCall();
+        $this->assertExceptionThrew(
+            className: ClassNotExistsException::class,
+            message: 'Cannot create NovaSomeResourceTest cause App\Nova\SomeResource does not exist. Create App\Nova\SomeResource.',
+        );
 
-        $this
-            ->artisan('make:entity Forum/Post --only-nova-tests --nova-resource-name=PostResource')
-            ->assertSuccessful();
+        app(NovaTestGenerator::class)
+            ->setModel('WelcomeBonus')
+            ->setMetaData(['resource_name' => 'SomeResource'])
+            ->generate();
 
-        $this->assertFileDoesNotExist('tests/NovaPostResourceTest.php');
-        $this->assertFileDoesNotExist('tests/fixtures/NovaPostResourceTest/dump.sql');
-        $this->assertFileDoesNotExist('tests/fixtures/NovaPostResourceTest/create_post_resource_request.json');
-        $this->assertFileDoesNotExist('tests/fixtures/NovaPostResourceTest/create_post_resource_response.json');
-        $this->assertFileDoesNotExist('tests/fixtures/NovaPostResourceTest/update_post_resource_request.json');
     }
 
     public function testGenerateNovaPackageNotInstall()

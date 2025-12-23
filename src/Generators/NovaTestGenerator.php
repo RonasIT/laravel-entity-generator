@@ -35,9 +35,9 @@ class NovaTestGenerator extends AbstractTestsGenerator
                 $this->novaResourceClassName = $this->findNovaResource();
             } elseif (!class_exists($this->novaResourceClassName)) {
                 $this->throwFailureException(
-                    ClassNotExistsException::class,
-                    "Cannot create Nova{$this->model}Resource cause {$this->novaResourceClassName} does not exist.",
-                    "Create {$this->novaResourceClassName}."
+                    exceptionClass: ClassNotExistsException::class,
+                    failureMessage: "Cannot create {$this->getTestClassName()} cause {$this->novaResourceClassName} does not exist.",
+                    recommendedMessage: "Create {$this->novaResourceClassName}.",
                 );
             }
 
@@ -83,19 +83,18 @@ class NovaTestGenerator extends AbstractTestsGenerator
         if (count($novaResources) > 1) {
             $foundedResources = implode(', ', $novaResources);
 
-            // TODO: Change exception message after https://github.com/RonasIT/laravel-entity-generator/issues/159 will be ready
             $this->throwFailureException(
-                EntityCreateException::class,
-                "Cannot create Nova{$this->model}ResourceTest cause was found a lot of suitable resources: {$foundedResources}.",
-                'Make test by yourself.'
+                exceptionClass: EntityCreateException::class,
+                failureMessage: "Cannot create Nova{$this->model}ResourceTest cause was found a lot of suitable resources: {$foundedResources}.",
+                recommendedMessage: 'You may use --nova-resource-name option to specify a concrete resource.',
             );
         }
 
         if (empty($novaResources)) {
             $this->throwFailureException(
-                ClassNotExistsException::class,
-                "Cannot create Nova{$this->model}ResourceTest cause {$this->model} Nova resource does not exist.",
-                "Create {$this->model} Nova resource."
+                exceptionClass: ClassNotExistsException::class,
+                failureMessage: "Cannot create Nova{$this->model}ResourceTest cause {$this->model} Nova resource does not exist.",
+                recommendedMessage: "Create {$this->model} Nova resource.",
             );
         }
 
