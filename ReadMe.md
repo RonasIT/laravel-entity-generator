@@ -147,7 +147,7 @@ Feel free to use any combinations of actions in any order. Each action has its o
 
 #### Auxiliary options
 
-- --nova-resource-name - specifies the Nova resource name when generating a test.
+- `--nova-resource-name` - specifies the Nova resource name when generating a test.
 
 ## Release notes
 
