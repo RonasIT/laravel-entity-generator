@@ -189,7 +189,7 @@ class NovaTestGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/update_welcome_bonus_resource_request.json');
     }
 
-    public function testCallCommandCreateNovateTestsWithResource()
+    public function testCallCommandCreateNovaTestsWithResource()
     {
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
@@ -218,7 +218,7 @@ class NovaTestGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('update_forum_post_request.json', 'tests/fixtures/NovaPostResourceTest/update_post_resource_request.json');
     }
 
-    public function testCallCommandCreateNovateTestsWithResourceNotFound()
+    public function testCallCommandCreateNovaTestsWithResourceNotFound()
     {
         config([
             'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
