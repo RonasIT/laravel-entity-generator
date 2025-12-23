@@ -5,7 +5,7 @@ namespace RonasIT\Support\Tests;
 use App\Nova\Forum\PostResource;
 use Carbon\Carbon;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
+use RonasIT\Support\Tests\Support\Command\Models\Post;
 use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -197,6 +197,8 @@ class NovaTestGeneratorTest extends TestCase
             'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
         ]);
 
+        $this->mockDBTransactionStartRollback();
+
         $this->mockNativeGeneratorFunctions(
             $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
             $this->nativeClassExistsMethodCall([PostResource::class, true]),
@@ -205,9 +207,10 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockNovaRequestClassCall();
 
-        $this
-            ->artisan('make:entity Forum/Post --only-nova-tests --nova-resource-name=Forum/PostResource')
-            ->assertSuccessful();
+        app(NovaTestGenerator::class)
+            ->setModel('Post')
+            ->setMetaData(['resource_name' => 'Forum/PostResource'])
+            ->generate();
 
         $this->assertGeneratedFileEquals('created_forum_post_resource_test.php', 'tests/NovaPostResourceTest.php');
         $this->assertGeneratedFileEquals('dump_forum_post.sql', 'tests/fixtures/NovaPostResourceTest/dump.sql');
