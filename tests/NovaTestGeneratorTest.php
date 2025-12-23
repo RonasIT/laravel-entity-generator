@@ -26,7 +26,6 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockFilesystem();
     }
 
-
     public function testGenerateResourceNotExists()
     {
         $this->mockNovaServiceProviderExists();
