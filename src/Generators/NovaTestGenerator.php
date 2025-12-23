@@ -31,14 +31,14 @@ class NovaTestGenerator extends AbstractTestsGenerator
     public function generate(): void
     {
         if (class_exists(NovaServiceProvider::class)) {
-            if (isset($this->novaResourceClassName)) {
+            if (!isset($this->novaResourceClassName)) {
+                $this->novaResourceClassName = $this->findNovaResource();
+            } elseif (!class_exists($this->novaResourceClassName)) {
                 $this->throwFailureException(
                     exceptionClass: ClassNotExistsException::class,
                     failureMessage: "Cannot create {$this->getTestClassName()} cause {$this->novaResourceClassName} does not exist.",
                     recommendedMessage: "Create {$this->novaResourceClassName}.",
                 );
-            } elseif (!class_exists($this->novaResourceClassName)) {
-                $this->novaResourceClassName = $this->findNovaResource();
             }
 
             $this->checkResourceExists('nova', $this->getTestClassName());
