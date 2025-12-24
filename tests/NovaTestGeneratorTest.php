@@ -2,7 +2,10 @@
 
 namespace RonasIT\Support\Tests;
 
+use App\Nova\Forum\PostResource;
+use Carbon\Carbon;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Tests\Support\Command\Models\Post;
 use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -54,7 +57,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: EntityCreateException::class,
-            message: 'Cannot create NovaPostResourceTest cause was found a lot of suitable resources: BasePostResource, PublishPostResource. Make test by yourself.',
+            message: 'Cannot create NovaPostResourceTest cause was found a lot of suitable resources: BasePostResource, PublishPostResource. You may use --nova-resource-name option to specify a concrete resource.',
         );
 
         app(NovaTestGenerator::class)
@@ -184,6 +187,60 @@ class NovaTestGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_request.json');
         $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_response.json');
         $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/update_welcome_bonus_resource_request.json');
+    }
+
+    public function testCallCommandCreateNovaTestsWithResource()
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+        ]);
+
+        $this->mockDBTransactionStartRollback();
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
+            $this->nativeClassExistsMethodCall([PostResource::class, true]),
+            $this->nativeClassExistsMethodCall([Post::class, true]),
+        );
+
+        $this->mockNovaRequestClassCall();
+
+        app(NovaTestGenerator::class)
+            ->setModel('Post')
+            ->setMetaData(['resource_name' => 'Forum/PostResource'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('created_forum_post_resource_test.php', 'tests/NovaPostResourceTest.php');
+        $this->assertGeneratedFileEquals('dump_forum_post.sql', 'tests/fixtures/NovaPostResourceTest/dump.sql');
+        $this->assertGeneratedFileEquals('create_forum_post_request.json', 'tests/fixtures/NovaPostResourceTest/create_post_resource_request.json');
+        $this->assertGeneratedFileEquals('create_forum_post_response.json', 'tests/fixtures/NovaPostResourceTest/create_post_resource_response.json');
+        $this->assertGeneratedFileEquals('update_forum_post_request.json', 'tests/fixtures/NovaPostResourceTest/update_post_resource_request.json');
+    }
+
+    public function testCallCommandCreateNovaTestsWithResourceNotFound()
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+        ]);
+
+        Carbon::setTestNow('2016-10-20 11:05:00');
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
+            $this->nativeClassExistsMethodCall(['App\Nova\SomeResource', true], false),
+        );
+
+        $this->assertExceptionThrew(
+            className: ClassNotExistsException::class,
+            message: 'Cannot create NovaSomeResourceTest cause App\Nova\SomeResource does not exist. Create App\Nova\SomeResource.',
+        );
+
+        app(NovaTestGenerator::class)
+            ->setModel('WelcomeBonus')
+            ->setMetaData(['resource_name' => 'SomeResource'])
+            ->generate();
     }
 
     public function testGenerateNovaPackageNotInstall()

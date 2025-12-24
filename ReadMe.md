@@ -102,6 +102,7 @@ The following options are available:
 - `--only-tests`
 - `--only-seeder`
 - `--only-resource`
+- `--only-nova-tests`
 
 #### Mode combination options
 
@@ -142,6 +143,11 @@ Feel free to use any combinations of actions in any order. Each action has its o
 - `U` update
 - `D` delete
 - `R` read (search and get by id)
+
+
+#### Auxiliary options
+
+- `--nova-resource-name` - Specifies the Nova resource name when generating a test.
 
 ## Release notes
 
