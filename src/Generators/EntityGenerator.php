@@ -163,7 +163,9 @@ abstract class EntityGenerator
     {
         $path = $this->getPath($this->paths[$path], $subFolder);
 
-        return "{$path}/{$name}.php";
+        $fileName = str_contains($name, '.') ? $name : "{$name}.php";
+
+        return "{$path}/{$fileName}";
     }
 
     protected function saveClass($path, $name, $content, ?string $entityFolder = null): string

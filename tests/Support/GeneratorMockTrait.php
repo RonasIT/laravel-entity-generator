@@ -41,15 +41,6 @@ trait GeneratorMockTrait
         ];
     }
 
-    public function fileExistsMethodCall(array $arguments, bool $result = true): array
-    {
-        return [
-            'function' => 'fileExists',
-            'arguments' => $arguments,
-            'result' => $result
-        ];
-    }
-
     public function nativeClassExistsMethodCall(array $arguments, bool $result = true): array
     {
         return [

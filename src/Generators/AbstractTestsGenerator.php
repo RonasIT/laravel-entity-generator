@@ -61,16 +61,13 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $this->createFixtureFolder();
 
         $dumpName = $this->getDumpName();
-        $dumpPathInTests = "fixtures/{$this->getTestClassName()}/{$dumpName}";
 
-        if ($this->fileExists('tests', $dumpPathInTests)) {
-            throw new ResourceAlreadyExistsException("tests/{$dumpPathInTests}");
-        }
+        $this->checkResourceExists('tests', $dumpName, "fixtures/{$this->getTestClassName()}");
 
         file_put_contents($this->getFixturesPath($dumpName), $content);
 
         event(new SuccessCreateMessage("Created a new Test dump on path: "
-            . "{$this->paths['tests']}/{$dumpPathInTests}"));
+            . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$dumpName}"));
     }
 
     protected function getDumpName(): string
@@ -200,11 +197,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
             if ($this->isFixtureNeeded($type)) {
                 foreach ($modifications as $modification) {
-                    $fixtureFilePath = "fixtures/{$this->getTestClassName()}/{$type}_{$entity}_{$modification}.json";
-
-                    if ($this->fileExists('tests', $fixtureFilePath)) {
-                        throw new ResourceAlreadyExistsException("tests/{$fixtureFilePath}");
-                    }
+                    $this->checkResourceExists('tests', "{$type}_{$entity}_{$modification}.json", "fixtures/{$this->getTestClassName()}");
 
                     $excepts = ($modification === 'request') ? ['id'] : [];
 
