@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
+use PhpParser\Node\Scalar\String_;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use Winter\LaravelConfigWriter\ArrayFile;
 
@@ -49,8 +50,28 @@ class TranslationsGenerator extends EntityGenerator
     {
         $config = ArrayFile::open($this->translationPath);
 
+        $ast = $config->getAst();
+
+        $configKeys = collect($ast[0]->expr->items)
+            ->filter(fn ($item) => $item?->key instanceof String_)
+            ->map(fn ($item) => $item->key->value)
+            ->values();
+
         $config->set('exceptions.not_found', ':Entity does not exist');
 
         $config->write();
+
+        if (!$configKeys->contains('exceptions')) {
+            $this->insertTranslationsEmptyLine('exceptions');
+        }
+    }
+
+    protected function insertTranslationsEmptyLine(string $key): void
+    {
+        $content = file_get_contents($this->translationPath);
+
+        $newContent = preg_replace("/\n(\s*)'{$key}'\s*=>/", "\n\n$1'{$key}' =>", $content, 1);
+
+        file_put_contents($this->translationPath, $newContent);
     }
 }
