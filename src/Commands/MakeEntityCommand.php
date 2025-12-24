@@ -61,7 +61,6 @@ class MakeEntityCommand extends Command
         {--only-nova-resource : Set this flag if you want to create only nova resource.}
         {--only-nova-tests : Set this flag if you want to create only nova resource tests.}
         {--nova-resource-name= : Override the default Nova resource name to generate a Nova test resource.}           
-        
         {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
         {--i|integer=* : Add integer field to entity.}
