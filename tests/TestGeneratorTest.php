@@ -49,7 +49,15 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
-            ...$this->getBaseMocksForTestGenerator(),
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest'], false),
@@ -89,7 +97,15 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
-            ...$this->getBaseMocksForTestGenerator(),
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
@@ -162,7 +178,15 @@ class TestGeneratorTest extends TestCase
         $this->mockDBTransactionStartRollback(5);
 
         $this->mockClass(TestsGenerator::class, [
-            ...$this->getBaseMocksForTestGenerator(),
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest'], false),
@@ -250,7 +274,15 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
-            ...$this->getBaseMocksForTestGenerator(),
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest']),
         ]);
 
@@ -274,7 +306,15 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
-            ...$this->getBaseMocksForTestGenerator(),
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest']),
@@ -301,7 +341,15 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
-            ...$this->getBaseMocksForTestGenerator(),
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest'], false),
@@ -329,7 +377,15 @@ class TestGeneratorTest extends TestCase
         ]);
 
         $this->mockClass(TestsGenerator::class, [
-            ...$this->getBaseMocksForTestGenerator(),
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest'], false),
@@ -346,20 +402,5 @@ class TestGeneratorTest extends TestCase
             ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->setModel('Post')
             ->generate();
-    }
-
-    protected function getBaseMocksForTestGenerator(): array
-    {
-        return [
-            $this->classExistsMethodCall(['tests', 'PostTest'], false),
-            $this->classExistsMethodCall(['models', 'User']),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'UserFactory']),
-            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'RoleFactory']),
-            $this->classExistsMethodCall(['factories', 'UserFactory']),
-            $this->classExistsMethodCall(['factories', 'PostFactory']),
-        ];
     }
 }
