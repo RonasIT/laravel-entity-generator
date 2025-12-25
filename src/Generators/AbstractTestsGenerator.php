@@ -6,7 +6,6 @@ use DateTime;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
 
 abstract class AbstractTestsGenerator extends EntityGenerator
