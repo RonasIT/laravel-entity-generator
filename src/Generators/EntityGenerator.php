@@ -154,7 +154,9 @@ abstract class EntityGenerator
     {
         $path = $this->getPath($this->paths[$path], $subFolder);
 
-        return "{$path}/{$name}.php";
+        $extension = (str_contains($name, '.')) ? '' : '.php';
+
+        return "{$path}/{$name}{$extension}";
     }
 
     protected function saveClass($path, $name, $content, ?string $entityFolder = null): string
@@ -325,12 +327,12 @@ abstract class EntityGenerator
         }
     }
 
-    protected function checkResourceNotExists(string $path, string $createableResource, string $requiredResource, ?string $subFolder = null): void
+    protected function checkResourceNotExists(string $path, string $creatableResource, string $requiredResource, ?string $subFolder = null): void
     {
         if (!$this->classExists($path, $requiredResource, $subFolder)) {
             $filePath = $this->getClassPath($path, $requiredResource, $subFolder);
 
-            throw new ResourceNotExistsException($createableResource, $filePath);
+            throw new ResourceNotExistsException($creatableResource, $filePath);
         }
     }
 

@@ -61,6 +61,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
         $dumpName = $this->getDumpName();
 
+        $this->checkResourceExists('tests', $dumpName, "fixtures/{$this->getTestClassName()}");
+
         file_put_contents($this->getFixturesPath($dumpName), $content);
 
         event(new SuccessCreateMessage("Created a new Test dump on path: "
@@ -194,6 +196,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
             if ($this->isFixtureNeeded($type)) {
                 foreach ($modifications as $modification) {
+                    $this->checkResourceExists('tests', "{$type}_{$entity}_{$modification}.json", "fixtures/{$this->getTestClassName()}");
+
                     $excepts = ($modification === 'request') ? ['id'] : [];
 
                     $this->generateFixture("{$type}_{$entity}_{$modification}.json", Arr::except($object, $excepts));
