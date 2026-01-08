@@ -58,7 +58,7 @@ class {{ $entity }}Controller extends Controller
     {
         $service->update($id, $request->onlyValidated());
 
-        return response('', Response::HTTP_NO_CONTENT);
+        return response()->noContent();
     }
 
 @endif
@@ -67,7 +67,7 @@ class {{ $entity }}Controller extends Controller
     {
         $service->delete($id);
 
-        return response('', Response::HTTP_NO_CONTENT);
+        return response()->noContent();
     }
 @endif
 }

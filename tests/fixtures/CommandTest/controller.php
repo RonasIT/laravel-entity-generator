@@ -44,13 +44,13 @@ class PostController extends Controller
     {
         $service->update($id, $request->onlyValidated());
 
-        return response('', Response::HTTP_NO_CONTENT);
+        return response()->noContent();
     }
 
     public function delete(DeletePostRequest $request, PostService $service, $id): Response
     {
         $service->delete($id);
 
-        return response('', Response::HTTP_NO_CONTENT);
+        return response()->noContent();
     }
 }
