@@ -33,11 +33,11 @@ class ServiceGenerator extends EntityGenerator
 
     protected function getFields(): array
     {
-        $simpleSearch = Arr::only($this->fields, ['integer', 'integer-required', 'boolean', 'boolean-required']);
+        $simpleSearch = Arr::only($this->fields, ['integer', 'boolean']);
 
         return [
-            'simple_search' => Arr::collapse($simpleSearch),
-            'search_by_query' => array_merge($this->fields['string'], $this->fields['string-required'])
+            'simple_search' => Arr::pluck(Arr::collapse($simpleSearch), 'name'),
+            'search_by_query' => Arr::pluck($this->fields['string'] ?? [], 'name'),
         ];
     }
 }

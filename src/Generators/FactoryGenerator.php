@@ -4,7 +4,6 @@ namespace RonasIT\Support\Generators;
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RonasIT\Support\Exceptions\FakerMethodNotFoundException;
 use RonasIT\Support\Events\SuccessCreateMessage;
@@ -98,8 +97,8 @@ class FactoryGenerator extends EntityGenerator
         foreach ($this->fields as $type => $fields) {
             foreach ($fields as $field) {
                 $result[] = [
-                    'name' => $field,
-                    'type' => Str::before($type, '-'),
+                    'name' => $field['name'],
+                    'type' => $type,
                 ];
             }
         }

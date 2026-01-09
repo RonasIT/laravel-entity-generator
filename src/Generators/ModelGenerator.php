@@ -35,13 +35,13 @@ class ModelGenerator extends EntityGenerator
 
         return $this->getStub('model', [
             'entity' => $this->model,
-            'fields' => Arr::collapse($this->fields),
+            'fields' => Arr::pluck(Arr::collapse($this->fields), 'name'),
             'relations' => $relations,
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
             'annotationProperties' => $this->generateAnnotationProperties($this->fields, $relations),
-            'hasCarbonField' => !empty($this->fields['timestamp']) || !empty($this->fields['timestamp-required']),
+            'hasCarbonField' => Arr::has($this->fields, 'timestamp'),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
     }
@@ -125,22 +125,20 @@ class ModelGenerator extends EntityGenerator
     protected function getCasts(array $fields): array
     {
         $casts = [
-            'boolean-required' => 'boolean',
             'boolean' => 'boolean',
             'json' => 'array',
-            'timestamp-required' => 'datetime',
             'timestamp' => 'datetime'
         ];
 
         $result = [];
 
-        foreach ($fields as $fieldType => $names) {
+        foreach ($fields as $fieldType => $typedFields) {
             if (!array_key_exists($fieldType, $casts)) {
                 continue;
             }
 
-            foreach ($names as $name) {
-                $result[$name] = $casts[$fieldType];
+            foreach ($typedFields as $field) {
+                $result[$field['name']] = $casts[$fieldType];
             }
         }
 
@@ -183,9 +181,9 @@ class ModelGenerator extends EntityGenerator
     {
         $result = [];
 
-        foreach ($fields as $typeName => $fieldNames) {
-            foreach ($fieldNames as $fieldName) {
-                $result[$fieldName] = $this->getFieldType($typeName);
+        foreach ($fields as $fieldType => $typedFields) {
+            foreach ($typedFields as $field) {
+                $result[$field['name']] = $this->getFieldType($fieldType, $field['modifiers']);
             }
         }
 
@@ -196,9 +194,9 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getFieldType(string $fieldType): string
+    protected function getFieldType(string $fieldType, array $modifiers): string
     {
-        $isNullable = !$this->isJson($fieldType) && !$this->isRequired($fieldType);
+        $isNullable = !$this->isJson($fieldType) && !$this->isRequired($modifiers);
 
         return $this->getProperty($fieldType, $isNullable);
     }
@@ -214,7 +212,7 @@ class ModelGenerator extends EntityGenerator
             'json' => 'array',
         ];
 
-        $type = $typesMap[Str::before($typeName, '-')];
+        $type = $typesMap[$typeName];
 
         if ($isNullable) {
             $type .= '|null';
@@ -228,9 +226,9 @@ class ModelGenerator extends EntityGenerator
         return $typeName === 'json';
     }
 
-    protected function isRequired(string $typeName): bool
+    protected function isRequired(array $modifiers): bool
     {
-        return Str::endsWith($typeName, 'required');
+        return in_array('required', $modifiers);
     }
 
     protected function getRelationType(string $model, string $relation): string

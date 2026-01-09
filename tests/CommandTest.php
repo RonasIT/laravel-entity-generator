@@ -5,6 +5,7 @@ namespace RonasIT\Support\Tests;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\UnknownFieldModifierException;
 use RonasIT\Support\Tests\Support\Command\CommandMockTrait;
 use RonasIT\Support\Tests\Support\Command\Models\Post;
 use UnexpectedValueException;
@@ -76,7 +77,7 @@ class CommandTest extends TestCase
         $this->assertGeneratedFileEquals('service.php', 'app/Services/PostService.php');
         $this->assertGeneratedFileEquals('create_request.php', 'app/Http/Requests/Post/CreatePostRequest.php');
         $this->assertGeneratedFileEquals('get_request.php', 'app/Http/Requests/Post/GetPostRequest.php');
-        $this->assertGeneratedFileEquals('search_request.php', 'app/Http/Requests/Post/SearchPostsRequest.php');
+        $this->assertGeneratedFileEquals('search_request.php', 'app/Http/Requests/Post/SearchPostsRequest.php', 1);
         $this->assertGeneratedFileEquals('update_request.php', 'app/Http/Requests/Post/UpdatePostRequest.php');
         $this->assertGeneratedFileEquals('delete_request.php', 'app/Http/Requests/Post/DeletePostRequest.php');
         $this->assertGeneratedFileEquals('controller.php', 'app/Http/Controllers/PostController.php');
@@ -198,5 +199,15 @@ class CommandTest extends TestCase
         $this->assertFileExists($configPath);
 
         $this->assertEqualsFixture('changed_config', $updated);
+    }
+
+    public function testUnknownModifierExceptionThrown()
+    {
+        $this->assertExceptionThrew(
+            className: UnknownFieldModifierException::class,
+            message: 'Unknown field modifier unknownModifier in title type.',
+        );
+
+        $this->artisan('make:entity Post -s title:unknownModifier');
     }
 }

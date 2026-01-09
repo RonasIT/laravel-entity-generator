@@ -1,0 +1,34 @@
+{
+    "integer": [
+        {
+            "name": "media_id",
+            "modifiers": ["required"]
+        },
+        {
+            "name": "user_id",
+            "modifiers": ["required"]
+        }
+    ],
+    "string": [
+        {
+            "name": "title",
+            "modifiers": []
+        },
+        {
+            "name": "body",
+            "modifiers": []
+        }
+    ],
+    "json": [
+        {
+            "name": "meta",
+            "modifiers": []
+        }
+    ],
+    "timestamp": [
+        {
+            "name": "created_at",
+            "modifiers": []
+        }
+    ]
+}

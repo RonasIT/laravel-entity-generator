@@ -23,9 +23,22 @@ class RequestGeneratorTest extends TestCase
                 belongsTo: ['User'],
             ))
             ->setFields([
-                'boolean-required' => ['is_published'],
-                'integer' => ['user_id'],
-                'boolean' => ['is_draft'],
+                'boolean' => [
+                    [
+                        'name' => 'is_published',
+                        'modifiers' => ['required'],
+                    ],
+                    [
+                        'name' => 'is_draft',
+                        'modifiers' => [],
+                    ],
+                ],
+                'integer' => [
+                    [
+                        'name' => 'user_id',
+                        'modifiers' => [],
+                    ],
+                ],
             ])
             ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
@@ -125,8 +138,18 @@ class RequestGeneratorTest extends TestCase
                 belongsTo: ['User'],
             ))
             ->setFields([
-                'boolean-required' => ['is_published'],
-                'integer' => ['user_id'],
+                'boolean' => [
+                    [
+                        'name' => 'is_published',
+                        'modifiers' => ['required'],
+                    ],
+                ],
+                'integer' => [
+                    [
+                        'name' => 'user_id',
+                        'modifiers' => [],
+                    ],
+                ],
             ])
             ->setCrudOptions(['R'])
             ->generate();
