@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Generators;
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 
@@ -38,14 +37,14 @@ class MigrationGenerator extends EntityGenerator
         return $typeName === 'json';
     }
 
-    protected function isRequired(string $typeName): bool
+    protected function isRequired(array $modifiers): bool
     {
-        return Str::afterLast($typeName, '-') === 'required';
+        return in_array('required', $modifiers);
     }
 
-    protected function isNullable(string $typeName): bool
+    protected function isNullable(array $modifiers): bool
     {
-        return empty(explode('-', $typeName)[1]);
+        return empty($modifiers);
     }
 
     protected function getJsonLine(string $fieldName): string
@@ -59,49 +58,45 @@ class MigrationGenerator extends EntityGenerator
 
     protected function getRequiredLine(string $fieldName, string $typeName): string
     {
-        $type = explode('-', $typeName)[0];
-
-        if ($type === 'timestamp' && env('DB_CONNECTION') === 'mysql') {
-            return "\$table->{$type}('{$fieldName}')->nullable();";
+        if ($typeName === 'timestamp' && env('DB_CONNECTION') === 'mysql') {
+            return "\$table->{$typeName}('{$fieldName}')->nullable();";
         }
 
-        return "\$table->{$type}('{$fieldName}');";
+        return "\$table->{$typeName}('{$fieldName}');";
     }
 
     protected function getNonRequiredLine(string $fieldName, string $typeName): string
     {
-        $type = explode('-', $typeName)[0];
-
-        return "\$table->{$type}('{$fieldName}')->nullable();";
+        return "\$table->{$typeName}('{$fieldName}')->nullable();";
     }
 
     protected function generateTable(array $fields): array
     {
         $resultTable = [];
 
-        foreach ($fields as $typeName => $fieldNames) {
-            foreach ($fieldNames as $fieldName) {
-                $resultTable[] = $this->getTableRow($fieldName, $typeName);
+        foreach ($fields as $fieldType => $typedFields) {
+            foreach ($typedFields as $field) {
+                $resultTable[] = $this->getTableRow($fieldType, $field);
             }
         }
 
         return $resultTable;
     }
 
-    protected function getTableRow(string $fieldName, string $typeName): string
+    protected function getTableRow(string $fieldType, array $field): string
     {
-        if ($this->isJson($typeName)) {
-            return $this->getJsonLine($fieldName);
+        if ($this->isJson($fieldType)) {
+            return $this->getJsonLine($field['name']);
         }
 
-        if ($this->isRequired($typeName)) {
-            return $this->getRequiredLine($fieldName, $typeName);
+        if ($this->isRequired($field['modifiers'])) {
+            return $this->getRequiredLine($field['name'], $fieldType);
         }
 
-        if ($this->isNullable($typeName)) {
-            return $this->getNonRequiredLine($fieldName, $typeName);
+        if ($this->isNullable($field['modifiers'])) {
+            return $this->getNonRequiredLine($field['name'], $fieldType);
         }
 
-        throw new UnknownFieldTypeException($typeName, 'MigrationGenerator');
+        throw new UnknownFieldTypeException($fieldType, 'MigrationGenerator');
     }
 }

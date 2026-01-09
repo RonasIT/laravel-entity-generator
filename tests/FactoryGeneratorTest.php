@@ -70,7 +70,12 @@ class FactoryGeneratorTest extends TestCase
 
         app(FactoryGenerator::class)
             ->setFields([
-                'another_type' => ['some_field'],
+                'another_type' => [
+                    [
+                        'name' => 'some_field',
+                        'modifiers' => [],
+                    ],
+                ],
             ])
             ->setRelations(new RelationsDTO())
             ->setModel('Post')
@@ -80,11 +85,7 @@ class FactoryGeneratorTest extends TestCase
     public function testCreateSuccess()
     {
         app(FactoryGenerator::class)
-            ->setFields([
-                'integer-required' => ['author_id'],
-                'string' => ['title', 'iban', 'something'],
-                'json' => ['json_text'],
-            ])
+            ->setFields($this->getJsonFixture('create_factory_fields'))
             ->setRelations(new RelationsDTO(
                 hasOne: ['user'],
                 belongsTo: ['user'],
@@ -156,11 +157,7 @@ class FactoryGeneratorTest extends TestCase
         Config::set('entity-generator.paths.factories', 'database/factories/Factory.php');
 
         app(FactoryGenerator::class)
-            ->setFields([
-                'integer-required' => ['author_id'],
-                'string' => ['title', 'iban', 'something'],
-                'json' => ['json_text'],
-            ])
+            ->setFields($this->getJsonFixture('create_factory_fields'))
             ->setRelations(new RelationsDTO(
                 hasOne: ['user'],
                 belongsTo: ['user'],

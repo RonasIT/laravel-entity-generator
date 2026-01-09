@@ -47,9 +47,22 @@ class ServiceGeneratorTest extends TestCase
                     belongsTo: ['User'],
                 ))
             ->setFields([
-                'integer-required' => ['media_id'],
-                'string-required' => ['body'],
-                'string' => ['title']
+                'integer' => [
+                    [
+                        'name' => 'media_id',
+                        'modifiers' => ['required'],
+                    ],
+                ],
+                'string' => [
+                    [
+                        'name' => 'title',
+                        'modifiers' => [],
+                    ],
+                    [
+                        'name' => 'body',
+                        'modifiers' => ['required'],
+                    ],
+                ],
             ])
             ->setModel('Post')
             ->generate();

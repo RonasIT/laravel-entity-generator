@@ -91,19 +91,19 @@ class RequestsGenerator extends EntityGenerator
 
     protected function getGetValidationParameters(): array
     {
-        $parameters['array'] = ['with'];
+        $parameters['array'][] = $this->convertToField('with', []);
 
-        $parameters['string-required'] = ['with.*'];
+        $parameters['string'][] = $this->convertToField('with.*', ['required']);
 
         return $this->getValidationParameters($parameters, true);
     }
 
     protected function getCreateValidationParameters(): array
     {
-        $parameters = Arr::except($this->fields, 'boolean-required');
+        $parameters = $this->fields;
 
-        if (!empty($this->fields['boolean-required'])) {
-            $parameters['boolean-present'] = $this->fields['boolean-required'];
+        if (isset($parameters['boolean'])) {
+            $parameters['boolean'] = $this->replaceFieldModifier($parameters['boolean'], 'required', 'present');
         }
 
         return $this->getValidationParameters($parameters, true);
@@ -111,38 +111,37 @@ class RequestsGenerator extends EntityGenerator
 
     protected function getUpdateValidationParameters(): array
     {
-        $parameters = Arr::except($this->fields, 'boolean-required');
+        $parameters = $this->fields;
 
-        if (!empty($this->fields['boolean-required'])) {
-            $parameters['boolean'] = array_merge($parameters['boolean'], $this->fields['boolean-required']);
-        }
+        $this->removeFieldModifier($parameters['boolean'] ?? [], 'required');
 
         return $this->getValidationParameters($parameters, false);
     }
 
     protected function getSearchValidationParameters(): array
     {
-        $parameters = Arr::except($this->fields, [
-            'timestamp', 'timestamp-required', 'string-required', 'integer-required', 'boolean-required'
-        ]);
+        $parameters = Arr::except($this->fields, ['timestamp']);
 
-        $parameters['boolean'] = array_merge($this->fields['boolean-required'], [
-            'desc',
-            'all',
-        ]);
+        $parameters['boolean'] = [
+            ...$this->removeFieldModifier($parameters['boolean'] ?? [], 'required'),
+            $this->convertToField('desc', []),
+            $this->convertToField('all', []),
+        ];
 
-        $parameters['integer'] = array_merge($this->fields['integer'], [
-            'page',
-            'per_page',
-        ]);
+        $parameters['integer'] = [
+            ...$this->fields['integer'] ?? [],
+            $this->convertToField('page', []),
+            $this->convertToField('per_page', []),
+        ];
 
-        $parameters['string'] = ['order_by'];
+        $parameters['string'] = [
+            ...$this->fields['string'] ?? [],
+            $this->convertToField('order_by', []),
+            $this->convertToField('query', ['nullable']),
+            $this->convertToField('with.*', ['required']),
+        ];
 
-        $parameters['string-nullable'] = ['query'];
-
-        $parameters['array'] = ['with'];
-
-        $parameters['string-required'] = ['with.*'];
+        $parameters['array'][] = $this->convertToField('with', []);
 
         return $this->getValidationParameters($parameters, true);
     }
@@ -151,36 +150,35 @@ class RequestsGenerator extends EntityGenerator
     {
         $result = [];
 
-        foreach ($parameters as $type => $parameterNames) {
-            $isRequired = Str::contains($type, 'required');
-            $isNullable = Str::contains($type, 'nullable');
-            $isPresent = Str::contains($type, 'present');
-            $type = head(explode('-', $type));
+        foreach ($parameters as $type => $typedFields) {
+            foreach ($typedFields as $field) {
+                $isRequired = in_array('required', $field['modifiers']);
+                $isNullable = in_array('nullable', $field['modifiers']);
+                $isPresent = in_array('present', $field['modifiers']);
 
-            foreach ($parameterNames as $name) {
                 $required = $isRequired && $requiredAvailable;
 
-                $result[] = $this->getRules($name, $type, $required, $isNullable, $isPresent);
+                $result[] = $this->getRules($field, $type, $required, $isNullable, $isPresent);
             }
         }
 
         return $result;
     }
 
-    protected function getRules($name, $type, $required, $nullable, $present): array
+    protected function getRules($field, $type, $required, $nullable, $present): array
     {
         $replaces = [
             'timestamp' => 'date',
             'float' => 'numeric',
-            'json' => 'array'
+            'json' => 'array',
         ];
 
         $rules = [
             Arr::get($replaces, $type, $type)
         ];
 
-        if (in_array($name, $this->relationFields)) {
-            $tableName = str_replace('_id', '', $name);
+        if (in_array($field['name'], $this->relationFields)) {
+            $tableName = str_replace('_id', '', $field['name']);
 
             $rules[] = "exists:{$this->getTableName($tableName)},id";
 
@@ -199,13 +197,13 @@ class RequestsGenerator extends EntityGenerator
             $rules[] = 'present';
         }
 
-        if (in_array($name, ['order_by', 'with.*'])) {
+        if (in_array($field['name'], ['order_by', 'with.*'])) {
             $rules[] = 'in:';
         }
 
         return [
-            'name' => $name,
-            'rules' => $rules
+            'name' => $field['name'],
+            'rules' => $rules,
         ];
     }
 
@@ -223,6 +221,30 @@ class RequestsGenerator extends EntityGenerator
         }
 
         return $availableRelations;
+    }
+
+    protected function removeFieldModifier(array $fields, string $removeModifier): array
+    {
+        foreach ($fields as &$field) {
+            $field['modifiers'] = array_filter(
+                array: $field['modifiers'],
+                callback: fn (string $modifier) => $modifier !== $removeModifier,
+            );
+        }
+
+        return $fields;
+    }
+
+    protected function replaceFieldModifier(array $fields, string $originalModifier, string $newModifier): array
+    {
+        foreach ($fields as &$field) {
+            $field['modifiers'] = Arr::map(
+                array: $field['modifiers'],
+                callback: fn (string $modifier) => $modifier === $originalModifier ? $newModifier : $modifier,
+            );
+        }
+
+        return $fields;
     }
 
     private function getEntityName($method): string

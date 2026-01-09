@@ -13,6 +13,7 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use Exception;
+use RonasIT\Support\Exceptions\UnknownFieldModifierException;
 use RonasIT\Support\Generators\ControllerGenerator;
 use RonasIT\Support\Generators\EntityGenerator;
 use RonasIT\Support\Generators\FactoryGenerator;
@@ -37,6 +38,10 @@ class MakeEntityCommand extends Command
 
     const CRUD_OPTIONS = [
         'C', 'R', 'U', 'D'
+    ];
+
+    const AVAILABLE_MODIFIERS = [
+        'required',
     ];
 
     /**
@@ -64,15 +69,10 @@ class MakeEntityCommand extends Command
         {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
         {--i|integer=* : Add integer field to entity.}
-        {--I|integer-required=* : Add required integer field to entity. If you want to specify default value you have to do it manually.}
         {--f|float=* : Add float field to entity.}
-        {--F|float-required=* : Add required float field to entity. If you want to specify default value you have to do it manually.}
         {--s|string=* : Add string field to entity. Default type is VARCHAR(255) but you can change it manually in migration.}
-        {--S|string-required=* : Add required string field to entity. If you want to specify default value ir size you have to do it manually.}
         {--b|boolean=* : Add boolean field to entity.}
-        {--B|boolean-required=* : Add boolean field to entity. If you want to specify default value you have to do it manually.}
         {--t|timestamp=* : Add timestamp field to entity.}
-        {--T|timestamp-required=* : Add timestamp field to entity. If you want to specify default value you have to do it manually.}
         {--j|json=* : Add json field to entity.}
         
         {--a|has-one=* : Set hasOne relations between you entity and existed entity.}
@@ -201,6 +201,7 @@ class MakeEntityCommand extends Command
         $this->extractEntityNameAndPath();
         $this->validateOnlyApiOption();
         $this->validateCrudOptions();
+        $this->validateModifiers();
     }
 
     protected function generate(): void
@@ -257,7 +258,22 @@ class MakeEntityCommand extends Command
 
     protected function getFields(): array
     {
-        return Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
+        $options = Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
+
+        $result = [];
+
+        foreach ($options as $type => $fields) {
+            foreach ($fields as $field) {
+                $parts = explode(':', $field);
+
+                $result[$type][] = [
+                    'name' => $parts[0],
+                    'modifiers' => isset($parts[1]) ? explode(',', $parts[1]) : [],
+                ];
+            }
+        }
+
+        return $result;
     }
 
     protected function validateEntityName(): void
@@ -291,6 +307,21 @@ class MakeEntityCommand extends Command
             $modelName = Str::studly($this->argument('name'));
             if (!$this->classExists('services', "{$modelName}Service")) {
                 throw new ClassNotExistsException('Cannot create API without entity.');
+            }
+        }
+    }
+
+    protected function validateModifiers(): void
+    {
+        $fields = $this->getFields();
+
+        foreach ($fields as $typedFields) {
+            foreach ($typedFields as $field) {
+                $diff = array_diff($field['modifiers'], MakeEntityCommand::AVAILABLE_MODIFIERS);
+
+                if (!empty($diff)) {
+                    throw new UnknownFieldModifierException(Arr::take($diff, 1)[0], $field['name']);
+                }
             }
         }
     }
