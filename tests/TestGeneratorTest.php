@@ -7,7 +7,6 @@ use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Tests\Support\Test\TestMockTrait;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
@@ -59,7 +58,11 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'RoleFactory']),
             $this->classExistsMethodCall(['factories', 'UserFactory']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'create_post_response.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'update_post_request.json', 'fixtures/PostTest'], false),
         ]);
 
         app(TestsGenerator::class)
@@ -103,6 +106,7 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'RoleFactory']),
             $this->classExistsMethodCall(['factories', 'UserFactory']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
         ]);
 
@@ -134,6 +138,9 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['tests', 'PostTest'], false),
             $this->classExistsMethodCall(['models', 'User']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'create_post_response.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'update_post_request.json', 'fixtures/PostTest'], false),
         ]);
 
         app(TestsGenerator::class)
@@ -180,7 +187,11 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['factories', 'RoleFactory']),
             $this->classExistsMethodCall(['factories', 'UserFactory']),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'create_post_response.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'update_post_request.json', 'fixtures/PostTest'], false),
         ]);
 
         app(TestsGenerator::class)
@@ -249,6 +260,146 @@ class TestGeneratorTest extends TestCase
         );
 
         app(TestsGenerator::class)
+            ->setModel('Post')
+            ->generate();
+    }
+
+    public function testDumpAlreadyExists()
+    {
+        $this->mockDBTransactionStartRollback(5);
+
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+        ]);
+
+        $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest']),
+        ]);
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create dump.sql cause it already exists. Remove tests/fixtures/PostTest/dump.sql and run command again.",
+        );
+
+        app(TestsGenerator::class)
+            ->setModel('Post')
+            ->generate();
+    }
+
+    public function testCreateRequestFixtureAlreadyExists()
+    {
+        $this->mockDBTransactionStartRollback(5);
+
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+        ]);
+
+        $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest']),
+        ]);
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create create_post_request.json cause it already exists. Remove tests/fixtures/PostTest/create_post_request.json and run command again.",
+        );
+
+        app(TestsGenerator::class)
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->setModel('Post')
+            ->generate();
+    }
+
+    public function testCreateResponseFixtureAlreadyExists()
+    {
+        $this->mockDBTransactionStartRollback(5);
+
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+        ]);
+
+        $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'create_post_response.json', 'fixtures/PostTest']),
+        ]);
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create create_post_response.json cause it already exists. Remove tests/fixtures/PostTest/create_post_response.json and run command again.",
+        );
+
+        app(TestsGenerator::class)
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->setModel('Post')
+            ->generate();
+    }
+
+    public function testUpdateRequestFixtureAlreadyExists()
+    {
+        $this->mockDBTransactionStartRollback(5);
+
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+        ]);
+
+        $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'create_post_response.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'update_post_request.json', 'fixtures/PostTest']),
+        ]);
+
+        $this->assertExceptionThrew(
+            className: ResourceAlreadyExistsException::class,
+            message: "Cannot create update_post_request.json cause it already exists. Remove tests/fixtures/PostTest/update_post_request.json and run command again.",
+        );
+
+        app(TestsGenerator::class)
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->setModel('Post')
             ->generate();
     }
