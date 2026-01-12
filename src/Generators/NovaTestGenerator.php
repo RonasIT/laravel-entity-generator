@@ -16,7 +16,7 @@ use RonasIT\Support\Exceptions\ResourceNotExistsException;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
-    protected string $novaResourceClassName;
+    protected ?string $novaResourceClassName = null;
 
     public function setNovaResource(?string $novaResource): self
     {
