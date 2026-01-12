@@ -4,6 +4,7 @@ namespace RonasIT\Support\Tests;
 
 use App\Nova\Forum\PostResource;
 use Carbon\Carbon;
+use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Tests\Support\Command\Models\Post;
 use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
@@ -12,9 +13,7 @@ use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Exceptions\EntityCreateException;
-use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 
 class NovaTestGeneratorTest extends TestCase
