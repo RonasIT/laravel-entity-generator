@@ -17,10 +17,10 @@ class NovaTestGenerator extends AbstractTestsGenerator
 {
     protected string $novaResourceClassName;
 
-    public function setMetaData(array $data): self
+    public function setNovaResource(?string $novaResource): self
     {
-        if (!empty($data['resource_name'])) {
-            $path = $this->paths['nova'] . DIRECTORY_SEPARATOR . Str::studly($data['resource_name']);
+        if (!empty($novaResource)) {
+            $path = $this->paths['nova'] . DIRECTORY_SEPARATOR . Str::studly($novaResource);
 
             $this->novaResourceClassName = $this->pathToNamespace($path);
         }

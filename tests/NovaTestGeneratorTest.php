@@ -208,7 +208,7 @@ class NovaTestGeneratorTest extends TestCase
 
         app(NovaTestGenerator::class)
             ->setModel('Post')
-            ->setMetaData(['resource_name' => 'Forum/PostResource'])
+            ->setNovaResource('Forum/PostResource')
             ->generate();
 
         $this->assertGeneratedFileEquals('created_forum_post_resource_test.php', 'tests/NovaPostResourceTest.php');
@@ -239,7 +239,7 @@ class NovaTestGeneratorTest extends TestCase
 
         app(NovaTestGenerator::class)
             ->setModel('WelcomeBonus')
-            ->setMetaData(['resource_name' => 'SomeResource'])
+            ->setNovaResource('SomeResource')
             ->generate();
     }
 
