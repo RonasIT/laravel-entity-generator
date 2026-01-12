@@ -2,16 +2,16 @@
 
 namespace RonasIT\Support\Generators;
 
+use Generator;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use RecursiveIteratorIterator;
+use RecursiveDirectoryIterator;
 use Laravel\Nova\NovaServiceProvider;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
-use Generator;
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
-use Illuminate\Support\Arr;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
