@@ -190,7 +190,7 @@ class MakeEntityCommand extends Command
                 }
             }
         } else {
-            array_map( fn ($generator) => $this->runGeneration($generator), [
+            array_map(fn ($generator) => $this->runGeneration($generator), [
                 app(ModelGenerator::class),
                 app(RepositoryGenerator::class),
                 app(ServiceGenerator::class),
