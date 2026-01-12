@@ -177,10 +177,51 @@ class MakeEntityCommand extends Command
         $this->validateOnlyApiOption();
         $this->validateCrudOptions();
     }
-
-    protected function getGenerators(): array
+    protected function generate(): void
     {
-        return [
+        $providedOptions = $this->getProvidedOnlyOptions();
+
+        if (!empty($providedOptions)) {
+            foreach ($providedOptions as $option) {
+                $generators = $this->getGenerators($option);
+
+                foreach ($generators as $generator) {
+                    $this->runGeneration($generator);
+                }
+            }
+        } else {
+            array_map( fn ($generator) => $this->runGeneration($generator), [
+                app(ModelGenerator::class),
+                app(RepositoryGenerator::class),
+                app(ServiceGenerator::class),
+                app(RequestsGenerator::class),
+                app(ResourceGenerator::class),
+                app(ControllerGenerator::class),
+                app(MigrationGenerator::class),
+                app(FactoryGenerator::class),
+                app(TestsGenerator::class),
+                app(TranslationsGenerator::class),
+                app(SeederGenerator::class),
+                app(NovaResourceGenerator::class),
+                app(NovaTestGenerator::class),
+            ]);
+        }
+    }
+
+    protected function getProvidedOnlyOptions(): array
+    {
+        $providedOptions = array_filter(
+            array: $this->input->getOptions(),
+            callback: fn ($value, $name) => Str::startsWith($name, 'only-') && $value === true,
+            mode: ARRAY_FILTER_USE_BOTH,
+        );
+
+        return array_keys($providedOptions);
+    }
+
+    protected function getGenerators(string $option): array
+    {
+        return match ($option) {
             'only-api' => [
                 app(ResourceGenerator::class),
                 app(ControllerGenerator::class),
@@ -232,36 +273,8 @@ class MakeEntityCommand extends Command
             'only-nova-tests' => [
                 app(NovaTestGenerator::class)->setNovaResource($this->option('nova-resource-name')),
             ],
-        ];
-    }
-
-    protected function generate(): void
-    {
-        foreach ($this->getGenerators() as $option => $generators) {
-            if ($this->option($option)) {
-                foreach ($generators as $generator) {
-                    $this->runGeneration($generator);
-                }
-
-                return;
-            }
-        }
-
-        array_map(fn ($generator) => $this->runGeneration($generator), [
-            app(ModelGenerator::class),
-            app(RepositoryGenerator::class),
-            app(ServiceGenerator::class),
-            app(RequestsGenerator::class),
-            app(ResourceGenerator::class),
-            app(ControllerGenerator::class),
-            app(MigrationGenerator::class),
-            app(FactoryGenerator::class),
-            app(TestsGenerator::class),
-            app(TranslationsGenerator::class),
-            app(SeederGenerator::class),
-            app(NovaResourceGenerator::class),
-            app(NovaTestGenerator::class),
-        ]);
+            default => [],
+        };
     }
 
     protected function runGeneration(EntityGenerator $generator): void
