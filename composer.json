@@ -25,7 +25,8 @@
     "php-coveralls/php-coveralls": "^2.7",
     "orchestra/testbench": "^9.5.2",
     "mikey179/vfsstream": "^1.6.12",
-    "php-mock/php-mock": "^2.5"
+    "php-mock/php-mock": "^2.5",
+    "laravel/pint": "^1.27"
   },
   "autoload": {
     "psr-4": {
