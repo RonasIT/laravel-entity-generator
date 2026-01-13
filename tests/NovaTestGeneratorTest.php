@@ -3,13 +3,13 @@
 namespace RonasIT\Support\Tests;
 
 use Laravel\Nova\NovaServiceProvider;
-use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Generators\NovaTestGenerator;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\EntityCreateException;
-use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Generators\NovaTestGenerator;
+use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 
 class NovaTestGeneratorTest extends TestCase
@@ -75,7 +75,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create NovaPostResourceTest cause it already exists. Remove app/Nova/NovaPostResourceTest.php and run command again.",
+            message: 'Cannot create NovaPostResourceTest cause it already exists. Remove app/Nova/NovaPostResourceTest.php and run command again.',
         );
 
         app(NovaTestGenerator::class)

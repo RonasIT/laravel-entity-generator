@@ -37,7 +37,7 @@ class ServiceGenerator extends EntityGenerator
 
         return [
             'simple_search' => Arr::collapse($simpleSearch),
-            'search_by_query' => array_merge($this->fields['string'], $this->fields['string-required'])
+            'search_by_query' => array_merge($this->fields['string'], $this->fields['string-required']),
         ];
     }
 }

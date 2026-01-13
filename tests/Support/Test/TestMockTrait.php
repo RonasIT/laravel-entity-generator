@@ -20,7 +20,7 @@ trait TestMockTrait
         $roleFactory = file_get_contents(getcwd() . '/tests/Support/Test/Factories/RoleFactory.php');
         $postFactory = file_get_contents(getcwd() . '/tests/Support/Test/Factories/PostFactory.php');
 
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
 
         $fileSystemMock->models = [
             'Post.php' => $postModel,
@@ -43,7 +43,7 @@ trait TestMockTrait
         $model = file_get_contents(getcwd() . '/tests/Support/Test/Models/Media.php');
         $factory = file_get_contents(getcwd() . '/tests/Support/Test/Factories/MediaFactory.php');
 
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
 
         $fileSystemMock->models = ['Media.php' => $model];
         $fileSystemMock->factories = ['MediaFactory.php' => $factory];

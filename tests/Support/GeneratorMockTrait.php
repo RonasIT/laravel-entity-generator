@@ -11,10 +11,10 @@ use Doctrine\DBAL\Types\IntegerType;
 use Doctrine\DBAL\Types\StringType;
 use Illuminate\Database\Connection as LaravelConnection;
 use Illuminate\Support\Facades\DB;
-use Laravel\Nova\NovaServiceProvider;
-use RonasIT\Support\Traits\MockTrait;
-use Mockery;
 use Illuminate\Support\Str;
+use Laravel\Nova\NovaServiceProvider;
+use Mockery;
+use RonasIT\Support\Traits\MockTrait;
 
 trait GeneratorMockTrait
 {
@@ -37,7 +37,7 @@ trait GeneratorMockTrait
         return [
             'function' => 'classExists',
             'arguments' => $arguments,
-            'result' => $result
+            'result' => $result,
         ];
     }
 

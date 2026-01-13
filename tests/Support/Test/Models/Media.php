@@ -17,7 +17,7 @@ class Media extends Model
         'user_id',
         'posted_at',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     public function preview()
