@@ -4,12 +4,12 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Filesystem\Filesystem;
-use RonasIT\Support\DTO\FieldsSchemaDTO;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;

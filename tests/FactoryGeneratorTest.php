@@ -4,8 +4,8 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
-use RonasIT\Support\DTO\FieldsSchemaDTO;
 use Illuminate\View\ViewException;
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
