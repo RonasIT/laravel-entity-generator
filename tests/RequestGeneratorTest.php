@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -18,15 +19,22 @@ class RequestGeneratorTest extends TestCase
     {
         app(RequestsGenerator::class)
             ->setModel('Post')
+            ->setFields(FieldsSchemaDTO::fromArray([
+                'boolean' => [
+                    [
+                        'name' => 'is_published',
+                        'modifiers' => ['required'],
+                    ],
+                    [
+                        'name' => 'is_draft',
+                        'modifiers' => [],
+                    ],
+                ],
+            ]))
             ->setRelations(new RelationsDTO(
                 hasMany: ['Comments'],
                 belongsTo: ['User'],
             ))
-            ->setFields([
-                'boolean-required' => ['is_published'],
-                'integer' => ['user_id'],
-                'boolean' => ['is_draft'],
-            ])
             ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
 
@@ -100,6 +108,7 @@ class RequestGeneratorTest extends TestCase
 
         app(RequestsGenerator::class)
             ->setModel('Post')
+            ->setFields(FieldsSchemaDTO::fromArray([]))
             ->setRelations(new RelationsDTO(
                 belongsTo: ['User'],
             ))
@@ -121,13 +130,23 @@ class RequestGeneratorTest extends TestCase
 
         app(RequestsGenerator::class)
             ->setModel('Post')
+            ->setFields(FieldsSchemaDTO::fromArray([
+                'boolean' => [
+                    [
+                        'name' => 'is_published',
+                        'modifiers' => ['required'],
+                    ],
+                ],
+                'integer' => [
+                    [
+                        'name' => 'user_id',
+                        'modifiers' => [],
+                    ],
+                ],
+            ]))
             ->setRelations(new RelationsDTO(
                 belongsTo: ['User'],
             ))
-            ->setFields([
-                'boolean-required' => ['is_published'],
-                'integer' => ['user_id'],
-            ])
             ->setCrudOptions(['R'])
             ->generate();
     }

@@ -1,0 +1,66 @@
+{
+    "integer": [
+        {
+            "name": "priority",
+            "modifiers": []
+        },
+        {
+            "name": "media_id",
+            "modifiers": ["required"]
+        }
+    ],
+    "float": [
+        {
+            "name": "seo_score",
+            "modifiers": []
+        },
+        {
+            "name": "rating",
+            "modifiers": ["required"]
+        }
+    ],
+    "string": [
+        {
+            "name": "description",
+            "modifiers": []
+        },
+        {
+            "name": "title",
+            "modifiers": ["required"]
+        }
+    ],
+    "boolean": [
+        {
+            "name": "is_reviewed",
+            "modifiers": []
+        },
+        {
+            "name": "is_published",
+            "modifiers": ["required"]
+        }
+    ],
+    "timestamp": [
+        {
+            "name": "reviewed_at",
+            "modifiers": []
+        },
+        {
+            "name": "created_at",
+            "modifiers": []
+        },
+        {
+            "name": "updated_at",
+            "modifiers": []
+        },
+        {
+            "name": "published_at",
+            "modifiers": ["required"]
+        }
+    ],
+    "json": [
+        {
+            "name": "meta",
+            "modifiers": []
+        }
+    ]
+}

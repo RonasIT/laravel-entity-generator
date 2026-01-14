@@ -9,10 +9,13 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
+use RonasIT\Support\Enums\FieldModifiersEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\UnknownFieldModifierException;
 use RonasIT\Support\Generators\ControllerGenerator;
 use RonasIT\Support\Generators\EntityGenerator;
 use RonasIT\Support\Generators\FactoryGenerator;
@@ -64,15 +67,10 @@ class MakeEntityCommand extends Command
         {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
         {--i|integer=* : Add integer field to entity.}
-        {--I|integer-required=* : Add required integer field to entity. If you want to specify default value you have to do it manually.}
         {--f|float=* : Add float field to entity.}
-        {--F|float-required=* : Add required float field to entity. If you want to specify default value you have to do it manually.}
         {--s|string=* : Add string field to entity. Default type is VARCHAR(255) but you can change it manually in migration.}
-        {--S|string-required=* : Add required string field to entity. If you want to specify default value ir size you have to do it manually.}
         {--b|boolean=* : Add boolean field to entity.}
-        {--B|boolean-required=* : Add boolean field to entity. If you want to specify default value you have to do it manually.}
         {--t|timestamp=* : Add timestamp field to entity.}
-        {--T|timestamp-required=* : Add timestamp field to entity. If you want to specify default value you have to do it manually.}
         {--j|json=* : Add json field to entity.}
         
         {--a|has-one=* : Set hasOne relations between you entity and existed entity.}
@@ -199,6 +197,7 @@ class MakeEntityCommand extends Command
         $this->extractEntityNameAndPath();
         $this->validateOnlyApiOption();
         $this->validateCrudOptions();
+        $this->validateModifiers();
     }
 
     protected function generate(): void
@@ -253,9 +252,12 @@ class MakeEntityCommand extends Command
         }, $relations);
     }
 
-    protected function getFields(): array
+    protected function getFields(): FieldsSchemaDTO
     {
-        return Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
+        $fieldsSchema = $this->prepareFieldsSchema();
+        $fieldsSchema = $this->replaceFieldModifierShortOptions($fieldsSchema);
+
+        return FieldsSchemaDTO::fromArray($fieldsSchema);
     }
 
     protected function validateEntityName(): void
@@ -293,6 +295,21 @@ class MakeEntityCommand extends Command
         }
     }
 
+    protected function validateModifiers(): void
+    {
+        $fieldsDTO = $this->getFields();
+
+        foreach ($fieldsDTO as $typedFields) {
+            foreach ($typedFields as $field) {
+                $diff = array_diff($field['modifiers'], FieldModifiersEnum::values());
+
+                if (!empty($diff)) {
+                    throw new UnknownFieldModifierException(Arr::first($diff), $field['name']);
+                }
+            }
+        }
+    }
+
     protected function listenEvents(): void
     {
         Event::listen(
@@ -315,5 +332,40 @@ class MakeEntityCommand extends Command
         }
 
         return $pascalEntityName;
+    }
+
+    protected function prepareFieldsSchema(): array
+    {
+        $options = Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
+
+        $result = [];
+
+        foreach ($options as $type => $fields) {
+            foreach ($fields as $field) {
+                $parts = explode(':', $field);
+
+                $result[$type][] = [
+                    'name' => $parts[0],
+                    'modifiers' => isset($parts[1]) ? explode(',', $parts[1]) : [],
+                ];
+            }
+        }
+
+        return $result;
+    }
+
+    protected function replaceFieldModifierShortOptions(array $fieldsSchema): array
+    {
+        $modifiersMap = [
+            'r' => FieldModifiersEnum::Required->value,
+        ];
+
+        foreach ($fieldsSchema as $fieldType => &$typedFields) {
+            foreach ($typedFields as &$field) {
+                $field['modifiers'] = Arr::map($field['modifiers'], fn ($modifier) => $modifiersMap[$modifier] ?? $modifier);
+            }
+        }
+
+        return $fieldsSchema;
     }
 }

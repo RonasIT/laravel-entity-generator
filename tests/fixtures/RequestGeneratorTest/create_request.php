@@ -9,9 +9,9 @@ class CreatePostRequest extends Request
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer|exists:users,id',
-            'is_draft' => 'boolean',
             'is_published' => 'boolean|present',
+            'is_draft' => 'boolean',
+            'user_id' => 'required|integer|exists:users,id',
         ];
     }
 }

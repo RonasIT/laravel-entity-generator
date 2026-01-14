@@ -14,17 +14,11 @@ class NovaResourceGenerator extends EntityGenerator
 {
     protected $novaFieldTypesMap = [
         'boolean' => 'Boolean',
-        'boolean-required' => 'Boolean',
         'timestamp' => 'DateTime',
-        'timestamp-required' => 'DateTime',
         'string' => 'Text',
-        'string-required' => 'Text',
         'json' => 'Text',
-        'json-required' => 'Text',
         'integer' => 'Number',
-        'integer-required' => 'Number',
         'float' => 'Number',
-        'float-required' => 'Number',
     ];
 
     protected $novaFieldsDatabaseMap = [
@@ -118,9 +112,9 @@ class NovaResourceGenerator extends EntityGenerator
     {
         $fields = [];
 
-        foreach ($this->fields as $type => $names) {
-            foreach ($names as $name) {
-                $fields[] = new CommandLineNovaField($type, $name);
+        foreach ($this->fields as $type => $typedFields) {
+            foreach ($typedFields as $field) {
+                $fields[] = new CommandLineNovaField($type, $field);
             }
         }
 

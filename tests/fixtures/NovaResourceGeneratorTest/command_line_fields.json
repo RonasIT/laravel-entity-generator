@@ -1,17 +1,32 @@
 {
   "boolean": [
-    "is_published"
+    {
+      "name": "is_published",
+      "modifiers": []
+    }
   ],
-  "string-required": [
-    "title",
-    "body"
+  "string": [
+    {
+      "name": "title",
+      "modifiers": ["required"]
+    },
+    {
+      "name": "body",
+      "modifiers": ["required"]
+    }
   ],
   "integer": [
-    "id"
+    {
+      "name": "id",
+      "modifiers": []
+    }
   ],
   "non_existing_type": [
-    "comment"
+    {
+      "name": "comment",
+      "modifiers": []
+    }
   ],
   "json": [],
-  "timestamp-required": []
+  "timestamp": []
 }

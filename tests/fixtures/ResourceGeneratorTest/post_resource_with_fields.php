@@ -21,11 +21,11 @@ class PostResource extends BaseResource
             'title' => $this->resource->title,
             'is_reviewed' => $this->resource->is_reviewed,
             'is_published' => $this->resource->is_published,
+            'meta' => $this->resource->meta,
             'reviewed_at' => $this->resource->reviewed_at,
             'created_at' => $this->resource->created_at,
             'updated_at' => $this->resource->updated_at,
             'published_at' => $this->resource->published_at,
-            'meta' => $this->resource->meta,
         ];
     }
 }

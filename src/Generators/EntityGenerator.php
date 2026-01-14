@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
@@ -22,11 +23,10 @@ use Throwable;
 abstract class EntityGenerator
 {
     const AVAILABLE_FIELDS = [
-        'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
-        'boolean-required', 'boolean', 'timestamp-required', 'timestamp', 'json',
+        'integer', 'string', 'float', 'boolean', 'timestamp', 'json',
     ];
 
-    const LOVER_CASE_DIRECTORIES_MAP = [
+    const LOWER_CASE_DIRECTORIES_MAP = [
         'migrations' => 'database/migrations',
         'factories' => 'database/factories',
         'seeders' => 'database/seeders',
@@ -64,7 +64,7 @@ abstract class EntityGenerator
         return $this;
     }
 
-    public function setFields(array $fields): self
+    public function setFields(FieldsSchemaDTO $fields): self
     {
         $this->fields = $fields;
 
@@ -80,7 +80,7 @@ abstract class EntityGenerator
 
             $name = Str::snake($relatedModel) . '_id';
 
-            $this->fields['integer-required'][] = $name;
+            $this->fields->integer[] = $this->convertToField($name, ['required']);
         }
 
         return $this;
@@ -131,7 +131,7 @@ abstract class EntityGenerator
 
     protected function isFolderHasCorrectCase(string $folder, string $configPath): bool
     {
-        $directory = Arr::get(self::LOVER_CASE_DIRECTORIES_MAP, $configPath);
+        $directory = Arr::get(self::LOWER_CASE_DIRECTORIES_MAP, $configPath);
 
         $firstFolderChar = substr($folder, 0, 1);
 
@@ -349,5 +349,13 @@ abstract class EntityGenerator
     protected function isPluralRelation(string $relation): bool
     {
         return in_array($relation, ['hasMany', 'belongsToMany']);
+    }
+
+    protected function convertToField(string $name, array $modifiers): array
+    {
+        return [
+            'name' => $name,
+            'modifiers' => $modifiers,
+        ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
@@ -73,19 +74,7 @@ class ResourceGeneratorTest extends TestCase
     {
         app(ResourceGenerator::class)
             ->setModel('Post')
-            ->setFields([
-                'integer' => ['priority'],
-                'integer-required' => ['media_id'],
-                'float' => ['seo_score'],
-                'float-required' => ['rating'],
-                'string' => ['description'],
-                'string-required' => ['title'],
-                'boolean' => ['is_reviewed'],
-                'boolean-required' => ['is_published'],
-                'timestamp' => ['reviewed_at', 'created_at', 'updated_at'],
-                'timestamp-required' => ['published_at'],
-                'json' => ['meta'],
-            ])
+            ->setFields(FieldsSchemaDTO::fromArray($this->getJsonFixture('create_resource_fields')))
             ->generate();
 
         $this->assertGeneratedFileEquals('post_resource_with_fields.php', 'app/Http/Resources/Post/PostResource.php');
