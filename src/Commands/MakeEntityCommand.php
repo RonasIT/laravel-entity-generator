@@ -257,6 +257,7 @@ class MakeEntityCommand extends Command
     protected function getFields(): FieldsSchemaDTO
     {
         $fieldsSchema = $this->prepareFieldsSchema();
+        $fieldsSchema = $this->replaceFieldModifierShortOptions($fieldsSchema);
 
         return FieldsSchemaDTO::fromArray($fieldsSchema);
     }
@@ -353,5 +354,20 @@ class MakeEntityCommand extends Command
         }
 
         return $result;
+    }
+
+    protected function replaceFieldModifierShortOptions(array $fieldsSchema): array
+    {
+        $modifiersMap = [
+            'r' => FieldModifiersEnum::Required->value,
+        ];
+
+        foreach ($fieldsSchema as $fieldType => &$typedFields) {
+            foreach ($typedFields as &$field) {
+                $field['modifiers'] = Arr::map($field['modifiers'], fn ($modifier) => $modifiersMap[$modifier] ?? $modifier);
+            }
+        }
+
+        return $fieldsSchema;
     }
 }

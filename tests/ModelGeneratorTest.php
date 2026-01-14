@@ -188,7 +188,7 @@ class ModelGeneratorTest extends TestCase
     public function testCreateModelWithoutDateFields()
     {
         $this
-            ->artisan('make:entity Post -i priority -i media_id:required -f seo_score -f rating:required -s description -s title:required -b is_reviewed -b is_published:required -j meta --only-model')
+            ->artisan('make:entity Post -i priority -i media_id:r -f seo_score -f rating:r -s description -s title:required -b is_reviewed -b is_published:required -j meta --only-model')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_model_without_date_fields.php', 'app/Models/Post.php');
