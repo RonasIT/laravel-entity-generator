@@ -12,8 +12,8 @@ class SearchPostsRequest extends Request
         $availableRelations = implode(',', $this->getAvailableRelations());
 
         return [
-            'per_page' => 'integer',
             'page' => 'integer',
+            'per_page' => 'integer',
             'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'desc' => 'boolean',
             'all' => 'boolean',

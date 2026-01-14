@@ -253,8 +253,8 @@ class RequestsGenerator extends EntityGenerator
     protected function orderSearchRequest(array $rules): array
     {
         $order = [
-            'per_page',
             'page',
+            'per_page',
             'order_by',
             'desc',
             'all',
