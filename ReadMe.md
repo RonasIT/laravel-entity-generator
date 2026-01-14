@@ -144,7 +144,7 @@ Feel free to use any combinations of actions in any order. Each action has its o
 - `D` delete
 - `R` read (search and get by id)
 
-#### Auxiliary options
+#### Special class-related options
 
 - `--nova-resource-name` - Specifies the Nova resource name when generating a test.
 
