@@ -146,7 +146,7 @@ Feel free to use any combinations of actions in any order. Each action has its o
 
 #### Special class-related options
 
-- `--nova-resource-name` - Specifies the Nova resource name when generating a test.
+- `--nova-resource-name` - Specifies the Nova resource name for the Nova tests generation. By default script will try to find the common resource class based on the entity name.
 
 ## Release notes
 
