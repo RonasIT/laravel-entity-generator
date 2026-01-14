@@ -9,8 +9,8 @@ class FieldsSchemaDTO
         public array $float = [],
         public array $string = [],
         public array $boolean = [],
-        public array $timestamp = [],
         public array $json = [],
+        public array $timestamp = [],
     ) {
     }
 
