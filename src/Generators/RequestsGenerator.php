@@ -32,12 +32,12 @@ class RequestsGenerator extends EntityGenerator
             $this->createRequest(
                 self::GET_METHOD,
                 true,
-                $this->getGetValidationParameters()
+                $this->getGetValidationParameters(),
             );
             $this->createRequest(
                 self::SEARCH_METHOD,
                 false,
-                $this->getSearchValidationParameters()
+                $this->getSearchValidationParameters(),
             );
         }
 
@@ -49,7 +49,7 @@ class RequestsGenerator extends EntityGenerator
             $this->createRequest(
                 self::CREATE_METHOD,
                 false,
-                $this->getCreateValidationParameters()
+                $this->getCreateValidationParameters(),
             );
         }
 
@@ -57,7 +57,7 @@ class RequestsGenerator extends EntityGenerator
             $this->createRequest(
                 self::UPDATE_METHOD,
                 true,
-                $this->getUpdateValidationParameters()
+                $this->getUpdateValidationParameters(),
             );
         }
     }
@@ -83,7 +83,7 @@ class RequestsGenerator extends EntityGenerator
         ]);
 
         $this->saveClass('requests', "{$method}{$modelName}Request",
-            $content, $requestsFolder
+            $content, $requestsFolder,
         );
 
         event(new SuccessCreateMessage("Created a new Request: {$method}{$modelName}Request"));
@@ -123,7 +123,7 @@ class RequestsGenerator extends EntityGenerator
     protected function getSearchValidationParameters(): array
     {
         $parameters = Arr::except($this->fields, [
-            'timestamp', 'timestamp-required', 'string-required', 'integer-required', 'boolean-required'
+            'timestamp', 'timestamp-required', 'string-required', 'integer-required', 'boolean-required',
         ]);
 
         $parameters['boolean'] = array_merge($this->fields['boolean-required'], [
@@ -172,11 +172,11 @@ class RequestsGenerator extends EntityGenerator
         $replaces = [
             'timestamp' => 'date',
             'float' => 'numeric',
-            'json' => 'array'
+            'json' => 'array',
         ];
 
         $rules = [
-            Arr::get($replaces, $type, $type)
+            Arr::get($replaces, $type, $type),
         ];
 
         if (in_array($name, $this->relationFields)) {
@@ -205,7 +205,7 @@ class RequestsGenerator extends EntityGenerator
 
         return [
             'name' => $name,
-            'rules' => $rules
+            'rules' => $rules,
         ];
     }
 

@@ -24,7 +24,7 @@ class NovaResourceGenerator extends EntityGenerator
         'integer' => 'Number',
         'integer-required' => 'Number',
         'float' => 'Number',
-        'float-required' => 'Number'
+        'float-required' => 'Number',
     ];
 
     protected $novaFieldsDatabaseMap = [
@@ -47,7 +47,7 @@ class NovaResourceGenerator extends EntityGenerator
         'id' => 'ID',
         'country_code' => 'Country',
         'city' => 'City',
-        'time_zone' => 'Timezone'
+        'time_zone' => 'Timezone',
     ];
 
     public function generate(): void
@@ -77,7 +77,7 @@ class NovaResourceGenerator extends EntityGenerator
 
             event(new SuccessCreateMessage("Created a new Nova Resource: {$this->model}Resource"));
         } else {
-            event(new SuccessCreateMessage("Nova is not installed and NovaResource is skipped"));
+            event(new SuccessCreateMessage('Nova is not installed and NovaResource is skipped'));
         }
     }
 
@@ -89,7 +89,7 @@ class NovaResourceGenerator extends EntityGenerator
         foreach ($fields as $field) {
             if (!Arr::has($fieldTypesMap, $field->type)) {
                 event(new SuccessCreateMessage("Field '{$field->name}' had been skipped cause has an unhandled type {$field->type}."));
-            } else if (Arr::has($this->specialFieldNamesMap, $field->name)) {
+            } elseif (Arr::has($this->specialFieldNamesMap, $field->name)) {
                 $result[$field->name] = [
                     'type' => $this->specialFieldNamesMap[$field->name],
                     'is_required' => $field->isRequired,

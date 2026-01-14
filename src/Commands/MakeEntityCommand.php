@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
@@ -12,7 +13,6 @@ use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use Exception;
 use RonasIT\Support\Generators\ControllerGenerator;
 use RonasIT\Support\Generators\EntityGenerator;
 use RonasIT\Support\Generators\FactoryGenerator;
@@ -23,10 +23,10 @@ use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Generators\RequestsGenerator;
 use RonasIT\Support\Generators\ResourceGenerator;
+use RonasIT\Support\Generators\SeederGenerator;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Generators\TranslationsGenerator;
-use RonasIT\Support\Generators\SeederGenerator;
 use UnexpectedValueException;
 
 class MakeEntityCommand extends Command
@@ -36,7 +36,7 @@ class MakeEntityCommand extends Command
     private RelationsDTO $relations;
 
     const CRUD_OPTIONS = [
-        'C', 'R', 'U', 'D'
+        'C', 'R', 'U', 'D',
     ];
 
     /**
@@ -102,21 +102,19 @@ class MakeEntityCommand extends Command
             'only-tests' => [FactoryGenerator::class, TestsGenerator::class],
             'only-seeder' => [SeederGenerator::class],
             'only-nova-resource' => [NovaResourceGenerator::class],
-            'only-nova-tests' => [NovaTestGenerator::class]
-        ]
+            'only-nova-tests' => [NovaTestGenerator::class],
+        ],
     ];
 
     public $generators = [
         ModelGenerator::class, RepositoryGenerator::class, ServiceGenerator::class, RequestsGenerator::class,
         ResourceGenerator::class, ControllerGenerator::class, MigrationGenerator::class, FactoryGenerator::class,
         TestsGenerator::class, TranslationsGenerator::class, SeederGenerator::class, NovaResourceGenerator::class,
-        NovaTestGenerator::class
+        NovaTestGenerator::class,
     ];
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function handle(): void
     {
