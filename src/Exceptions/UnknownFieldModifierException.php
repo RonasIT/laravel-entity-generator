@@ -10,6 +10,6 @@ class UnknownFieldModifierException extends Exception
         protected string $modifierName,
         protected string $fieldName,
     ) {
-        parent::__construct("Unknown field modifier {$this->modifierName} in {$this->fieldName} type.");
+        parent::__construct("Unknown field modifier '{$this->modifierName}' for field {$this->fieldName}");
     }
 }

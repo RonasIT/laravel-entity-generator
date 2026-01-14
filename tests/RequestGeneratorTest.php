@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -18,11 +19,7 @@ class RequestGeneratorTest extends TestCase
     {
         app(RequestsGenerator::class)
             ->setModel('Post')
-            ->setRelations(new RelationsDTO(
-                hasMany: ['Comments'],
-                belongsTo: ['User'],
-            ))
-            ->setFields([
+            ->setFields(FieldsSchemaDTO::fromArray([
                 'boolean' => [
                     [
                         'name' => 'is_published',
@@ -33,13 +30,11 @@ class RequestGeneratorTest extends TestCase
                         'modifiers' => [],
                     ],
                 ],
-                'integer' => [
-                    [
-                        'name' => 'user_id',
-                        'modifiers' => [],
-                    ],
-                ],
-            ])
+            ]))
+            ->setRelations(new RelationsDTO(
+                hasMany: ['Comments'],
+                belongsTo: ['User'],
+            ))
             ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
 
@@ -113,6 +108,7 @@ class RequestGeneratorTest extends TestCase
 
         app(RequestsGenerator::class)
             ->setModel('Post')
+            ->setFields(FieldsSchemaDTO::fromArray([]))
             ->setRelations(new RelationsDTO(
                 belongsTo: ['User'],
             ))
@@ -134,10 +130,7 @@ class RequestGeneratorTest extends TestCase
 
         app(RequestsGenerator::class)
             ->setModel('Post')
-            ->setRelations(new RelationsDTO(
-                belongsTo: ['User'],
-            ))
-            ->setFields([
+            ->setFields(FieldsSchemaDTO::fromArray([
                 'boolean' => [
                     [
                         'name' => 'is_published',
@@ -150,7 +143,10 @@ class RequestGeneratorTest extends TestCase
                         'modifiers' => [],
                     ],
                 ],
-            ])
+            ]))
+            ->setRelations(new RelationsDTO(
+                belongsTo: ['User'],
+            ))
             ->setCrudOptions(['R'])
             ->generate();
     }

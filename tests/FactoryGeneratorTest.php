@@ -4,6 +4,7 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\View\ViewException;
 use Illuminate\Support\Facades\Event;
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use Illuminate\Support\Facades\Config;
 use RonasIT\Support\Events\WarningEvent;
@@ -69,14 +70,14 @@ class FactoryGeneratorTest extends TestCase
         );
 
         app(FactoryGenerator::class)
-            ->setFields([
+            ->setFields(FieldsSchemaDTO::fromArray([
                 'another_type' => [
                     [
                         'name' => 'some_field',
                         'modifiers' => [],
                     ],
                 ],
-            ])
+            ]))
             ->setRelations(new RelationsDTO())
             ->setModel('Post')
             ->generate();
@@ -85,7 +86,7 @@ class FactoryGeneratorTest extends TestCase
     public function testCreateSuccess()
     {
         app(FactoryGenerator::class)
-            ->setFields($this->getJsonFixture('create_factory_fields'))
+            ->setFields(FieldsSchemaDTO::fromArray($this->getJsonFixture('create_factory_fields')))
             ->setRelations(new RelationsDTO(
                 hasOne: ['user'],
                 belongsTo: ['user'],
@@ -106,11 +107,11 @@ class FactoryGeneratorTest extends TestCase
         config(['entity-generator.stubs.factory' => 'incorrect_stub']);
 
         app(FactoryGenerator::class)
-            ->setFields([
+            ->setFields(FieldsSchemaDTO::fromArray([
                 'integer-required' => ['author_id'],
                 'string' => ['title', 'iban', 'something'],
                 'json' => ['json_text'],
-            ])
+            ]))
             ->setRelations(new RelationsDTO(
                 hasOne: ['user'],
                 belongsTo: ['user'],
@@ -137,11 +138,11 @@ class FactoryGeneratorTest extends TestCase
         $this->expectExceptionMessage('Incorrect path to factories, dAtaAbase folder must start with a capital letter, please specify the path according to the PSR.');
 
         app(FactoryGenerator::class)
-            ->setFields([
+            ->setFields(FieldsSchemaDTO::fromArray([
                 'integer-required' => ['author_id'],
                 'string' => ['title', 'iban', 'something'],
                 'json' => ['json_text'],
-            ])
+            ]))
             ->setRelations(new RelationsDTO(
                 hasOne: ['user'],
                 belongsTo: ['user'],
@@ -157,7 +158,7 @@ class FactoryGeneratorTest extends TestCase
         Config::set('entity-generator.paths.factories', 'database/factories/Factory.php');
 
         app(FactoryGenerator::class)
-            ->setFields($this->getJsonFixture('create_factory_fields'))
+            ->setFields(FieldsSchemaDTO::fromArray($this->getJsonFixture('create_factory_fields')))
             ->setRelations(new RelationsDTO(
                 hasOne: ['user'],
                 belongsTo: ['user'],

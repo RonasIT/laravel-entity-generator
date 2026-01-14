@@ -11,9 +11,9 @@ class UpdatePostRequest extends Request
     public function rules(): array
     {
         return [
+            'user_id' => 'required|integer|exists:users,id',
             'is_published' => 'boolean',
             'is_draft' => 'boolean',
-            'user_id' => 'required|integer|exists:users,id',
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Generators;
 
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use Throwable;
 use ReflectionClass;
 use ReflectionMethod;
@@ -64,7 +65,7 @@ abstract class EntityGenerator
         return $this;
     }
 
-    public function setFields(array $fields): self
+    public function setFields(FieldsSchemaDTO $fields): self
     {
         $this->fields = $fields;
 
@@ -80,7 +81,7 @@ abstract class EntityGenerator
 
             $name = Str::snake($relatedModel) . '_id';
 
-            $this->fields['integer'][] = $this->convertToField($name, ['required']);
+            $this->fields->integer[] = $this->convertToField($name, ['required']);
         }
 
         return $this;

@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\UnknownFieldTypeException;
@@ -19,7 +20,7 @@ class MigrationGeneratorTest extends TestCase
         app(MigrationGenerator::class)
             ->setModel('Post')
             ->setRelations(new RelationsDTO())
-            ->setFields([
+            ->setFields(FieldsSchemaDTO::fromArray([
                 'integer' => [
                     [
                         'name' => 'media_id',
@@ -36,7 +37,7 @@ class MigrationGeneratorTest extends TestCase
                         'modifiers' => ['unknown'],
                     ],
                 ],
-            ])
+            ]))
             ->generate();
     }
 
@@ -45,7 +46,7 @@ class MigrationGeneratorTest extends TestCase
         app(MigrationGenerator::class)
             ->setModel('Post')
             ->setRelations(new RelationsDTO())
-            ->setFields($this->getJsonFixture('create_migration_fields'))
+            ->setFields(FieldsSchemaDTO::fromArray($this->getJsonFixture('create_migration_fields')))
             ->generate();
 
         $this->assertGeneratedFileEquals('migrations.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
@@ -58,7 +59,7 @@ class MigrationGeneratorTest extends TestCase
         app(MigrationGenerator::class)
             ->setModel('Post')
             ->setRelations(new RelationsDTO())
-            ->setFields($this->getJsonFixture('create_migration_mysql_fields'))
+            ->setFields(FieldsSchemaDTO::fromArray($this->getJsonFixture('create_migration_mysql_fields')))
             ->generate();
 
         $this->assertGeneratedFileEquals('generated_mysql_migration.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
@@ -71,7 +72,7 @@ class MigrationGeneratorTest extends TestCase
         app(MigrationGenerator::class)
             ->setModel('Post')
             ->setRelations(new RelationsDTO())
-            ->setFields($this->getJsonFixture('create_migration_fields'))
+            ->setFields(FieldsSchemaDTO::fromArray($this->getJsonFixture('create_migration_fields')))
             ->generate();
 
         $this->assertFileDoesNotExist('database/migrations/2022_02_02_000000_posts_create_table.php');

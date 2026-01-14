@@ -4,6 +4,7 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ModelGenerator extends EntityGenerator
@@ -41,7 +42,7 @@ class ModelGenerator extends EntityGenerator
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
             'annotationProperties' => $this->generateAnnotationProperties($this->fields, $relations),
-            'hasCarbonField' => Arr::has($this->fields, 'timestamp'),
+            'hasCarbonField' => !empty($this->fields->timestamp),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
     }
@@ -122,7 +123,7 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getCasts(array $fields): array
+    protected function getCasts(FieldsSchemaDTO $fields): array
     {
         $casts = [
             'boolean' => 'boolean',
@@ -177,7 +178,7 @@ class ModelGenerator extends EntityGenerator
         return "{$path}\\{$psrPath}";
     }
 
-    protected function generateAnnotationProperties(array $fields, array $relations): array
+    protected function generateAnnotationProperties(FieldsSchemaDTO $fields, array $relations): array
     {
         $result = [];
 

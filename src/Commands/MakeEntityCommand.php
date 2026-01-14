@@ -8,7 +8,9 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
+use RonasIT\Support\Enums\FieldModifiersEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -38,10 +40,6 @@ class MakeEntityCommand extends Command
 
     const CRUD_OPTIONS = [
         'C', 'R', 'U', 'D'
-    ];
-
-    const AVAILABLE_MODIFIERS = [
-        'required',
     ];
 
     /**
@@ -256,24 +254,11 @@ class MakeEntityCommand extends Command
         }, $relations);
     }
 
-    protected function getFields(): array
+    protected function getFields(): FieldsSchemaDTO
     {
-        $options = Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
+        $fieldsSchema = $this->prepareFieldsSchema();
 
-        $result = [];
-
-        foreach ($options as $type => $fields) {
-            foreach ($fields as $field) {
-                $parts = explode(':', $field);
-
-                $result[$type][] = [
-                    'name' => $parts[0],
-                    'modifiers' => isset($parts[1]) ? explode(',', $parts[1]) : [],
-                ];
-            }
-        }
-
-        return $result;
+        return FieldsSchemaDTO::fromArray($fieldsSchema);
     }
 
     protected function validateEntityName(): void
@@ -313,14 +298,14 @@ class MakeEntityCommand extends Command
 
     protected function validateModifiers(): void
     {
-        $fields = $this->getFields();
+        $fieldsDTO = $this->getFields();
 
-        foreach ($fields as $typedFields) {
+        foreach ($fieldsDTO as $typedFields) {
             foreach ($typedFields as $field) {
-                $diff = array_diff($field['modifiers'], MakeEntityCommand::AVAILABLE_MODIFIERS);
+                $diff = array_diff($field['modifiers'], FieldModifiersEnum::values());
 
                 if (!empty($diff)) {
-                    throw new UnknownFieldModifierException(Arr::take($diff, 1)[0], $field['name']);
+                    throw new UnknownFieldModifierException(Arr::first($diff), $field['name']);
                 }
             }
         }
@@ -348,5 +333,25 @@ class MakeEntityCommand extends Command
         }
 
         return $pascalEntityName;
+    }
+
+    protected function prepareFieldsSchema(): array
+    {
+        $options = Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
+
+        $result = [];
+
+        foreach ($options as $type => $fields) {
+            foreach ($fields as $field) {
+                $parts = explode(':', $field);
+
+                $result[$type][] = [
+                    'name' => $parts[0],
+                    'modifiers' => isset($parts[1]) ? explode(',', $parts[1]) : [],
+                ];
+            }
+        }
+
+        return $result;
     }
 }

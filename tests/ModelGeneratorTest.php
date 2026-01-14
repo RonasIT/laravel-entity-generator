@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Generators\ModelGenerator;
@@ -62,7 +63,7 @@ class ModelGeneratorTest extends TestCase
     {
         app(ModelGenerator::class)
             ->setModel('Post')
-            ->setFields($this->getJsonFixture('create_model_fields.json'))
+            ->setFields(FieldsSchemaDTO::fromArray($this->getJsonFixture('create_model_fields')))
             ->setRelations(new RelationsDTO(
                 hasOne: ['Comment'],
                 hasMany: ['User'],
@@ -83,7 +84,7 @@ class ModelGeneratorTest extends TestCase
     {
         app(ModelGenerator::class)
             ->setModel('Post')
-            ->setFields([])
+            ->setFields(FieldsSchemaDTO::fromArray([]))
             ->generate();
 
         $this->assertGeneratedFileEquals('new_model_without_fields.php', 'app/Models/Post.php');
@@ -112,7 +113,7 @@ class ModelGeneratorTest extends TestCase
 
         app(ModelGenerator::class)
             ->setModel('Post')
-            ->setFields([])
+            ->setFields(FieldsSchemaDTO::fromArray([]))
             ->generate();
 
         $this->assertFileDoesNotExist('app/Models/Post.php');
@@ -205,7 +206,7 @@ class ModelGeneratorTest extends TestCase
         app(ModelGenerator::class)
             ->setModel('Post')
             ->setRelations(new RelationsDTO())
-            ->setFields([])
+            ->setFields(FieldsSchemaDTO::fromArray([]))
             ->generate();
 
         $this->assertGeneratedFileEquals('new_model_without_fields_and_relations.php', 'app/Models/Post.php');
@@ -222,7 +223,7 @@ class ModelGeneratorTest extends TestCase
 
         app(ModelGenerator::class)
             ->setModel('Post')
-            ->setFields([])
+            ->setFields(FieldsSchemaDTO::fromArray([]))
             ->setRelations(new RelationsDTO(
                 hasOne: ['Comment'],
                 hasMany: ['User'],
@@ -241,7 +242,7 @@ class ModelGeneratorTest extends TestCase
     {
         app(ModelGenerator::class)
             ->setModel('Category')
-            ->setFields([])
+            ->setFields(FieldsSchemaDTO::fromArray([]))
             ->setRelations(new RelationsDTO(
                 belongsToMany: ['User'],
             ))

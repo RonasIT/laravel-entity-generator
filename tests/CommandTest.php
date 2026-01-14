@@ -205,7 +205,7 @@ class CommandTest extends TestCase
     {
         $this->assertExceptionThrew(
             className: UnknownFieldModifierException::class,
-            message: 'Unknown field modifier unknownModifier in title type.',
+            message: "Unknown field modifier 'unknownModifier' for field title",
         );
 
         $this->artisan('make:entity Post -s title:unknownModifier');

@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Generators;
 
 use Carbon\Carbon;
+use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 
@@ -70,7 +71,7 @@ class MigrationGenerator extends EntityGenerator
         return "\$table->{$typeName}('{$fieldName}')->nullable();";
     }
 
-    protected function generateTable(array $fields): array
+    protected function generateTable(FieldsSchemaDTO $fields): array
     {
         $resultTable = [];
 
