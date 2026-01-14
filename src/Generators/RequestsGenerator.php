@@ -33,12 +33,12 @@ class RequestsGenerator extends EntityGenerator
             $this->createRequest(
                 self::GET_METHOD,
                 true,
-                $this->getGetValidationParameters()
+                $this->getGetValidationParameters(),
             );
             $this->createRequest(
                 self::SEARCH_METHOD,
                 false,
-                $this->getSearchValidationParameters()
+                $this->getSearchValidationParameters(),
             );
         }
 
@@ -50,7 +50,7 @@ class RequestsGenerator extends EntityGenerator
             $this->createRequest(
                 self::CREATE_METHOD,
                 false,
-                $this->getCreateValidationParameters()
+                $this->getCreateValidationParameters(),
             );
         }
 
@@ -58,7 +58,7 @@ class RequestsGenerator extends EntityGenerator
             $this->createRequest(
                 self::UPDATE_METHOD,
                 true,
-                $this->getUpdateValidationParameters()
+                $this->getUpdateValidationParameters(),
             );
         }
     }
@@ -84,7 +84,7 @@ class RequestsGenerator extends EntityGenerator
         ]);
 
         $this->saveClass('requests', "{$method}{$modelName}Request",
-            $content, $requestsFolder
+            $content, $requestsFolder,
         );
 
         event(new SuccessCreateMessage("Created a new Request: {$method}{$modelName}Request"));
@@ -177,7 +177,7 @@ class RequestsGenerator extends EntityGenerator
         ];
 
         $rules = [
-            Arr::get($replaces, $type, $type)
+            Arr::get($replaces, $type, $type),
         ];
 
         if (in_array($field['name'], $this->relationFields)) {

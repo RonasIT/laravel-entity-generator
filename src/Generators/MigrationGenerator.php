@@ -23,7 +23,7 @@ class MigrationGenerator extends EntityGenerator
             'entities' => $entities,
             'relations' => $this->prepareRelations(),
             'fields' => $this->fields,
-            'table' => $this->generateTable($this->fields)
+            'table' => $this->generateTable($this->fields),
         ]);
 
         $now = Carbon::now()->format('Y_m_d_His');
@@ -50,7 +50,7 @@ class MigrationGenerator extends EntityGenerator
 
     protected function getJsonLine(string $fieldName): string
     {
-        if (env("DB_CONNECTION") == "mysql") {
+        if (env('DB_CONNECTION') == 'mysql') {
             return "\$table->json('{$fieldName}')->nullable();";
         }
 

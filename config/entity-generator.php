@@ -16,7 +16,7 @@ return [
         'translations' => 'lang/en/validation.php',
         'resources' => 'app/Http/Resources',
         'nova' => 'app/Nova',
-     ],
+    ],
     'stubs' => [
         'model' => 'entity-generator::model',
         'relation' => 'entity-generator::relation',
@@ -36,6 +36,6 @@ return [
         'resource' => 'entity-generator::resource',
         'collection_resource' => 'entity-generator::collection_resource',
         'nova_resource' => 'entity-generator::nova_resource',
-        'nova_test' => 'entity-generator::nova_test'
-    ]
+        'nova_test' => 'entity-generator::nova_test',
+    ],
 ];

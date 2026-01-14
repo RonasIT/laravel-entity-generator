@@ -3,19 +3,19 @@
 namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\DTO\FieldsSchemaDTO;
-use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Generators\NovaResourceGenerator;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\Post;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Generators\NovaResourceGenerator;
 use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\NovaResourceGeneratorMockTrait;
+use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\Post;
 
 class NovaResourceGeneratorTest extends TestCase
 {
     use NovaResourceGeneratorMockTrait;
 
-    public function setUp():void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -44,7 +44,7 @@ class NovaResourceGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceNotExistsException::class,
-            message: 'Cannot create PostResource cause Post does not exist. Create app/Models/Post.php and run command again.'
+            message: 'Cannot create PostResource cause Post does not exist. Create app/Models/Post.php and run command again.',
         );
 
         app(NovaResourceGenerator::class)

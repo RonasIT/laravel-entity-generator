@@ -2,13 +2,13 @@
 
 namespace RonasIT\Support\Tests;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\WarningEvent;
-use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Generators\RequestsGenerator;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Generators\RequestsGenerator;
 use RonasIT\Support\Tests\Support\Repository\RepositoryMockTrait;
 
 class RequestGeneratorTest extends TestCase
@@ -125,7 +125,7 @@ class RequestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create SearchPostsRequest cause it already exists. Remove app/Http/Requests/Post/SearchPostsRequest.php and run command again.",
+            message: 'Cannot create SearchPostsRequest cause it already exists. Remove app/Http/Requests/Post/SearchPostsRequest.php and run command again.',
         );
 
         app(RequestsGenerator::class)

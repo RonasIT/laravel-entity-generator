@@ -47,7 +47,7 @@ class ControllerGenerator extends EntityGenerator
         if (!file_exists($routesPath)) {
             $this->throwFailureException(
                 FileNotFoundException::class,
-                "Not found file with routes.",
+                'Not found file with routes.',
                 "Create a routes file on path: '{$routesPath}'.",
             );
         }
@@ -87,7 +87,7 @@ class ControllerGenerator extends EntityGenerator
 
         $stub = $this->getStub('use_routes', [
             'namespace' => $this->generateNamespace($this->paths['controllers']),
-            'entity' => $this->model
+            'entity' => $this->model,
         ]);
 
         $routesFileContent = preg_replace('/\<\?php[^A-Za-z]*/', "<?php\n\n{$stub}", $routesFileContent);

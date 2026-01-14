@@ -128,7 +128,7 @@ class ModelGenerator extends EntityGenerator
         $casts = [
             'boolean' => 'boolean',
             'json' => 'array',
-            'timestamp' => 'datetime'
+            'timestamp' => 'datetime',
         ];
 
         $result = [];
@@ -201,7 +201,7 @@ class ModelGenerator extends EntityGenerator
 
         return $this->getProperty($fieldType, $isNullable);
     }
-    
+
     protected function getProperty(string $typeName, bool $isNullable = false): string
     {
         $typesMap = [

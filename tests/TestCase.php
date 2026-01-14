@@ -50,14 +50,14 @@ class TestCase extends BaseTestCase
     public function mockConfigurations(): void
     {
         config([
-            'entity-generator' => include('config/entity-generator.php'),
+            'entity-generator' => include ('config/entity-generator.php'),
         ]);
     }
 
     protected function getPackageProviders($app): array
     {
         return [
-            EntityGeneratorServiceProvider::class
+            EntityGeneratorServiceProvider::class,
         ];
     }
 

@@ -5,10 +5,10 @@ namespace RonasIT\Support\Generators;
 use Generator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
-use Laravel\Nova\NovaServiceProvider;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\NovaServiceProvider;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
@@ -29,7 +29,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
                 $this->throwFailureException(
                     EntityCreateException::class,
                     "Cannot create Nova{$this->model}ResourceTest cause was found a lot of suitable resources: {$foundedResources}.",
-                    'Make test by yourself.'
+                    'Make test by yourself.',
                 );
             }
 
@@ -43,7 +43,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
             parent::generate();
         } else {
-            event(new SuccessCreateMessage("Nova is not installed and NovaTest is skipped"));
+            event(new SuccessCreateMessage('Nova is not installed and NovaTest is skipped'));
         }
     }
 
@@ -198,7 +198,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         foreach ($novaResourceFilters as $filter) {
             $filters[] = [
                 'name' => get_class($filter),
-                'fixture_name' => Str::snake(class_basename($filter))
+                'fixture_name' => Str::snake(class_basename($filter)),
             ];
         }
 

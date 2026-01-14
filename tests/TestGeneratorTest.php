@@ -3,13 +3,13 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Tests\Support\Test\TestMockTrait;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Generators\TestsGenerator;
+use RonasIT\Support\Tests\Support\Test\TestMockTrait;
 
 class TestGeneratorTest extends TestCase
 {
@@ -256,7 +256,7 @@ class TestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create PostTest cause it already exists. Remove tests/PostTest.php and run command again.",
+            message: 'Cannot create PostTest cause it already exists. Remove tests/PostTest.php and run command again.',
         );
 
         app(TestsGenerator::class)
@@ -288,7 +288,7 @@ class TestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create dump.sql cause it already exists. Remove tests/fixtures/PostTest/dump.sql and run command again.",
+            message: 'Cannot create dump.sql cause it already exists. Remove tests/fixtures/PostTest/dump.sql and run command again.',
         );
 
         app(TestsGenerator::class)
@@ -322,7 +322,7 @@ class TestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create create_post_request.json cause it already exists. Remove tests/fixtures/PostTest/create_post_request.json and run command again.",
+            message: 'Cannot create create_post_request.json cause it already exists. Remove tests/fixtures/PostTest/create_post_request.json and run command again.',
         );
 
         app(TestsGenerator::class)
@@ -358,7 +358,7 @@ class TestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create create_post_response.json cause it already exists. Remove tests/fixtures/PostTest/create_post_response.json and run command again.",
+            message: 'Cannot create create_post_response.json cause it already exists. Remove tests/fixtures/PostTest/create_post_response.json and run command again.',
         );
 
         app(TestsGenerator::class)
@@ -395,7 +395,7 @@ class TestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create update_post_request.json cause it already exists. Remove tests/fixtures/PostTest/update_post_request.json and run command again.",
+            message: 'Cannot create update_post_request.json cause it already exists. Remove tests/fixtures/PostTest/update_post_request.json and run command again.',
         );
 
         app(TestsGenerator::class)

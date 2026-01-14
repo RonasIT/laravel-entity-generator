@@ -2,13 +2,13 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\Support\Facades\View;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Generators\ControllerGenerator;
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use Illuminate\Support\Facades\View;
+use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Generators\ControllerGenerator;
 use RonasIT\Support\Tests\Support\ControllerGeneratorTest\ControllerGeneratorMockTrait;
 
 class ControllerGeneratorTest extends TestCase
@@ -93,7 +93,7 @@ class ControllerGeneratorTest extends TestCase
 
     public function testRoutesStubNotExist()
     {
-       config(['entity-generator.stubs.routes' => 'incorrect_stub']);
+        config(['entity-generator.stubs.routes' => 'incorrect_stub']);
 
         app(ControllerGenerator::class)
             ->setModel('Post')

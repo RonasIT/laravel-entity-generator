@@ -4,13 +4,13 @@ namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Generators\ModelGenerator;
 use RonasIT\Support\Tests\Support\Model\ModelMockTrait;
 use Symfony\Component\Console\Exception\RuntimeException;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class ModelGeneratorTest extends TestCase
 {
@@ -45,7 +45,7 @@ class ModelGeneratorTest extends TestCase
         $this->mockFilesystem([
             'User.php' => file_get_contents(getcwd() . '/tests/Support/Models/WelcomeBonus.php'),
         ]);
-        
+
         $this->assertExceptionThrew(
             className: ResourceNotExistsException::class,
             message: 'Cannot create Post cause Comment does not exist. Create app/Models/Comment.php and run command again.',
@@ -54,7 +54,7 @@ class ModelGeneratorTest extends TestCase
         app(ModelGenerator::class)
             ->setModel('Post')
             ->setRelations(new RelationsDTO(
-                hasOne: ['Comment']
+                hasOne: ['Comment'],
             ))
             ->generate();
     }
@@ -106,7 +106,7 @@ class ModelGeneratorTest extends TestCase
             ->artisan('make:entity Post -s name -l unknown-type')
             ->assertFailed();
     }
-    
+
     public function testCreateModelStubNotExist()
     {
         config(['entity-generator.stubs.model' => 'incorrect_stub']);

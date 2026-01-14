@@ -4,12 +4,12 @@ namespace RonasIT\Support\Tests;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
+use InvalidArgumentException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\UnknownFieldModifierException;
 use RonasIT\Support\Tests\Support\Command\CommandMockTrait;
 use RonasIT\Support\Tests\Support\Command\Models\Post;
 use UnexpectedValueException;
-use InvalidArgumentException;
 
 class CommandTest extends TestCase
 {
@@ -114,7 +114,7 @@ class CommandTest extends TestCase
         $this
             ->artisan('make:entity Forum/Post --methods=CRUD')
             ->assertSuccessful();
-        
+
         $this->assertGeneratedFileEquals('subfolder/model.php', 'RonasIT/Support/Tests/Support/Command/Models/Forum/Post.php');
         $this->assertGeneratedFileEquals('subfolder/factory.php', 'RonasIT/Support/Tests/Support/Command/Factories/PostFactory.php');
         $this->assertGeneratedFileEquals('subfolder/repository.php', 'app/Repositories/PostRepository.php');

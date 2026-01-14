@@ -2,20 +2,20 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Filesystem\Filesystem;
 use RonasIT\Support\DTO\FieldsSchemaDTO;
-use Throwable;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Filesystem\Filesystem;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use Throwable;
 
 /**
  * @property Filesystem $fs
@@ -42,7 +42,6 @@ abstract class EntityGenerator
     protected $fields;
     protected $relations = [];
     protected $crudOptions;
-
 
     public function setCrudOptions(array $crudOptions): self
     {
@@ -172,7 +171,7 @@ abstract class EntityGenerator
         }
 
         $classPath = "{$entitiesPath}/{$name}.php";
-        $tag = "<?php";
+        $tag = '<?php';
 
         if (!Str::contains($content, $tag)) {
             $content = "{$tag}\n\n{$content}";

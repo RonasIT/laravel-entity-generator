@@ -17,7 +17,7 @@ class Post extends Model
         'user_id',
         'posted_at',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     public function getConnectionName(): string
