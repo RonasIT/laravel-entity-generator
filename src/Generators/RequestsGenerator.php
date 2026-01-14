@@ -144,7 +144,9 @@ class RequestsGenerator extends EntityGenerator
 
         $parameters['array'][] = $this->convertToField('with', []);
 
-        return $this->getValidationParameters($parameters, true);
+        $rules = $this->getValidationParameters($parameters, true);
+
+        return $this->orderSearchRequest($rules);
     }
 
     public function getValidationParameters($parameters, $requiredAvailable): array
@@ -246,6 +248,28 @@ class RequestsGenerator extends EntityGenerator
         }
 
         return $fields;
+    }
+
+    protected function orderSearchRequest(array $rules): array
+    {
+        $order = [
+            'per_page',
+            'page',
+            'order_by',
+            'desc',
+            'all',
+            'query',
+            'with',
+            'with.*',
+        ];
+
+        $ordered = Arr::sort($rules, function ($rule) use ($order) {
+            $position = array_search($rule['name'], $order, true);
+
+            return $position === false ? -1 : $position;
+        });
+
+        return array_values($ordered);
     }
 
     private function getEntityName($method): string

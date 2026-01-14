@@ -12,14 +12,14 @@ class SearchPostsRequest extends Request
         $availableRelations = implode(',', $this->getAvailableRelations());
 
         return [
+            'per_page' => 'integer',
+            'page' => 'integer',
+            'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'desc' => 'boolean',
             'all' => 'boolean',
-            'page' => 'integer',
-            'per_page' => 'integer',
-            'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'query' => 'string|nullable',
-            'with.*' => 'required|string|in:' . $availableRelations,
             'with' => 'array',
+            'with.*' => 'required|string|in:' . $availableRelations,
         ];
     }
 

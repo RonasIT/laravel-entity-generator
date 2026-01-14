@@ -14,15 +14,15 @@ class SearchPostsRequest extends Request
         return [
             'is_published' => 'boolean',
             'is_draft' => 'boolean',
+            'user_id' => 'required|integer|exists:users,id',
+            'per_page' => 'integer',
+            'page' => 'integer',
+            'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'desc' => 'boolean',
             'all' => 'boolean',
-            'user_id' => 'required|integer|exists:users,id',
-            'page' => 'integer',
-            'per_page' => 'integer',
-            'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'query' => 'string|nullable',
-            'with.*' => 'required|string|in:' . $availableRelations,
             'with' => 'array',
+            'with.*' => 'required|string|in:' . $availableRelations,
         ];
     }
 
