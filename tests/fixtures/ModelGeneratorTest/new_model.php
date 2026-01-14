@@ -18,11 +18,11 @@ use Illuminate\Database\Eloquent\Collection;
  * @property string $title
  * @property bool|null $is_reviewed
  * @property bool $is_published
+ * @property array $meta
  * @property Carbon|null $reviewed_at
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property Carbon $published_at
- * @property array $meta
  * @property Comment|null $comment
  * @property Collection<User> $users
  */
@@ -39,11 +39,11 @@ class Post extends Model
         'title',
         'is_reviewed',
         'is_published',
+        'meta',
         'reviewed_at',
         'created_at',
         'updated_at',
         'published_at',
-        'meta',
     ];
 
     protected $hidden = ['pivot'];
@@ -51,11 +51,11 @@ class Post extends Model
     protected $casts = [
         'is_reviewed' => 'boolean',
         'is_published' => 'boolean',
+        'meta' => 'array',
         'reviewed_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'published_at' => 'datetime',
-        'meta' => 'array',
     ];
 
     public function comment(): HasOne
