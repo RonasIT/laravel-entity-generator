@@ -211,7 +211,7 @@ class MakeEntityCommand extends Command
     protected function getProvidedOnlyOptions(): array
     {
         $providedOptions = array_filter(
-            array: $this->input->getOptions(),
+            array: $this->options(),
             callback: fn ($value, $name) => Str::startsWith($name, 'only-') && $value === true,
             mode: ARRAY_FILTER_USE_BOTH,
         );
