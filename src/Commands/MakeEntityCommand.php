@@ -221,7 +221,7 @@ class MakeEntityCommand extends Command
         return array_filter(
             array: $this->getGeneratorsMap(),
             callback: fn ($generator) => in_array($generator, $generators),
-            mode: ARRAY_FILTER_USE_KEY
+            mode: ARRAY_FILTER_USE_KEY,
         );
     }
 

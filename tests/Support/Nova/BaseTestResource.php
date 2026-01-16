@@ -2,8 +2,6 @@
 
 namespace App\Nova;
 
-use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\DateField;
@@ -25,8 +23,8 @@ class BaseTestResource
     public function fields(NovaRequest $request): array
     {
         return [
-            new TextField,
-            new DateField,
+            new TextField(),
+            new DateField(),
         ];
     }
 
@@ -38,7 +36,7 @@ class BaseTestResource
     public function filters(NovaRequest $request): array
     {
         return [
-            new CreatedAtFilter,
+            new CreatedAtFilter(),
         ];
     }
 
@@ -50,9 +48,9 @@ class BaseTestResource
     public function actions(NovaRequest $request): array
     {
         return [
-            new PublishPostAction,
-            new UnPublishPostAction,
-            new UnPublishPostAction,
+            new PublishPostAction(),
+            new UnPublishPostAction(),
+            new UnPublishPostAction(),
         ];
     }
 }
