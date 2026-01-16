@@ -11,7 +11,7 @@ trait ControllerGeneratorMockTrait
 
     public function mockFilesystemWithoutRoutesFile(): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
         $fileSystemMock->services = [
             'PostService.php' => $this->mockPhpFileContent(),
         ];
@@ -22,7 +22,7 @@ trait ControllerGeneratorMockTrait
 
     public function mockFilesystem(): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
         $fileSystemMock->services = [
             'PostService.php' => $this->mockPhpFileContent(),
         ];

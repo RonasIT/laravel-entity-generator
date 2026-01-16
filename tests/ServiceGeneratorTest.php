@@ -4,12 +4,12 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
 use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Generators\ServiceGenerator;
-use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Generators\ServiceGenerator;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 
 class ServiceGeneratorTest extends TestCase
 {
@@ -49,7 +49,7 @@ class ServiceGeneratorTest extends TestCase
             ->setFields([
                 'integer-required' => ['media_id'],
                 'string-required' => ['body'],
-                'string' => ['title']
+                'string' => ['title'],
             ])
             ->setModel('Post')
             ->generate();
@@ -93,7 +93,7 @@ class ServiceGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create PostService cause it already exists. Remove app/Services/PostService.php and run command again.",
+            message: 'Cannot create PostService cause it already exists. Remove app/Services/PostService.php and run command again.',
         );
 
         app(ServiceGenerator::class)

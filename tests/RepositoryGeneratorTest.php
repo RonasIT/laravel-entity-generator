@@ -2,11 +2,11 @@
 
 namespace RonasIT\Support\Tests;
 
-use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Generators\RepositoryGenerator;
 use RonasIT\Support\Tests\Support\Repository\RepositoryMockTrait;
 
 class RepositoryGeneratorTest extends TestCase
@@ -77,7 +77,7 @@ class RepositoryGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create PostRepository cause it already exists. Remove app/Repositories/PostRepository.php and run command again.",
+            message: 'Cannot create PostRepository cause it already exists. Remove app/Repositories/PostRepository.php and run command again.',
         );
 
         app(RepositoryGenerator::class)

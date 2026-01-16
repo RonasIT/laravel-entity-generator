@@ -11,7 +11,7 @@ trait NovaResourceGeneratorMockTrait
 
     public function mockFilesystem(): void
     {
-        $fileSystemMock = new FileSystemMock;
+        $fileSystemMock = new FileSystemMock();
         $fileSystemMock->novaModels = [];
         $fileSystemMock->models = [
             'Post.php' => $this->mockPhpFileContent(),

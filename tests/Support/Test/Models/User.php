@@ -14,7 +14,7 @@ class User extends Model
         'email',
         'role_id',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 
     public function role()

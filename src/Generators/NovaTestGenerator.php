@@ -5,10 +5,10 @@ namespace RonasIT\Support\Generators;
 use Generator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
-use Laravel\Nova\NovaServiceProvider;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Laravel\Nova\NovaServiceProvider;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
@@ -46,7 +46,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
             parent::generate();
         } else {
-            event(new SuccessCreateMessage("Nova is not installed and NovaTest is skipped"));
+            event(new SuccessCreateMessage('Nova is not installed and NovaTest is skipped'));
         }
     }
 
@@ -222,7 +222,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         foreach ($novaResourceFilters as $filter) {
             $filters[] = [
                 'name' => get_class($filter),
-                'fixture_name' => Str::snake(class_basename($filter))
+                'fixture_name' => Str::snake(class_basename($filter)),
             ];
         }
 

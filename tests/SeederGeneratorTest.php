@@ -4,9 +4,9 @@ namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
+use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Generators\SeederGenerator;
 use RonasIT\Support\Tests\Support\Seeder\SeederGeneratorMockTrait;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 
 class SeederGeneratorTest extends TestCase
 {
@@ -92,7 +92,7 @@ class SeederGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ResourceAlreadyExistsException::class,
-            message: "Cannot create PostSeeder cause it already exists. Remove database/seeders/PostSeeder.php and run command again.",
+            message: 'Cannot create PostSeeder cause it already exists. Remove database/seeders/PostSeeder.php and run command again.',
         );
 
         app(SeederGenerator::class)

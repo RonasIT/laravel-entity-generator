@@ -2,17 +2,17 @@
 
 namespace RonasIT\Support\Tests;
 
-use Illuminate\View\ViewException;
-use Illuminate\Support\Facades\Event;
-use RonasIT\Support\DTO\RelationsDTO;
 use Illuminate\Support\Facades\Config;
-use RonasIT\Support\Events\WarningEvent;
+use Illuminate\Support\Facades\Event;
+use Illuminate\View\ViewException;
+use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Generators\FactoryGenerator;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
-use RonasIT\Support\Tests\Support\Factory\FactoryMockTrait;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Generators\FactoryGenerator;
+use RonasIT\Support\Tests\Support\Factory\FactoryMockTrait;
 
 class FactoryGeneratorTest extends TestCase
 {
@@ -64,8 +64,8 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->assertExceptionThrew(
             className: ViewException::class,
-            message: "Cannot generate fake data for unsupported another_type field type. "
-            . "Supported custom field types are json",
+            message: 'Cannot generate fake data for unsupported another_type field type. '
+            . 'Supported custom field types are json',
         );
 
         app(FactoryGenerator::class)

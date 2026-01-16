@@ -54,7 +54,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         }
 
         $content = $this->getStub('dump', [
-            'inserts' => $this->getInserts()
+            'inserts' => $this->getInserts(),
         ]);
 
         $this->createFixtureFolder();
@@ -65,7 +65,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
         file_put_contents($this->getFixturesPath($dumpName), $content);
 
-        event(new SuccessCreateMessage("Created a new Test dump on path: "
+        event(new SuccessCreateMessage('Created a new Test dump on path: '
             . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$dumpName}"));
     }
 
@@ -88,9 +88,9 @@ abstract class AbstractTestsGenerator extends EntityGenerator
                 'items' => [
                     [
                         'fields' => $this->getModelFields($model),
-                        'values' => $this->getDumpValuesList($model)
-                    ]
-                ]
+                        'values' => $this->getDumpValuesList($model),
+                    ],
+                ],
             ];
         }, $this->buildRelationsTree($arrayModels));
     }
@@ -231,7 +231,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
                 $this->throwFailureException(
                     CircularRelationsFoundedException::class,
                     'Circular relations founded.',
-                    'Please resolve you relations in models, factories and database.'
+                    'Please resolve you relations in models, factories and database.',
                 );
             }
 
