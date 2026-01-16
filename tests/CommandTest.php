@@ -190,7 +190,7 @@ class CommandTest extends TestCase
         Carbon::setTestNow('2016-10-20 11:05:00');
 
         $this
-            ->artisan('make:entity Post --only-entity --only-controller --only-resource')
+            ->artisan('make:entity Post --only-entity --only-controller --only-resource --only-service')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('migration.php', 'database/migrations/2016_10_20_110500_posts_create_table.php');
