@@ -2,11 +2,11 @@
 
 namespace RonasIT\Support\Tests;
 
-use App\Nova\Forum\PostResource;
+use App\Nova\AdminResource;
 use Carbon\Carbon;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Tests\Support\Command\Models\Post;
+use RonasIT\Support\Tests\Support\Command\Models\User;
 use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Events\WarningEvent;
@@ -201,22 +201,22 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockNativeGeneratorFunctions(
             $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
-            $this->nativeClassExistsMethodCall([PostResource::class, true]),
-            $this->nativeClassExistsMethodCall([Post::class, true]),
+            $this->nativeClassExistsMethodCall([AdminResource::class, true]),
+            $this->nativeClassExistsMethodCall([User::class, true]),
         );
 
         $this->mockNovaRequestClassCall();
 
         app(NovaTestGenerator::class)
-            ->setModel('Post')
-            ->setNovaResource('Forum/PostResource')
+            ->setModel('User')
+            ->setNovaResource('AdminResource')
             ->generate();
 
-        $this->assertGeneratedFileEquals('created_forum_post_resource_test.php', 'tests/NovaPostResourceTest.php');
-        $this->assertGeneratedFileEquals('dump_forum_post.sql', 'tests/fixtures/NovaPostResourceTest/dump.sql');
-        $this->assertGeneratedFileEquals('create_forum_post_request.json', 'tests/fixtures/NovaPostResourceTest/create_post_resource_request.json');
-        $this->assertGeneratedFileEquals('create_forum_post_response.json', 'tests/fixtures/NovaPostResourceTest/create_post_resource_response.json');
-        $this->assertGeneratedFileEquals('update_forum_post_request.json', 'tests/fixtures/NovaPostResourceTest/update_post_resource_request.json');
+        $this->assertGeneratedFileEquals('created_admin_resource_test.php', 'tests/NovaAdminResourceTest.php');
+        $this->assertGeneratedFileEquals('dump_admin.sql', 'tests/fixtures/NovaAdminResourceTest/dump.sql');
+        $this->assertGeneratedFileEquals('create_admin_request.json', 'tests/fixtures/NovaAdminResourceTest/create_admin_resource_request.json');
+        $this->assertGeneratedFileEquals('create_admin_response.json', 'tests/fixtures/NovaAdminResourceTest/create_admin_resource_response.json');
+        $this->assertGeneratedFileEquals('update_admin_request.json', 'tests/fixtures/NovaAdminResourceTest/update_admin_resource_request.json');
     }
 
     public function testCallCommandCreateNovaTestsWithResourceNotFound()
