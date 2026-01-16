@@ -180,6 +180,51 @@ class CommandTest extends TestCase
         $this->assertFileDoesNotExist('tests/fixtures/NovaPostTest/update_post_request.json');
     }
 
+    public function testCallCommandCombineOnlyOptions()
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+        ]);
+
+        Carbon::setTestNow('2016-10-20 11:05:00');
+
+        $this
+            ->artisan('make:entity Post --only-entity --only-controller --only-resource')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('migration.php', 'database/migrations/2016_10_20_110500_posts_create_table.php');
+        $this->assertGeneratedFileEquals('factory.php', 'RonasIT/Support/Tests/Support/Command/Factories/PostFactory.php');
+        $this->assertGeneratedFileEquals('seeder.php', 'database/seeders/PostSeeder.php');
+        $this->assertGeneratedFileEquals('model.php', 'RonasIT/Support/Tests/Support/Command/Models/Post.php');
+        $this->assertGeneratedFileEquals('repository.php', 'app/Repositories/PostRepository.php');
+        $this->assertGeneratedFileEquals('service.php', 'app/Services/PostService.php');
+
+        $this->assertGeneratedFileEquals('controller.php', 'app/Http/Controllers/PostController.php');
+
+        $this->assertGeneratedFileEquals('resource.php', 'app/Http/Resources/Post/PostResource.php');
+        $this->assertGeneratedFileEquals('resource_collection.php', 'app/Http/Resources/Post/PostsCollectionResource.php');
+
+        $this->assertFileDoesNotExist('create_request.php');
+        $this->assertFileDoesNotExist('get_request.php');
+        $this->assertFileDoesNotExist('search_request.php');
+        $this->assertFileDoesNotExist('update_request.php');
+        $this->assertFileDoesNotExist('delete_request.php');
+        $this->assertFileDoesNotExist('routes.php');
+        $this->assertFileDoesNotExist('test.php');
+        $this->assertFileDoesNotExist('dump.sql');
+        $this->assertFileDoesNotExist('create_request.json');
+        $this->assertFileDoesNotExist('create_response.json');
+        $this->assertFileDoesNotExist('update_request.json');
+        $this->assertFileDoesNotExist('validation.php');
+        $this->assertFileDoesNotExist('nova_resource.php');
+        $this->assertFileDoesNotExist('nova_test.php');
+        $this->assertFileDoesNotExist('nova_dump.php');
+        $this->assertFileDoesNotExist('create_request.json');
+        $this->assertFileDoesNotExist('create_response.json');
+        $this->assertFileDoesNotExist('update_request.json');
+    }
+
     public function testCallWithNotDefaultConfig()
     {
         $this->app->instance('path.base', $this->generatedFileBasePath);
