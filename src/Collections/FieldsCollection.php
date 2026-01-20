@@ -11,7 +11,7 @@ use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\ValueObjects\Field;
 use Traversable;
 
-final readonly class FieldsCollection implements IteratorAggregate, Countable
+final readonly class FieldsCollection implements Countable, IteratorAggregate
 {
     private Collection $fields;
 

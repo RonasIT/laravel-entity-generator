@@ -2,9 +2,9 @@
 
 namespace RonasIT\Support\DTO;
 
+use ArrayIterator;
 use IteratorAggregate;
 use Traversable;
-use ArrayIterator;
 
 final readonly class FieldsDTO implements IteratorAggregate
 {

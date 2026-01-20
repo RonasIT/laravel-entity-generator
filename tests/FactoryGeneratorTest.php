@@ -64,7 +64,7 @@ class FactoryGeneratorTest extends TestCase
     {
         $this->assertExceptionThrew(
             className: UnknownFieldTypeException::class,
-            message: "Unknown field type another_type in Entity Generator.",
+            message: 'Unknown field type another_type in Entity Generator.',
         );
 
         app(FactoryGenerator::class)

@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Tests;
 
-use RonasIT\Support\DTO\FieldsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;

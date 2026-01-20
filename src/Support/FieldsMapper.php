@@ -13,16 +13,16 @@ class FieldsMapper
     {
         $newFields = [];
 
-         foreach ($fields as $fieldType => $typedFields) {
-             foreach ($typedFields as $field) {
-                 $newFields[] = new Field(
-                     $field->name,
-                     FieldTypeEnum::from($fieldType),
-                     $field->modifiers,
-                 );
-             }
-         }
+        foreach ($fields as $fieldType => $typedFields) {
+            foreach ($typedFields as $field) {
+                $newFields[] = new Field(
+                    $field->name,
+                    FieldTypeEnum::from($fieldType),
+                    $field->modifiers,
+                );
+            }
+        }
 
-         return new FieldsCollection($newFields);
+        return new FieldsCollection($newFields);
     }
 }
