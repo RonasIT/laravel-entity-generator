@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ServiceGenerator extends EntityGenerator
@@ -34,13 +35,13 @@ class ServiceGenerator extends EntityGenerator
     protected function getFields(): array
     {
         $simpleSearch = [
-            ...$this->fields->integer,
-            ...$this->fields->boolean,
+            ...$this->fields->getFieldsByType(FieldTypeEnum::Integer),
+            ...$this->fields->getFieldsByType(FieldTypeEnum::Boolean),
         ];
 
         return [
             'simple_search' => Arr::pluck($simpleSearch, 'name'),
-            'search_by_query' => Arr::pluck($this->fields->string, 'name'),
+            'search_by_query' => Arr::pluck($this->fields->getFieldsByType(FieldTypeEnum::String), 'name'),
         ];
     }
 }

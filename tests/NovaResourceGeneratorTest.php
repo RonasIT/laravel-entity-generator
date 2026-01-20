@@ -2,7 +2,7 @@
 
 namespace RonasIT\Support\Tests;
 
-use RonasIT\Support\DTO\FieldsSchemaDTO;
+use RonasIT\Support\DTO\FieldsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
@@ -81,7 +81,7 @@ class NovaResourceGeneratorTest extends TestCase
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
-            ->setFields(FieldsSchemaDTO::fromArray($fields))
+            ->setFields($this->getFieldsDTO($fields))
             ->generate();
 
         $this->assertFileDoesNotExist('app/Nova/PostResource.php');
@@ -100,7 +100,7 @@ class NovaResourceGeneratorTest extends TestCase
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
-            ->setFields(FieldsSchemaDTO::fromArray($fields))
+            ->setFields($this->getFieldsDTO($fields))
             ->generate();
 
         $this->assertGeneratedFileEquals('created_resource.php', 'app/Nova/PostResource.php');
@@ -119,7 +119,7 @@ class NovaResourceGeneratorTest extends TestCase
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
-            ->setFields(FieldsSchemaDTO::fromArray([]))
+            ->setFields($this->getFieldsDTO())
             ->generate();
 
         $this->assertGeneratedFileEquals(

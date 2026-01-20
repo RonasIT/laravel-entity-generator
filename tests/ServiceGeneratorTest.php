@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Event;
-use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -42,22 +41,13 @@ class ServiceGeneratorTest extends TestCase
         ]);
 
         app(ServiceGenerator::class)
-            ->setFields(FieldsSchemaDTO::fromArray([
+            ->setFields($this->getFieldsDTO([
                 'integer' => [
-                    [
-                        'name' => 'media_id',
-                        'modifiers' => ['required'],
-                    ],
+                    'media_id:required',
                 ],
                 'string' => [
-                    [
-                        'name' => 'title',
-                        'modifiers' => [],
-                    ],
-                    [
-                        'name' => 'body',
-                        'modifiers' => ['required'],
-                    ],
+                    'title',
+                    'body:required',
                 ],
             ]))
             ->setRelations(
@@ -86,7 +76,7 @@ class ServiceGeneratorTest extends TestCase
         ]);
 
         app(ServiceGenerator::class)
-            ->setFields(FieldsSchemaDTO::fromArray([]))
+            ->setFields($this->getFieldsDTO())
             ->setModel('Post')
             ->generate();
 

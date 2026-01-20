@@ -3,9 +3,12 @@
 namespace RonasIT\Support\Generators;
 
 use Carbon\Carbon;
-use RonasIT\Support\DTO\FieldsSchemaDTO;
+use RonasIT\Support\Collections\FieldsCollection;
+use RonasIT\Support\Enums\FieldModifierEnum;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Exceptions\UnknownFieldTypeException;
+use RonasIT\Support\ValueObjects\Field;
 
 class MigrationGenerator extends EntityGenerator
 {
@@ -33,14 +36,14 @@ class MigrationGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Migration: {$entities}_create_table"));
     }
 
-    protected function isJson(string $typeName): bool
+    protected function isJson(FieldTypeEnum $type): bool
     {
-        return $typeName === 'json';
+        return $type === FieldTypeEnum::Json;
     }
 
     protected function isRequired(array $modifiers): bool
     {
-        return in_array('required', $modifiers);
+        return in_array(FieldModifierEnum::Required, $modifiers);
     }
 
     protected function isNullable(array $modifiers): bool
@@ -71,33 +74,31 @@ class MigrationGenerator extends EntityGenerator
         return "\$table->{$typeName}('{$fieldName}')->nullable();";
     }
 
-    protected function generateTable(FieldsSchemaDTO $fields): array
+    protected function generateTable(FieldsCollection $fields): array
     {
         $resultTable = [];
 
-        foreach ($fields as $fieldType => $typedFields) {
-            foreach ($typedFields as $field) {
-                $resultTable[] = $this->getTableRow($fieldType, $field);
-            }
+        foreach ($fields as $field) {
+            $resultTable[] = $this->getTableRow($field->type, $field);
         }
 
         return $resultTable;
     }
 
-    protected function getTableRow(string $fieldType, array $field): string
+    protected function getTableRow(FieldTypeEnum $fieldType, Field $field): string
     {
         if ($this->isJson($fieldType)) {
-            return $this->getJsonLine($field['name']);
+            return $this->getJsonLine($field->name);
         }
 
-        if ($this->isRequired($field['modifiers'])) {
-            return $this->getRequiredLine($field['name'], $fieldType);
+        if ($this->isRequired($field->modifiers)) {
+            return $this->getRequiredLine($field->name, $fieldType->value);
         }
 
-        if ($this->isNullable($field['modifiers'])) {
-            return $this->getNonRequiredLine($field['name'], $fieldType);
+        if ($this->isNullable($field->modifiers)) {
+            return $this->getNonRequiredLine($field->name, $fieldType->value);
         }
 
-        throw new UnknownFieldTypeException($fieldType, 'MigrationGenerator');
+        throw new UnknownFieldTypeException($fieldType->value, 'MigrationGenerator');
     }
 }

@@ -1,38 +1,17 @@
 {
     "integer": [
-        {
-            "name": "media_id",
-            "modifiers": ["required"]
-        },
-        {
-            "name": "user_id",
-            "modifiers": ["required"]
-        }
+        "media_id:required",
+        "user_id:required"
     ],
     "string": [
-        {
-            "name": "title",
-            "modifiers": []
-        },
-        {
-            "name": "body",
-            "modifiers": []
-        }
+        "title",
+        "body"
     ],
     "json": [
-        {
-            "name": "meta",
-            "modifiers": []
-        }
+        "meta"
     ],
     "timestamp": [
-        {
-            "name": "created_at",
-            "modifiers": []
-        },
-        {
-            "name": "published_at",
-            "modifiers": ["required"]
-        }
+        "created_at",
+        "published_at:required"
     ]
 }

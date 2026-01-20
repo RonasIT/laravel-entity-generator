@@ -1,28 +1,13 @@
 {
     "integer": [
-        {
-            "name": "author_id",
-            "modifiers": ["required"]
-        }
+        "author_id:required"
     ],
     "string": [
-        {
-            "name": "title",
-            "modifiers": []
-        },
-        {
-            "name": "iban",
-            "modifiers": []
-        },
-        {
-            "name": "something",
-            "modifiers": []
-        }
+        "title",
+        "iban",
+        "something"
     ],
     "json": [
-        {
-            "name": "json_text",
-            "modifiers": []
-        }
+        "json_text"
     ]
 }

@@ -112,10 +112,8 @@ class NovaResourceGenerator extends EntityGenerator
     {
         $fields = [];
 
-        foreach ($this->fields as $type => $typedFields) {
-            foreach ($typedFields as $field) {
-                $fields[] = new CommandLineNovaField($type, $field);
-            }
+        foreach ($this->fields as $commandLineField) {
+            $fields[] = new CommandLineNovaField($commandLineField->type, $commandLineField);
         }
 
         return [$fields, $this->novaFieldTypesMap];

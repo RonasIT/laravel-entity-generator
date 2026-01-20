@@ -2,14 +2,16 @@
 
 namespace RonasIT\Support\Support;
 
-use RonasIT\Support\Enums\FieldModifiersEnum;
+use RonasIT\Support\Enums\FieldModifierEnum;
+use RonasIT\Support\Enums\FieldTypeEnum;
+use RonasIT\Support\ValueObjects\Field;
 
 class CommandLineNovaField extends AbstractNovaField
 {
-    public function __construct(string $type, array $field)
+    public function __construct(FieldTypeEnum $type, Field $field)
     {
-        $this->isRequired = in_array(FieldModifiersEnum::Required->value, $field['modifiers']);
-        $this->type = $type;
-        $this->name = $field['name'];
+        $this->isRequired = in_array(FieldModifierEnum::Required, $field->modifiers);
+        $this->type = $type->value;
+        $this->name = $field->name;
     }
 }

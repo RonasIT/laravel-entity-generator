@@ -1,66 +1,27 @@
 {
     "integer": [
-        {
-            "name": "priority",
-            "modifiers": []
-        },
-        {
-            "name": "media_id",
-            "modifiers": ["required"]
-        }
+        "priority",
+        "media_id:required"
     ],
     "float": [
-        {
-            "name": "seo_score",
-            "modifiers": []
-        },
-        {
-            "name": "rating",
-            "modifiers": ["required"]
-        }
+        "seo_score",
+        "rating:required"
     ],
     "string": [
-        {
-            "name": "description",
-            "modifiers": []
-        },
-        {
-            "name": "title",
-            "modifiers": ["required"]
-        }
+        "description",
+        "title:required"
     ],
     "boolean": [
-        {
-            "name": "is_reviewed",
-            "modifiers": []
-        },
-        {
-            "name": "is_published",
-            "modifiers": ["required"]
-        }
+        "is_reviewed",
+        "is_published:required"
     ],
     "timestamp": [
-        {
-            "name": "reviewed_at",
-            "modifiers": []
-        },
-        {
-            "name": "created_at",
-            "modifiers": []
-        },
-        {
-            "name": "updated_at",
-            "modifiers": []
-        },
-        {
-            "name": "published_at",
-            "modifiers": ["required"]
-        }
+        "reviewed_at",
+        "created_at",
+        "updated_at",
+        "published_at:required"
     ],
     "json": [
-        {
-            "name": "meta",
-            "modifiers": []
-        }
+        "meta"
     ]
 }

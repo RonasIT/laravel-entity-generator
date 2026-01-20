@@ -9,12 +9,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
-use RonasIT\Support\DTO\FieldsSchemaDTO;
+use RonasIT\Support\DTO\FieldsDTO;
 use RonasIT\Support\DTO\RelationsDTO;
+use RonasIT\Support\Enums\FieldModifierEnum;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Support\FieldsMapper;
+use RonasIT\Support\ValueObjects\Field;
 use Throwable;
 
 /**
@@ -42,6 +46,7 @@ abstract class EntityGenerator
     protected $fields;
     protected $relations = [];
     protected $crudOptions;
+    protected FieldsMapper $fieldsMapper;
 
     public function setCrudOptions(array $crudOptions): self
     {
@@ -64,9 +69,9 @@ abstract class EntityGenerator
         return $this;
     }
 
-    public function setFields(FieldsSchemaDTO $fields): self
+    public function setFields(FieldsDTO $fields): self
     {
-        $this->fields = $fields;
+        $this->fields = $this->fieldsMapper->mapDTOtoCollection($fields);
 
         return $this;
     }
@@ -75,13 +80,7 @@ abstract class EntityGenerator
     {
         $this->relations = $relations;
 
-        foreach ($relations->belongsTo as $field) {
-            $relatedModel = Str::afterLast($field, '/');
-
-            $name = Str::snake($relatedModel) . '_id';
-
-            $this->fields->integer[] = $this->convertToField($name, ['required']);
-        }
+        $this->applyRelationsToFields();
 
         return $this;
     }
@@ -91,6 +90,8 @@ abstract class EntityGenerator
         $this->paths = config('entity-generator.paths');
 
         $this->checkConfigHasCorrectPaths();
+
+        $this->fieldsMapper = app(FieldsMapper::class);
     }
 
     protected function generateNamespace(string $path, ?string $additionalSubFolder = null): string
@@ -357,5 +358,16 @@ abstract class EntityGenerator
             'name' => $name,
             'modifiers' => $modifiers,
         ];
+    }
+
+    protected function applyRelationsToFields(): void
+    {
+        $newFields = array_map(fn (string $relation) => new Field(
+            name: Str::snake(Str::afterLast($relation, '/')) . '_id',
+            type: FieldTypeEnum::Integer,
+            modifiers: [FieldModifierEnum::Required],
+        ), $this->relations->belongsTo);
+
+        $this->fields = $this->fields->merge($newFields);
     }
 }

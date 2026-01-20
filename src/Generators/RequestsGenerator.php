@@ -4,8 +4,11 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RonasIT\Support\Enums\FieldModifiersEnum;
+use RonasIT\Support\Collections\FieldsCollection;
+use RonasIT\Support\Enums\FieldModifierEnum;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\ValueObjects\Field;
 
 class RequestsGenerator extends EntityGenerator
 {
@@ -92,83 +95,70 @@ class RequestsGenerator extends EntityGenerator
 
     protected function getGetValidationParameters(): array
     {
-        $parameters['array'][] = $this->convertToField('with', []);
-
-        $parameters['string'][] = $this->convertToField('with.*', [FieldModifiersEnum::Required->value]);
+        $parameters = new FieldsCollection([
+            new Field('with', FieldTypeEnum::Array),
+            new Field('with.*', FieldTypeEnum::String, [FieldModifierEnum::Required]),
+        ]);
 
         return $this->getValidationParameters($parameters, true);
     }
 
     protected function getCreateValidationParameters(): array
     {
-        $parameters = $this->fields->toArray();
-
-        if (!empty($parameters['boolean'])) {
-            $parameters['boolean'] = $this->replaceFieldModifier($parameters['boolean'], FieldModifiersEnum::Required, 'present');
-        }
+        $parameters = $this->fields->replaceFieldModifier(
+            FieldTypeEnum::Boolean,
+            FieldModifierEnum::Required,
+            FieldModifierEnum::Present,
+        );
 
         return $this->getValidationParameters($parameters, true);
     }
 
     protected function getUpdateValidationParameters(): array
     {
-        $parameters = $this->fields->toArray();
-
-        $this->removeFieldModifier($parameters['boolean'], FieldModifiersEnum::Required);
+        $parameters = $this->fields->removeFieldModifier(FieldTypeEnum::Boolean, FieldModifierEnum::Required);
 
         return $this->getValidationParameters($parameters, false);
     }
 
     protected function getSearchValidationParameters(): array
     {
-        $parameters = Arr::except($this->fields->toArray(), ['timestamp']);
+        $parameters = $this
+            ->fields
+            ->removeFieldsByType(FieldTypeEnum::Timestamp)
+            ->removeFieldModifier(FieldTypeEnum::Boolean, FieldModifierEnum::Required)
+            ->merge([
+                new Field('page', FieldTypeEnum::Integer),
+                new Field('per_page', FieldTypeEnum::Integer),
+                new Field('desc', FieldTypeEnum::Boolean),
+                new Field('all', FieldTypeEnum::Boolean),
+                new Field('order_by', FieldTypeEnum::String),
+                new Field('query', FieldTypeEnum::String, [FieldModifierEnum::Nullable]),
+                new Field('with', FieldTypeEnum::Array),
+                new Field('with.*', FieldTypeEnum::String, [FieldModifierEnum::Required]),
+            ]);
 
-        $parameters['boolean'] = [
-            ...$this->removeFieldModifier($parameters['boolean'], FieldModifiersEnum::Required),
-            $this->convertToField('desc', []),
-            $this->convertToField('all', []),
-        ];
-
-        $parameters['integer'] = [
-            ...$this->fields->integer,
-            $this->convertToField('page', []),
-            $this->convertToField('per_page', []),
-        ];
-
-        $parameters['string'] = [
-            ...$this->fields->string,
-            $this->convertToField('order_by', []),
-            $this->convertToField('query', ['nullable']),
-            $this->convertToField('with.*', [FieldModifiersEnum::Required->value]),
-        ];
-
-        $parameters['array'][] = $this->convertToField('with', []);
-
-        $rules = $this->getValidationParameters($parameters, true);
-
-        return $this->orderSearchRequest($rules);
+        return $this->getValidationParameters($parameters, true);
     }
 
     public function getValidationParameters($parameters, $requiredAvailable): array
     {
         $result = [];
 
-        foreach ($parameters as $type => $typedFields) {
-            foreach ($typedFields as $field) {
-                $isRequired = in_array(FieldModifiersEnum::Required->value, $field['modifiers']);
-                $isNullable = in_array('nullable', $field['modifiers']);
-                $isPresent = in_array('present', $field['modifiers']);
+        foreach ($parameters as $field) {
+            $isRequired = in_array(FieldModifierEnum::Required, $field->modifiers);
+            $isNullable = in_array(FieldModifierEnum::Nullable, $field->modifiers);
+            $isPresent = in_array(FieldModifierEnum::Present, $field->modifiers);
 
-                $required = $isRequired && $requiredAvailable;
+            $required = $isRequired && $requiredAvailable;
 
-                $result[] = $this->getRules($field, $type, $required, $isNullable, $isPresent);
-            }
+            $result[] = $this->getRules($field, $required, $isNullable, $isPresent);
         }
 
         return $result;
     }
 
-    protected function getRules($field, $type, $required, $nullable, $present): array
+    protected function getRules($field, $required, $nullable, $present): array
     {
         $replaces = [
             'timestamp' => 'date',
@@ -177,11 +167,11 @@ class RequestsGenerator extends EntityGenerator
         ];
 
         $rules = [
-            Arr::get($replaces, $type, $type),
+            Arr::get($replaces, $field->type->value, $field->type->value),
         ];
 
-        if (in_array($field['name'], $this->relationFields)) {
-            $tableName = str_replace('_id', '', $field['name']);
+        if (in_array($field->name, $this->relationFields)) {
+            $tableName = str_replace('_id', '', $field->name);
 
             $rules[] = "exists:{$this->getTableName($tableName)},id";
 
@@ -200,12 +190,12 @@ class RequestsGenerator extends EntityGenerator
             $rules[] = 'present';
         }
 
-        if (in_array($field['name'], ['order_by', 'with.*'])) {
+        if (in_array($field->name, ['order_by', 'with.*'])) {
             $rules[] = 'in:';
         }
 
         return [
-            'name' => $field['name'],
+            'name' => $field->name,
             'rules' => $rules,
         ];
     }
@@ -224,52 +214,6 @@ class RequestsGenerator extends EntityGenerator
         }
 
         return $availableRelations;
-    }
-
-    protected function removeFieldModifier(array $fields, FieldModifiersEnum $removeModifier): array
-    {
-        foreach ($fields as &$field) {
-            $field['modifiers'] = array_filter(
-                array: $field['modifiers'],
-                callback: fn ($modifier) => $modifier !== $removeModifier->value,
-            );
-        }
-
-        return $fields;
-    }
-
-    protected function replaceFieldModifier(array $fields, FieldModifiersEnum $originalModifier, string $newModifier): array
-    {
-        foreach ($fields as &$field) {
-            $field['modifiers'] = Arr::map(
-                array: $field['modifiers'],
-                callback: fn ($modifier) => ($modifier === $originalModifier->value) ? $newModifier : $modifier,
-            );
-        }
-
-        return $fields;
-    }
-
-    protected function orderSearchRequest(array $rules): array
-    {
-        $order = [
-            'page',
-            'per_page',
-            'order_by',
-            'desc',
-            'all',
-            'query',
-            'with',
-            'with.*',
-        ];
-
-        $ordered = Arr::sort($rules, function ($rule) use ($order) {
-            $position = array_search($rule['name'], $order, true);
-
-            return $position === false ? -1 : $position;
-        });
-
-        return array_values($ordered);
     }
 
     private function getEntityName($method): string

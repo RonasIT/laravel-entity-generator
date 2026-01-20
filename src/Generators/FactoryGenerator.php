@@ -94,13 +94,11 @@ class FactoryGenerator extends EntityGenerator
     {
         $result = [];
 
-        foreach ($this->fields as $type => $fields) {
-            foreach ($fields as $field) {
-                $result[] = [
-                    'name' => $field['name'],
-                    'type' => $type,
-                ];
-            }
+        foreach ($this->fields as $field) {
+            $result[] = [
+                'name' => $field->name,
+                'type' => $field->type->value,
+            ];
         }
 
         return $result;

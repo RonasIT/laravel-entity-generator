@@ -4,14 +4,13 @@ namespace RonasIT\Support\Tests;
 
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
-use Illuminate\View\ViewException;
-use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Tests\Support\Factory\FactoryMockTrait;
 
@@ -64,19 +63,13 @@ class FactoryGeneratorTest extends TestCase
     public function testProcessUnknownFieldType()
     {
         $this->assertExceptionThrew(
-            className: ViewException::class,
-            message: 'Cannot generate fake data for unsupported another_type field type. '
-            . 'Supported custom field types are json',
+            className: UnknownFieldTypeException::class,
+            message: "Unknown field type another_type in Entity Generator.",
         );
 
         app(FactoryGenerator::class)
-            ->setFields(FieldsSchemaDTO::fromArray([
-                'another_type' => [
-                    [
-                        'name' => 'some_field',
-                        'modifiers' => [],
-                    ],
-                ],
+            ->setFields($this->getFieldsDTO([
+                'another_type' => ['some_field'],
             ]))
             ->setRelations(new RelationsDTO())
             ->setModel('Post')
@@ -86,7 +79,7 @@ class FactoryGeneratorTest extends TestCase
     public function testCreateSuccess()
     {
         app(FactoryGenerator::class)
-            ->setFields(FieldsSchemaDTO::fromArray($this->getJsonFixture('create_factory_fields')))
+            ->setFields($this->getFieldsDTO($this->getJsonFixture('create_factory_fields')))
             ->setRelations(new RelationsDTO(
                 hasOne: ['user'],
                 belongsTo: ['user'],
@@ -107,8 +100,8 @@ class FactoryGeneratorTest extends TestCase
         config(['entity-generator.stubs.factory' => 'incorrect_stub']);
 
         app(FactoryGenerator::class)
-            ->setFields(FieldsSchemaDTO::fromArray([
-                'integer-required' => ['author_id'],
+            ->setFields($this->getFieldsDTO([
+                'integer' => ['author_id:required'],
                 'string' => ['title', 'iban', 'something'],
                 'json' => ['json_text'],
             ]))
@@ -138,8 +131,8 @@ class FactoryGeneratorTest extends TestCase
         $this->expectExceptionMessage('Incorrect path to factories, dAtaAbase folder must start with a capital letter, please specify the path according to the PSR.');
 
         app(FactoryGenerator::class)
-            ->setFields(FieldsSchemaDTO::fromArray([
-                'integer-required' => ['author_id'],
+            ->setFields($this->getFieldsDTO([
+                'integer' => ['author_id:required'],
                 'string' => ['title', 'iban', 'something'],
                 'json' => ['json_text'],
             ]))
@@ -158,7 +151,7 @@ class FactoryGeneratorTest extends TestCase
         Config::set('entity-generator.paths.factories', 'database/factories/Factory.php');
 
         app(FactoryGenerator::class)
-            ->setFields(FieldsSchemaDTO::fromArray($this->getJsonFixture('create_factory_fields')))
+            ->setFields($this->getFieldsDTO($this->getJsonFixture('create_factory_fields')))
             ->setRelations(new RelationsDTO(
                 hasOne: ['user'],
                 belongsTo: ['user'],

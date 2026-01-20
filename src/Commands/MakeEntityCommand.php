@@ -9,15 +9,13 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use RonasIT\Support\DTO\FieldsSchemaDTO;
+use RonasIT\Support\DTO\FieldsDTO;
 use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Enums\FieldModifiersEnum;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Exceptions\UnknownFieldModifierException;
 use RonasIT\Support\Generators\ControllerGenerator;
-use RonasIT\Support\Generators\EntityGenerator;
 use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Generators\MigrationGenerator;
 use RonasIT\Support\Generators\ModelGenerator;
@@ -30,13 +28,16 @@ use RonasIT\Support\Generators\SeederGenerator;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Generators\TranslationsGenerator;
+use RonasIT\Support\Support\FieldsParser;
 use UnexpectedValueException;
 
 class MakeEntityCommand extends Command
 {
+    protected FieldsParser $fieldsParser;
     private string $entityName;
     private string $entityNamespace;
     private RelationsDTO $relations;
+    private $fields;
 
     const CRUD_OPTIONS = [
         'C', 'R', 'U', 'D',
@@ -111,6 +112,13 @@ class MakeEntityCommand extends Command
         NovaTestGenerator::class,
     ];
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->fieldsParser = app(FieldsParser::class);
+    }
+
     /**
      * Execute the console command.
      */
@@ -119,6 +127,7 @@ class MakeEntityCommand extends Command
         $this->validateInput();
         $this->checkConfigs();
         $this->listenEvents();
+        $this->parseFields();
         $this->parseRelations();
         $this->entityName = $this->convertToPascalCase($this->entityName);
 
@@ -197,7 +206,6 @@ class MakeEntityCommand extends Command
         $this->extractEntityNameAndPath();
         $this->validateOnlyApiOption();
         $this->validateCrudOptions();
-        $this->validateModifiers();
     }
 
     protected function generate(): void
@@ -222,7 +230,7 @@ class MakeEntityCommand extends Command
         app($generator)
             ->setModel($this->entityName)
             ->setModelSubFolder($this->entityNamespace)
-            ->setFields($this->getFields())
+            ->setFields($this->fields)
             ->setRelations($this->relations)
             ->setCrudOptions($this->getCrudOptions())
             ->generate();
@@ -252,12 +260,12 @@ class MakeEntityCommand extends Command
         }, $relations);
     }
 
-    protected function getFields(): FieldsSchemaDTO
+    protected function parseFields(): void
     {
-        $fieldsSchema = $this->prepareFieldsSchema();
-        $fieldsSchema = $this->replaceFieldModifierShortOptions($fieldsSchema);
+        $rawFields = Arr::only($this->options(), FieldTypeEnum::values());
+        $fieldDTOs = $this->fieldsParser->parse($rawFields);
 
-        return FieldsSchemaDTO::fromArray($fieldsSchema);
+        $this->fields = new FieldsDTO(...$fieldDTOs);
     }
 
     protected function validateEntityName(): void
@@ -295,21 +303,6 @@ class MakeEntityCommand extends Command
         }
     }
 
-    protected function validateModifiers(): void
-    {
-        $fieldsDTO = $this->getFields();
-
-        foreach ($fieldsDTO as $typedFields) {
-            foreach ($typedFields as $field) {
-                $diff = array_diff($field['modifiers'], FieldModifiersEnum::values());
-
-                if (!empty($diff)) {
-                    throw new UnknownFieldModifierException(Arr::first($diff), $field['name']);
-                }
-            }
-        }
-    }
-
     protected function listenEvents(): void
     {
         Event::listen(
@@ -332,40 +325,5 @@ class MakeEntityCommand extends Command
         }
 
         return $pascalEntityName;
-    }
-
-    protected function prepareFieldsSchema(): array
-    {
-        $options = Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
-
-        $result = [];
-
-        foreach ($options as $type => $fields) {
-            foreach ($fields as $field) {
-                $parts = explode(':', $field);
-
-                $result[$type][] = [
-                    'name' => $parts[0],
-                    'modifiers' => isset($parts[1]) ? explode(',', $parts[1]) : [],
-                ];
-            }
-        }
-
-        return $result;
-    }
-
-    protected function replaceFieldModifierShortOptions(array $fieldsSchema): array
-    {
-        $modifiersMap = [
-            'r' => FieldModifiersEnum::Required->value,
-        ];
-
-        foreach ($fieldsSchema as $fieldType => &$typedFields) {
-            foreach ($typedFields as &$field) {
-                $field['modifiers'] = Arr::map($field['modifiers'], fn ($modifier) => $modifiersMap[$modifier] ?? $modifier);
-            }
-        }
-
-        return $fieldsSchema;
     }
 }

@@ -45,7 +45,7 @@ class ResourceGenerator extends EntityGenerator
             'entity' => $this->model,
             'namespace' => $this->generateNamespace($this->paths['resources']),
             'model_namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
-            'fields' => when($this->fields, fn () => Arr::pluck(Arr::collapse($this->fields), 'name')),
+            'fields' => when($this->fields, fn () => Arr::pluck($this->fields->getFields(), 'name')),
         ]);
 
         $this->saveClass('resources', "{$this->model}Resource", $resourceContent, $this->model);

@@ -14,9 +14,9 @@ class SearchPostsRequest extends Request
         return [
             'page' => 'integer',
             'per_page' => 'integer',
-            'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'desc' => 'boolean',
             'all' => 'boolean',
+            'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'query' => 'string|nullable',
             'with' => 'array',
             'with.*' => 'required|string|in:' . $availableRelations,

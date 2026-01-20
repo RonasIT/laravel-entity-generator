@@ -16,11 +16,11 @@ class PostFactory extends Factory
 
         return [
             'author_id' => 1,
-            'user_id' => 1,
             'title' => $faker->title,
             'iban' => $faker->iban,
             'something' => $faker->word,
             'json_text' => [],
+            'user_id' => 1,
         ];
     }
 }

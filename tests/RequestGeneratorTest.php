@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use RonasIT\Support\DTO\FieldsSchemaDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
@@ -19,16 +18,10 @@ class RequestGeneratorTest extends TestCase
     {
         app(RequestsGenerator::class)
             ->setModel('Post')
-            ->setFields(FieldsSchemaDTO::fromArray([
+            ->setFields($this->getFieldsDTO([
                 'boolean' => [
-                    [
-                        'name' => 'is_published',
-                        'modifiers' => ['required'],
-                    ],
-                    [
-                        'name' => 'is_draft',
-                        'modifiers' => [],
-                    ],
+                    'is_published:required',
+                    'is_draft',
                 ],
             ]))
             ->setRelations(new RelationsDTO(
@@ -108,7 +101,7 @@ class RequestGeneratorTest extends TestCase
 
         app(RequestsGenerator::class)
             ->setModel('Post')
-            ->setFields(FieldsSchemaDTO::fromArray([]))
+            ->setFields($this->getFieldsDTO())
             ->setRelations(new RelationsDTO(
                 belongsTo: ['User'],
             ))
@@ -130,18 +123,12 @@ class RequestGeneratorTest extends TestCase
 
         app(RequestsGenerator::class)
             ->setModel('Post')
-            ->setFields(FieldsSchemaDTO::fromArray([
+            ->setFields($this->getFieldsDTO([
                 'boolean' => [
-                    [
-                        'name' => 'is_published',
-                        'modifiers' => ['required'],
-                    ],
+                    'is_published:required',
                 ],
                 'integer' => [
-                    [
-                        'name' => 'user_id',
-                        'modifiers' => [],
-                    ],
+                    'user_id',
                 ],
             ]))
             ->setRelations(new RelationsDTO(
