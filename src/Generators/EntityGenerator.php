@@ -352,14 +352,6 @@ abstract class EntityGenerator
         return in_array($relation, ['hasMany', 'belongsToMany']);
     }
 
-    protected function convertToField(string $name, array $modifiers): array
-    {
-        return [
-            'name' => $name,
-            'modifiers' => $modifiers,
-        ];
-    }
-
     protected function applyRelationsToFields(): void
     {
         $newFields = array_map(fn (string $relation) => new Field(

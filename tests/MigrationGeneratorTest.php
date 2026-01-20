@@ -13,7 +13,7 @@ class MigrationGeneratorTest extends TestCase
     {
         $this->assertExceptionThrew(
             className: UnknownFieldTypeException::class,
-            message: 'Unknown field type unknown in Entity Generator.',
+            message: 'Unknown field type unknown-type in Entity Generator.',
         );
 
         app(MigrationGenerator::class)
@@ -23,7 +23,7 @@ class MigrationGeneratorTest extends TestCase
                     'media_id:required',
                     'user_id:required',
                 ],
-                'unknown' => ['title:unknown'],
+                'unknown-type' => ['title:unknown'],
             ]))
             ->setRelations(new RelationsDTO())
             ->generate();
