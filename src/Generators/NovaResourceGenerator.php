@@ -81,9 +81,7 @@ class NovaResourceGenerator extends EntityGenerator
         list($fields, $fieldTypesMap) = $this->getFieldsForCreation();
 
         foreach ($fields as $field) {
-            if (!Arr::has($fieldTypesMap, $field->type)) {
-                event(new SuccessCreateMessage("Field '{$field->name}' had been skipped cause has an unhandled type {$field->type}."));
-            } elseif (Arr::has($this->specialFieldNamesMap, $field->name)) {
+            if (Arr::has($this->specialFieldNamesMap, $field->name)) {
                 $result[$field->name] = [
                     'type' => $this->specialFieldNamesMap[$field->name],
                     'is_required' => $field->isRequired,

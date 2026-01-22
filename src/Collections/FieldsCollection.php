@@ -3,7 +3,6 @@
 namespace RonasIT\Support\Collections;
 
 use Countable;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use IteratorAggregate;
 use RonasIT\Support\Enums\FieldModifierEnum;
@@ -40,49 +39,50 @@ final readonly class FieldsCollection implements Countable, IteratorAggregate
         return $this->fields->all();
     }
 
-    public function replaceFieldModifier(
+    public function replaceModifier(
         FieldTypeEnum $type,
         FieldModifierEnum $originalModifier,
         FieldModifierEnum $newModifier,
     ): self {
-        $replaceModifierCallback = fn (array $modifiers) => Arr::map(
-            array: $modifiers,
-            callback: fn ($modifier) => ($modifier === $originalModifier) ? $newModifier : $modifier,
+        $fields = $this->fields->map(
+            fn (Field $field) => ($field->type === $type)
+                ? $field->replaceModifier($originalModifier, $newModifier)
+                : $field
         );
 
-        $fields = $this->updateModifiersByFieldType($type, $replaceModifierCallback);
-
         return new self($fields);
     }
 
-    public function removeFieldModifier(FieldTypeEnum $type, FieldModifierEnum $removeModifier): self
+    public function removeModifier(FieldTypeEnum $type, FieldModifierEnum $removeModifier): self
     {
-        $removeModifierCallback = fn (array $modifiers) => Arr::reject(
-            array: $modifiers,
-            callback: fn ($modifier) => $removeModifier === $modifier,
+        $fields = $this->fields->map(
+            fn (Field $field) => ($field->type === $type)
+                ? $field->removeModifier($removeModifier)
+                : $field
         );
 
-        $fields = $this->updateModifiersByFieldType($type, $removeModifierCallback);
+        return new self($fields);
+    }
+
+    public function remove(FieldTypeEnum $type): self
+    {
+        $fields = $this->fields->reject(fn (Field $field) => $field->type === $type);
 
         return new self($fields);
     }
 
-    public function removeFieldsByType(FieldTypeEnum $type): self
+    public function whereType(FieldTypeEnum $type): Collection
     {
-        $fields = $this->fields->filter(fn (Field $field) => $field->type !== $type);
-
-        return new self($fields);
+        return $this->fields->where('type', $type);
     }
 
-    public function getFieldsByType(FieldTypeEnum $type): array
+    public function whereTypeIn(array $types): Collection
     {
-        return $this->fields->where('type', $type)->all();
+        return $this->fields->whereIn('type', $types);
     }
 
-    protected function updateModifiersByFieldType(FieldTypeEnum $type, callable $callback): Collection
+    public function pluck(string $string): Collection
     {
-        return $this
-            ->fields
-            ->map(fn (Field $field) => ($field->type === $type) ? $field->updateModifiers($callback) : $field);
+        return $this->fields->pluck($string);
     }
 }

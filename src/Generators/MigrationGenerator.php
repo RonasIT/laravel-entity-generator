@@ -7,7 +7,6 @@ use RonasIT\Support\Collections\FieldsCollection;
 use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 use RonasIT\Support\ValueObjects\Field;
 
 class MigrationGenerator extends EntityGenerator
@@ -99,6 +98,6 @@ class MigrationGenerator extends EntityGenerator
             return $this->getNonRequiredLine($field->name, $fieldType->value);
         }
 
-        throw new UnknownFieldTypeException($fieldType->value, 'MigrationGenerator');
+        return '';
     }
 }

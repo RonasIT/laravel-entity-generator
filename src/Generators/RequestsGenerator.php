@@ -105,10 +105,10 @@ class RequestsGenerator extends EntityGenerator
 
     protected function getCreateValidationParameters(): array
     {
-        $parameters = $this->fields->replaceFieldModifier(
-            FieldTypeEnum::Boolean,
-            FieldModifierEnum::Required,
-            FieldModifierEnum::Present,
+        $parameters = $this->fields->replaceModifier(
+            type: FieldTypeEnum::Boolean,
+            originalModifier: FieldModifierEnum::Required,
+            newModifier: FieldModifierEnum::Present,
         );
 
         return $this->getValidationParameters($parameters, true);
@@ -116,7 +116,7 @@ class RequestsGenerator extends EntityGenerator
 
     protected function getUpdateValidationParameters(): array
     {
-        $parameters = $this->fields->removeFieldModifier(FieldTypeEnum::Boolean, FieldModifierEnum::Required);
+        $parameters = $this->fields->removeModifier(FieldTypeEnum::Boolean, FieldModifierEnum::Required);
 
         return $this->getValidationParameters($parameters, false);
     }
@@ -125,8 +125,8 @@ class RequestsGenerator extends EntityGenerator
     {
         $parameters = $this
             ->fields
-            ->removeFieldsByType(FieldTypeEnum::Timestamp)
-            ->removeFieldModifier(FieldTypeEnum::Boolean, FieldModifierEnum::Required)
+            ->remove(FieldTypeEnum::Timestamp)
+            ->removeModifier(FieldTypeEnum::Boolean, FieldModifierEnum::Required)
             ->merge([
                 new Field('page', FieldTypeEnum::Integer),
                 new Field('per_page', FieldTypeEnum::Integer),
@@ -158,7 +158,7 @@ class RequestsGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getRules($field, $required, $nullable, $present): array
+    protected function getRules(Field $field, bool $required, bool $nullable, bool $present): array
     {
         $replaces = [
             'timestamp' => 'date',

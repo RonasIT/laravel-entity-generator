@@ -17,12 +17,24 @@ final readonly class Field
         $this->validateModifiers();
     }
 
-    public function updateModifiers(callable $callback): self
+    public function replaceModifier(FieldModifierEnum $originalModifier, FieldModifierEnum $newModifier): self
     {
         return new self(
-            $this->name,
-            $this->type,
-            $callback($this->modifiers),
+            name: $this->name,
+            type: $this->type,
+            modifiers: Arr::map(
+                array: $this->modifiers,
+                callback: fn ($modifier) => ($modifier === $originalModifier) ? $newModifier : $modifier,
+            ),
+        );
+    }
+
+    public function removeModifier(FieldModifierEnum $removeModifier): self
+    {
+        return new self(
+            name: $this->name,
+            type: $this->type,
+            modifiers: Arr::reject($this->modifiers, fn ($modifier) => $removeModifier === $modifier),
         );
     }
 

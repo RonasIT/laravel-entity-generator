@@ -2,7 +2,6 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\Support\Collections\FieldsCollection;
 use RonasIT\Support\Enums\FieldModifierEnum;
@@ -38,13 +37,13 @@ class ModelGenerator extends EntityGenerator
 
         return $this->getStub('model', [
             'entity' => $this->model,
-            'fields' => Arr::pluck($this->fields->getFields(), 'name'),
+            'fields' => $this->fields->pluck('name')->toArray(),
             'relations' => $relations,
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
             'annotationProperties' => $this->generateAnnotationProperties($this->fields, $relations),
-            'hasCarbonField' => !empty($this->fields->getFieldsByType(FieldTypeEnum::Timestamp)),
+            'hasCarbonField' => $this->fields->whereType(FieldTypeEnum::Timestamp)->isNotEmpty(),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
     }

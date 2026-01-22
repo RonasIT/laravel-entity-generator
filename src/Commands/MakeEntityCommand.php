@@ -37,7 +37,7 @@ class MakeEntityCommand extends Command
     private string $entityName;
     private string $entityNamespace;
     private RelationsDTO $relations;
-    private $fields;
+    private FieldsDTO $fields;
 
     const CRUD_OPTIONS = [
         'C', 'R', 'U', 'D',

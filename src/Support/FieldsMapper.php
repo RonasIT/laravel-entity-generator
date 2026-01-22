@@ -16,9 +16,9 @@ class FieldsMapper
         foreach ($fields as $fieldType => $typedFields) {
             foreach ($typedFields as $field) {
                 $newFields[] = new Field(
-                    $field->name,
-                    FieldTypeEnum::from($fieldType),
-                    $field->modifiers,
+                    name: $field->name,
+                    type: FieldTypeEnum::from($fieldType),
+                    modifiers: $field->modifiers,
                 );
             }
         }

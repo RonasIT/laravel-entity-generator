@@ -2,11 +2,7 @@
 
 namespace RonasIT\Support\DTO;
 
-use ArrayIterator;
-use IteratorAggregate;
-use Traversable;
-
-final readonly class FieldsDTO implements IteratorAggregate
+final readonly class FieldsDTO
 {
     public function __construct(
         public array $integer = [],
@@ -16,17 +12,5 @@ final readonly class FieldsDTO implements IteratorAggregate
         public array $json = [],
         public array $timestamp = [],
     ) {
-    }
-
-    public function getIterator(): Traversable
-    {
-        return new ArrayIterator([
-            'integer' => $this->integer,
-            'float' => $this->float,
-            'string' => $this->string,
-            'boolean' => $this->boolean,
-            'json' => $this->json,
-            'timestamp' => $this->timestamp,
-        ]);
     }
 }
