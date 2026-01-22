@@ -47,7 +47,7 @@ final readonly class FieldsCollection implements Countable, IteratorAggregate
         $fields = $this->fields->map(
             fn (Field $field) => ($field->type === $type)
                 ? $field->replaceModifier($originalModifier, $newModifier)
-                : $field
+                : $field,
         );
 
         return new self($fields);
@@ -58,7 +58,7 @@ final readonly class FieldsCollection implements Countable, IteratorAggregate
         $fields = $this->fields->map(
             fn (Field $field) => ($field->type === $type)
                 ? $field->removeModifier($removeModifier)
-                : $field
+                : $field,
         );
 
         return new self($fields);
