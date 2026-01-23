@@ -10,7 +10,6 @@ use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Tests\Support\Factory\FactoryMockTrait;
 
@@ -58,22 +57,6 @@ class FactoryGeneratorTest extends TestCase
             ->generate();
 
         Event::assertNothingDispatched();
-    }
-
-    public function testProcessUnknownFieldType()
-    {
-        $this->assertExceptionThrew(
-            className: UnknownFieldTypeException::class,
-            message: 'Unknown field type another_type in Entity Generator.',
-        );
-
-        app(FactoryGenerator::class)
-            ->setFields($this->getFieldsDTO([
-                'another_type' => ['some_field'],
-            ]))
-            ->setRelations(new RelationsDTO())
-            ->setModel('Post')
-            ->generate();
     }
 
     public function testCreateSuccess()

@@ -202,7 +202,7 @@ class CommandTest extends TestCase
 
     public function testUnknownModifierExceptionThrown()
     {
-        $this->artisan('make:entity Post -s title:unknownModifier')
+        $this->artisan('make:entity Post -s title:required,unknownModifier -i owner_id:required')
             ->expectsOutput("Unknown field modifier 'unknownModifier' for field title");
     }
 }

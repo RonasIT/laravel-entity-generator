@@ -40,10 +40,10 @@ final readonly class Field
 
     protected function validateModifiers(): void
     {
-        $diff = array_udiff($this->modifiers, FieldModifierEnum::cases(), fn ($a, $b) => $a <=> $b);
-
-        if (!empty($diff)) {
-            throw new UnknownFieldModifierException(Arr::first($diff), $this->name);
+        foreach ($this->modifiers as $modifier) {
+            if (!in_array($modifier?->value ?? [], FieldModifierEnum::values())) {
+                throw new UnknownFieldModifierException($modifier, $this->name);
+            }
         }
     }
 }

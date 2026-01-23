@@ -26,10 +26,6 @@ use Throwable;
  */
 abstract class EntityGenerator
 {
-    const AVAILABLE_FIELDS = [
-        'integer', 'string', 'float', 'boolean', 'timestamp', 'json',
-    ];
-
     const LOWER_CASE_DIRECTORIES_MAP = [
         'migrations' => 'database/migrations',
         'factories' => 'database/factories',

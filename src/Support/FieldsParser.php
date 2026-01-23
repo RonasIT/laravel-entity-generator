@@ -5,8 +5,6 @@ namespace RonasIT\Support\Support;
 use Illuminate\Support\Arr;
 use RonasIT\Support\DTO\FieldDTO;
 use RonasIT\Support\Enums\FieldModifierEnum;
-use RonasIT\Support\Enums\FieldTypeEnum;
-use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 
 class FieldsParser
 {
@@ -15,10 +13,6 @@ class FieldsParser
         $result = [];
 
         foreach ($options as $type => $fields) {
-            if (is_null(FieldTypeEnum::tryFrom($type))) {
-                throw new UnknownFieldTypeException($type, 'Entity Generator');
-            }
-
             foreach ($fields as $field) {
                 $parts = explode(':', $field);
 

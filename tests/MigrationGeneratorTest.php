@@ -4,31 +4,10 @@ namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 use RonasIT\Support\Generators\MigrationGenerator;
 
 class MigrationGeneratorTest extends TestCase
 {
-    public function testSetUnknownFieldType()
-    {
-        $this->assertExceptionThrew(
-            className: UnknownFieldTypeException::class,
-            message: 'Unknown field type unknown-type in Entity Generator.',
-        );
-
-        app(MigrationGenerator::class)
-            ->setModel('Post')
-            ->setFields($this->getFieldsDTO([
-                'integer' => [
-                    'media_id:required',
-                    'user_id:required',
-                ],
-                'unknown-type' => ['title:unknown'],
-            ]))
-            ->setRelations(new RelationsDTO())
-            ->generate();
-    }
-
     public function testCreateMigration()
     {
         app(MigrationGenerator::class)

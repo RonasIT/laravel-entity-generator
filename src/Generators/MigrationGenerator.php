@@ -86,18 +86,10 @@ class MigrationGenerator extends EntityGenerator
 
     protected function getTableRow(FieldTypeEnum $fieldType, Field $field): string
     {
-        if ($this->isJson($fieldType)) {
-            return $this->getJsonLine($field->name);
-        }
-
-        if ($this->isRequired($field->modifiers)) {
-            return $this->getRequiredLine($field->name, $fieldType->value);
-        }
-
-        if ($this->isNullable($field->modifiers)) {
-            return $this->getNonRequiredLine($field->name, $fieldType->value);
-        }
-
-        return '';
+        return match (true) {
+            $this->isJson($fieldType) => $this->getJsonLine($field->name),
+            $this->isRequired($field->modifiers) => $this->getRequiredLine($field->name, $fieldType->value),
+            $this->isNullable($field->modifiers) => $this->getNonRequiredLine($field->name, $fieldType->value),
+        };
     }
 }

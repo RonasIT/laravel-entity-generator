@@ -51,11 +51,6 @@ class FactoryGenerator extends EntityGenerator
             return '$faker->' . self::FAKERS_METHODS[$field['type']];
         }
 
-        return self::getCustomMethod($field);
-    }
-
-    protected static function getCustomMethod($field): string
-    {
         return self::CUSTOM_METHODS[$field['type']];
     }
 
