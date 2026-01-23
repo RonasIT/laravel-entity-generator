@@ -34,11 +34,6 @@ final readonly class FieldsCollection implements Countable, IteratorAggregate
         return new self($this->fields->concat($newFields));
     }
 
-    public function getFields(): array
-    {
-        return $this->fields->all();
-    }
-
     public function replaceModifier(
         FieldTypeEnum $type,
         FieldModifierEnum $originalModifier,
