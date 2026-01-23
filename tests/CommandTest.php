@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
+use RonasIT\Support\Exceptions\UnknownFieldModifierException;
 use RonasIT\Support\Tests\Support\Command\CommandMockTrait;
 use RonasIT\Support\Tests\Support\Command\Models\Post;
 use UnexpectedValueException;
@@ -202,7 +203,11 @@ class CommandTest extends TestCase
 
     public function testUnknownModifierExceptionThrown()
     {
-        $this->artisan('make:entity Post -s title:required,unknownModifier -i owner_id:required')
-            ->expectsOutput("Unknown field modifier 'unknownModifier' for field title");
+        $this->assertExceptionThrew(
+            className: UnknownFieldModifierException::class,
+            message: "Unknown field modifier 'unknownModifier' for field title",
+        );
+
+        $this->artisan('make:entity Post -s title:required,unknownModifier -i owner_id:required');
     }
 }

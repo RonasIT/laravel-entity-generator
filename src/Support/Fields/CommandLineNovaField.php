@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Support;
+namespace RonasIT\Support\Support\Fields;
 
 use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Enums\FieldTypeEnum;

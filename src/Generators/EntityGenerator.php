@@ -17,7 +17,7 @@ use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Support\FieldsMapper;
+use RonasIT\Support\Support\Fields\FieldsMapper;
 use RonasIT\Support\ValueObjects\Field;
 use Throwable;
 

@@ -28,7 +28,7 @@ use RonasIT\Support\Generators\SeederGenerator;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Generators\TranslationsGenerator;
-use RonasIT\Support\Support\FieldsParser;
+use RonasIT\Support\Support\Fields\FieldsParser;
 use UnexpectedValueException;
 
 class MakeEntityCommand extends Command

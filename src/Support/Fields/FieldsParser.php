@@ -1,10 +1,11 @@
 <?php
 
-namespace RonasIT\Support\Support;
+namespace RonasIT\Support\Support\Fields;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\DTO\FieldDTO;
 use RonasIT\Support\Enums\FieldModifierEnum;
+use RonasIT\Support\Exceptions\UnknownFieldModifierException;
 
 class FieldsParser
 {
@@ -18,7 +19,7 @@ class FieldsParser
 
                 $result[$type][] = new FieldDTO(
                     name: $parts[0],
-                    modifiers: $this->prepareModifiers($parts[1] ?? ''),
+                    modifiers: $this->prepareModifiers($parts[1] ?? '', $parts[0]),
                 );
             }
         }
@@ -35,7 +36,7 @@ class FieldsParser
         return Arr::map($modifiers, fn ($modifier) => $modifiersMap[$modifier] ?? $modifier);
     }
 
-    protected function prepareModifiers(string $modifiers): array
+    protected function prepareModifiers(string $modifiers, string $fieldName): array
     {
         if (empty($modifiers)) {
             return [];
@@ -43,6 +44,9 @@ class FieldsParser
 
         $modifiers = $this->convertModifiersShortOptions(explode(',', $modifiers));
 
-        return Arr::map($modifiers, fn ($modifier) => FieldModifierEnum::tryFrom($modifier) ?? $modifier);
+        return Arr::map(
+            array: $modifiers,
+            callback: fn ($modifier) => FieldModifierEnum::tryFrom($modifier) ?? throw new UnknownFieldModifierException($modifier, $fieldName),
+        );
     }
 }

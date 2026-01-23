@@ -12,7 +12,7 @@ use Orchestra\Testbench\TestCase as BaseTestCase;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\DTO\FieldsDTO;
 use RonasIT\Support\EntityGeneratorServiceProvider;
-use RonasIT\Support\Support\FieldsParser;
+use RonasIT\Support\Support\Fields\FieldsParser;
 use RonasIT\Support\Traits\FixturesTrait;
 
 class TestCase extends BaseTestCase

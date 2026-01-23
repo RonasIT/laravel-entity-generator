@@ -7,8 +7,8 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Support\CommandLineNovaField;
-use RonasIT\Support\Support\DatabaseNovaField;
+use RonasIT\Support\Support\Fields\CommandLineNovaField;
+use RonasIT\Support\Support\Fields\DatabaseNovaField;
 
 class NovaResourceGenerator extends EntityGenerator
 {
