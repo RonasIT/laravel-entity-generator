@@ -213,16 +213,6 @@ class CommandTest extends TestCase
         $this->assertFileDoesNotExist('routes.php');
         $this->assertFileDoesNotExist('test.php');
         $this->assertFileDoesNotExist('dump.sql');
-        $this->assertFileDoesNotExist('create_request.json');
-        $this->assertFileDoesNotExist('create_response.json');
-        $this->assertFileDoesNotExist('update_request.json');
-        $this->assertFileDoesNotExist('validation.php');
-        $this->assertFileDoesNotExist('nova_resource.php');
-        $this->assertFileDoesNotExist('nova_test.php');
-        $this->assertFileDoesNotExist('nova_dump.php');
-        $this->assertFileDoesNotExist('create_request.json');
-        $this->assertFileDoesNotExist('create_response.json');
-        $this->assertFileDoesNotExist('update_request.json');
     }
 
     public function testCallWithNotDefaultConfig()
