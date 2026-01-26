@@ -210,7 +210,6 @@ class MakeEntityCommand extends Command
             array_push($generators, 'migration', 'model', 'repository', 'service', 'factory', 'seeder');
         }
 
-
         return array_intersect_key($this->getGeneratorsMap(), array_flip($generators));
     }
 
