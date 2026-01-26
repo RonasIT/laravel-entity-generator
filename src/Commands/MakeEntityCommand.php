@@ -180,11 +180,11 @@ class MakeEntityCommand extends Command
     {
         $providedOnlyOptions = $this->getProvidedOnlyOptions();
 
-        $generators = !empty($providedOnlyOptions)
+        $generators = (!empty($providedOnlyOptions))
             ? $this->getOnlyGenerators($providedOnlyOptions)
             : $this->getGeneratorsMap();
 
-        array_map(fn ($generator) => $this->runGeneration($generator), $generators);
+        array_walk($generators, fn ($generator) => $this->runGeneration($generator));
     }
 
     protected function getProvidedOnlyOptions(): array
@@ -200,29 +200,18 @@ class MakeEntityCommand extends Command
 
     protected function getOnlyGenerators(array $providedOptions): array
     {
-        $generators = [];
+        $generators = Arr::map($providedOptions, fn ($option) => Str::replace('only-', '', $option));
 
-        if (in_array('only-api', $providedOptions)) {
+        if (in_array('api', $generators)) {
             array_push($generators, 'resource', 'controller', 'requests', 'factory', 'tests');
         }
 
-        if (in_array('only-entity', $providedOptions)) {
+        if (in_array('entity', $generators)) {
             array_push($generators, 'migration', 'model', 'repository', 'service', 'factory', 'seeder');
         }
 
-        if (in_array('only-tests', $providedOptions)) {
-            array_push($generators, 'factory', 'tests');
-        }
 
-        $onlyGenerators = Arr::map($providedOptions, fn ($option) => Str::replace('only-', '', $option));
-
-        array_push($generators, ...$onlyGenerators);
-
-        return array_filter(
-            array: $this->getGeneratorsMap(),
-            callback: fn ($generator) => in_array($generator, $generators),
-            mode: ARRAY_FILTER_USE_KEY,
-        );
+        return array_intersect_key($this->getGeneratorsMap(), array_flip($generators));
     }
 
     protected function getGeneratorsMap(): array
