@@ -7,7 +7,6 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 use App\Nova\AdminResource;
-use RonasIT\Support\Tests\Support\Command\Models\User;
 
 class NovaAdminResourceTest extends TestCase
 {
