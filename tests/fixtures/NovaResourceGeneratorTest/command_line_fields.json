@@ -2,16 +2,13 @@
   "boolean": [
     "is_published"
   ],
-  "string-required": [
-    "title",
-    "body"
+  "string": [
+    "title:required",
+    "body:required"
   ],
   "integer": [
     "id"
   ],
-  "non_existing_type": [
-    "comment"
-  ],
   "json": [],
-  "timestamp-required": []
+  "timestamp": []
 }

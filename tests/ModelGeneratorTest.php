@@ -52,6 +52,7 @@ class ModelGeneratorTest extends TestCase
 
         app(ModelGenerator::class)
             ->setModel('Post')
+            ->setFields($this->getFieldsDTO())
             ->setRelations(new RelationsDTO(
                 hasOne: ['Comment'],
             ))
@@ -62,19 +63,7 @@ class ModelGeneratorTest extends TestCase
     {
         app(ModelGenerator::class)
             ->setModel('Post')
-            ->setFields([
-                'integer' => ['priority'],
-                'integer-required' => ['media_id'],
-                'float' => ['seo_score'],
-                'float-required' => ['rating'],
-                'string' => ['description'],
-                'string-required' => ['title'],
-                'boolean' => ['is_reviewed'],
-                'boolean-required' => ['is_published'],
-                'timestamp' => ['reviewed_at', 'created_at', 'updated_at'],
-                'timestamp-required' => ['published_at'],
-                'json' => ['meta'],
-            ])
+            ->setFields($this->getFieldsDTO($this->getJsonFixture('create_model_fields')))
             ->setRelations(new RelationsDTO(
                 hasOne: ['Comment'],
                 hasMany: ['User'],
@@ -95,7 +84,7 @@ class ModelGeneratorTest extends TestCase
     {
         app(ModelGenerator::class)
             ->setModel('Post')
-            ->setFields([])
+            ->setFields($this->getFieldsDTO())
             ->generate();
 
         $this->assertGeneratedFileEquals('new_model_without_fields.php', 'app/Models/Post.php');
@@ -114,7 +103,7 @@ class ModelGeneratorTest extends TestCase
         );
 
         $this
-            ->artisan('make:entity Post -S name -l unknown-type')
+            ->artisan('make:entity Post -s name -l unknown-type')
             ->assertFailed();
     }
 
@@ -124,7 +113,7 @@ class ModelGeneratorTest extends TestCase
 
         app(ModelGenerator::class)
             ->setModel('Post')
-            ->setFields([])
+            ->setFields($this->getFieldsDTO())
             ->generate();
 
         $this->assertFileDoesNotExist('app/Models/Post.php');
@@ -140,7 +129,7 @@ class ModelGeneratorTest extends TestCase
     public function testCreateModelByCommand()
     {
         $this
-            ->artisan('make:entity Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -t reviewed_at -t created_at -t updated_at -T published_at -j meta -a Comment -A User --only-model')
+            ->artisan('make:entity Post -i priority -i media_id:required -f seo_score -f rating:required -s description -s title:required -b is_reviewed -b is_published:required -t reviewed_at -t created_at -t updated_at -t published_at:required -j meta -a Comment -A User --only-model')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_model.php', 'app/Models/Post.php');
@@ -171,7 +160,7 @@ class ModelGeneratorTest extends TestCase
     public function testCreateSubFoldersModel()
     {
         $this
-            ->artisan('make:entity Forum/Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -t reviewed_at -t created_at -t updated_at -T published_at -j meta -a Comment -A User')
+            ->artisan('make:entity Forum/Post -i priority -i media_id:required -f seo_score -f rating:required -s description -s title:required -b is_reviewed -b is_published:required -t reviewed_at -t created_at -t updated_at -t published_at:required -j meta -a Comment -A User')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_subfolders_model.php', 'app/Models/Forum/Post.php');
@@ -185,7 +174,7 @@ class ModelGeneratorTest extends TestCase
     public function testCreateWithSubFoldersRelations()
     {
         $this
-            ->artisan('make:entity Post -S title -A Forum/Author')
+            ->artisan('make:entity Post -s title:required -A Forum/Author')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_model_with_subfolers_relations.php', 'app/Models/Post.php');
@@ -199,7 +188,7 @@ class ModelGeneratorTest extends TestCase
     public function testCreateModelWithoutDateFields()
     {
         $this
-            ->artisan('make:entity Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -j meta --only-model')
+            ->artisan('make:entity Post -i priority -i media_id:r -f seo_score -f rating:r -s description -s title:required -b is_reviewed -b is_published:required -j meta --only-model')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_model_without_date_fields.php', 'app/Models/Post.php');
@@ -216,8 +205,9 @@ class ModelGeneratorTest extends TestCase
 
         app(ModelGenerator::class)
             ->setModel('Post')
+            ->setFields($this->getFieldsDTO())
             ->setRelations(new RelationsDTO())
-            ->setFields([])
+            ->setFields($this->getFieldsDTO())
             ->generate();
 
         $this->assertGeneratedFileEquals('new_model_without_fields_and_relations.php', 'app/Models/Post.php');
@@ -234,7 +224,7 @@ class ModelGeneratorTest extends TestCase
 
         app(ModelGenerator::class)
             ->setModel('Post')
-            ->setFields([])
+            ->setFields($this->getFieldsDTO())
             ->setRelations(new RelationsDTO(
                 hasOne: ['Comment'],
                 hasMany: ['User'],
@@ -253,7 +243,7 @@ class ModelGeneratorTest extends TestCase
     {
         app(ModelGenerator::class)
             ->setModel('Category')
-            ->setFields([])
+            ->setFields($this->getFieldsDTO())
             ->setRelations(new RelationsDTO(
                 belongsToMany: ['User'],
             ))

@@ -4,10 +4,8 @@ namespace RonasIT\Support\Generators;
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\FakerMethodNotFoundException;
 
 class FactoryGenerator extends EntityGenerator
 {
@@ -53,19 +51,7 @@ class FactoryGenerator extends EntityGenerator
             return '$faker->' . self::FAKERS_METHODS[$field['type']];
         }
 
-        return self::getCustomMethod($field);
-    }
-
-    protected static function getCustomMethod($field): string
-    {
-        if (Arr::has(self::CUSTOM_METHODS, $field['type'])) {
-            return self::CUSTOM_METHODS[$field['type']];
-        }
-
-        $message = "Cannot generate fake data for unsupported {$field['type']} field type. "
-            . 'Supported custom field types are ' . implode(', ', array_keys(self::CUSTOM_METHODS));
-
-        throw new FakerMethodNotFoundException($message);
+        return self::CUSTOM_METHODS[$field['type']];
     }
 
     public static function getFactoryFieldsContent($field): string
@@ -95,13 +81,11 @@ class FactoryGenerator extends EntityGenerator
     {
         $result = [];
 
-        foreach ($this->fields as $type => $fields) {
-            foreach ($fields as $field) {
-                $result[] = [
-                    'name' => $field,
-                    'type' => Str::before($type, '-'),
-                ];
-            }
+        foreach ($this->fields as $field) {
+            $result[] = [
+                'name' => $field->name,
+                'type' => $field->type->value,
+            ];
         }
 
         return $result;

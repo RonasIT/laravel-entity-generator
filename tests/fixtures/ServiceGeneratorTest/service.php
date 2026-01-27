@@ -25,6 +25,7 @@ class PostService extends EntityService
             ->withCount(Arr::get($filters, 'with_count', []))
             ->searchQuery($filters)
             ->filterBy('media_id')
+            ->filterBy('user_id')
             ->filterByQuery(['title', 'body'])
             ->getSearchResults();
     }

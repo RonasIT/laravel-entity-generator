@@ -80,7 +80,7 @@ class NovaResourceGeneratorTest extends TestCase
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
-            ->setFields($fields)
+            ->setFields($this->getFieldsDTO($fields))
             ->generate();
 
         $this->assertFileDoesNotExist('app/Nova/PostResource.php');
@@ -99,7 +99,7 @@ class NovaResourceGeneratorTest extends TestCase
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
-            ->setFields($fields)
+            ->setFields($this->getFieldsDTO($fields))
             ->generate();
 
         $this->assertGeneratedFileEquals('created_resource.php', 'app/Nova/PostResource.php');
@@ -118,7 +118,7 @@ class NovaResourceGeneratorTest extends TestCase
 
         app(NovaResourceGenerator::class)
             ->setModel('Post')
-            ->setFields([])
+            ->setFields($this->getFieldsDTO())
             ->generate();
 
         $this->assertGeneratedFileEquals(

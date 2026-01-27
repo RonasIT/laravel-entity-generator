@@ -3,9 +3,11 @@
 namespace RonasIT\Support\Generators;
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
+use RonasIT\Support\Enums\FieldModifierEnum;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\UnknownFieldTypeException;
+use RonasIT\Support\Support\Fields\Field;
+use RonasIT\Support\Support\Fields\FieldsCollection;
 
 class MigrationGenerator extends EntityGenerator
 {
@@ -33,19 +35,19 @@ class MigrationGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Migration: {$entities}_create_table"));
     }
 
-    protected function isJson(string $typeName): bool
+    protected function isJson(FieldTypeEnum $type): bool
     {
-        return $typeName === 'json';
+        return $type === FieldTypeEnum::Json;
     }
 
-    protected function isRequired(string $typeName): bool
+    protected function isRequired(array $modifiers): bool
     {
-        return Str::afterLast($typeName, '-') === 'required';
+        return in_array(FieldModifierEnum::Required, $modifiers);
     }
 
-    protected function isNullable(string $typeName): bool
+    protected function isNullable(array $modifiers): bool
     {
-        return empty(explode('-', $typeName)[1]);
+        return empty($modifiers);
     }
 
     protected function getJsonLine(string $fieldName): string
@@ -59,49 +61,35 @@ class MigrationGenerator extends EntityGenerator
 
     protected function getRequiredLine(string $fieldName, string $typeName): string
     {
-        $type = explode('-', $typeName)[0];
-
-        if ($type === 'timestamp' && env('DB_CONNECTION') === 'mysql') {
-            return "\$table->{$type}('{$fieldName}')->nullable();";
+        if ($typeName === 'timestamp' && env('DB_CONNECTION') === 'mysql') {
+            return "\$table->{$typeName}('{$fieldName}')->nullable();";
         }
 
-        return "\$table->{$type}('{$fieldName}');";
+        return "\$table->{$typeName}('{$fieldName}');";
     }
 
     protected function getNonRequiredLine(string $fieldName, string $typeName): string
     {
-        $type = explode('-', $typeName)[0];
-
-        return "\$table->{$type}('{$fieldName}')->nullable();";
+        return "\$table->{$typeName}('{$fieldName}')->nullable();";
     }
 
-    protected function generateTable(array $fields): array
+    protected function generateTable(FieldsCollection $fields): array
     {
         $resultTable = [];
 
-        foreach ($fields as $typeName => $fieldNames) {
-            foreach ($fieldNames as $fieldName) {
-                $resultTable[] = $this->getTableRow($fieldName, $typeName);
-            }
+        foreach ($fields as $field) {
+            $resultTable[] = $this->getTableRow($field->type, $field);
         }
 
         return $resultTable;
     }
 
-    protected function getTableRow(string $fieldName, string $typeName): string
+    protected function getTableRow(FieldTypeEnum $fieldType, Field $field): string
     {
-        if ($this->isJson($typeName)) {
-            return $this->getJsonLine($fieldName);
-        }
-
-        if ($this->isRequired($typeName)) {
-            return $this->getRequiredLine($fieldName, $typeName);
-        }
-
-        if ($this->isNullable($typeName)) {
-            return $this->getNonRequiredLine($fieldName, $typeName);
-        }
-
-        throw new UnknownFieldTypeException($typeName, 'MigrationGenerator');
+        return match (true) {
+            $this->isJson($fieldType) => $this->getJsonLine($field->name),
+            $this->isRequired($field->modifiers) => $this->getRequiredLine($field->name, $fieldType->value),
+            $this->isNullable($field->modifiers) => $this->getNonRequiredLine($field->name, $fieldType->value),
+        };
     }
 }

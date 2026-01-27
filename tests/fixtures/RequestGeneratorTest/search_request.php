@@ -12,10 +12,11 @@ class SearchPostsRequest extends Request
         $availableRelations = implode(',', $this->getAvailableRelations());
 
         return [
+            'is_published' => 'boolean',
+            'is_draft' => 'boolean',
             'user_id' => 'required|integer|exists:users,id',
             'page' => 'integer',
             'per_page' => 'integer',
-            'is_published' => 'boolean',
             'desc' => 'boolean',
             'all' => 'boolean',
             'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),

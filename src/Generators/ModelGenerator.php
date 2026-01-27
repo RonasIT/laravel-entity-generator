@@ -2,9 +2,11 @@
 
 namespace RonasIT\Support\Generators;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use RonasIT\Support\Enums\FieldModifierEnum;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Support\Fields\FieldsCollection;
 
 class ModelGenerator extends EntityGenerator
 {
@@ -35,13 +37,13 @@ class ModelGenerator extends EntityGenerator
 
         return $this->getStub('model', [
             'entity' => $this->model,
-            'fields' => Arr::collapse($this->fields),
+            'fields' => $this->fields->pluck('name')->toArray(),
             'relations' => $relations,
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
             'annotationProperties' => $this->generateAnnotationProperties($this->fields, $relations),
-            'hasCarbonField' => !empty($this->fields['timestamp']) || !empty($this->fields['timestamp-required']),
+            'hasCarbonField' => $this->fields->whereType(FieldTypeEnum::Timestamp)->isNotEmpty(),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
     }
@@ -122,26 +124,22 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getCasts(array $fields): array
+    protected function getCasts(FieldsCollection $fields): array
     {
         $casts = [
-            'boolean-required' => 'boolean',
             'boolean' => 'boolean',
             'json' => 'array',
-            'timestamp-required' => 'datetime',
             'timestamp' => 'datetime',
         ];
 
         $result = [];
 
-        foreach ($fields as $fieldType => $names) {
-            if (!array_key_exists($fieldType, $casts)) {
+        foreach ($fields as $field) {
+            if (!array_key_exists($field->type->value, $casts)) {
                 continue;
             }
 
-            foreach ($names as $name) {
-                $result[$name] = $casts[$fieldType];
-            }
+            $result[$field->name] = $casts[$field->type->value];
         }
 
         return $result;
@@ -179,14 +177,12 @@ class ModelGenerator extends EntityGenerator
         return "{$path}\\{$psrPath}";
     }
 
-    protected function generateAnnotationProperties(array $fields, array $relations): array
+    protected function generateAnnotationProperties(FieldsCollection $fields, array $relations): array
     {
         $result = [];
 
-        foreach ($fields as $typeName => $fieldNames) {
-            foreach ($fieldNames as $fieldName) {
-                $result[$fieldName] = $this->getFieldType($typeName);
-            }
+        foreach ($fields as $field) {
+            $result[$field->name] = $this->getFieldType($field->type, $field->modifiers);
         }
 
         foreach ($relations as $relation) {
@@ -196,14 +192,14 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getFieldType(string $fieldType): string
+    protected function getFieldType(FieldTypeEnum $fieldType, array $modifiers): string
     {
-        $isNullable = !$this->isJson($fieldType) && !$this->isRequired($fieldType);
+        $isNullable = !$this->isJson($fieldType) && !$this->isRequired($modifiers);
 
         return $this->getProperty($fieldType, $isNullable);
     }
 
-    protected function getProperty(string $typeName, bool $isNullable = false): string
+    protected function getProperty(FieldTypeEnum $type, bool $isNullable = false): string
     {
         $typesMap = [
             'integer' => 'int',
@@ -214,7 +210,7 @@ class ModelGenerator extends EntityGenerator
             'json' => 'array',
         ];
 
-        $type = $typesMap[Str::before($typeName, '-')];
+        $type = $typesMap[$type->value];
 
         if ($isNullable) {
             $type .= '|null';
@@ -223,14 +219,14 @@ class ModelGenerator extends EntityGenerator
         return $type;
     }
 
-    protected function isJson(string $typeName): bool
+    protected function isJson(FieldTypeEnum $type): bool
     {
-        return $typeName === 'json';
+        return $type === FieldTypeEnum::Json;
     }
 
-    protected function isRequired(string $typeName): bool
+    protected function isRequired(array $modifiers): bool
     {
-        return Str::endsWith($typeName, 'required');
+        return in_array(FieldModifierEnum::Required, $modifiers);
     }
 
     protected function getRelationType(string $model, string $relation): string
