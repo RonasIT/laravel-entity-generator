@@ -14,8 +14,8 @@ enum FieldModifierEnum: string
 
     public static function tryFromAlias(string $alias): ?self
     {
-        return match (true) {
-            $alias === 'r' => FieldModifierEnum::Required,
+        return match ($alias) {
+            'r' => FieldModifierEnum::Required,
             default => null,
         };
     }
