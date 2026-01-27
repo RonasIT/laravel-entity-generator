@@ -3,11 +3,11 @@
 namespace RonasIT\Support\Generators;
 
 use Carbon\Carbon;
-use RonasIT\Support\Collections\FieldsCollection;
 use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\ValueObjects\Field;
+use RonasIT\Support\Support\Fields\Field;
+use RonasIT\Support\Support\Fields\FieldsCollection;
 
 class MigrationGenerator extends EntityGenerator
 {

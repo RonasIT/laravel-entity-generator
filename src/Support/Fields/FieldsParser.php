@@ -4,36 +4,40 @@ namespace RonasIT\Support\Support\Fields;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\DTO\FieldDTO;
+use RonasIT\Support\DTO\FieldsDTO;
 use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Exceptions\UnknownFieldModifierException;
 
-class FieldsParser
+final class FieldsParser
 {
-    public function parse(array $options): array
+    public function parse(array $options): FieldsDTO
     {
         $result = [];
 
         foreach ($options as $type => $fields) {
             foreach ($fields as $field) {
-                $parts = explode(':', $field);
-
-                $result[$type][] = new FieldDTO(
-                    name: $parts[0],
-                    modifiers: $this->prepareModifiers($parts[1] ?? '', $parts[0]),
-                );
+                $result[$type][] = $this->createFieldDTO($field);
             }
         }
 
-        return $result;
+        return new FieldsDTO(...$result);
     }
 
-    protected function convertModifiersShortOptions(array $modifiers): array
+    protected function createFieldDTO(string $field): FieldDTO
     {
-        $modifiersMap = [
-            'r' => FieldModifierEnum::Required->value,
-        ];
+        list($name, $modifiers) = $this->splitField($field);
 
-        return Arr::map($modifiers, fn ($modifier) => $modifiersMap[$modifier] ?? $modifier);
+        return new FieldDTO(
+            name: $name,
+            modifiers: $this->prepareModifiers($modifiers, $name),
+        );
+    }
+
+    protected function splitField(string $field): array
+    {
+        $parts = explode(':', $field);
+
+        return [$parts[0], $parts[1] ?? ''];
     }
 
     protected function prepareModifiers(string $modifiers, string $fieldName): array
@@ -42,11 +46,19 @@ class FieldsParser
             return [];
         }
 
-        $modifiers = $this->convertModifiersShortOptions(explode(',', $modifiers));
+        $modifiers = explode(',', $modifiers);
 
-        return Arr::map(
-            array: $modifiers,
-            callback: fn ($modifier) => FieldModifierEnum::tryFrom($modifier) ?? throw new UnknownFieldModifierException($modifier, $fieldName),
-        );
+        return Arr::map($modifiers, fn ($modifier) => $this->prepareModifier($modifier, $fieldName));
+    }
+
+    protected function prepareModifier(string $modifier, string $fieldName): FieldModifierEnum
+    {
+        $modifierEnum = FieldModifierEnum::tryFromAlias($modifier) ?? FieldModifierEnum::tryFrom($modifier);
+
+        if (is_null($modifierEnum)) {
+            throw new UnknownFieldModifierException($modifier, $fieldName);
+        }
+
+        return $modifierEnum;
     }
 }

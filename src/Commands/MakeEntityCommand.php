@@ -263,9 +263,8 @@ class MakeEntityCommand extends Command
     protected function parseFields(): void
     {
         $rawFields = Arr::only($this->options(), FieldTypeEnum::values());
-        $fieldDTOs = $this->fieldsParser->parse($rawFields);
 
-        $this->fields = new FieldsDTO(...$fieldDTOs);
+        $this->fields = $this->fieldsParser->parse($rawFields);
     }
 
     protected function validateEntityName(): void

@@ -125,6 +125,6 @@ class TestCase extends BaseTestCase
     {
         $fieldsParser = app(FieldsParser::class);
 
-        return new FieldsDTO(...$fieldsParser->parse($options));
+        return $fieldsParser->parse($options);
     }
 }

@@ -11,4 +11,12 @@ enum FieldModifierEnum: string
     case Required = 'required';
     case Present = 'present';
     case Nullable = 'nullable';
+
+    public static function tryFromAlias(string $alias): ?self
+    {
+        return match (true) {
+            $alias === 'r' => FieldModifierEnum::Required,
+            default => null,
+        };
+    }
 }

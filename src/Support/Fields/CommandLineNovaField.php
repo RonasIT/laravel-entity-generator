@@ -4,7 +4,6 @@ namespace RonasIT\Support\Support\Fields;
 
 use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Enums\FieldTypeEnum;
-use RonasIT\Support\ValueObjects\Field;
 
 class CommandLineNovaField extends AbstractNovaField
 {

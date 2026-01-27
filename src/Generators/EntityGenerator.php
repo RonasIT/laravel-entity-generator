@@ -17,8 +17,8 @@ use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\Support\Support\Fields\Field;
 use RonasIT\Support\Support\Fields\FieldsMapper;
-use RonasIT\Support\ValueObjects\Field;
 use Throwable;
 
 /**
@@ -42,7 +42,7 @@ abstract class EntityGenerator
     protected $fields;
     protected $relations = [];
     protected $crudOptions;
-    protected FieldsMapper $fieldsMapper;
+    protected readonly FieldsMapper $fieldsMapper;
 
     public function setCrudOptions(array $crudOptions): self
     {
@@ -356,6 +356,6 @@ abstract class EntityGenerator
             modifiers: [FieldModifierEnum::Required],
         ), $this->relations->belongsTo);
 
-        $this->fields = $this->fields->merge($newFields);
+        $this->fields = $this->fields->concat($newFields);
     }
 }

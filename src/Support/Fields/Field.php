@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\ValueObjects;
+namespace RonasIT\Support\Support\Fields;
 
 use Illuminate\Support\Arr;
 use RonasIT\Support\Enums\FieldModifierEnum;

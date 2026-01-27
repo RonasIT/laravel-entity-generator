@@ -2,12 +2,10 @@
 
 namespace RonasIT\Support\Support\Fields;
 
-use RonasIT\Support\Collections\FieldsCollection;
 use RonasIT\Support\DTO\FieldsDTO;
 use RonasIT\Support\Enums\FieldTypeEnum;
-use RonasIT\Support\ValueObjects\Field;
 
-class FieldsMapper
+final class FieldsMapper
 {
     public function mapDTOtoCollection(FieldsDTO $fields): FieldsCollection
     {
