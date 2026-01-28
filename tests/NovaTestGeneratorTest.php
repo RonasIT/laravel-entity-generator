@@ -2,13 +2,17 @@
 
 namespace RonasIT\Support\Tests;
 
+use App\Nova\AdminResource;
+use Illuminate\Support\Carbon;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
+use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Generators\NovaTestGenerator;
+use RonasIT\Support\Tests\Support\Command\Models\User;
 use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
 use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 
@@ -54,7 +58,7 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: EntityCreateException::class,
-            message: 'Cannot create NovaPostResourceTest cause was found a lot of suitable resources: BasePostResource, PublishPostResource. Make test by yourself.',
+            message: 'Cannot create NovaPostResourceTest cause was found a lot of suitable resources: BasePostResource, PublishPostResource. You may use --nova-resource-name option to specify a concrete resource.',
         );
 
         app(NovaTestGenerator::class)
@@ -184,6 +188,60 @@ class NovaTestGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('create_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_request.json');
         $this->assertGeneratedFileEquals('create_welcome_bonus_response.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/create_welcome_bonus_resource_response.json');
         $this->assertGeneratedFileEquals('update_welcome_bonus_request.json', 'tests/fixtures/NovaWelcomeBonusResourceTest/update_welcome_bonus_resource_request.json');
+    }
+
+    public function testCallCommandCreateNovaTestsWithResource()
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+        ]);
+
+        $this->mockDBTransactionStartRollback();
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
+            $this->nativeClassExistsMethodCall([AdminResource::class, true]),
+            $this->nativeClassExistsMethodCall([User::class, true]),
+        );
+
+        $this->mockNovaRequestClassCall();
+
+        app(NovaTestGenerator::class)
+            ->setModel('User')
+            ->setNovaResource('AdminResource')
+            ->generate();
+
+        $this->assertGeneratedFileEquals('created_admin_resource_test.php', 'tests/NovaAdminResourceTest.php');
+        $this->assertGeneratedFileEquals('dump_admin.sql', 'tests/fixtures/NovaAdminResourceTest/dump.sql');
+        $this->assertGeneratedFileEquals('create_admin_request.json', 'tests/fixtures/NovaAdminResourceTest/create_admin_resource_request.json');
+        $this->assertGeneratedFileEquals('create_admin_response.json', 'tests/fixtures/NovaAdminResourceTest/create_admin_resource_response.json');
+        $this->assertGeneratedFileEquals('update_admin_request.json', 'tests/fixtures/NovaAdminResourceTest/update_admin_resource_request.json');
+    }
+
+    public function testCallCommandCreateNovaTestsWithResourceNotFound()
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+        ]);
+
+        Carbon::setTestNow('2016-10-20 11:05:00');
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall([NovaServiceProvider::class, true]),
+            $this->nativeClassExistsMethodCall(['App\Nova\SomeResource', true], false),
+        );
+
+        $this->assertExceptionThrew(
+            className: ClassNotExistsException::class,
+            message: 'Cannot create NovaSomeResourceTest cause App\Nova\SomeResource does not exist. Create App\Nova\SomeResource.',
+        );
+
+        app(NovaTestGenerator::class)
+            ->setModel('WelcomeBonus')
+            ->setNovaResource('SomeResource')
+            ->generate();
     }
 
     public function testGenerateNovaPackageNotInstall()
