@@ -102,6 +102,7 @@ The following options are available:
 - `--only-tests`
 - `--only-seeder`
 - `--only-resource`
+- `--only-nova-tests`
 
 #### Mode combination options
 
@@ -142,6 +143,10 @@ Feel free to use any combinations of actions in any order. Each action has its o
 - `U` update
 - `D` delete
 - `R` read (search and get by id)
+
+#### Special class-related options
+
+- `--nova-resource-name` - Specifies the Nova resource name for the Nova tests generation. By default script will try to find the common resource class based on the entity name.
 
 ## Release notes
 
