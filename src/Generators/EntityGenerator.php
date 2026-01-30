@@ -207,7 +207,7 @@ abstract class EntityGenerator
 
     protected function throwFailureException($exceptionClass, $failureMessage, $recommendedMessage): void
     {
-        throw new $exceptionClass("{$failureMessage} {$recommendedMessage}");
+        throw new $exceptionClass("{$failureMessage}\n{$recommendedMessage}");
     }
 
     protected function getRelatedModels(string $model, string $creatableClass): array
