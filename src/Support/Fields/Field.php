@@ -15,7 +15,7 @@ final readonly class Field
     ) {
     }
 
-    public function replaceModifier(FieldModifierEnum $originalModifier, FieldModifierEnum $newModifier): self
+    public function replaceModifier(FieldModifierEnum $originalModifier, FieldModifierEnum|string $newModifier): self
     {
         return new self(
             name: $this->name,

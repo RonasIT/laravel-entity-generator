@@ -11,7 +11,7 @@ final class FieldsCollection extends Collection
     public function replaceModifier(
         FieldTypeEnum $type,
         FieldModifierEnum $originalModifier,
-        FieldModifierEnum $newModifier,
+        FieldModifierEnum|string $newModifier,
     ): self {
         $fields = $this->map(
             fn (Field $field) => ($field->type === $type)

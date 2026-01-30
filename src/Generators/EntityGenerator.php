@@ -18,7 +18,7 @@ use RonasIT\Support\Exceptions\IncorrectClassPathException;
 use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\Support\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Support\Fields\Field;
-use RonasIT\Support\Support\Fields\FieldsMapper;
+use RonasIT\Support\Support\Fields\FieldsCollection;
 use Throwable;
 
 /**
@@ -42,7 +42,13 @@ abstract class EntityGenerator
     protected $fields;
     protected $relations = [];
     protected $crudOptions;
-    protected readonly FieldsMapper $fieldsMapper;
+
+    public function __construct()
+    {
+        $this->paths = config('entity-generator.paths');
+
+        $this->checkConfigHasCorrectPaths();
+    }
 
     public function setCrudOptions(array $crudOptions): self
     {
@@ -67,7 +73,7 @@ abstract class EntityGenerator
 
     public function setFields(FieldsDTO $fields): self
     {
-        $this->fields = $this->fieldsMapper->mapDTOtoCollection($fields);
+        $this->fields = new FieldsCollection(Arr::collapse($fields));
 
         return $this;
     }
@@ -79,15 +85,6 @@ abstract class EntityGenerator
         $this->applyRelationsToFields();
 
         return $this;
-    }
-
-    public function __construct()
-    {
-        $this->paths = config('entity-generator.paths');
-
-        $this->checkConfigHasCorrectPaths();
-
-        $this->fieldsMapper = app(FieldsMapper::class);
     }
 
     protected function generateNamespace(string $path, ?string $additionalSubFolder = null): string

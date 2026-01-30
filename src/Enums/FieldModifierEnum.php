@@ -9,8 +9,6 @@ enum FieldModifierEnum: string
     use EnumTrait;
 
     case Required = 'required';
-    case Present = 'present';
-    case Nullable = 'nullable';
 
     public static function tryFromAlias(string $alias): ?self
     {

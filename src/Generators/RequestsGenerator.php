@@ -108,7 +108,7 @@ class RequestsGenerator extends EntityGenerator
         $parameters = $this->fields->replaceModifier(
             type: FieldTypeEnum::Boolean,
             originalModifier: FieldModifierEnum::Required,
-            newModifier: FieldModifierEnum::Present,
+            newModifier: 'present',
         );
 
         return $this->getValidationParameters($parameters, true);
@@ -133,7 +133,7 @@ class RequestsGenerator extends EntityGenerator
                 new Field('desc', FieldTypeEnum::Boolean),
                 new Field('all', FieldTypeEnum::Boolean),
                 new Field('order_by', FieldTypeEnum::String),
-                new Field('query', FieldTypeEnum::String, [FieldModifierEnum::Nullable]),
+                new Field('query', FieldTypeEnum::String, ['nullable']),
                 new Field('with', FieldTypeEnum::Array),
                 new Field('with.*', FieldTypeEnum::String, [FieldModifierEnum::Required]),
             ]);
@@ -147,8 +147,8 @@ class RequestsGenerator extends EntityGenerator
 
         foreach ($parameters as $field) {
             $isRequired = in_array(FieldModifierEnum::Required, $field->modifiers);
-            $isNullable = in_array(FieldModifierEnum::Nullable, $field->modifiers);
-            $isPresent = in_array(FieldModifierEnum::Present, $field->modifiers);
+            $isNullable = in_array('nullable', $field->modifiers);
+            $isPresent = in_array('present', $field->modifiers);
 
             $required = $isRequired && $requiredAvailable;
 

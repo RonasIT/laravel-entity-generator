@@ -3,9 +3,9 @@
 namespace RonasIT\Support\Support\Fields;
 
 use Illuminate\Support\Arr;
-use RonasIT\Support\DTO\FieldDTO;
 use RonasIT\Support\DTO\FieldsDTO;
 use RonasIT\Support\Enums\FieldModifierEnum;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Exceptions\UnknownFieldModifierException;
 
 final class FieldsParser
@@ -16,19 +16,20 @@ final class FieldsParser
 
         foreach ($options as $type => $fields) {
             foreach ($fields as $field) {
-                $result[$type][] = $this->createFieldDTO($field);
+                $result[$type][] = $this->createField($field, $type);
             }
         }
 
         return new FieldsDTO(...$result);
     }
 
-    protected function createFieldDTO(string $field): FieldDTO
+    protected function createField(string $field, string $type): Field
     {
         list($name, $modifiers) = $this->splitField($field);
 
-        return new FieldDTO(
+        return new Field(
             name: $name,
+            type: FieldTypeEnum::from($type),
             modifiers: $this->prepareModifiers($modifiers, $name),
         );
     }
@@ -37,18 +38,20 @@ final class FieldsParser
     {
         $parts = explode(':', $field);
 
-        return [$parts[0], $parts[1] ?? ''];
+        $fieldName = array_shift($parts);
+
+        return [$fieldName, $parts];
     }
 
-    protected function prepareModifiers(string $modifiers, string $fieldName): array
+    protected function prepareModifiers(array $modifiers, string $fieldName): array
     {
         if (empty($modifiers)) {
             return [];
         }
 
-        $modifiers = explode(',', $modifiers);
+        $modifiers = explode(',', Arr::first($modifiers));
 
-        return Arr::map($modifiers, fn ($modifier) => $this->prepareModifier($modifier, $fieldName));
+        return Arr::map($modifiers, fn (string $modifier) => $this->prepareModifier($modifier, $fieldName));
     }
 
     protected function prepareModifier(string $modifier, string $fieldName): FieldModifierEnum
