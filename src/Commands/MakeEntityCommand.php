@@ -16,6 +16,7 @@ use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Events\WarningEvent;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Generators\ControllerGenerator;
+use RonasIT\Support\Generators\EntityGenerator;
 use RonasIT\Support\Generators\FactoryGenerator;
 use RonasIT\Support\Generators\MigrationGenerator;
 use RonasIT\Support\Generators\ModelGenerator;
@@ -65,6 +66,7 @@ class MakeEntityCommand extends Command
         {--only-nova-resource : Set this flag if you want to create only nova resource.}
         {--only-nova-tests : Set this flag if you want to create only nova resource tests.}
 
+        {--nova-resource-name= : Override the default Nova resource name to generate a Nova test resource.}
         {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
         {--i|integer=* : Add integer field to entity.}
@@ -210,24 +212,63 @@ class MakeEntityCommand extends Command
 
     protected function generate(): void
     {
-        foreach ($this->rules['only'] as $option => $generators) {
-            if ($this->option($option)) {
-                foreach ($generators as $generator) {
-                    $this->runGeneration($generator);
-                }
+        $providedOnlyOptions = $this->getProvidedOnlyOptions();
 
-                return;
-            }
-        }
+        $generators = (!empty($providedOnlyOptions))
+            ? $this->getOnlyGenerators($providedOnlyOptions)
+            : $this->getGeneratorsMap();
 
-        foreach ($this->generators as $generator) {
-            $this->runGeneration($generator);
-        }
+        array_walk($generators, fn ($generator) => $this->runGeneration($generator));
     }
 
-    protected function runGeneration(string $generator): void
+    protected function getProvidedOnlyOptions(): array
     {
-        app($generator)
+        $providedOptions = array_filter(
+            array: $this->options(),
+            callback: fn ($value, $name) => Str::startsWith($name, 'only-') && $value === true,
+            mode: ARRAY_FILTER_USE_BOTH,
+        );
+
+        return array_keys($providedOptions);
+    }
+
+    protected function getOnlyGenerators(array $providedOptions): array
+    {
+        $generators = Arr::map($providedOptions, fn ($option) => Str::replace('only-', '', $option));
+
+        if (in_array('api', $generators)) {
+            array_push($generators, 'resource', 'controller', 'requests', 'factory', 'tests');
+        }
+
+        if (in_array('entity', $generators)) {
+            array_push($generators, 'migration', 'model', 'repository', 'service', 'factory', 'seeder');
+        }
+
+        return array_intersect_key($this->getGeneratorsMap(), array_flip($generators));
+    }
+
+    protected function getGeneratorsMap(): array
+    {
+        return [
+            'model' => app(ModelGenerator::class),
+            'repository' => app(RepositoryGenerator::class),
+            'service' => app(ServiceGenerator::class),
+            'resource' => app(ResourceGenerator::class),
+            'controller' => app(ControllerGenerator::class),
+            'requests' => app(RequestsGenerator::class),
+            'migration' => app(MigrationGenerator::class),
+            'factory' => app(FactoryGenerator::class),
+            'tests' => app(TestsGenerator::class),
+            'seeder' => app(SeederGenerator::class),
+            'translations' => app(TranslationsGenerator::class),
+            'nova-resource' => app(NovaResourceGenerator::class),
+            'nova-tests' => app(NovaTestGenerator::class)->setNovaResource($this->option('nova-resource-name')),
+        ];
+    }
+
+    protected function runGeneration(EntityGenerator $generator): void
+    {
+        $generator
             ->setModel($this->entityName)
             ->setModelSubFolder($this->entityNamespace)
             ->setFields($this->fields)
