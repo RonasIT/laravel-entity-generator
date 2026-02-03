@@ -12,7 +12,7 @@ use Traversable;
 final class FieldsCollection implements IteratorAggregate
 {
     /**
-     * @param Field[] $fields
+     * @param  Field[]  $fields
      */
     public function __construct(
         private array $fields = [],
