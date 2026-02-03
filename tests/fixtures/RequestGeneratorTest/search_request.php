@@ -12,6 +12,9 @@ class SearchPostsRequest extends Request
         $availableRelations = implode(',', $this->getAvailableRelations());
 
         return [
+            'is_published' => 'boolean',
+            'is_draft' => 'boolean',
+            'user_id' => 'required|integer|exists:users,id',
             'page' => 'integer',
             'per_page' => 'integer',
             'desc' => 'boolean',
@@ -20,9 +23,6 @@ class SearchPostsRequest extends Request
             'query' => 'string|nullable',
             'with' => 'array',
             'with.*' => 'required|string|in:' . $availableRelations,
-            'is_published' => 'boolean',
-            'is_draft' => 'boolean',
-            'user_id' => 'required|integer|exists:users,id',
         ];
     }
 
