@@ -37,13 +37,13 @@ class ModelGenerator extends EntityGenerator
 
         return $this->getStub('model', [
             'entity' => $this->model,
-            'fields' => $this->fields->pluck('name')->toArray(),
+            'fields' => $this->fields->pluck('name'),
             'relations' => $relations,
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
             'annotationProperties' => $this->generateAnnotationProperties($this->fields, $relations),
-            'hasCarbonField' => $this->fields->whereType(FieldTypeEnum::Timestamp)->isNotEmpty(),
+            'hasCarbonField' => !empty($this->fields->whereType(FieldTypeEnum::Timestamp)->get()),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
     }

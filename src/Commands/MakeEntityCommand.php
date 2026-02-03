@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use RonasIT\Support\DTO\FieldsDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
@@ -29,6 +28,7 @@ use RonasIT\Support\Generators\SeederGenerator;
 use RonasIT\Support\Generators\ServiceGenerator;
 use RonasIT\Support\Generators\TestsGenerator;
 use RonasIT\Support\Generators\TranslationsGenerator;
+use RonasIT\Support\Support\Fields\FieldsCollection;
 use RonasIT\Support\Support\Fields\FieldsParser;
 use UnexpectedValueException;
 
@@ -38,7 +38,7 @@ class MakeEntityCommand extends Command
     private string $entityName;
     private string $entityNamespace;
     private RelationsDTO $relations;
-    private FieldsDTO $fields;
+    private FieldsCollection $fields;
 
     const CRUD_OPTIONS = [
         'C', 'R', 'U', 'D',

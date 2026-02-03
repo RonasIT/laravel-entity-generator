@@ -2,19 +2,31 @@
 
 namespace RonasIT\Support\Support\Fields;
 
-use Illuminate\Support\Collection;
+use ArrayIterator;
+use Illuminate\Support\Arr;
+use IteratorAggregate;
 use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Enums\FieldTypeEnum;
+use Traversable;
 
-final class FieldsCollection extends Collection
+final class FieldsCollection implements IteratorAggregate
 {
+    /**
+     * @param Field[] $fields
+     */
+    public function __construct(
+        private array $fields = [],
+    ) {
+    }
+
     public function replaceModifier(
         FieldTypeEnum $type,
         FieldModifierEnum $originalModifier,
         FieldModifierEnum|string $newModifier,
     ): self {
-        $fields = $this->map(
-            fn (Field $field) => ($field->type === $type)
+        $fields = Arr::map(
+            array: $this->fields,
+            callback: fn (Field $field) => ($field->type === $type)
                 ? $field->replaceModifier($originalModifier, $newModifier)
                 : $field,
         );
@@ -24,8 +36,9 @@ final class FieldsCollection extends Collection
 
     public function removeModifier(FieldTypeEnum $type, FieldModifierEnum $removeModifier): self
     {
-        $fields = $this->map(
-            fn (Field $field) => ($field->type === $type)
+        $fields = Arr::map(
+            array: $this->fields,
+            callback: fn (Field $field) => ($field->type === $type)
                 ? $field->removeModifier($removeModifier)
                 : $field,
         );
@@ -35,18 +48,43 @@ final class FieldsCollection extends Collection
 
     public function remove(FieldTypeEnum $type): self
     {
-        $fields = $this->reject(fn (Field $field) => $field->type === $type);
+        $fields = Arr::reject($this->fields, fn (Field $field) => $field->type === $type);
 
         return new self($fields);
     }
 
-    public function whereType(FieldTypeEnum $type): Collection
+    public function whereType(FieldTypeEnum $type): self
     {
-        return $this->where('type', $type);
+        return new self(Arr::where($this->fields, fn (Field $field) => $field->type === $type));
     }
 
-    public function whereTypeIn(array $types): Collection
+    public function whereTypeIn(array $types): self
     {
-        return $this->whereIn('type', $types);
+        return new self(Arr::where($this->fields, fn (Field $field) => in_array($field->type, $types)));
+    }
+
+    public function add(Field $field): void
+    {
+        $this->fields[] = $field;
+    }
+
+    public function pluck(string $value): array
+    {
+        return Arr::pluck($this->fields, $value);
+    }
+
+    public function merge(array $fields): self
+    {
+        return new self([...$this->fields, ...$fields]);
+    }
+
+    public function get(): array
+    {
+        return $this->fields;
+    }
+
+    public function getIterator(): Traversable
+    {
+        return new ArrayIterator($this->fields);
     }
 }

@@ -3,24 +3,23 @@
 namespace RonasIT\Support\Support\Fields;
 
 use Illuminate\Support\Arr;
-use RonasIT\Support\DTO\FieldsDTO;
 use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Exceptions\UnknownFieldModifierException;
 
 final class FieldsParser
 {
-    public function parse(array $options): FieldsDTO
+    public function parse(array $options): FieldsCollection
     {
         $result = [];
 
         foreach ($options as $type => $fields) {
             foreach ($fields as $field) {
-                $result[$type][] = $this->createField($field, $type);
+                $result[] = $this->createField($field, $type);
             }
         }
 
-        return new FieldsDTO(...$result);
+        return new FieldsCollection($result);
     }
 
     protected function createField(string $field, string $type): Field

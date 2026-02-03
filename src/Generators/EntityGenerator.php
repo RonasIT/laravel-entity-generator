@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
-use RonasIT\Support\DTO\FieldsDTO;
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Enums\FieldTypeEnum;
@@ -71,9 +70,9 @@ abstract class EntityGenerator
         return $this;
     }
 
-    public function setFields(FieldsDTO $fields): self
+    public function setFields(FieldsCollection $fields): self
     {
-        $this->fields = new FieldsCollection(Arr::collapse($fields));
+        $this->fields = $fields;
 
         return $this;
     }
@@ -347,12 +346,12 @@ abstract class EntityGenerator
 
     protected function applyRelationsToFields(): void
     {
-        $newFields = array_map(fn (string $relation) => new Field(
-            name: Str::snake(Str::afterLast($relation, '/')) . '_id',
-            type: FieldTypeEnum::Integer,
-            modifiers: [FieldModifierEnum::Required],
-        ), $this->relations->belongsTo);
-
-        $this->fields = $this->fields->concat($newFields);
+        foreach ($this->relations->belongsTo as $relation) {
+            $this->fields->add(new Field(
+                name: Str::snake(Str::afterLast($relation, '/')) . '_id',
+                type: FieldTypeEnum::Integer,
+                modifiers: [FieldModifierEnum::Required],
+            ));
+        }
     }
 }
