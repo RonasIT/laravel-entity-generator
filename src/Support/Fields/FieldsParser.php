@@ -40,16 +40,16 @@ final class FieldsParser
 
         $fieldName = array_shift($parts);
 
-        return [$fieldName, $parts];
+        return [$fieldName, Arr::first($parts)];
     }
 
-    protected function prepareModifiers(array $modifiers, string $fieldName): array
+    protected function prepareModifiers(?string $modifiers, string $fieldName): array
     {
         if (empty($modifiers)) {
             return [];
         }
 
-        $modifiers = explode(',', Arr::first($modifiers));
+        $modifiers = explode(',', $modifiers);
 
         return Arr::map($modifiers, fn (string $modifier) => $this->prepareModifier($modifier, $fieldName));
     }
