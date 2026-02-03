@@ -222,8 +222,8 @@ class TestGeneratorTest extends TestCase
     {
         $this->assertExceptionThrew(
             className: CircularRelationsFoundedException::class,
-            message: 'Circular relations founded.'
-            . "\nPlease resolve you relations in models, factories and database.",
+            message: 'Circular relations found.'
+            . "\nPlease resolve your relations in models, factories and database.",
         );
 
         $this->mockDBTransactionStartRollback(3);
