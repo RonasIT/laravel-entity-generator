@@ -88,32 +88,6 @@ class MakeEntityCommand extends Command
      */
     protected $description = 'Make entity with Model, Repository, Service, Migration, Controller, Resource and Nova Resource.';
 
-    protected $rules = [
-        'only' => [
-            'only-api' => [ResourceGenerator::class, ControllerGenerator::class, RequestsGenerator::class, TestsGenerator::class],
-            'only-entity' => [MigrationGenerator::class, ModelGenerator::class, RepositoryGenerator::class, ServiceGenerator::class, FactoryGenerator::class, SeederGenerator::class],
-            'only-model' => [ModelGenerator::class],
-            'only-repository' => [RepositoryGenerator::class],
-            'only-service' => [ServiceGenerator::class],
-            'only-resource' => [ResourceGenerator::class],
-            'only-controller' => [ControllerGenerator::class],
-            'only-requests' => [RequestsGenerator::class],
-            'only-migration' => [MigrationGenerator::class],
-            'only-factory' => [FactoryGenerator::class],
-            'only-tests' => [FactoryGenerator::class, TestsGenerator::class],
-            'only-seeder' => [SeederGenerator::class],
-            'only-nova-resource' => [NovaResourceGenerator::class],
-            'only-nova-tests' => [NovaTestGenerator::class],
-        ],
-    ];
-
-    public $generators = [
-        ModelGenerator::class, RepositoryGenerator::class, ServiceGenerator::class, RequestsGenerator::class,
-        ResourceGenerator::class, ControllerGenerator::class, MigrationGenerator::class, FactoryGenerator::class,
-        TestsGenerator::class, TranslationsGenerator::class, SeederGenerator::class, NovaResourceGenerator::class,
-        NovaTestGenerator::class,
-    ];
-
     public function __construct()
     {
         parent::__construct();
