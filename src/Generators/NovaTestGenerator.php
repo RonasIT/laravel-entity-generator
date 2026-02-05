@@ -129,7 +129,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             $actionClass = class_basename($action);
 
             return [
-                'className' => $actionClass,
+                'className' => $action,
                 'fixture' => Str::snake($actionClass),
             ];
         }, $actions);
