@@ -61,7 +61,7 @@ class ControllerGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: FileNotFoundException::class,
-            message: "Not found file with routes. Create a routes file on path: 'vfs://root/routes/api.php'",
+            message: "Not found file with routes.\nCreate a routes file on path: 'vfs://root/routes/api.php'.",
         );
 
         app(ControllerGenerator::class)
