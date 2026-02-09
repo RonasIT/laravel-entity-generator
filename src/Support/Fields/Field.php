@@ -35,4 +35,23 @@ final readonly class Field
             modifiers: Arr::reject($this->modifiers, fn ($modifier) => $removeModifier === $modifier),
         );
     }
+
+    public function toArray(): array
+    {
+        return [
+            'name' => $this->name,
+            'type' => $this->type->value,
+            'modifiers' => $this->modifiers,
+        ];
+    }
+
+    public function isRequired(): bool
+    {
+        return in_array(FieldModifierEnum::Required, $this->modifiers);
+    }
+
+    public function isJSON(): bool
+    {
+        return $this->type === FieldTypeEnum::Json;
+    }
 }

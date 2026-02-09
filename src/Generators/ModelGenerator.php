@@ -3,9 +3,9 @@
 namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Str;
-use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Support\Fields\Field;
 use RonasIT\Support\Support\Fields\FieldsCollection;
 
 class ModelGenerator extends EntityGenerator
@@ -182,7 +182,7 @@ class ModelGenerator extends EntityGenerator
         $result = [];
 
         foreach ($fields as $field) {
-            $result[$field->name] = $this->getFieldType($field->type, $field->modifiers);
+            $result[$field->name] = $this->getFieldType($field);
         }
 
         foreach ($relations as $relation) {
@@ -192,11 +192,11 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getFieldType(FieldTypeEnum $fieldType, array $modifiers): string
+    protected function getFieldType(Field $field): string
     {
-        $isNullable = !$this->isJson($fieldType) && !$this->isRequired($modifiers);
+        $isNullable = !$field->isJSON() && !$field->isRequired();
 
-        return $this->getProperty($fieldType, $isNullable);
+        return $this->getProperty($field->type, $isNullable);
     }
 
     protected function getProperty(FieldTypeEnum $type, bool $isNullable = false): string
@@ -217,16 +217,6 @@ class ModelGenerator extends EntityGenerator
         }
 
         return $type;
-    }
-
-    protected function isJson(FieldTypeEnum $type): bool
-    {
-        return $type === FieldTypeEnum::Json;
-    }
-
-    protected function isRequired(array $modifiers): bool
-    {
-        return in_array(FieldModifierEnum::Required, $modifiers);
     }
 
     protected function getRelationType(string $model, string $relation): string

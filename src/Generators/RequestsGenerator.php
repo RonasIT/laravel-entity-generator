@@ -95,10 +95,10 @@ class RequestsGenerator extends EntityGenerator
 
     protected function getGetValidationParameters(): array
     {
-        $parameters = new FieldsCollection([
+        $parameters = new FieldsCollection(
             new Field('with', FieldTypeEnum::Array),
             new Field('with.*', FieldTypeEnum::String, [FieldModifierEnum::Required]),
-        ]);
+        );
 
         return $this->getValidationParameters($parameters, true);
     }
@@ -146,7 +146,7 @@ class RequestsGenerator extends EntityGenerator
         $result = [];
 
         foreach ($parameters as $field) {
-            $isRequired = in_array(FieldModifierEnum::Required, $field->modifiers);
+            $isRequired = $field->isRequired();
             $isNullable = in_array('nullable', $field->modifiers);
             $isPresent = in_array('present', $field->modifiers);
 

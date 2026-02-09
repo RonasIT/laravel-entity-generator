@@ -11,12 +11,11 @@ use Traversable;
 
 final class FieldsCollection implements IteratorAggregate
 {
-    /**
-     * @param  Field[]  $fields
-     */
-    public function __construct(
-        private array $fields = [],
-    ) {
+    private array $fields;
+
+    public function __construct(Field ...$fields)
+    {
+        $this->fields = $fields;
     }
 
     public function replaceModifier(
@@ -31,7 +30,7 @@ final class FieldsCollection implements IteratorAggregate
                 : $field,
         );
 
-        return new self($fields);
+        return new self(...$fields);
     }
 
     public function removeModifier(FieldTypeEnum $type, FieldModifierEnum $removeModifier): self
@@ -43,24 +42,24 @@ final class FieldsCollection implements IteratorAggregate
                 : $field,
         );
 
-        return new self($fields);
+        return new self(...$fields);
     }
 
     public function remove(FieldTypeEnum $type): self
     {
         $fields = Arr::reject($this->fields, fn (Field $field) => $field->type === $type);
 
-        return new self($fields);
+        return new self(...$fields);
     }
 
     public function whereType(FieldTypeEnum $type): self
     {
-        return new self(Arr::where($this->fields, fn (Field $field) => $field->type === $type));
+        return new self(...Arr::where($this->fields, fn (Field $field) => $field->type === $type));
     }
 
     public function whereTypeIn(array $types): self
     {
-        return new self(Arr::where($this->fields, fn (Field $field) => in_array($field->type, $types)));
+        return new self(...Arr::where($this->fields, fn (Field $field) => in_array($field->type, $types)));
     }
 
     public function add(Field $field): void
@@ -75,12 +74,17 @@ final class FieldsCollection implements IteratorAggregate
 
     public function merge(array $fields): self
     {
-        return new self([...$this->fields, ...$fields]);
+        return new self(...$this->fields, ...$fields);
     }
 
     public function get(): array
     {
         return $this->fields;
+    }
+
+    public function toFlatArrayable(): array
+    {
+        return Arr::map($this->fields, fn (Field $field) => $field->toArray());
     }
 
     public function getIterator(): Traversable

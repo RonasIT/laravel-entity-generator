@@ -19,7 +19,7 @@ final class FieldsParser
             }
         }
 
-        return new FieldsCollection($result);
+        return new FieldsCollection(...$result);
     }
 
     protected function createField(string $field, string $type): Field

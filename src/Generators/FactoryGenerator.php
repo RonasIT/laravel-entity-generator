@@ -36,7 +36,7 @@ class FactoryGenerator extends EntityGenerator
         $factoryContent = $this->getStub('factory', [
             'namespace' => $this->generateNamespace($this->paths['factories']),
             'entity' => $this->model,
-            'fields' => $this->prepareFields(),
+            'fields' => $this->fields->toFlatArrayable(),
             'modelNamespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
         ]);
 
@@ -75,19 +75,5 @@ class FactoryGenerator extends EntityGenerator
         }
 
         return self::getFakerMethod($field);
-    }
-
-    protected function prepareFields(): array
-    {
-        $result = [];
-
-        foreach ($this->fields as $field) {
-            $result[] = [
-                'name' => $field->name,
-                'type' => $field->type->value,
-            ];
-        }
-
-        return $result;
     }
 }
