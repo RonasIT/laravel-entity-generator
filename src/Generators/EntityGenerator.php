@@ -81,7 +81,7 @@ abstract class EntityGenerator
     {
         $this->relations = $relations;
 
-        $this->applyRelationsToFields();
+        $this->addForeignKeyFields();
 
         return $this;
     }
@@ -344,7 +344,7 @@ abstract class EntityGenerator
         return in_array($relation, ['hasMany', 'belongsToMany']);
     }
 
-    protected function applyRelationsToFields(): void
+    protected function addForeignKeyFields(): void
     {
         foreach ($this->relations->belongsTo as $relation) {
             $this->fields->add(new Field(
