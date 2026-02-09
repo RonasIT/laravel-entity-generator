@@ -230,8 +230,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
             if (in_array($model, $relationsWithFactories)) {
                 $this->throwFailureException(
                     CircularRelationsFoundedException::class,
-                    'Circular relations founded.',
-                    'Please resolve you relations in models, factories and database.',
+                    'Circular relations found.',
+                    'Please resolve your relations in models, factories and database.',
                 );
             }
 
