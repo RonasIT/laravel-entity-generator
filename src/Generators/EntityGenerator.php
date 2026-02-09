@@ -81,7 +81,7 @@ abstract class EntityGenerator
     {
         $this->relations = $relations;
 
-        $this->applyRelationsToFields();
+        $this->addForeignKeyFields();
 
         return $this;
     }
