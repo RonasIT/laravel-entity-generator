@@ -58,7 +58,10 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: EntityCreateException::class,
-            message: 'Cannot create NovaPostResourceTest cause was found a lot of suitable resources: BasePostResource, PublishPostResource. You may use --nova-resource-name option to specify a concrete resource.',
+            message: 'Cannot create NovaPostResourceTest cause was found a lot of suitable resources:'
+            . "\nBasePostResource"
+            . "\nPublishPostResource."
+            . "\nYou may use --nova-resource-name option to specify a concrete resource.",
         );
 
         app(NovaTestGenerator::class)
@@ -235,7 +238,8 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
-            message: 'Cannot create NovaSomeResourceTest cause App\Nova\SomeResource does not exist. Create App\Nova\SomeResource.',
+            message: "Cannot create NovaSomeResourceTest cause App\Nova\SomeResource does not exist."
+                    . "\nCreate App\Nova\SomeResource.",
         );
 
         app(NovaTestGenerator::class)

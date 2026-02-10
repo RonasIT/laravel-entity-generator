@@ -83,11 +83,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $novaResources = $this->getCommonNovaResources();
 
         if (count($novaResources) > 1) {
-            $foundedResources = implode(', ', $novaResources);
+            $foundResources = implode("\n", $novaResources);
 
             $this->throwFailureException(
                 exceptionClass: EntityCreateException::class,
-                failureMessage: "Cannot create Nova{$this->model}ResourceTest cause was found a lot of suitable resources: {$foundedResources}.",
+                failureMessage: "Cannot create Nova{$this->model}ResourceTest cause was found a lot of suitable resources:\n{$foundResources}.",
                 recommendedMessage: 'You may use --nova-resource-name option to specify a concrete resource.',
             );
         }
