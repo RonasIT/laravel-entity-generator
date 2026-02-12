@@ -68,7 +68,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             'dromedary_entity' => Str::lcfirst($this->model),
             'lower_entities' => $this->getPluralName(Str::snake($this->model)),
             'actions' => $actions,
-            'actionImports' => array_unique(array_column($actions, 'className')),
+            'actionImports' => array_column($actions, 'className'),
             'filters' => $filters,
             'models_namespace' => $this->generateNamespace($this->paths['models']),
         ]);
