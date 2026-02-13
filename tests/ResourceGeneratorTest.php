@@ -1,12 +1,12 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Generators\ResourceGenerator;
-use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\EntityGenerator\Generators\ResourceGenerator;
+use RonasIT\EntityGenerator\Tests\Support\GeneratorMockTrait;
 
 class ResourceGeneratorTest extends TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Exceptions;
+namespace RonasIT\EntityGenerator\Exceptions;
 
 use Exception;
 

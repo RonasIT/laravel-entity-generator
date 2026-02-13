@@ -1,14 +1,14 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Generators\NovaResourceGenerator;
-use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\NovaResourceGeneratorMockTrait;
-use RonasIT\Support\Tests\Support\NovaResourceGeneratorTest\Post;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\EntityGenerator\Exceptions\ResourceNotExistsException;
+use RonasIT\EntityGenerator\Generators\NovaResourceGenerator;
+use RonasIT\EntityGenerator\Tests\Support\NovaResourceGeneratorTest\NovaResourceGeneratorMockTrait;
+use RonasIT\EntityGenerator\Tests\Support\NovaResourceGeneratorTest\Post;
 
 class NovaResourceGeneratorTest extends TestCase
 {

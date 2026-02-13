@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\NovaTestGeneratorTest;
+namespace RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest;
 
 class TextField
 {

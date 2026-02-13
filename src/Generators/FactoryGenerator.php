@@ -1,13 +1,13 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Faker\Generator as Faker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\FakerMethodNotFoundException;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Exceptions\FakerMethodNotFoundException;
 
 class FactoryGenerator extends EntityGenerator
 {

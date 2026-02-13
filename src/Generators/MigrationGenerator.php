@@ -1,11 +1,11 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\UnknownFieldTypeException;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Exceptions\UnknownFieldTypeException;
 
 class MigrationGenerator extends EntityGenerator
 {

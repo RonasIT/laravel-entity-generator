@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
 use Illuminate\Foundation\Bootstrap\LoadEnvironmentVariables;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithViews;
@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use org\bovigo\vfs\vfsStream;
-use RonasIT\Support\EntityGeneratorServiceProvider;
+use RonasIT\EntityGenerator\EntityGeneratorServiceProvider;
 use RonasIT\Support\Traits\FixturesTrait;
 
 class TestCase extends BaseTestCase

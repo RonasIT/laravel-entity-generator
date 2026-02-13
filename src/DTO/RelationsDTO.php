@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\DTO;
+namespace RonasIT\EntityGenerator\DTO;
 
 readonly class RelationsDTO
 {

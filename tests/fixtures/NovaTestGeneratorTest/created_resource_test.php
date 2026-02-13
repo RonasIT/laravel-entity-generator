@@ -2,12 +2,12 @@
 
 namespace App\Tests;
 
-use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
+use RonasIT\EntityGenerator\Tests\Support\Models\WelcomeBonus;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 use App\Nova\WelcomeBonusResource;
-use RonasIT\Support\Tests\Support\Models\User;
+use RonasIT\EntityGenerator\Tests\Support\Models\User;
 
 class NovaWelcomeBonusResourceTest extends TestCase
 {
@@ -243,7 +243,7 @@ class NovaWelcomeBonusResourceTest extends TestCase
             ],
             [
                 'request' => [
-                    'RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
+                    'RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
                 'fixture' => 'filter_welcome_bonus_resource_by_created_at_filter',
             ],

@@ -1,10 +1,10 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 
 class RequestsGenerator extends EntityGenerator
 {

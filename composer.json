@@ -30,13 +30,13 @@
   },
   "autoload": {
     "psr-4": {
-      "RonasIT\\Support\\": "src/"
+      "RonasIT\\EntityGenerator\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "RonasIT\\Support\\Tests\\": "tests/",
-      "RonasIT\\Support\\Tests\\Support\\": "tests/Support/",
+      "RonasIT\\EntityGenerator\\Tests\\": "tests/",
+      "RonasIT\\EntityGenerator\\Tests\\Support\\": "tests/Support/",
       "App\\Nova\\": "tests/Support/Nova/"
     },
     "files": [

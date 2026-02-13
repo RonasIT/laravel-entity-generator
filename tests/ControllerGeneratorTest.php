@@ -1,15 +1,15 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
 use Illuminate\Contracts\Filesystem\FileNotFoundException;
 use Illuminate\Support\Facades\View;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Generators\ControllerGenerator;
-use RonasIT\Support\Tests\Support\ControllerGeneratorTest\ControllerGeneratorMockTrait;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\EntityGenerator\Exceptions\ResourceNotExistsException;
+use RonasIT\EntityGenerator\Generators\ControllerGenerator;
+use RonasIT\EntityGenerator\Tests\Support\ControllerGeneratorTest\ControllerGeneratorMockTrait;
 
 class ControllerGeneratorTest extends TestCase
 {

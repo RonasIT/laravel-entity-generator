@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Commands;
+namespace RonasIT\EntityGenerator\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
@@ -9,24 +9,24 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
+use RonasIT\EntityGenerator\DTO\RelationsDTO;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Generators\ControllerGenerator;
+use RonasIT\EntityGenerator\Generators\EntityGenerator;
+use RonasIT\EntityGenerator\Generators\FactoryGenerator;
+use RonasIT\EntityGenerator\Generators\MigrationGenerator;
+use RonasIT\EntityGenerator\Generators\ModelGenerator;
+use RonasIT\EntityGenerator\Generators\NovaResourceGenerator;
+use RonasIT\EntityGenerator\Generators\NovaTestGenerator;
+use RonasIT\EntityGenerator\Generators\RepositoryGenerator;
+use RonasIT\EntityGenerator\Generators\RequestsGenerator;
+use RonasIT\EntityGenerator\Generators\ResourceGenerator;
+use RonasIT\EntityGenerator\Generators\SeederGenerator;
+use RonasIT\EntityGenerator\Generators\ServiceGenerator;
+use RonasIT\EntityGenerator\Generators\TestsGenerator;
+use RonasIT\EntityGenerator\Generators\TranslationsGenerator;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Generators\ControllerGenerator;
-use RonasIT\Support\Generators\EntityGenerator;
-use RonasIT\Support\Generators\FactoryGenerator;
-use RonasIT\Support\Generators\MigrationGenerator;
-use RonasIT\Support\Generators\ModelGenerator;
-use RonasIT\Support\Generators\NovaResourceGenerator;
-use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Generators\RepositoryGenerator;
-use RonasIT\Support\Generators\RequestsGenerator;
-use RonasIT\Support\Generators\ResourceGenerator;
-use RonasIT\Support\Generators\SeederGenerator;
-use RonasIT\Support\Generators\ServiceGenerator;
-use RonasIT\Support\Generators\TestsGenerator;
-use RonasIT\Support\Generators\TranslationsGenerator;
 use UnexpectedValueException;
 
 class MakeEntityCommand extends Command
