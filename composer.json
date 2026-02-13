@@ -47,7 +47,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "RonasIT\\Support\\EntityGeneratorServiceProvider"
+        "RonasIT\\EntityGenerator\\EntityGeneratorServiceProvider"
       ]
     }
   }
