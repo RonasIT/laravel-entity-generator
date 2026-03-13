@@ -1,28 +1,23 @@
 namespace {{ $namespace }};
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 @foreach($importRelations as $value)
 use {{ $value }};
 @endforeach
-@if($hasCarbonField)
-use Carbon\Carbon;
-@endif
 @if($hasCollectionType)
 use Illuminate\Database\Eloquent\Collection;
 @endif
 
-@if(!empty($annotationProperties))
 /**
+ * @property int $id
 @foreach($annotationProperties as $key => $value)
  * @property {!! $value !!} ${{ $key }}
 @endforeach
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
-@else
-//TODO: add @property annotation for each model's field
-/**
- */
-@endif
 class {{ $entity }} extends Model
 {
     use ModelTrait;

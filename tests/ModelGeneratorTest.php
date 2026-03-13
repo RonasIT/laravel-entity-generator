@@ -71,7 +71,7 @@ class ModelGeneratorTest extends TestCase
                 'string-required' => ['title'],
                 'boolean' => ['is_reviewed'],
                 'boolean-required' => ['is_published'],
-                'timestamp' => ['reviewed_at', 'created_at', 'updated_at'],
+                'timestamp' => ['reviewed_at', 'started_at', 'finished_at'],
                 'timestamp-required' => ['published_at'],
                 'json' => ['meta'],
             ])
@@ -140,7 +140,7 @@ class ModelGeneratorTest extends TestCase
     public function testCreateModelByCommand()
     {
         $this
-            ->artisan('make:entity Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -t reviewed_at -t created_at -t updated_at -T published_at -j meta -a Comment -A User --only-model')
+            ->artisan('make:entity Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -t reviewed_at -t started_at -t finished_at -T published_at -j meta -a Comment -A User --only-model')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_model.php', 'app/Models/Post.php');
@@ -171,7 +171,7 @@ class ModelGeneratorTest extends TestCase
     public function testCreateSubFoldersModel()
     {
         $this
-            ->artisan('make:entity Forum/Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -t reviewed_at -t created_at -t updated_at -T published_at -j meta -a Comment -A User')
+            ->artisan('make:entity Forum/Post -I media_id -i priority -S title -s description -F rating -f seo_score -B is_published -b is_reviewed -t reviewed_at -t started_at -t finished_at -T published_at -j meta -a Comment -A User')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_subfolders_model.php', 'app/Models/Forum/Post.php');
