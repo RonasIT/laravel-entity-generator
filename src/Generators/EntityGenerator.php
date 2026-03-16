@@ -181,7 +181,13 @@ abstract class EntityGenerator
             mkdir($entitiesPath, 0777, true);
         }
 
-        return file_put_contents($classPath, $content);
+        $savedClass = file_put_contents($classPath, $content);
+
+        if (parse_url($classPath, PHP_URL_SCHEME) === null) {
+            chmod($classPath, 0777);
+        }
+
+        return $savedClass;
     }
 
     protected function getStub($stub, $data = []): string
