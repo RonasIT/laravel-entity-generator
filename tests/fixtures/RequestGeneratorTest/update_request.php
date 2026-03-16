@@ -11,9 +11,12 @@ class UpdatePostRequest extends Request
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer|exists:users,id',
+            'user_id' => 'required|integer|db_type_range:integer|exists:users,id',
+            'views_count' => 'integer|db_type_range:integer',
             'is_draft' => 'boolean',
             'is_published' => 'boolean',
+            'phone' => 'string|db_type_range:varchar',
+            'name' => 'string|db_type_range:varchar',
         ];
     }
 
