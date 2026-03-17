@@ -6,6 +6,7 @@ use Faker\Generator as Faker;
 use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\Support\Support\Fields\Field;
 
 class FactoryGenerator extends EntityGenerator
 {
@@ -36,7 +37,7 @@ class FactoryGenerator extends EntityGenerator
         $factoryContent = $this->getStub('factory', [
             'namespace' => $this->generateNamespace($this->paths['factories']),
             'entity' => $this->model,
-            'fields' => $this->fields->toFlatArrayable(),
+            'fields' => $this->prepareFields(),
             'modelNamespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
         ]);
 
@@ -45,35 +46,46 @@ class FactoryGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Factory: {$this->model}Factory"));
     }
 
-    protected static function getFakerMethod($field): string
+    protected function getFakerMethod(Field $field): string
     {
-        if (Arr::has(self::FAKERS_METHODS, $field['type'])) {
-            return '$faker->' . self::FAKERS_METHODS[$field['type']];
+        if (Arr::has(self::FAKERS_METHODS, $field->type->value)) {
+            return '$faker->' . self::FAKERS_METHODS[$field->type->value];
         }
 
-        return self::CUSTOM_METHODS[$field['type']];
+        return self::CUSTOM_METHODS[$field->type->value];
     }
 
-    public static function getFactoryFieldsContent($field): string
+    public function getFakeValueGenerationLine(Field $field): string
     {
         /** @var Faker $faker */
         $faker = app(Faker::class);
 
-        if (preg_match('/_id$/', $field['name']) || ($field['name'] == 'id')) {
+        if (preg_match('/_id$/', $field->name) || ($field->name == 'id')) {
             return 1;
         }
 
         try {
-            $faker->{$field['name']};
+            $faker->{$field->name};
             $hasFormatter = true;
         } catch (InvalidArgumentException $e) {
             $hasFormatter = false;
         }
 
         if ($hasFormatter) {
-            return "\$faker->{$field['name']}";
+            return "\$faker->{$field->name}";
         }
 
-        return self::getFakerMethod($field);
+        return $this->getFakerMethod($field);
+    }
+
+    protected function prepareFields(): array
+    {
+        $result = [];
+
+        foreach ($this->fields as $field) {
+            $result[$field->name] = $this->getFakeValueGenerationLine($field);
+        }
+
+        return $result;
     }
 }
