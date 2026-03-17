@@ -8,8 +8,8 @@ use {{ $resource_namespace }};
 @if(!($entity === 'User' && $entity_namespace === $models_namespace))
 use {{ $models_namespace }}\User;
 @endif
-@foreach($actionImports as $actionImport)
-use {{ $actionImport }};
+@foreach($actions as $action)
+use {{ $action['className'] }};
 @endforeach
 
 class Nova{{ $resource_name }}Test extends TestCase
