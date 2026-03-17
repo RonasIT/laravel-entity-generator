@@ -21,9 +21,9 @@
   "require-dev": {
     "fakerphp/faker": "^1.24.0",
     "mockery/mockery": "^1.6.12",
-    "phpunit/phpunit": "^10.5.38",
+    "phpunit/phpunit": "^13",
     "php-coveralls/php-coveralls": "^2.7",
-    "orchestra/testbench": "^9.5.2",
+    "orchestra/testbench": "^10",
     "mikey179/vfsstream": "^1.6.12",
     "php-mock/php-mock": "^2.5",
     "laravel/pint": "^1.27"
