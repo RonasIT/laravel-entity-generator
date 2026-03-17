@@ -82,11 +82,6 @@ final class FieldsCollection implements IteratorAggregate
         return $this->fields;
     }
 
-    public function toFlatArrayable(): array
-    {
-        return Arr::map($this->fields, fn (Field $field) => $field->toArray());
-    }
-
     public function getIterator(): Traversable
     {
         return new ArrayIterator($this->fields);

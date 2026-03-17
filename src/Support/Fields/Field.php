@@ -36,15 +36,6 @@ final readonly class Field
         );
     }
 
-    public function toArray(): array
-    {
-        return [
-            'name' => $this->name,
-            'type' => $this->type->value,
-            'modifiers' => $this->modifiers,
-        ];
-    }
-
     public function isRequired(): bool
     {
         return in_array(FieldModifierEnum::Required, $this->modifiers);
