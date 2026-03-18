@@ -6,7 +6,7 @@ use App\Http\Requests\Request;
 use App\Services\PostService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class UpdatePostRequest extends Request
+final class UpdatePostRequest extends Request
 {
     public function rules(): array
     {

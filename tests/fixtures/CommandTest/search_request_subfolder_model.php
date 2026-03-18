@@ -5,7 +5,7 @@ namespace App\Http\Requests\Post;
 use App\Http\Requests\Request;
 use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
 
-class SearchPostsRequest extends Request
+final class SearchPostsRequest extends Request
 {
     public function rules(): array
     {
