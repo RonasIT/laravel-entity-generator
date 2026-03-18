@@ -181,7 +181,9 @@ class ModelGenerator extends EntityGenerator
 
     protected function generateAnnotationProperties(array $fields, array $relations): array
     {
-        $result = [];
+        $result = [
+            'id' => 'int',
+        ];
 
         foreach ($fields as $typeName => $fieldNames) {
             foreach ($fieldNames as $fieldName) {
