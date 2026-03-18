@@ -34,6 +34,8 @@ class TestsGenerator extends AbstractTestsGenerator
 
         file_put_contents($fixturePath, $content);
 
+        $this->setPermissions($fixturePath);
+
         event(new SuccessCreateMessage($createMessage));
     }
 
