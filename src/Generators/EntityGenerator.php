@@ -183,9 +183,7 @@ abstract class EntityGenerator
 
         $savedClass = file_put_contents($classPath, $content);
 
-        if (parse_url($classPath, PHP_URL_SCHEME) === null) {
-            chmod($classPath, 0777);
-        }
+        chmod($classPath, 0777);
 
         return $savedClass;
     }
