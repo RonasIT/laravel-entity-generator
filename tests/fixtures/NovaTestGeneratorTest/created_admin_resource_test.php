@@ -36,7 +36,7 @@ class NovaAdminResourceTest extends TestCase
         $this->assertEqualsFixture('create_admin_resource_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
-        self::$userState->assertChangesEqualsFixture('create_users_state', true);
+        self::$userState->assertChangesEqualsFixture('create_users', true);
     }
 
     public function testCreateNoAuth(): void
@@ -69,7 +69,7 @@ class NovaAdminResourceTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$userState->assertChangesEqualsFixture('update_users_state', true);
+        self::$userState->assertChangesEqualsFixture('update_users', true);
     }
 
     public function testUpdateNotExists(): void
@@ -115,7 +115,7 @@ class NovaAdminResourceTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        self::$userState->assertChangesEqualsFixture('delete_users_state', true);
+        self::$userState->assertChangesEqualsFixture('delete_users', true);
     }
 
     public function testDeleteNotExists(): void
@@ -181,14 +181,14 @@ class NovaAdminResourceTest extends TestCase
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_publish_post_action_state',
+                'state' => 'run_publish_post_action',
             ],
             [
                 'action' => UnPublishPostAction::class,
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_un_publish_post_action_state',
+                'state' => 'run_un_publish_post_action',
             ],
         ];
     }

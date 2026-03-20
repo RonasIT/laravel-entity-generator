@@ -37,7 +37,7 @@ class NovaWelcomeBonusResourceTest extends TestCase
         $this->assertEqualsFixture('create_welcome_bonus_resource_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
-        self::$welcomeBonusState->assertChangesEqualsFixture('create_welcome_bonuses_state', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('create_welcome_bonuses', true);
     }
 
     public function testCreateNoAuth(): void
@@ -70,7 +70,7 @@ class NovaWelcomeBonusResourceTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$welcomeBonusState->assertChangesEqualsFixture('update_welcome_bonuses_state', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('update_welcome_bonuses', true);
     }
 
     public function testUpdateNotExists(): void
@@ -116,7 +116,7 @@ class NovaWelcomeBonusResourceTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        self::$welcomeBonusState->assertChangesEqualsFixture('delete_welcome_bonuses_state', true);
+        self::$welcomeBonusState->assertChangesEqualsFixture('delete_welcome_bonuses', true);
     }
 
     public function testDeleteNotExists(): void
@@ -182,14 +182,14 @@ class NovaWelcomeBonusResourceTest extends TestCase
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_publish_post_action_state',
+                'state' => 'run_publish_post_action',
             ],
             [
                 'action' => UnPublishPostAction::class,
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_un_publish_post_action_state',
+                'state' => 'run_un_publish_post_action',
             ],
         ];
     }

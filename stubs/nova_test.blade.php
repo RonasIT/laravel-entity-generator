@@ -37,7 +37,7 @@ class Nova{{ $resource_name }}Test extends TestCase
         $this->assertEqualsFixture('create_{{ $snake_resource }}_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
-        self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('create_{{ $lower_entities }}_state', true);
+        self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('create_{{ $lower_entities }}', true);
     }
 
     public function testCreateNoAuth(): void
@@ -70,7 +70,7 @@ class Nova{{ $resource_name }}Test extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('update_{{ $lower_entities }}_state', true);
+        self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('update_{{ $lower_entities }}', true);
     }
 
     public function testUpdateNotExists(): void
@@ -116,7 +116,7 @@ class Nova{{ $resource_name }}Test extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        self::${{$dromedary_entity}}State->assertChangesEqualsFixture('delete_{{ $lower_entities }}_state', true);
+        self::${{$dromedary_entity}}State->assertChangesEqualsFixture('delete_{{ $lower_entities }}', true);
     }
 
     public function testDeleteNotExists(): void
@@ -183,7 +183,7 @@ class Nova{{ $resource_name }}Test extends TestCase
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_{{ $action['fixture'] }}_state',
+                'state' => 'run_{{ $action['fixture'] }}',
             ],
 @endforeach
         ];
