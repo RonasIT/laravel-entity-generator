@@ -41,16 +41,23 @@ class FactoryGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Factory: {$this->model}Factory"));
     }
 
-    protected function getFakerMethod(Field $field): string
-    {
-        return '$faker->' . self::FAKERS_METHODS_MAP[$field->type->value];
-    }
-
-    public function getFakeValueGenerationLine(Field $field): string
+    protected function getFakerCallLine(Field $field): string
     {
         /** @var Faker $faker */
         $faker = app(Faker::class);
 
+        // Try to find the special faker formatter like name, city, email, etc.
+        try {
+            $faker->{$field->name};
+
+            return "\$faker->{$field->name}";
+        } catch (InvalidArgumentException $e) {
+            return '$faker->' . self::FAKERS_METHODS_MAP[$field->type->value];
+        }
+    }
+
+    public function getFakeValueGenerationLine(Field $field): string
+    {
         if ($field->isKeyField()) {
             return 1;
         }
@@ -59,14 +66,7 @@ class FactoryGenerator extends EntityGenerator
             return '[]';
         }
 
-        // Try to find the special faker formatter like name, city, email, etc.
-        try {
-            $faker->{$field->name};
-
-            return "\$faker->{$field->name}";
-        } catch (InvalidArgumentException $e) {
-            return $this->getFakerMethod($field);
-        }
+        return $this->getFakerCallLine($field);
     }
 
     protected function prepareFields(): array
