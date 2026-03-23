@@ -59,6 +59,7 @@ class FactoryGenerator extends EntityGenerator
             return '[]';
         }
 
+        // Try to find the special faker formatter like name, city, email, etc.
         try {
             $faker->{$field->name};
 
