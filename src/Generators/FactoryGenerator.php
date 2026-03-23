@@ -3,23 +3,18 @@
 namespace RonasIT\Support\Generators;
 
 use Faker\Generator as Faker;
-use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Support\Fields\Field;
 
 class FactoryGenerator extends EntityGenerator
 {
-    const array FAKERS_METHODS = [
+    const array FAKERS_METHODS_MAP = [
         'integer' => 'randomNumber()',
         'boolean' => 'boolean',
         'string' => 'word',
         'float' => 'randomFloat(2, 0, 10000)',
         'timestamp' => 'dateTime',
-    ];
-
-    const array CUSTOM_METHODS = [
-        'json' => '[]',
     ];
 
     public function generate(): void
@@ -48,11 +43,7 @@ class FactoryGenerator extends EntityGenerator
 
     protected function getFakerMethod(Field $field): string
     {
-        if (Arr::has(self::FAKERS_METHODS, $field->type->value)) {
-            return '$faker->' . self::FAKERS_METHODS[$field->type->value];
-        }
-
-        return self::CUSTOM_METHODS[$field->type->value];
+        return '$faker->' . self::FAKERS_METHODS_MAP[$field->type->value];
     }
 
     public function getFakeValueGenerationLine(Field $field): string
@@ -60,8 +51,12 @@ class FactoryGenerator extends EntityGenerator
         /** @var Faker $faker */
         $faker = app(Faker::class);
 
-        if (preg_match('/_id$/', $field->name) || ($field->name == 'id')) {
+        if ($field->isKeyField()) {
             return 1;
+        }
+
+        if ($field->isJSON()) {
+            return '[]';
         }
 
         try {
