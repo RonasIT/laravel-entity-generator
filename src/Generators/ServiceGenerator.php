@@ -34,8 +34,8 @@ class ServiceGenerator extends EntityGenerator
     protected function getFields(): array
     {
         return [
-            'simple_search' => $this->fields->whereTypeIn([FieldTypeEnum::Integer, FieldTypeEnum::Boolean])->pluck('name'),
-            'search_by_query' => $this->fields->whereType(FieldTypeEnum::String)->pluck('name'),
+            'simple_search' => $this->fields->whereTypeIn([FieldTypeEnum::Integer, FieldTypeEnum::Boolean])->getNames(),
+            'search_by_query' => $this->fields->whereType(FieldTypeEnum::String)->getNames(),
         ];
     }
 }

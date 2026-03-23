@@ -10,6 +10,21 @@ use RonasIT\Support\Support\Fields\FieldsCollection;
 
 class ModelGenerator extends EntityGenerator
 {
+    const array MODEL_CASTS_MAP = [
+        FieldTypeEnum::Boolean->value => 'boolean',
+        FieldTypeEnum::Json->value => 'array',
+        FieldTypeEnum::Timestamp->value => 'datetime',
+    ];
+
+    const array PROPERTY_TYPES_MAP = [
+        FieldTypeEnum::Integer->value => 'int',
+        FieldTypeEnum::Float->value => 'float',
+        FieldTypeEnum::String->value => 'string',
+        FieldTypeEnum::Boolean->value => 'bool',
+        FieldTypeEnum::Timestamp->value => 'Carbon',
+        FieldTypeEnum::Json->value => 'array',
+    ];
+
     public function generate(): void
     {
         $this->checkResourceExists('models', $this->model, $this->modelSubFolder);
@@ -37,13 +52,13 @@ class ModelGenerator extends EntityGenerator
 
         return $this->getStub('model', [
             'entity' => $this->model,
-            'fields' => $this->fields->pluck('name'),
+            'fields' => $this->fields->getNames(),
             'relations' => $relations,
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
             'annotationProperties' => $this->generateAnnotationProperties($this->fields, $relations),
-            'hasCarbonField' => !empty($this->fields->whereType(FieldTypeEnum::Timestamp)->get()),
+            'hasCarbonField' => $this->fields->hasTimestamps(),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
     }
@@ -126,20 +141,14 @@ class ModelGenerator extends EntityGenerator
 
     protected function getCasts(FieldsCollection $fields): array
     {
-        $casts = [
-            'boolean' => 'boolean',
-            'json' => 'array',
-            'timestamp' => 'datetime',
-        ];
-
         $result = [];
 
         foreach ($fields as $field) {
-            if (!array_key_exists($field->type->value, $casts)) {
+            if (!array_key_exists($field->type->value, self::MODEL_CASTS_MAP)) {
                 continue;
             }
 
-            $result[$field->name] = $casts[$field->type->value];
+            $result[$field->name] = self::MODEL_CASTS_MAP[$field->type->value];
         }
 
         return $result;
@@ -201,16 +210,7 @@ class ModelGenerator extends EntityGenerator
 
     protected function getProperty(FieldTypeEnum $type, bool $isNullable = false): string
     {
-        $typesMap = [
-            'integer' => 'int',
-            'float' => 'float',
-            'string' => 'string',
-            'boolean' => 'bool',
-            'timestamp' => 'Carbon',
-            'json' => 'array',
-        ];
-
-        $type = $typesMap[$type->value];
+        $type = self::PROPERTY_TYPES_MAP[$type->value];
 
         if ($isNullable) {
             $type .= '|null';

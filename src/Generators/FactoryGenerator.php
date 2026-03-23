@@ -4,17 +4,18 @@ namespace RonasIT\Support\Generators;
 
 use Faker\Generator as Faker;
 use InvalidArgumentException;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Support\Fields\Field;
 
 class FactoryGenerator extends EntityGenerator
 {
     const array FAKERS_METHODS_MAP = [
-        'integer' => 'randomNumber()',
-        'boolean' => 'boolean',
-        'string' => 'word',
-        'float' => 'randomFloat(2, 0, 10000)',
-        'timestamp' => 'dateTime',
+        FieldTypeEnum::Integer->value => 'randomNumber()',
+        FieldTypeEnum::Boolean->value => 'boolean',
+        FieldTypeEnum::String->value => 'word',
+        FieldTypeEnum::Float->value => 'randomFloat(2, 0, 10000)',
+        FieldTypeEnum::Timestamp->value => 'dateTime',
     ];
 
     public function generate(): void

@@ -67,19 +67,14 @@ final class FieldsCollection implements IteratorAggregate
         $this->fields[] = $field;
     }
 
-    public function pluck(string $value): array
-    {
-        return Arr::pluck($this->fields, $value);
-    }
-
     public function merge(array $fields): self
     {
         return new self(...$this->fields, ...$fields);
     }
 
-    public function get(): array
+    public function getNames(): array
     {
-        return $this->fields;
+        return Arr::pluck($this->fields, 'name');
     }
 
     public function getIterator(): Traversable
@@ -90,5 +85,10 @@ final class FieldsCollection implements IteratorAggregate
     public function toArray(): array
     {
         return $this->fields;
+    }
+
+    public function hasTimestamps(): bool
+    {
+        return !empty($this->whereType(FieldTypeEnum::Timestamp)->toArray());
     }
 }
