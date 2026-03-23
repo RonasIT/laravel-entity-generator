@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Generators;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
@@ -144,7 +145,7 @@ class ModelGenerator extends EntityGenerator
         $result = [];
 
         foreach ($fields as $field) {
-            if (array_key_exists($field->type->value, self::MODEL_CASTS_MAP)) {
+            if (Arr::has(self::MODEL_CASTS_MAP, $field->type->value)) {
                 $result[$field->name] = self::MODEL_CASTS_MAP[$field->type->value];
             }
         }
