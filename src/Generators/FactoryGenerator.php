@@ -61,16 +61,11 @@ class FactoryGenerator extends EntityGenerator
 
         try {
             $faker->{$field->name};
-            $hasFormatter = true;
-        } catch (InvalidArgumentException $e) {
-            $hasFormatter = false;
-        }
 
-        if ($hasFormatter) {
             return "\$faker->{$field->name}";
+        } catch (InvalidArgumentException $e) {
+            return $this->getFakerMethod($field);
         }
-
-        return $this->getFakerMethod($field);
     }
 
     protected function prepareFields(): array

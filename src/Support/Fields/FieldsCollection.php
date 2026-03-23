@@ -86,4 +86,9 @@ final class FieldsCollection implements IteratorAggregate
     {
         return new ArrayIterator($this->fields);
     }
+
+    public function toArray(): array
+    {
+        return $this->fields;
+    }
 }

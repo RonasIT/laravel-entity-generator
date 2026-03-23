@@ -46,6 +46,11 @@ final readonly class Field
         return $this->type === FieldTypeEnum::Json;
     }
 
+    public function isTimestamp(): bool
+    {
+        return $this->type === FieldTypeEnum::Timestamp;
+    }
+
     public function isKeyField(): bool
     {
         return str_ends_with($this->name, '_id') || ($this->name === 'id');

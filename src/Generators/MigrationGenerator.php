@@ -3,7 +3,7 @@
 namespace RonasIT\Support\Generators;
 
 use Carbon\Carbon;
-use RonasIT\Support\Enums\FieldTypeEnum;
+use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Support\Fields\Field;
 use RonasIT\Support\Support\Fields\FieldsCollection;
@@ -23,8 +23,7 @@ class MigrationGenerator extends EntityGenerator
             'entity' => $this->model,
             'entities' => $entities,
             'relations' => $this->prepareRelations(),
-            'fields' => $this->fields,
-            'table' => $this->generateTable($this->fields),
+            'fields' => $this->prepareFields($this->fields),
         ]);
 
         $now = Carbon::now()->format('Y_m_d_His');
@@ -34,7 +33,7 @@ class MigrationGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Migration: {$entities}_create_table"));
     }
 
-    protected function generateJsonLine(string $fieldName): string
+    protected function generateJsonDefinition(string $fieldName): string
     {
         if (env('DB_CONNECTION') == 'mysql') {
             return "\$table->json('{$fieldName}')->nullable();";
@@ -43,10 +42,10 @@ class MigrationGenerator extends EntityGenerator
         return "\$table->jsonb('{$fieldName}')->default(\"{}\");";
     }
 
-    protected function generateFieldLine(Field $field): string
+    protected function generateCommonFieldDefinition(Field $field): string
     {
-        if ($field->type === FieldTypeEnum::Timestamp && env('DB_CONNECTION') === 'mysql') {
-            return "\$table->{$field->type->value}('{$field->name}')->nullable();";
+        if ($field->isTimestamp() && env('DB_CONNECTION') === 'mysql') {
+            $field = $field->removeModifier(FieldModifierEnum::Required);
         }
 
         $nullablePart = ($field->isRequired()) ? '' : '->nullable()';
@@ -54,21 +53,15 @@ class MigrationGenerator extends EntityGenerator
         return "\$table->{$field->type->value}('{$field->name}'){$nullablePart};";
     }
 
-    protected function generateTable(FieldsCollection $fields): array
+    protected function prepareFields(FieldsCollection $fields): array
     {
-        $resultTable = [];
-
-        foreach ($fields as $field) {
-            $resultTable[] = $this->getTableRow($field);
-        }
-
-        return $resultTable;
+        return array_map(fn (Field $field) => $this->generateFieldDefinition($field), $fields->toArray());
     }
 
-    protected function getTableRow(Field $field): string
+    protected function generateFieldDefinition(Field $field): string
     {
         return ($field->isJSON())
-            ? $this->generateJsonLine($field->name)
-            : $this->generateFieldLine($field);
+            ? $this->generateJsonDefinition($field->name)
+            : $this->generateCommonFieldDefinition($field);
     }
 }
