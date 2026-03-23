@@ -144,11 +144,9 @@ class ModelGenerator extends EntityGenerator
         $result = [];
 
         foreach ($fields as $field) {
-            if (!array_key_exists($field->type->value, self::MODEL_CASTS_MAP)) {
-                continue;
+            if (array_key_exists($field->type->value, self::MODEL_CASTS_MAP)) {
+                $result[$field->name] = self::MODEL_CASTS_MAP[$field->type->value];
             }
-
-            $result[$field->name] = self::MODEL_CASTS_MAP[$field->type->value];
         }
 
         return $result;
