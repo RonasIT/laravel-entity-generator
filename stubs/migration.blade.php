@@ -60,7 +60,7 @@ return new class extends Migration
     {
         Schema::create('{{ \Illuminate\Support\Str::plural(\Illuminate\Support\Str::snake($entity)) }}', function (Blueprint $table) {
             $table->id();
-@foreach ($fields as $row )
+@foreach ($fields as $row)
             {!!$row!!}
 @endforeach
             $table->timestamps();
