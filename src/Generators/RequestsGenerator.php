@@ -95,7 +95,11 @@ class RequestsGenerator extends EntityGenerator
 
         $parameters['string-required'] = ['with.*'];
 
-        return $this->getValidationParameters($parameters, true);
+        return $this->getValidationParameters(
+            parameters: $parameters,
+            requiredAvailable: true,
+            shouldApplyDBRules: false,
+        );
     }
 
     protected function getCreateValidationParameters(): array
@@ -106,7 +110,11 @@ class RequestsGenerator extends EntityGenerator
             $parameters['boolean-present'] = $this->fields['boolean-required'];
         }
 
-        return $this->getValidationParameters($parameters, true);
+        return $this->getValidationParameters(
+            parameters: $parameters,
+            requiredAvailable: true,
+            shouldApplyDBRules: true,
+        );
     }
 
     protected function getUpdateValidationParameters(): array
@@ -117,7 +125,11 @@ class RequestsGenerator extends EntityGenerator
             $parameters['boolean'] = array_merge($parameters['boolean'], $this->fields['boolean-required']);
         }
 
-        return $this->getValidationParameters($parameters, false);
+        return $this->getValidationParameters(
+            parameters: $parameters,
+            requiredAvailable: false,
+            shouldApplyDBRules: true,
+        );
     }
 
     protected function getSearchValidationParameters(): array
@@ -144,10 +156,14 @@ class RequestsGenerator extends EntityGenerator
 
         $parameters['string-required'] = ['with.*'];
 
-        return $this->getValidationParameters($parameters, true);
+        return $this->getValidationParameters(
+            parameters: $parameters,
+            requiredAvailable: true,
+            shouldApplyDBRules: false,
+        );
     }
 
-    public function getValidationParameters($parameters, $requiredAvailable): array
+    public function getValidationParameters($parameters, $requiredAvailable, $shouldApplyDBRules): array
     {
         $result = [];
 
@@ -160,14 +176,14 @@ class RequestsGenerator extends EntityGenerator
             foreach ($parameterNames as $name) {
                 $required = $isRequired && $requiredAvailable;
 
-                $result[] = $this->getRules($name, $type, $required, $isNullable, $isPresent);
+                $result[] = $this->getRules($name, $type, $required, $isNullable, $isPresent, $shouldApplyDBRules);
             }
         }
 
         return $result;
     }
 
-    protected function getRules($name, $type, $required, $nullable, $present): array
+    protected function getRules($name, $type, $required, $nullable, $present, $shouldApplyDBRules): array
     {
         $replaces = [
             'timestamp' => 'date',
@@ -178,6 +194,10 @@ class RequestsGenerator extends EntityGenerator
         $rules = [
             Arr::get($replaces, $type, $type),
         ];
+
+        if ($shouldApplyDBRules) {
+            $this->applyDBTypeRangeRule($type, $rules);
+        }
 
         if (in_array($name, $this->relationFields)) {
             $tableName = str_replace('_id', '', $name);
@@ -223,6 +243,19 @@ class RequestsGenerator extends EntityGenerator
         }
 
         return $availableRelations;
+    }
+
+    protected function applyDBTypeRangeRule(string $type, array &$rules): void
+    {
+        $matchedDBType = match ($type) {
+            'string' => 'varchar',
+            'integer' => 'integer',
+            default => null,
+        };
+
+        if ($matchedDBType) {
+            $rules[] = "db_type_range:{$matchedDBType}";
+        }
     }
 
     private function getEntityName($method): string

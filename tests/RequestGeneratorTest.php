@@ -25,7 +25,10 @@ class RequestGeneratorTest extends TestCase
             ->setFields([
                 'boolean-required' => ['is_published'],
                 'integer' => ['user_id'],
+                'integer-required' => ['views_count'],
                 'boolean' => ['is_draft'],
+                'string' => ['phone'],
+                'string-required' => ['name'],
             ])
             ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();

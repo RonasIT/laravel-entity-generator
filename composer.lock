@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "69ccfa7ee7c1912f18c624c0fc129d6c",
+    "content-hash": "32617f458b70179f3a7faaf868ebc9b6",
     "packages": [
         {
             "name": "brick/math",
@@ -4864,16 +4864,16 @@
         },
         {
             "name": "ronasit/laravel-helpers",
-            "version": "3.5.8",
+            "version": "dev-252-add-db-type-range-validation-rule",
             "source": {
                 "type": "git",
                 "url": "https://github.com/RonasIT/laravel-helpers.git",
-                "reference": "b2ef76134afd66dedb5a956712f1bd1b483ef9c1"
+                "reference": "faeb20a1b97bc08b35fa0d94af7ceee8bf33a606"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/RonasIT/laravel-helpers/zipball/b2ef76134afd66dedb5a956712f1bd1b483ef9c1",
-                "reference": "b2ef76134afd66dedb5a956712f1bd1b483ef9c1",
+                "url": "https://api.github.com/repos/RonasIT/laravel-helpers/zipball/faeb20a1b97bc08b35fa0d94af7ceee8bf33a606",
+                "reference": "faeb20a1b97bc08b35fa0d94af7ceee8bf33a606",
                 "shasum": ""
             },
             "require": {
@@ -4890,6 +4890,7 @@
                 "brainmaestro/composer-git-hooks": "^3.0",
                 "fakerphp/faker": "^1.23.1",
                 "friendsofphp/php-cs-fixer": "^3.62",
+                "laravel/pint": "^1.27",
                 "mockery/mockery": "^1.6.12",
                 "mpyw/laravel-database-mock": "^0.0.1-alpha5",
                 "orchestra/testbench": "^9.3",
@@ -4939,9 +4940,9 @@
             ],
             "support": {
                 "issues": "https://github.com/RonasIT/laravel-helpers/issues",
-                "source": "https://github.com/RonasIT/laravel-helpers/tree/3.5.8"
+                "source": "https://github.com/RonasIT/laravel-helpers/tree/252-add-db-type-range-validation-rule"
             },
-            "time": "2025-10-08T08:37:24+00:00"
+            "time": "2026-03-12T09:48:23+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -10885,13 +10886,15 @@
     ],
     "aliases": [],
     "minimum-stability": "beta",
-    "stability-flags": {},
+    "stability-flags": {
+        "ronasit/laravel-helpers": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.3",
         "ext-json": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }
