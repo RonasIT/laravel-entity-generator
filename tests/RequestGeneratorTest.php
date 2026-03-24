@@ -18,12 +18,7 @@ class RequestGeneratorTest extends TestCase
     {
         app(RequestsGenerator::class)
             ->setModel('Post')
-            ->setFields($this->getFieldsDTO([
-                'boolean' => [
-                    'is_published:required',
-                    'is_draft',
-                ],
-            ]))
+            ->setFields($this->getFieldsDTO($this->getJsonFixture('create_requests_fields')))
             ->setRelations(new RelationsDTO(
                 hasMany: ['Comments'],
                 belongsTo: ['User'],

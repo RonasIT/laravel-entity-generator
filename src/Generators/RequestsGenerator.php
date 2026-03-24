@@ -4,11 +4,9 @@ namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Support\Fields\Field;
-use RonasIT\Support\Support\Fields\FieldsCollection;
 
 class RequestsGenerator extends EntityGenerator
 {
@@ -82,7 +80,7 @@ class RequestsGenerator extends EntityGenerator
             'namespace' => $this->generateNamespace($this->paths['requests']),
             'servicesNamespace' => $this->generateNamespace($this->paths['services']),
             'entityNamespace' => $this->getModelClass($this->model),
-            'needToValidateWith' => !is_null(Arr::first($parameters, fn ($parameter) => $parameter['name'] === 'with.*')),
+            'needToValidateWith' => Arr::has($parameters, 'with.*'),
             'availableRelations' => $this->getAvailableRelations(),
         ]);
 
@@ -95,109 +93,88 @@ class RequestsGenerator extends EntityGenerator
 
     protected function getGetValidationParameters(): array
     {
-        $parameters = new FieldsCollection(
-            new Field('with', FieldTypeEnum::Array),
-            new Field('with.*', FieldTypeEnum::String, [FieldModifierEnum::Required]),
-        );
-
-        return $this->getValidationParameters($parameters, true);
+        return [
+            'with' => ['array'],
+            'with.*' => ['required', 'string', 'in:'],
+        ];
     }
 
     protected function getCreateValidationParameters(): array
     {
-        $parameters = $this->fields->replaceModifier(
-            type: FieldTypeEnum::Boolean,
-            originalModifier: FieldModifierEnum::Required,
-            newModifier: 'present',
-        );
-
-        return $this->getValidationParameters($parameters, true);
-    }
-
-    protected function getUpdateValidationParameters(): array
-    {
-        $parameters = $this->fields->removeModifier(FieldTypeEnum::Boolean, FieldModifierEnum::Required);
-
-        return $this->getValidationParameters($parameters, false);
-    }
-
-    protected function getSearchValidationParameters(): array
-    {
-        $parameters = $this
-            ->fields
-            ->remove(FieldTypeEnum::Timestamp)
-            ->removeModifier(FieldTypeEnum::Boolean, FieldModifierEnum::Required)
-            ->merge([
-                new Field('page', FieldTypeEnum::Integer),
-                new Field('per_page', FieldTypeEnum::Integer),
-                new Field('desc', FieldTypeEnum::Boolean),
-                new Field('all', FieldTypeEnum::Boolean),
-                new Field('order_by', FieldTypeEnum::String),
-                new Field('query', FieldTypeEnum::String, ['nullable']),
-                new Field('with', FieldTypeEnum::Array),
-                new Field('with.*', FieldTypeEnum::String, [FieldModifierEnum::Required]),
-            ]);
-
-        return $this->getValidationParameters($parameters, true);
-    }
-
-    public function getValidationParameters($parameters, $requiredAvailable): array
-    {
         $result = [];
 
-        foreach ($parameters as $field) {
-            $isRequired = $field->isRequired();
-            $isNullable = in_array('nullable', $field->modifiers);
-            $isPresent = in_array('present', $field->modifiers);
+        foreach ($this->fields as $field) {
+            $rules = $this->getFieldRules($field);
 
-            $required = $isRequired && $requiredAvailable;
+            if ($field->isRequired()) {
+                $field->isBoolean()
+                    ? $rules[] = 'present'
+                    : array_unshift($rules, 'required');
+            }
 
-            $result[] = $this->getRules($field, $required, $isNullable, $isPresent);
+            $result[$field->name] = $rules;
         }
 
         return $result;
     }
 
-    protected function getRules(Field $field, bool $required, bool $nullable, bool $present): array
+    protected function getUpdateValidationParameters(): array
     {
-        $replaces = [
-            'timestamp' => 'date',
-            'float' => 'numeric',
-            'json' => 'array',
-        ];
+        $result = [];
 
-        $rules = [
-            Arr::get($replaces, $field->type->value, $field->type->value),
-        ];
+        foreach ($this->fields as $field) {
+            $rules = $this->getFieldRules($field);
 
-        if (in_array($field->name, $this->relationFields)) {
-            $tableName = str_replace('_id', '', $field->name);
+            if ($field->isRequired() && !$field->isBoolean()) {
+                array_unshift($rules, 'required');
+            }
 
-            $rules[] = "exists:{$this->getTableName($tableName)},id";
-
-            $required = true;
+            $result[$field->name] = $rules;
         }
 
-        if ($required) {
-            array_unshift($rules, 'required');
-        }
+        return $result;
+    }
 
-        if ($nullable) {
-            $rules[] = 'nullable';
-        }
+    protected function getSearchValidationParameters(): array
+    {
+        $result = [];
 
-        if ($present) {
-            $rules[] = 'present';
-        }
-
-        if (in_array($field->name, ['order_by', 'with.*'])) {
-            $rules[] = 'in:';
+        foreach ($this->fields as $field) {
+            if (!$field->isTimestamp()) {
+                $result[$field->name] = $this->getFieldRules($field);
+            }
         }
 
         return [
-            'name' => $field->name,
-            'rules' => $rules,
+            ...$result,
+            'page' => ['integer'],
+            'per_page' => ['integer'],
+            'desc' => ['boolean'],
+            'all' => ['boolean'],
+            'order_by' => ['string', 'in:'],
+            'query' => ['string', 'nullable'],
+            'with' => ['array'],
+            'with.*' => ['required', 'string', 'in:']
         ];
+    }
+
+    protected function getFieldRules(Field $field): array
+    {
+        $replaces = [
+            FieldTypeEnum::Timestamp->value => 'date',
+            FieldTypeEnum::Float->value => 'numeric',
+            FieldTypeEnum::Json->value => 'array',
+        ];
+
+        $rules = [Arr::get($replaces, $field->type->value, $field->type->value)];
+
+        if ($field->isKeyField() || in_array($field->name, $this->relationFields)) {
+            $tableName = str_replace('_id', '', $field->name);
+
+            $rules[] = "exists:{$this->getTableName($tableName)},id";
+        }
+
+        return $rules;
     }
 
     protected function getAvailableRelations(): array
