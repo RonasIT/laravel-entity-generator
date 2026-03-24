@@ -154,7 +154,7 @@ class RequestsGenerator extends EntityGenerator
             'order_by' => ['string', 'in:'],
             'query' => ['string', 'nullable'],
             'with' => ['array'],
-            'with.*' => ['required', 'string', 'in:']
+            'with.*' => ['required', 'string', 'in:'],
         ];
     }
 
