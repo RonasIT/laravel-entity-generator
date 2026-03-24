@@ -180,7 +180,7 @@ class RequestsGenerator extends EntityGenerator
 
     protected function isKeyField(Field $field): bool
     {
-        return ($field->isKeyField() || in_array($field->name, $this->relationFields));
+        return $field->isKeyField() || in_array($field->name, $this->relationFields);
     }
 
     protected function addKeyFieldRules(string $fieldName, array &$rules): void
