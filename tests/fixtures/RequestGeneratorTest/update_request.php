@@ -14,15 +14,15 @@ class UpdatePostRequest extends Request
             'is_published' => 'boolean',
             'is_draft' => 'boolean',
             'priority' => 'integer',
-            'media_id' => 'required|integer|exists:media,id',
+            'media_id' => 'filled|integer|exists:media,id',
             'seo_score' => 'numeric',
-            'rating' => 'required|numeric',
+            'rating' => 'filled|numeric',
             'description' => 'string',
-            'title' => 'required|string',
+            'title' => 'filled|string',
             'reviewed_at' => 'date',
-            'published_at' => 'required|date',
+            'published_at' => 'filled|date',
             'meta' => 'array',
-            'user_id' => 'required|integer|exists:users,id',
+            'user_id' => 'filled|integer|exists:users,id',
         ];
     }
 

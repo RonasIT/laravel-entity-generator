@@ -22,11 +22,6 @@ final class FieldsCollection implements IteratorAggregate
         return new self(...Arr::where($this->fields, fn (Field $field) => $field->type === $type));
     }
 
-    public function whereTypeIn(array $types): self
-    {
-        return new self(...Arr::where($this->fields, fn (Field $field) => in_array($field->type, $types)));
-    }
-
     public function add(Field $field): void
     {
         $this->fields[] = $field;

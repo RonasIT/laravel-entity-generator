@@ -16,6 +16,12 @@ class RequestsGenerator extends EntityGenerator
     const DELETE_METHOD = 'Delete';
     const GET_METHOD = 'Get';
 
+    const array VALIDATION_RULES_MAP = [
+        FieldTypeEnum::Timestamp->value => 'date',
+        FieldTypeEnum::Float->value => 'numeric',
+        FieldTypeEnum::Json->value => 'array',
+    ];
+
     protected array $relationFields = [];
 
     public function generate(): void
@@ -34,7 +40,7 @@ class RequestsGenerator extends EntityGenerator
             $this->createRequest(
                 self::GET_METHOD,
                 true,
-                $this->getGetValidationParameters(),
+                $this->getDetailsValidationParameters(),
             );
             $this->createRequest(
                 self::SEARCH_METHOD,
@@ -91,7 +97,7 @@ class RequestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Request: {$method}{$modelName}Request"));
     }
 
-    protected function getGetValidationParameters(): array
+    protected function getDetailsValidationParameters(): array
     {
         return [
             'with' => ['array'],
@@ -104,12 +110,16 @@ class RequestsGenerator extends EntityGenerator
         $result = [];
 
         foreach ($this->fields as $field) {
-            $rules = $this->getFieldRules($field);
+            $rules = $this->getRuleByFieldType($field);
+
+            if ($this->isKeyField($field)) {
+                $this->addKeyFieldRules($field->name, $rules);
+            }
 
             if ($field->isRequired()) {
-                $field->isBoolean()
-                    ? $rules[] = 'present'
-                    : array_unshift($rules, 'required');
+                $rule = $field->isBoolean() ? 'filled' : 'required';
+
+                array_unshift($rules, $rule);
             }
 
             $result[$field->name] = $rules;
@@ -123,10 +133,14 @@ class RequestsGenerator extends EntityGenerator
         $result = [];
 
         foreach ($this->fields as $field) {
-            $rules = $this->getFieldRules($field);
+            $rules = $this->getRuleByFieldType($field);
+
+            if ($this->isKeyField($field)) {
+                $this->addKeyFieldRules($field->name, $rules);
+            }
 
             if ($field->isRequired() && !$field->isBoolean()) {
-                array_unshift($rules, 'required');
+                array_unshift($rules, 'filled');
             }
 
             $result[$field->name] = $rules;
@@ -141,7 +155,7 @@ class RequestsGenerator extends EntityGenerator
 
         foreach ($this->fields as $field) {
             if (!$field->isTimestamp()) {
-                $result[$field->name] = $this->getFieldRules($field);
+                $result[$field->name] = $this->getRuleByFieldType($field);
             }
         }
 
@@ -153,28 +167,27 @@ class RequestsGenerator extends EntityGenerator
             'all' => ['boolean'],
             'order_by' => ['string', 'in:'],
             'query' => ['string', 'nullable'],
-            'with' => ['array'],
-            'with.*' => ['required', 'string', 'in:'],
+            ...$this->getDetailsValidationParameters(),
         ];
     }
 
-    protected function getFieldRules(Field $field): array
+    protected function getRuleByFieldType(FieldTypeEnum $fieldType): array
     {
-        $replaces = [
-            FieldTypeEnum::Timestamp->value => 'date',
-            FieldTypeEnum::Float->value => 'numeric',
-            FieldTypeEnum::Json->value => 'array',
+        return [
+            Arr::get(self::VALIDATION_RULES_MAP, $fieldType->value, $fieldType->value),
         ];
+    }
 
-        $rules = [Arr::get($replaces, $field->type->value, $field->type->value)];
+    protected function isKeyField(Field $field): bool
+    {
+        return ($field->isKeyField() || in_array($field->name, $this->relationFields));
+    }
 
-        if ($field->isKeyField() || in_array($field->name, $this->relationFields)) {
-            $tableName = str_replace('_id', '', $field->name);
+    protected function addKeyFieldRules(string $fieldName, array &$rules): void
+    {
+        $tableName = str_replace('_id', '', $fieldName);
 
-            $rules[] = "exists:{$this->getTableName($tableName)},id";
-        }
-
-        return $rules;
+        $rules[] = "exists:{$this->getTableName($tableName)},id";
     }
 
     protected function getAvailableRelations(): array

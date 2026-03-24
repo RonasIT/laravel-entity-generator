@@ -9,7 +9,7 @@ class CreatePostRequest extends Request
     public function rules(): array
     {
         return [
-            'is_published' => 'boolean|present',
+            'is_published' => 'filled|boolean',
             'is_draft' => 'boolean',
             'priority' => 'integer',
             'media_id' => 'required|integer|exists:media,id',
