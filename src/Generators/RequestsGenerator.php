@@ -110,7 +110,7 @@ class RequestsGenerator extends EntityGenerator
         $result = [];
 
         foreach ($this->fields as $field) {
-            $rules = $this->getRuleByFieldType($field);
+            $rules = $this->getRuleByFieldType($field->type);
 
             if ($this->isKeyField($field)) {
                 $this->addKeyFieldRules($field->name, $rules);
@@ -133,7 +133,7 @@ class RequestsGenerator extends EntityGenerator
         $result = [];
 
         foreach ($this->fields as $field) {
-            $rules = $this->getRuleByFieldType($field);
+            $rules = $this->getRuleByFieldType($field->type);
 
             if ($this->isKeyField($field)) {
                 $this->addKeyFieldRules($field->name, $rules);
@@ -155,7 +155,7 @@ class RequestsGenerator extends EntityGenerator
 
         foreach ($this->fields as $field) {
             if (!$field->isTimestamp()) {
-                $result[$field->name] = $this->getRuleByFieldType($field);
+                $result[$field->name] = $this->getRuleByFieldType($field->type);
             }
         }
 
