@@ -8,6 +8,9 @@ use {{ $resource_namespace }};
 @if(!($entity === 'User' && $entity_namespace === $models_namespace))
 use {{ $models_namespace }}\User;
 @endif
+@foreach($actions as $action)
+use {{ $action['className'] }};
+@endforeach
 
 class Nova{{ $resource_name }}Test extends TestCase
 {
@@ -179,7 +182,7 @@ class Nova{{ $resource_name }}Test extends TestCase
         return [
 @foreach($actions as $action)
             [
-                'action' => {{ $action['className'] }}::class,
+                'action' => {{ class_basename($action['className']) }}::class,
                 'request' => [
                     'resources' => '1,2',
                 ],
