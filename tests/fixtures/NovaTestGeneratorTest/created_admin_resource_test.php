@@ -7,6 +7,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 use App\Nova\AdminResource;
+use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\PublishPostAction;
+use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
 
 class NovaAdminResourceTest extends TestCase
 {
