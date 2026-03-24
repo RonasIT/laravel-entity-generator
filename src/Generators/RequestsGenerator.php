@@ -117,7 +117,7 @@ class RequestsGenerator extends EntityGenerator
             }
 
             if ($field->isRequired()) {
-                $rule = $field->isBoolean() ? 'filled' : 'required';
+                $rule = ($field->isBoolean()) ? 'filled' : 'required';
 
                 array_unshift($rules, $rule);
             }
