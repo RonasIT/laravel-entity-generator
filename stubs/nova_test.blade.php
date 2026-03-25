@@ -119,7 +119,7 @@ class Nova{{ $resource_name }}Test extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        self::${{$dromedary_entity}}State->assertChangesEqualsFixture('delete_{{ $lower_entities }}', true);
+        self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('delete_{{ $lower_entities }}', true);
     }
 
     public function testDeleteNotExists(): void
