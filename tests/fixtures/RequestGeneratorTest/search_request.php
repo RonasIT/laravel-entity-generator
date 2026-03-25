@@ -12,16 +12,6 @@ class SearchPostsRequest extends Request
         $availableRelations = implode(',', $this->getAvailableRelations());
 
         return [
-            'is_published' => 'boolean',
-            'is_draft' => 'boolean',
-            'priority' => 'integer',
-            'media_id' => 'integer',
-            'seo_score' => 'numeric',
-            'rating' => 'numeric',
-            'description' => 'string',
-            'title' => 'string',
-            'meta' => 'array',
-            'user_id' => 'integer',
             'page' => 'integer',
             'per_page' => 'integer',
             'desc' => 'boolean',

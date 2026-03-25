@@ -17,9 +17,9 @@ final class FieldsCollection implements IteratorAggregate
         $this->fields = $fields;
     }
 
-    public function whereType(FieldTypeEnum $type): self
+    public function filterByType(FieldTypeEnum ...$types): array
     {
-        return new self(...Arr::where($this->fields, fn (Field $field) => $field->type === $type));
+        return Arr::where($this->fields, fn (Field $field) => in_array($field->type, $types));
     }
 
     public function add(Field $field): void
@@ -44,6 +44,6 @@ final class FieldsCollection implements IteratorAggregate
 
     public function hasTimestamps(): bool
     {
-        return !empty($this->whereType(FieldTypeEnum::Timestamp)->toArray());
+        return !empty($this->filterByType(FieldTypeEnum::Timestamp));
     }
 }

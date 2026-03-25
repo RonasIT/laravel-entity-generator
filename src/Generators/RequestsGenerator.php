@@ -151,16 +151,7 @@ class RequestsGenerator extends EntityGenerator
 
     protected function getSearchValidationParameters(): array
     {
-        $result = [];
-
-        foreach ($this->fields as $field) {
-            if (!$field->isTimestamp()) {
-                $result[$field->name] = $this->getRuleByFieldType($field->type);
-            }
-        }
-
         return [
-            ...$result,
             'page' => ['integer'],
             'per_page' => ['integer'],
             'desc' => ['boolean'],
