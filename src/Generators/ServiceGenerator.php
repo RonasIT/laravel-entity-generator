@@ -3,6 +3,7 @@
 namespace RonasIT\Support\Generators;
 
 use Illuminate\Support\Arr;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 
 class ServiceGenerator extends EntityGenerator
@@ -33,11 +34,8 @@ class ServiceGenerator extends EntityGenerator
 
     protected function getFields(): array
     {
-        $simpleSearch = Arr::only($this->fields, ['integer', 'integer-required', 'boolean', 'boolean-required']);
-
         return [
-            'simple_search' => Arr::collapse($simpleSearch),
-            'search_by_query' => array_merge($this->fields['string'], $this->fields['string-required']),
+            'search_by_query' => Arr::pluck($this->fields->filterByType(FieldTypeEnum::String), 'name'),
         ];
     }
 }
