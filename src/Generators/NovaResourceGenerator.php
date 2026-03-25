@@ -78,7 +78,7 @@ class NovaResourceGenerator extends EntityGenerator
 
     protected function prepareFields(): array
     {
-        if ($this->commandFieldsExists()) {
+        if (!$this->fields->isEmpty()) {
             return $this->fields->map(
                 fn (Field $field) => [$field->name => $this->getCommandFieldData($field)],
             );
@@ -113,11 +113,6 @@ class NovaResourceGenerator extends EntityGenerator
             'type' => $this->specialFieldNamesMap[$field->getName()] ?? $this->novaFieldsDatabaseMap[$type],
             'is_required' => $field->getNotNull(),
         ];
-    }
-
-    protected function commandFieldsExists(): bool
-    {
-        return !empty(Arr::flatten($this->fields));
     }
 
     protected function getColumnList(string $table, ?string $connectionName = null): array

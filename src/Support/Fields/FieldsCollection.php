@@ -41,4 +41,9 @@ final class FieldsCollection
     {
         return !empty($this->filterByType(FieldTypeEnum::Timestamp));
     }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->fields);
+    }
 }
