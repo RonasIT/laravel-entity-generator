@@ -58,7 +58,7 @@ class ModelGenerator extends EntityGenerator
             'casts' => $this->getCasts($this->fields),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
-            'annotationProperties' => $this->generateAnnotationProperties($this->fields, $relations),
+            'annotationProperties' => $this->generateAnnotationProperties($relations),
             'hasCarbonField' => $this->fields->hasTimestamps(),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
@@ -142,15 +142,13 @@ class ModelGenerator extends EntityGenerator
 
     protected function getCasts(FieldsCollection $fields): array
     {
-        $result = [];
-
-        foreach ($fields as $field) {
+        return $fields->map(function (Field $field) {
             if (Arr::has(self::MODEL_CASTS_MAP, $field->type->value)) {
-                $result[$field->name] = self::MODEL_CASTS_MAP[$field->type->value];
+                return [$field->name => self::MODEL_CASTS_MAP[$field->type->value]];
             }
-        }
 
-        return $result;
+            return [];
+        });
     }
 
     protected function getImportedRelations(): array
@@ -185,13 +183,11 @@ class ModelGenerator extends EntityGenerator
         return "{$path}\\{$psrPath}";
     }
 
-    protected function generateAnnotationProperties(FieldsCollection $fields, array $relations): array
+    protected function generateAnnotationProperties(array $relations): array
     {
-        $result = [];
-
-        foreach ($fields as $field) {
-            $result[$field->name] = $this->getFieldType($field);
-        }
+        $result = $this->fields->map(
+            fn (Field $field) => [$field->name => $this->getFieldType($field)],
+        );
 
         foreach ($relations as $relation) {
             $result[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);

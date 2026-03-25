@@ -3,10 +3,8 @@
 namespace RonasIT\Support\Generators;
 
 use Carbon\Carbon;
-use RonasIT\Support\Enums\FieldModifierEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Support\Fields\Field;
-use RonasIT\Support\Support\Fields\FieldsCollection;
 
 class MigrationGenerator extends EntityGenerator
 {
@@ -23,7 +21,7 @@ class MigrationGenerator extends EntityGenerator
             'entity' => $this->model,
             'entities' => $entities,
             'relations' => $this->prepareRelations(),
-            'fields' => $this->prepareFields($this->fields),
+            'fields' => $this->prepareFields(),
         ]);
 
         $now = Carbon::now()->format('Y_m_d_His');
@@ -44,24 +42,21 @@ class MigrationGenerator extends EntityGenerator
 
     protected function generateCommonFieldDefinition(Field $field): string
     {
-        if ($field->isTimestamp() && env('DB_CONNECTION') === 'mysql') {
-            $field = $field->removeModifier(FieldModifierEnum::Required);
-        }
-
-        $nullablePart = ($field->isRequired()) ? '' : '->nullable()';
+        $nullablePart = (
+            !$field->isRequired()
+            || ($field->isTimestamp() && env('DB_CONNECTION') === 'mysql')
+        ) ? '->nullable()' : '';
 
         return "\$table->{$field->type->value}('{$field->name}'){$nullablePart};";
     }
 
-    protected function prepareFields(FieldsCollection $fields): array
+    protected function prepareFields(): array
     {
-        return array_map(fn (Field $field) => $this->generateFieldDefinition($field), $fields->toArray());
-    }
-
-    protected function generateFieldDefinition(Field $field): string
-    {
-        return ($field->isJSON())
-            ? $this->generateJsonDefinition($field->name)
-            : $this->generateCommonFieldDefinition($field);
+        return $this->fields->map(
+            callback: fn (Field $field) => ($field->isJSON())
+                ? $this->generateJsonDefinition($field->name)
+                : $this->generateCommonFieldDefinition($field),
+            withKeys: false,
+        );
     }
 }

@@ -14,5 +14,4 @@ enum FieldTypeEnum: string
     case Boolean = 'boolean';
     case Json = 'json';
     case Timestamp = 'timestamp';
-    case Array = 'array';
 }

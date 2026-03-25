@@ -3,22 +3,23 @@
 namespace RonasIT\Support\Generators;
 
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Support\Fields\CommandLineNovaField;
-use RonasIT\Support\Support\Fields\DatabaseNovaField;
+use RonasIT\Support\Support\Fields\Field;
 
 class NovaResourceGenerator extends EntityGenerator
 {
     protected $novaFieldTypesMap = [
-        'boolean' => 'Boolean',
-        'timestamp' => 'DateTime',
-        'string' => 'Text',
-        'json' => 'Text',
-        'integer' => 'Number',
-        'float' => 'Number',
+        FieldTypeEnum::Boolean->value => 'Boolean',
+        FieldTypeEnum::Timestamp->value => 'DateTime',
+        FieldTypeEnum::String->value => 'Text',
+        FieldTypeEnum::Json->value => 'Text',
+        FieldTypeEnum::Integer->value => 'Number',
+        FieldTypeEnum::Float->value => 'Number',
     ];
 
     protected $novaFieldsDatabaseMap = [
@@ -57,7 +58,7 @@ class NovaResourceGenerator extends EntityGenerator
 
             $this->createNamespace('nova');
 
-            $novaFields = $this->prepareNovaFields();
+            $novaFields = $this->prepareFields();
 
             $fileContent = $this->getStub('nova_resource', [
                 'model' => $this->model,
@@ -75,60 +76,43 @@ class NovaResourceGenerator extends EntityGenerator
         }
     }
 
-    protected function prepareNovaFields(): array
-    {
-        $result = [];
-        list($fields, $fieldTypesMap) = $this->getFieldsForCreation();
-
-        foreach ($fields as $field) {
-            if (Arr::has($this->specialFieldNamesMap, $field->name)) {
-                $result[$field->name] = [
-                    'type' => $this->specialFieldNamesMap[$field->name],
-                    'is_required' => $field->isRequired,
-                ];
-            } else {
-                $result[$field->name] = [
-                    'type' => $fieldTypesMap[$field->type],
-                    'is_required' => $field->isRequired,
-                ];
-            }
-        }
-
-        return $result;
-    }
-
-    protected function getFieldsForCreation(): array
+    protected function prepareFields(): array
     {
         if ($this->commandFieldsExists()) {
-            return $this->getFieldsFromCommandLineArguments();
+            return $this->fields->map(
+                fn (Field $field) => [$field->name => $this->getCommandFieldData($field)],
+            );
         }
 
         return $this->getFieldsFromDatabase();
     }
 
-    protected function getFieldsFromCommandLineArguments(): array
-    {
-        $fields = [];
-
-        foreach ($this->fields as $field) {
-            $fields[] = new CommandLineNovaField($field->type, $field);
-        }
-
-        return [$fields, $this->novaFieldTypesMap];
-    }
-
     protected function getFieldsFromDatabase(): array
     {
-        $modelClass = $this->getModelClass($this->model);
-        $model = app($modelClass);
+        $model = app($this->getModelClass($this->model));
 
-        $columns = $this->getColumnList($model->getTable(), $model->getConnectionName());
+        return Arr::mapWithKeys(
+            array: $this->getColumnList($model->getTable(), $model->getConnectionName()),
+            callback: fn (Column $column) => [$column->getName() => $this->getDatabaseFieldData($column)],
+        );
+    }
 
-        $fields = array_map(function ($column) {
-            return new DatabaseNovaField($column);
-        }, $columns);
+    protected function getCommandFieldData(Field $field): array
+    {
+        return [
+            'type' => $this->specialFieldNamesMap[$field->name] ?? $this->novaFieldTypesMap[$field->type->value],
+            'is_required' => $field->isRequired(),
+        ];
+    }
 
-        return [$fields, $this->novaFieldsDatabaseMap];
+    protected function getDatabaseFieldData(Column $field): array
+    {
+        $type = strtolower($field->getType()->getBindingType()->name);
+
+        return [
+            'type' => $this->specialFieldNamesMap[$field->getName()] ?? $this->novaFieldsDatabaseMap[$type],
+            'is_required' => $field->getNotNull(),
+        ];
     }
 
     protected function commandFieldsExists(): bool

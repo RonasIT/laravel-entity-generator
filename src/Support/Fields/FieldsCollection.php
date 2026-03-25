@@ -2,13 +2,11 @@
 
 namespace RonasIT\Support\Support\Fields;
 
-use ArrayIterator;
+use Closure;
 use Illuminate\Support\Arr;
-use IteratorAggregate;
 use RonasIT\Support\Enums\FieldTypeEnum;
-use Traversable;
 
-final class FieldsCollection implements IteratorAggregate
+final class FieldsCollection
 {
     private array $fields;
 
@@ -27,19 +25,16 @@ final class FieldsCollection implements IteratorAggregate
         $this->fields[] = $field;
     }
 
+    public function map(Closure $callback, bool $withKeys = true): array
+    {
+        return ($withKeys)
+            ? Arr::mapWithKeys($this->fields, $callback)
+            : Arr::map($this->fields, $callback);
+    }
+
     public function getNames(): array
     {
         return Arr::pluck($this->fields, 'name');
-    }
-
-    public function getIterator(): Traversable
-    {
-        return new ArrayIterator($this->fields);
-    }
-
-    public function toArray(): array
-    {
-        return $this->fields;
     }
 
     public function hasTimestamps(): bool
