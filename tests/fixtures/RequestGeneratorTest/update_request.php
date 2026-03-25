@@ -11,9 +11,18 @@ final class UpdatePostRequest extends Request
     public function rules(): array
     {
         return [
-            'user_id' => 'required|integer|exists:users,id',
-            'is_draft' => 'boolean',
             'is_published' => 'boolean',
+            'is_draft' => 'boolean',
+            'priority' => 'integer',
+            'media_id' => 'filled|integer|exists:media,id',
+            'seo_score' => 'numeric',
+            'rating' => 'filled|numeric',
+            'description' => 'string',
+            'title' => 'filled|string',
+            'reviewed_at' => 'date',
+            'published_at' => 'filled|date',
+            'meta' => 'array',
+            'user_id' => 'filled|integer|exists:users,id',
         ];
     }
 

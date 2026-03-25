@@ -15,6 +15,7 @@ class SeederGeneratorTest extends TestCase
     public function testCreateSeeder()
     {
         app(SeederGenerator::class)
+            ->setFields($this->getFieldsDTO())
             ->setRelations(new RelationsDTO(
                 hasMany: ['Comment'],
                 belongsTo: ['User'],
@@ -31,6 +32,7 @@ class SeederGeneratorTest extends TestCase
         $this->mockFilesystem();
 
         app(SeederGenerator::class)
+            ->setFields($this->getFieldsDTO())
             ->setRelations(new RelationsDTO(
                 hasMany: ['Comment'],
                 belongsTo: ['User'],
@@ -47,6 +49,7 @@ class SeederGeneratorTest extends TestCase
         config(['entity-generator.stubs.database_empty_seeder' => 'entity-generator::database_seed_empty']);
 
         app(SeederGenerator::class)
+            ->setFields($this->getFieldsDTO())
             ->setRelations(new RelationsDTO(
                 hasMany: ['Comment'],
                 belongsTo: ['User'],
@@ -68,6 +71,7 @@ class SeederGeneratorTest extends TestCase
         config(['entity-generator.stubs.seeder' => 'incorrect_stub']);
 
         app(SeederGenerator::class)
+            ->setFields($this->getFieldsDTO())
             ->setRelations(new RelationsDTO(
                 hasMany: ['Comment'],
                 belongsTo: ['User'],

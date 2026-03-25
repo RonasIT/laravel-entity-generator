@@ -40,24 +40,25 @@ php artisan make:entity Forum/Blog/Post
 The `make:entity` provides an ability to set the entity's fields, which will be used in all created classes (e.g. Model, Create/Update requests, Test fixtures, etc.)
 
 ```bash
-php artisan make:entity Post -S title -S text -t published_at
+php artisan make:entity Post -s title:required -s text:required -t published_at
 ```
 
 The following field types are available to use:
 
-| Type | Modificator | Short Option | Full Option |
-| -------- | -------- | ------- | ------- |
-| `integer` | | `-i` | `--integer` |
-| `integer` | required | `-I` | `--integer-required` |
-| `float` | | `-f` | `--float` |
-| `float` | required | `-F` | `--float-required` |
-| `string` | | `-s` | `--string` |
-| `string` | required | `-S` | `--string-required` |
-| `boolean` | | `-b` | `--boolean` |
-| `boolean` | required | `-B` | `--boolean-required` |
-| `datetime` | | `-t` | `--timestamp` |
-| `datetime` | required | `-T` | `--timestamp-required` |
-| `json` | | `-j` | `--json` |
+| Type      | Short Option | Full Option   |
+|-----------| ----- |---------------|
+| `integer` | `-i`  | `--integer`   |
+| `float`   | `-f`  | `--float`     |
+| `string`  | `-s`  | `--string`    |
+| `boolean` | `-b`   | `--boolean`   |
+| `datetime`| `-t`   | `--timestamp` |
+| `json`    | `-j`   | `--json`      |
+
+To use field modifiers specify them after field name definition in the following format: `fieldName:modifier1,modifier2,...`. Available field modifiers:
+
+| Modifier   | Short Option | Description           |
+|------------|--------------|-----------------------|
+| `required` | `-r`         | `make field required` |
 
 #### Relations definitions options
 
