@@ -207,7 +207,6 @@ class ModelGeneratorTest extends TestCase
             ->setModel('Post')
             ->setFields($this->getFieldsDTO())
             ->setRelations(new RelationsDTO())
-            ->setFields($this->getFieldsDTO())
             ->generate();
 
         $this->assertGeneratedFileEquals('new_model_without_fields_and_relations.php', 'app/Models/Post.php');
