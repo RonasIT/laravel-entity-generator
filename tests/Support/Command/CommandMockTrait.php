@@ -2,6 +2,7 @@
 
 namespace RonasIT\Support\Tests\Support\Command;
 
+use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\Generators\NovaTestGenerator;
 use RonasIT\Support\Tests\Support\FileSystemMock;
 use RonasIT\Support\Tests\Support\GeneratorMockTrait;
@@ -18,6 +19,25 @@ trait CommandMockTrait
         $fileSystemMock->config = ['entity-generator.php' => ''];
 
         $fileSystemMock->setStructure();
+    }
+
+    public function mockFilesystemPostServiceExists(): void
+    {
+        $fileSystemMock = new FileSystemMock();
+
+        $fileSystemMock->services = ['PostService.php' => $this->mockPhpFileContent()];
+        $fileSystemMock->config = ['entity-generator.php' => ''];
+
+        $fileSystemMock->setStructure();
+
+        $structure = [];
+        $structure['RonasIT']['Support']['Tests']['Support']['Command']['Models']['Post.php'] = $this->mockPhpFileContent();
+
+        vfsStream::create($structure);
+
+        $this->mockNativeGeneratorFunctions(
+            $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
+        );
     }
 
     public function mockFilesystem(): void
