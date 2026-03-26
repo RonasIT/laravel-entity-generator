@@ -53,7 +53,7 @@ class MigrationGenerator extends EntityGenerator
     {
         return $this->fields->toNamedMap(fn (Field $field) => ($field->isJSON())
                 ? $this->generateJsonDefinition($field->name)
-                : $this->generateCommonFieldDefinition($field)
+                : $this->generateCommonFieldDefinition($field),
         );
     }
 }
