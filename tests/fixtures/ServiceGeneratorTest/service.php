@@ -22,7 +22,6 @@ class PostService extends EntityService
     {
         return $this
             ->searchQuery($filters)
-            ->filterBy('media_id')
             ->filterByQuery(['title', 'body'])
             ->getSearchResults();
     }

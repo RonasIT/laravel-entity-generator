@@ -28,9 +28,6 @@ class {{ $entity }}Service extends EntityService
     {
         return $this
             ->searchQuery($filters)
-@foreach($fields['simple_search'] as $field)
-            ->filterBy('{{ $field }}')
-@endforeach
 @if(!empty($fields['search_by_query']))
             ->filterByQuery(['{!! implode('\', \'', $fields['search_by_query']) !!}'])
 @endif
