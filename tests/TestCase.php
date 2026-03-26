@@ -13,11 +13,13 @@ use org\bovigo\vfs\vfsStream;
 use RonasIT\Support\EntityGeneratorServiceProvider;
 use RonasIT\Support\Support\Fields\FieldsCollection;
 use RonasIT\Support\Support\Fields\FieldsParser;
+use RonasIT\Support\Tests\Support\GeneratorMockTrait;
 use RonasIT\Support\Traits\FixturesTrait;
 
 class TestCase extends BaseTestCase
 {
     use FixturesTrait;
+    use GeneratorMockTrait;
     use InteractsWithViews;
 
     protected bool $globalExportMode = false;
@@ -32,6 +34,8 @@ class TestCase extends BaseTestCase
         vfsStream::setup();
 
         $this->generatedFileBasePath = vfsStream::url('root');
+
+        $this->mockChmod();
 
         Event::fake();
 

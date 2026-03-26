@@ -50,6 +50,14 @@ trait GeneratorMockTrait
         ];
     }
 
+    public function mockChmod(): void
+    {
+        $this
+            ->getFunctionMock('\RonasIT\Support\Generators', 'chmod')
+            ->expects($this->any())
+            ->willReturn(true);
+    }
+
     public function mockPhpFileContent(): string
     {
         return '<?php';

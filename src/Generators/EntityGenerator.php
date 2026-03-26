@@ -151,7 +151,7 @@ abstract class EntityGenerator
         return "{$path}/{$name}{$extension}";
     }
 
-    protected function saveClass($path, $name, $content, ?string $entityFolder = null): string
+    protected function saveClass($path, $name, $content, ?string $entityFolder = null): void
     {
         $entitiesPath = base_path($this->paths[$path]);
 
@@ -174,7 +174,14 @@ abstract class EntityGenerator
             mkdir($entitiesPath, 0777, true);
         }
 
-        return file_put_contents($classPath, $content);
+        file_put_contents($classPath, $content);
+
+        $this->setPermissions($classPath);
+    }
+
+    protected function setPermissions(string $filename, int $permissions = 0777): void
+    {
+        chmod($filename, $permissions);
     }
 
     protected function getStub($stub, $data = []): string

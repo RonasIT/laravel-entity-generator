@@ -58,7 +58,7 @@ class ControllerGenerator extends EntityGenerator
         }
     }
 
-    protected function addRoutes($routesPath): string
+    protected function addRoutes($routesPath): void
     {
         $routesContent = $this->getStub('routes', [
             'entity' => $this->model,
@@ -78,7 +78,9 @@ class ControllerGenerator extends EntityGenerator
             }
         }
 
-        return file_put_contents($routesPath, "\n\n{$routesContent}", FILE_APPEND);
+        file_put_contents($routesPath, "\n\n{$routesContent}", FILE_APPEND);
+
+        $this->setPermissions($routesPath);
     }
 
     protected function addUseController(string $routesPath): void
