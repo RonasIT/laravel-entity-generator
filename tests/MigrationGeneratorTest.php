@@ -4,39 +4,16 @@ namespace RonasIT\Support\Tests;
 
 use RonasIT\Support\DTO\RelationsDTO;
 use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\UnknownFieldTypeException;
 use RonasIT\Support\Generators\MigrationGenerator;
 
 class MigrationGeneratorTest extends TestCase
 {
-    public function testSetUnknownFieldType()
-    {
-        $this->assertExceptionThrew(
-            className: UnknownFieldTypeException::class,
-            message: 'Unknown field type unknown-type in MigrationGenerator.',
-        );
-
-        app(MigrationGenerator::class)
-            ->setModel('Post')
-            ->setRelations(new RelationsDTO())
-            ->setFields([
-                'integer-required' => ['media_id', 'user_id'],
-                'unknown-type' => ['title'],
-            ])
-            ->generate();
-    }
-
     public function testCreateMigration()
     {
         app(MigrationGenerator::class)
             ->setModel('Post')
+            ->setFields($this->getFieldsDTO($this->getJsonFixture('create_migration_fields')))
             ->setRelations(new RelationsDTO())
-            ->setFields([
-                'integer-required' => ['media_id', 'user_id'],
-                'string' => ['title', 'body'],
-                'json' => ['meta'],
-                'timestamp' => ['created_at'],
-            ])
             ->generate();
 
         $this->assertGeneratedFileEquals('migrations.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
@@ -48,14 +25,8 @@ class MigrationGeneratorTest extends TestCase
 
         app(MigrationGenerator::class)
             ->setModel('Post')
+            ->setFields($this->getFieldsDTO($this->getJsonFixture('create_migration_mysql_fields')))
             ->setRelations(new RelationsDTO())
-            ->setFields([
-                'integer-required' => ['media_id', 'user_id'],
-                'string' => ['title', 'body'],
-                'json' => ['meta'],
-                'timestamp' => ['created_at'],
-                'timestamp-required' => ['published_at'],
-            ])
             ->generate();
 
         $this->assertGeneratedFileEquals('generated_mysql_migration.php', 'database/migrations/2022_02_02_000000_posts_create_table.php');
@@ -67,13 +38,8 @@ class MigrationGeneratorTest extends TestCase
 
         app(MigrationGenerator::class)
             ->setModel('Post')
+            ->setFields($this->getFieldsDTO($this->getJsonFixture('create_migration_fields')))
             ->setRelations(new RelationsDTO())
-            ->setFields([
-                'integer-required' => ['media_id', 'user_id'],
-                'string' => ['title', 'body'],
-                'json' => ['meta'],
-                'timestamp' => ['created_at'],
-            ])
             ->generate();
 
         $this->assertFileDoesNotExist('database/migrations/2022_02_02_000000_posts_create_table.php');
