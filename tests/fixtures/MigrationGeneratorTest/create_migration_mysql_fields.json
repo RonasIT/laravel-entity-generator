@@ -1,0 +1,17 @@
+{
+    "integer": [
+        "media_id:required",
+        "user_id:required"
+    ],
+    "string": [
+        "title",
+        "body"
+    ],
+    "json": [
+        "meta"
+    ],
+    "timestamp": [
+        "created_at",
+        "published_at:required"
+    ]
+}

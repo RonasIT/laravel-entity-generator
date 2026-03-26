@@ -3,24 +3,19 @@
 namespace RonasIT\Support\Generators;
 
 use Faker\Generator as Faker;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use InvalidArgumentException;
+use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\FakerMethodNotFoundException;
+use RonasIT\Support\Support\Fields\Field;
 
 class FactoryGenerator extends EntityGenerator
 {
-    const array FAKERS_METHODS = [
-        'integer' => 'randomNumber()',
-        'boolean' => 'boolean',
-        'string' => 'word',
-        'float' => 'randomFloat(2, 0, 10000)',
-        'timestamp' => 'dateTime',
-    ];
-
-    const array CUSTOM_METHODS = [
-        'json' => '[]',
+    const array FAKERS_METHODS_MAP = [
+        FieldTypeEnum::Integer->value => 'randomNumber()',
+        FieldTypeEnum::Boolean->value => 'boolean',
+        FieldTypeEnum::String->value => 'word',
+        FieldTypeEnum::Float->value => 'randomFloat(2, 0, 10000)',
+        FieldTypeEnum::Timestamp->value => 'dateTime',
     ];
 
     public function generate(): void
@@ -47,63 +42,38 @@ class FactoryGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Factory: {$this->model}Factory"));
     }
 
-    protected static function getFakerMethod($field): string
-    {
-        if (Arr::has(self::FAKERS_METHODS, $field['type'])) {
-            return '$faker->' . self::FAKERS_METHODS[$field['type']];
-        }
-
-        return self::getCustomMethod($field);
-    }
-
-    protected static function getCustomMethod($field): string
-    {
-        if (Arr::has(self::CUSTOM_METHODS, $field['type'])) {
-            return self::CUSTOM_METHODS[$field['type']];
-        }
-
-        $message = "Cannot generate fake data for unsupported {$field['type']} field type. "
-            . 'Supported custom field types are ' . implode(', ', array_keys(self::CUSTOM_METHODS));
-
-        throw new FakerMethodNotFoundException($message);
-    }
-
-    public static function getFactoryFieldsContent($field): string
+    protected function getFakerCallLine(Field $field): string
     {
         /** @var Faker $faker */
         $faker = app(Faker::class);
 
-        if (preg_match('/_id$/', $field['name']) || ($field['name'] == 'id')) {
+        // Try to find the special faker formatter like name, city, email, etc.
+        try {
+            $faker->{$field->name};
+
+            return "\$faker->{$field->name}";
+        } catch (InvalidArgumentException $e) {
+            return '$faker->' . self::FAKERS_METHODS_MAP[$field->type->value];
+        }
+    }
+
+    public function getFakeValueGenerationLine(Field $field): string
+    {
+        if ($field->isKeyField()) {
             return 1;
         }
 
-        try {
-            $faker->{$field['name']};
-            $hasFormatter = true;
-        } catch (InvalidArgumentException $e) {
-            $hasFormatter = false;
+        if ($field->isJSON()) {
+            return '[]';
         }
 
-        if ($hasFormatter) {
-            return "\$faker->{$field['name']}";
-        }
-
-        return self::getFakerMethod($field);
+        return $this->getFakerCallLine($field);
     }
 
     protected function prepareFields(): array
     {
-        $result = [];
-
-        foreach ($this->fields as $type => $fields) {
-            foreach ($fields as $field) {
-                $result[] = [
-                    'name' => $field,
-                    'type' => Str::before($type, '-'),
-                ];
-            }
-        }
-
-        return $result;
+        return $this
+            ->fields
+            ->toNamedMap(fn (Field $field) => $this->getFakeValueGenerationLine($field));
     }
 }
