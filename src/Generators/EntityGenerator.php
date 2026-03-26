@@ -350,7 +350,7 @@ abstract class EntityGenerator
             $this->fields->add(new Field(
                 name: Str::snake(Str::afterLast($relation, '/')) . '_id',
                 type: FieldTypeEnum::Integer,
-                modifiers: [FieldModifierEnum::Required],
+                modifiers: FieldModifierEnum::Required,
             ));
         }
     }
