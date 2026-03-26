@@ -11,26 +11,22 @@ final class FieldsParser
 {
     public function parse(array $options): FieldsCollection
     {
-        $result = [];
+        $result = new FieldsCollection();
 
         foreach ($options as $type => $fields) {
             foreach ($fields as $field) {
-                $result[] = $this->createField($field, $type);
+                $result->add($this->createField($field, $type));
             }
         }
 
-        return new FieldsCollection(...$result);
+        return $result;
     }
 
     protected function createField(string $field, string $type): Field
     {
         list($name, $modifiers) = $this->splitField($field);
 
-        return new Field(
-            name: $name,
-            type: FieldTypeEnum::from($type),
-            modifiers: $this->prepareModifiers($modifiers, $name),
-        );
+        return new Field($name, FieldTypeEnum::from($type), ...$this->prepareModifiers($modifiers, $name));
     }
 
     protected function splitField(string $field): array
