@@ -190,7 +190,7 @@ class CommandTest extends TestCase
 
         Carbon::setTestNow('2016-10-20 11:05:00');
 
-        $this->mockFilesystemPostServiceExists();
+        $this->mockFilesystemForOnlyApi();
 
         $this
             ->artisan('make:entity Post --only-api')

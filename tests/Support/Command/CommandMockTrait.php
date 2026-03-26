@@ -21,7 +21,7 @@ trait CommandMockTrait
         $fileSystemMock->setStructure();
     }
 
-    public function mockFilesystemPostServiceExists(): void
+    public function mockFilesystemForOnlyApi(): void
     {
         $fileSystemMock = new FileSystemMock();
 
