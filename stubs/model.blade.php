@@ -10,6 +10,9 @@ use {{ $value }};
 use Illuminate\Database\Eloquent\Collection;
 @endif
 
+@if(empty($annotationProperties))
+//TODO: add @property annotation for each model's field
+@endif
 /**
  * @property int $id
 @foreach($annotationProperties as $key => $value)
