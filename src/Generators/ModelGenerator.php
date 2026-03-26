@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 use RonasIT\EntityGenerator\Support\Fields\Field;
-use RonasIT\EntityGenerator\Support\Fields\FieldsCollection;
 
 class ModelGenerator extends EntityGenerator
 {
@@ -55,10 +54,10 @@ class ModelGenerator extends EntityGenerator
             'entity' => $this->model,
             'fields' => $this->fields->getNames(),
             'relations' => $relations,
-            'casts' => $this->getCasts($this->fields),
+            'casts' => $this->getCasts(),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
-            'annotationProperties' => $this->generateAnnotationProperties($this->fields, $relations),
+            'annotationProperties' => $this->generateAnnotationProperties($relations),
             'hasCarbonField' => $this->fields->hasTimestamps(),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
@@ -140,17 +139,11 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getCasts(FieldsCollection $fields): array
+    protected function getCasts(): array
     {
-        $result = [];
-
-        foreach ($fields as $field) {
-            if (Arr::has(self::MODEL_CASTS_MAP, $field->type->value)) {
-                $result[$field->name] = self::MODEL_CASTS_MAP[$field->type->value];
-            }
-        }
-
-        return $result;
+        return $this
+            ->fields
+            ->toNamedMap(fn (Field $field) => Arr::get(self::MODEL_CASTS_MAP, $field->type->value));
     }
 
     protected function getImportedRelations(): array
@@ -185,13 +178,11 @@ class ModelGenerator extends EntityGenerator
         return "{$path}\\{$psrPath}";
     }
 
-    protected function generateAnnotationProperties(FieldsCollection $fields, array $relations): array
+    protected function generateAnnotationProperties(array $relations): array
     {
-        $result = [];
-
-        foreach ($fields as $field) {
-            $result[$field->name] = $this->getFieldType($field);
-        }
+        $result = $this
+            ->fields
+            ->toNamedMap(fn (Field $field) => $this->getFieldType($field));
 
         foreach ($relations as $relation) {
             $result[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);
