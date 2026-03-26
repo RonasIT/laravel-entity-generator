@@ -25,11 +25,12 @@ final class FieldsCollection
         $this->fields[] = $field;
     }
 
-    public function map(Closure $callback, bool $withKeys = true): array
+    public function toNamedMap(Closure $callback): array
     {
-        return ($withKeys)
-            ? Arr::mapWithKeys($this->fields, $callback)
-            : Arr::map($this->fields, $callback);
+        return collect($this->fields)
+            ->mapWithKeys(fn (Field $field) => [$field->name => $callback($field)])
+            ->filter()
+            ->toArray();
     }
 
     public function getNames(): array

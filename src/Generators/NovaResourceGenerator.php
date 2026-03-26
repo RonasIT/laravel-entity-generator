@@ -79,9 +79,9 @@ class NovaResourceGenerator extends EntityGenerator
     protected function prepareFields(): array
     {
         if (!$this->fields->isEmpty()) {
-            return $this->fields->map(
-                fn (Field $field) => [$field->name => $this->getCommandFieldData($field)],
-            );
+            return $this
+                ->fields
+                ->toNamedMap(fn (Field $field) => $this->getCommandFieldData($field));
         }
 
         return $this->getFieldsFromDatabase();

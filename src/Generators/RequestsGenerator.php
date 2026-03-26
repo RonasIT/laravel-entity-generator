@@ -101,7 +101,7 @@ class RequestsGenerator extends EntityGenerator
 
     protected function getCreateValidationParameters(): array
     {
-        return $this->fields->map(function (Field $field) {
+        return $this->fields->toNamedMap(function (Field $field) {
             $rules = $this->getRuleByFieldType($field->type);
 
             if ($field->isKeyField()) {
@@ -114,13 +114,13 @@ class RequestsGenerator extends EntityGenerator
                 array_unshift($rules, $rule);
             }
 
-            return [$field->name => $rules];
+            return $rules;
         });
     }
 
     protected function getUpdateValidationParameters(): array
     {
-        return $this->fields->map(function (Field $field) {
+        return $this->fields->toNamedMap(function (Field $field) {
             $rules = $this->getRuleByFieldType($field->type);
 
             if ($field->isKeyField()) {
@@ -131,7 +131,7 @@ class RequestsGenerator extends EntityGenerator
                 array_unshift($rules, 'filled');
             }
 
-            return [$field->name => $rules];
+            return $rules;
         });
     }
 

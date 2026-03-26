@@ -72,8 +72,8 @@ class FactoryGenerator extends EntityGenerator
 
     protected function prepareFields(): array
     {
-        return $this->fields->map(
-            fn (Field $field) => [$field->name => $this->getFakeValueGenerationLine($field)],
-        );
+        return $this
+            ->fields
+            ->toNamedMap(fn (Field $field) => $this->getFakeValueGenerationLine($field));
     }
 }

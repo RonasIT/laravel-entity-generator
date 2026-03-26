@@ -7,7 +7,6 @@ use Illuminate\Support\Str;
 use RonasIT\Support\Enums\FieldTypeEnum;
 use RonasIT\Support\Events\SuccessCreateMessage;
 use RonasIT\Support\Support\Fields\Field;
-use RonasIT\Support\Support\Fields\FieldsCollection;
 
 class ModelGenerator extends EntityGenerator
 {
@@ -55,7 +54,7 @@ class ModelGenerator extends EntityGenerator
             'entity' => $this->model,
             'fields' => $this->fields->getNames(),
             'relations' => $relations,
-            'casts' => $this->getCasts($this->fields),
+            'casts' => $this->getCasts(),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
             'annotationProperties' => $this->generateAnnotationProperties($relations),
@@ -140,14 +139,12 @@ class ModelGenerator extends EntityGenerator
         return $result;
     }
 
-    protected function getCasts(FieldsCollection $fields): array
+    protected function getCasts(): array
     {
-        return $fields->map(function (Field $field) {
+        return $this->fields->toNamedMap(function (Field $field) {
             if (Arr::has(self::MODEL_CASTS_MAP, $field->type->value)) {
-                return [$field->name => self::MODEL_CASTS_MAP[$field->type->value]];
+                return self::MODEL_CASTS_MAP[$field->type->value];
             }
-
-            return [];
         });
     }
 
@@ -185,9 +182,9 @@ class ModelGenerator extends EntityGenerator
 
     protected function generateAnnotationProperties(array $relations): array
     {
-        $result = $this->fields->map(
-            fn (Field $field) => [$field->name => $this->getFieldType($field)],
-        );
+        $result = $this
+            ->fields
+            ->toNamedMap(fn (Field $field) => $this->getFieldType($field));
 
         foreach ($relations as $relation) {
             $result[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);

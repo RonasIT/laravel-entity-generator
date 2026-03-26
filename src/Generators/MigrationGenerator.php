@@ -42,21 +42,18 @@ class MigrationGenerator extends EntityGenerator
 
     protected function generateCommonFieldDefinition(Field $field): string
     {
-        $nullablePart = (
-            !$field->isRequired()
-            || ($field->isTimestamp() && env('DB_CONNECTION') === 'mysql')
-        ) ? '->nullable()' : '';
+        $nullablePart = (!$field->isRequired() || ($field->isTimestamp() && env('DB_CONNECTION') === 'mysql'))
+            ? '->nullable()'
+            : '';
 
         return "\$table->{$field->type->value}('{$field->name}'){$nullablePart};";
     }
 
     protected function prepareFields(): array
     {
-        return $this->fields->map(
-            callback: fn (Field $field) => ($field->isJSON())
+        return $this->fields->toNamedMap(fn (Field $field) => ($field->isJSON())
                 ? $this->generateJsonDefinition($field->name)
-                : $this->generateCommonFieldDefinition($field),
-            withKeys: false,
+                : $this->generateCommonFieldDefinition($field)
         );
     }
 }
