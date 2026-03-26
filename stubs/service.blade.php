@@ -1,7 +1,6 @@
 namespace {{ $namespace }};
 
 use {{ $repositoriesNamespace }}\{{ $entity }}Repository;
-use Illuminate\Support\Arr;
 use RonasIT\Support\Services\EntityService;
 use Illuminate\Pagination\LengthAwarePaginator;
 {{--
