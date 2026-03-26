@@ -41,9 +41,4 @@ final class FieldsCollection implements IteratorAggregate
     {
         return $this->fields;
     }
-
-    public function hasTimestamps(): bool
-    {
-        return !empty($this->filterByType(FieldTypeEnum::Timestamp));
-    }
 }
