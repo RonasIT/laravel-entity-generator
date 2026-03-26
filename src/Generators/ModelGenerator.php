@@ -141,11 +141,9 @@ class ModelGenerator extends EntityGenerator
 
     protected function getCasts(): array
     {
-        return $this->fields->toNamedMap(function (Field $field) {
-            if (Arr::has(self::MODEL_CASTS_MAP, $field->type->value)) {
-                return self::MODEL_CASTS_MAP[$field->type->value];
-            }
-        });
+        return $this
+            ->fields
+            ->toNamedMap(fn (Field $field) => Arr::get(self::MODEL_CASTS_MAP, $field->type->value));
     }
 
     protected function getImportedRelations(): array

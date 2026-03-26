@@ -33,7 +33,7 @@ class MigrationGenerator extends EntityGenerator
 
     protected function generateJsonDefinition(string $fieldName): string
     {
-        if (env('DB_CONNECTION') == 'mysql') {
+        if ($this->generateForMySQL()) {
             return "\$table->json('{$fieldName}')->nullable();";
         }
 
@@ -42,7 +42,7 @@ class MigrationGenerator extends EntityGenerator
 
     protected function generateCommonFieldDefinition(Field $field): string
     {
-        $nullablePart = (!$field->isRequired() || ($field->isTimestamp() && env('DB_CONNECTION') === 'mysql'))
+        $nullablePart = (!$field->isRequired() || ($field->isTimestamp() && $this->generateForMySQL()))
             ? '->nullable()'
             : '';
 
@@ -55,5 +55,10 @@ class MigrationGenerator extends EntityGenerator
                 ? $this->generateJsonDefinition($field->name)
                 : $this->generateCommonFieldDefinition($field),
         );
+    }
+
+    protected function generateForMySQL(): bool
+    {
+        return env('DB_CONNECTION') === 'mysql';
     }
 }
