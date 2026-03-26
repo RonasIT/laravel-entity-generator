@@ -1,0 +1,20 @@
+<?php
+
+namespace RonasIT\EntityGenerator\Enums;
+
+use RonasIT\Support\Traits\EnumTrait;
+
+enum FieldModifierEnum: string
+{
+    use EnumTrait;
+
+    case Required = 'required';
+
+    public static function tryFromAlias(string $alias): ?self
+    {
+        return match ($alias) {
+            'r' => FieldModifierEnum::Required,
+            default => null,
+        };
+    }
+}

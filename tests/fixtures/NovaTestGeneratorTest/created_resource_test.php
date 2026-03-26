@@ -8,6 +8,8 @@ use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 use App\Nova\WelcomeBonusResource;
 use RonasIT\EntityGenerator\Tests\Support\Models\User;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\PublishPostAction;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
 
 class NovaWelcomeBonusResourceTest extends TestCase
 {

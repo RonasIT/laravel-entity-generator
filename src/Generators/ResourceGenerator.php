@@ -2,7 +2,6 @@
 
 namespace RonasIT\EntityGenerator\Generators;
 
-use Illuminate\Support\Arr;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 
 class ResourceGenerator extends EntityGenerator
@@ -45,7 +44,7 @@ class ResourceGenerator extends EntityGenerator
             'entity' => $this->model,
             'namespace' => $this->generateNamespace($this->paths['resources']),
             'model_namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
-            'fields' => when($this->fields, fn () => Arr::flatten($this->fields)),
+            'fields' => when($this->fields, fn () => $this->fields->getNames()),
         ]);
 
         $this->saveClass('resources', "{$this->model}Resource", $resourceContent, $this->model);

@@ -21,8 +21,8 @@ class {{ $method }}{{ $entity }}Request extends Request
 
 @endif
         return [
-@foreach($parameters as $parameter)
-            '{{ $parameter['name'] }}' => '{!! implode('|', $parameter['rules']) !!}'@if ($parameter['name'] === 'order_by') . $this->getOrderableFields({{ Str::singular($entity) }}::class)@elseif($parameter['name'] === 'with.*'){{ ' . $availableRelations' }}@endif,
+@foreach($parameters as $name => $rules)
+            '{{ $name }}' => '{!! implode('|', $rules) !!}'@if ($name === 'order_by') . $this->getOrderableFields({{ Str::singular($entity) }}::class)@elseif($name === 'with.*'){{ ' . $availableRelations' }}@endif,
 @endforeach
         ];
 @else

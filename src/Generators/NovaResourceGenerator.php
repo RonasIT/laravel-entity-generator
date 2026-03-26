@@ -7,24 +7,18 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
-use RonasIT\EntityGenerator\Support\CommandLineNovaField;
-use RonasIT\EntityGenerator\Support\DatabaseNovaField;
+use RonasIT\EntityGenerator\Support\Fields\CommandLineNovaField;
+use RonasIT\EntityGenerator\Support\Fields\DatabaseNovaField;
 
 class NovaResourceGenerator extends EntityGenerator
 {
     protected $novaFieldTypesMap = [
         'boolean' => 'Boolean',
-        'boolean-required' => 'Boolean',
         'timestamp' => 'DateTime',
-        'timestamp-required' => 'DateTime',
         'string' => 'Text',
-        'string-required' => 'Text',
         'json' => 'Text',
-        'json-required' => 'Text',
         'integer' => 'Number',
-        'integer-required' => 'Number',
         'float' => 'Number',
-        'float-required' => 'Number',
     ];
 
     protected $novaFieldsDatabaseMap = [
@@ -87,9 +81,7 @@ class NovaResourceGenerator extends EntityGenerator
         list($fields, $fieldTypesMap) = $this->getFieldsForCreation();
 
         foreach ($fields as $field) {
-            if (!Arr::has($fieldTypesMap, $field->type)) {
-                event(new SuccessCreateMessage("Field '{$field->name}' had been skipped cause has an unhandled type {$field->type}."));
-            } elseif (Arr::has($this->specialFieldNamesMap, $field->name)) {
+            if (Arr::has($this->specialFieldNamesMap, $field->name)) {
                 $result[$field->name] = [
                     'type' => $this->specialFieldNamesMap[$field->name],
                     'is_required' => $field->isRequired,
@@ -118,10 +110,8 @@ class NovaResourceGenerator extends EntityGenerator
     {
         $fields = [];
 
-        foreach ($this->fields as $type => $names) {
-            foreach ($names as $name) {
-                $fields[] = new CommandLineNovaField($type, $name);
-            }
+        foreach ($this->fields as $field) {
+            $fields[] = new CommandLineNovaField($field->type, $field);
         }
 
         return [$fields, $this->novaFieldTypesMap];

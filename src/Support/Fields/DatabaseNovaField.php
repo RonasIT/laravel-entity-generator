@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\EntityGenerator\Support;
+namespace RonasIT\EntityGenerator\Support\Fields;
 
 use Doctrine\DBAL\Schema\Column;
 

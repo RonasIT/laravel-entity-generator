@@ -18,15 +18,11 @@ class RequestGeneratorTest extends TestCase
     {
         app(RequestsGenerator::class)
             ->setModel('Post')
+            ->setFields($this->getFieldsDTO($this->getJsonFixture('create_requests_fields')))
             ->setRelations(new RelationsDTO(
                 hasMany: ['Comments'],
                 belongsTo: ['User'],
             ))
-            ->setFields([
-                'boolean-required' => ['is_published'],
-                'integer' => ['user_id'],
-                'boolean' => ['is_draft'],
-            ])
             ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
 
@@ -100,6 +96,7 @@ class RequestGeneratorTest extends TestCase
 
         app(RequestsGenerator::class)
             ->setModel('Post')
+            ->setFields($this->getFieldsDTO())
             ->setRelations(new RelationsDTO(
                 belongsTo: ['User'],
             ))
@@ -121,13 +118,17 @@ class RequestGeneratorTest extends TestCase
 
         app(RequestsGenerator::class)
             ->setModel('Post')
+            ->setFields($this->getFieldsDTO([
+                'boolean' => [
+                    'is_published:required',
+                ],
+                'integer' => [
+                    'user_id',
+                ],
+            ]))
             ->setRelations(new RelationsDTO(
                 belongsTo: ['User'],
             ))
-            ->setFields([
-                'boolean-required' => ['is_published'],
-                'integer' => ['user_id'],
-            ])
             ->setCrudOptions(['R'])
             ->generate();
     }

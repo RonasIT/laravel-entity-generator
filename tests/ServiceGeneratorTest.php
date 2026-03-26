@@ -41,16 +41,20 @@ class ServiceGeneratorTest extends TestCase
         ]);
 
         app(ServiceGenerator::class)
+            ->setFields($this->getFieldsDTO([
+                'integer' => [
+                    'media_id:required',
+                ],
+                'string' => [
+                    'title',
+                    'body:required',
+                ],
+            ]))
             ->setRelations(
                 new RelationsDTO(
                     hasMany: ['Comment'],
                     belongsTo: ['User'],
                 ))
-            ->setFields([
-                'integer-required' => ['media_id'],
-                'string-required' => ['body'],
-                'string' => ['title'],
-            ])
             ->setModel('Post')
             ->generate();
 
@@ -72,7 +76,7 @@ class ServiceGeneratorTest extends TestCase
         ]);
 
         app(ServiceGenerator::class)
-            ->setFields([])
+            ->setFields($this->getFieldsDTO())
             ->setModel('Post')
             ->generate();
 

@@ -17,8 +17,8 @@ class {{ $entity }}Factory extends Factory
 
 @endif
         return [
-@foreach($fields as $field)
-            '{{ $field['name'] }}' => {!! \RonasIT\EntityGenerator\Generators\FactoryGenerator::getFactoryFieldsContent($field) !!},
+@foreach($fields as $name => $line)
+            '{{ $name }}' => {!! $line !!},
 @endforeach
         ];
     }

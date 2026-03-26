@@ -3,9 +3,10 @@
 namespace RonasIT\EntityGenerator\Generators;
 
 use Carbon\Carbon;
-use Illuminate\Support\Str;
+use RonasIT\EntityGenerator\Enums\FieldModifierEnum;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
-use RonasIT\EntityGenerator\Exceptions\UnknownFieldTypeException;
+use RonasIT\EntityGenerator\Support\Fields\Field;
+use RonasIT\EntityGenerator\Support\Fields\FieldsCollection;
 
 class MigrationGenerator extends EntityGenerator
 {
@@ -22,8 +23,7 @@ class MigrationGenerator extends EntityGenerator
             'entity' => $this->model,
             'entities' => $entities,
             'relations' => $this->prepareRelations(),
-            'fields' => $this->fields,
-            'table' => $this->generateTable($this->fields),
+            'fields' => $this->prepareFields($this->fields),
         ]);
 
         $now = Carbon::now()->format('Y_m_d_His');
@@ -33,22 +33,7 @@ class MigrationGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Migration: {$entities}_create_table"));
     }
 
-    protected function isJson(string $typeName): bool
-    {
-        return $typeName === 'json';
-    }
-
-    protected function isRequired(string $typeName): bool
-    {
-        return Str::afterLast($typeName, '-') === 'required';
-    }
-
-    protected function isNullable(string $typeName): bool
-    {
-        return empty(explode('-', $typeName)[1]);
-    }
-
-    protected function getJsonLine(string $fieldName): string
+    protected function generateJsonDefinition(string $fieldName): string
     {
         if (env('DB_CONNECTION') == 'mysql') {
             return "\$table->json('{$fieldName}')->nullable();";
@@ -57,51 +42,26 @@ class MigrationGenerator extends EntityGenerator
         return "\$table->jsonb('{$fieldName}')->default(\"{}\");";
     }
 
-    protected function getRequiredLine(string $fieldName, string $typeName): string
+    protected function generateCommonFieldDefinition(Field $field): string
     {
-        $type = explode('-', $typeName)[0];
-
-        if ($type === 'timestamp' && env('DB_CONNECTION') === 'mysql') {
-            return "\$table->{$type}('{$fieldName}')->nullable();";
+        if ($field->isTimestamp() && env('DB_CONNECTION') === 'mysql') {
+            $field = $field->removeModifier(FieldModifierEnum::Required);
         }
 
-        return "\$table->{$type}('{$fieldName}');";
+        $nullablePart = ($field->isRequired()) ? '' : '->nullable()';
+
+        return "\$table->{$field->type->value}('{$field->name}'){$nullablePart};";
     }
 
-    protected function getNonRequiredLine(string $fieldName, string $typeName): string
+    protected function prepareFields(FieldsCollection $fields): array
     {
-        $type = explode('-', $typeName)[0];
-
-        return "\$table->{$type}('{$fieldName}')->nullable();";
+        return array_map(fn (Field $field) => $this->generateFieldDefinition($field), $fields->toArray());
     }
 
-    protected function generateTable(array $fields): array
+    protected function generateFieldDefinition(Field $field): string
     {
-        $resultTable = [];
-
-        foreach ($fields as $typeName => $fieldNames) {
-            foreach ($fieldNames as $fieldName) {
-                $resultTable[] = $this->getTableRow($fieldName, $typeName);
-            }
-        }
-
-        return $resultTable;
-    }
-
-    protected function getTableRow(string $fieldName, string $typeName): string
-    {
-        if ($this->isJson($typeName)) {
-            return $this->getJsonLine($fieldName);
-        }
-
-        if ($this->isRequired($typeName)) {
-            return $this->getRequiredLine($fieldName, $typeName);
-        }
-
-        if ($this->isNullable($typeName)) {
-            return $this->getNonRequiredLine($fieldName, $typeName);
-        }
-
-        throw new UnknownFieldTypeException($typeName, 'MigrationGenerator');
+        return ($field->isJSON())
+            ? $this->generateJsonDefinition($field->name)
+            : $this->generateCommonFieldDefinition($field);
     }
 }

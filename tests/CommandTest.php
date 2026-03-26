@@ -5,6 +5,7 @@ namespace RonasIT\EntityGenerator\Tests;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
+use RonasIT\EntityGenerator\Exceptions\UnknownFieldModifierException;
 use RonasIT\EntityGenerator\Tests\Support\Command\CommandMockTrait;
 use RonasIT\EntityGenerator\Tests\Support\Command\Models\Post;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
@@ -233,5 +234,15 @@ class CommandTest extends TestCase
         $this->assertFileExists($configPath);
 
         $this->assertEqualsFixture('changed_config', $updated);
+    }
+
+    public function testUnknownModifierExceptionThrown()
+    {
+        $this->assertExceptionThrew(
+            className: UnknownFieldModifierException::class,
+            message: "Unknown field modifier 'unknownModifier' for field title",
+        );
+
+        $this->artisan('make:entity Post -s title:required,unknownModifier -i owner_id:required');
     }
 }

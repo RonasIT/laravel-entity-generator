@@ -1,0 +1,13 @@
+{
+    "integer": [
+        "author_id:required"
+    ],
+    "string": [
+        "title",
+        "iban",
+        "something"
+    ],
+    "json": [
+        "json_text"
+    ]
+}

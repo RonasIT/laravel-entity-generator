@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 use org\bovigo\vfs\vfsStream;
 use RonasIT\EntityGenerator\EntityGeneratorServiceProvider;
+use RonasIT\EntityGenerator\Support\Fields\FieldsCollection;
+use RonasIT\EntityGenerator\Support\Fields\FieldsParser;
 use RonasIT\Support\Traits\FixturesTrait;
 
 class TestCase extends BaseTestCase
@@ -117,5 +119,12 @@ class TestCase extends BaseTestCase
     {
         $this->expectException($className);
         $this->expectExceptionMessage($message);
+    }
+
+    protected function getFieldsDTO(array $options = []): FieldsCollection
+    {
+        $fieldsParser = app(FieldsParser::class);
+
+        return $fieldsParser->parse($options);
     }
 }
