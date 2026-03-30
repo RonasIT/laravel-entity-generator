@@ -1,9 +1,9 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Command\Factories;
+namespace RonasIT\EntityGenerator\Tests\Support\Command\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use RonasIT\Support\Tests\Support\Command\Models\Post;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\Post;
 
 class PostFactory extends Factory
 {

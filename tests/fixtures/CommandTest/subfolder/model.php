@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Command\Models\Forum;
+namespace RonasIT\EntityGenerator\Tests\Support\Command\Models\Forum;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;

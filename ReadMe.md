@@ -15,7 +15,7 @@ composer require ronasit/laravel-entity-generator --dev
 Publish package's resources.
 
 ```bash
-php artisan vendor:publish --provider="RonasIT\Support\EntityGeneratorServiceProvider"
+php artisan vendor:publish --provider="RonasIT\EntityGenerator\EntityGeneratorServiceProvider"
 ```
 
 ## Usage

@@ -1,11 +1,11 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Command;
+namespace RonasIT\EntityGenerator\Tests\Support\Command;
 
 use org\bovigo\vfs\vfsStream;
-use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Tests\Support\FileSystemMock;
-use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\EntityGenerator\Generators\NovaTestGenerator;
+use RonasIT\EntityGenerator\Tests\Support\FileSystemMock;
+use RonasIT\EntityGenerator\Tests\Support\GeneratorMockTrait;
 
 trait CommandMockTrait
 {
@@ -69,11 +69,11 @@ trait CommandMockTrait
         ]);
 
         $this->mockNativeGeneratorFunctions(
-            $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
+            $this->nativeClassExistsMethodCall(['RonasIT\EntityGenerator\Tests\Support\Command\Models\Post', true]),
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
             $this->nativeIsSubClassOfMethodCall(['App\Nova\PostResource', 'Laravel\\Nova\\Resource']),
-            $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
+            $this->nativeClassExistsMethodCall(['RonasIT\EntityGenerator\Tests\Support\Command\Models\Post', true]),
         );
     }
 
@@ -95,11 +95,11 @@ trait CommandMockTrait
         ]);
 
         $this->mockNativeGeneratorFunctions(
-            $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Forum\Post', true]),
+            $this->nativeClassExistsMethodCall(['RonasIT\EntityGenerator\Tests\Support\Command\Models\Forum\Post', true]),
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
             $this->nativeClassExistsMethodCall(['Laravel\Nova\NovaServiceProvider', true]),
             $this->nativeIsSubClassOfMethodCall(['App\Nova\Forum\PostResource', 'Laravel\\Nova\\Resource']),
-            $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Forum\Post', true]),
+            $this->nativeClassExistsMethodCall(['RonasIT\EntityGenerator\Tests\Support\Command\Models\Forum\Post', true]),
         );
     }
 

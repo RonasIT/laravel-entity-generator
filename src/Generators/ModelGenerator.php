@@ -1,12 +1,12 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RonasIT\Support\Enums\FieldTypeEnum;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Support\Fields\Field;
+use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Support\Fields\Field;
 
 class ModelGenerator extends EntityGenerator
 {
