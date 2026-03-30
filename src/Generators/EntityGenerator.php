@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Filesystem\Filesystem;
@@ -9,15 +9,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
-use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Enums\FieldModifierEnum;
-use RonasIT\Support\Enums\FieldTypeEnum;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\IncorrectClassPathException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Support\Fields\Field;
-use RonasIT\Support\Support\Fields\FieldsCollection;
+use RonasIT\EntityGenerator\DTO\RelationsDTO;
+use RonasIT\EntityGenerator\Enums\FieldModifierEnum;
+use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\IncorrectClassPathException;
+use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\EntityGenerator\Exceptions\ResourceNotExistsException;
+use RonasIT\EntityGenerator\Support\Fields\Field;
+use RonasIT\EntityGenerator\Support\Fields\FieldsCollection;
 use Throwable;
 
 /**
