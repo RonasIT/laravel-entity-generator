@@ -1,14 +1,14 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
-use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Generators\ModelGenerator;
-use RonasIT\Support\Tests\Support\Model\ModelMockTrait;
+use RonasIT\EntityGenerator\DTO\RelationsDTO;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\EntityGenerator\Exceptions\ResourceNotExistsException;
+use RonasIT\EntityGenerator\Generators\ModelGenerator;
+use RonasIT\EntityGenerator\Tests\Support\Model\ModelMockTrait;
 use Symfony\Component\Console\Exception\RuntimeException;
 
 class ModelGeneratorTest extends TestCase

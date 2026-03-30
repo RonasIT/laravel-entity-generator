@@ -1,10 +1,10 @@
 <?php
 
-namespace RonasIT\Support\Support\Fields;
+namespace RonasIT\EntityGenerator\Support\Fields;
 
 use Closure;
 use Illuminate\Support\Arr;
-use RonasIT\Support\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
 
 final class FieldsCollection
 {

@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use RonasIT\Support\Tests\Support\Command\Factories\PostFactory;
+use RonasIT\EntityGenerator\Tests\Support\Command\Factories\PostFactory;
 
 class PostSeeder extends Seeder
 {
