@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Post;
 
 use App\Http\Requests\Request;
-use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\Forum\Post;
 
 class SearchPostsRequest extends Request
 {
@@ -14,9 +14,9 @@ class SearchPostsRequest extends Request
         return [
             'page' => 'integer',
             'per_page' => 'integer',
-            'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'desc' => 'boolean',
             'all' => 'boolean',
+            'order_by' => 'string|in:' . $this->getOrderableFields(Post::class),
             'query' => 'string|nullable',
             'with' => 'array',
             'with.*' => 'required|string|in:' . $availableRelations,

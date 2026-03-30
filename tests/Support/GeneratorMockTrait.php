@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support;
+namespace RonasIT\EntityGenerator\Tests\Support;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
@@ -22,7 +22,7 @@ trait GeneratorMockTrait
 
     public function mockNativeGeneratorFunctions(...$functionCalls): void
     {
-        $this->mockNativeFunction('\RonasIT\Support\Generators', $functionCalls);
+        $this->mockNativeFunction('\RonasIT\EntityGenerator\Generators', $functionCalls);
     }
 
     public function mockNovaServiceProviderExists(bool $result = true): void

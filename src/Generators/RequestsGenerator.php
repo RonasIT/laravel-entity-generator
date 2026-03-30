@@ -1,10 +1,12 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Support\Fields\Field;
 
 class RequestsGenerator extends EntityGenerator
 {
@@ -14,7 +16,11 @@ class RequestsGenerator extends EntityGenerator
     const DELETE_METHOD = 'Delete';
     const GET_METHOD = 'Get';
 
-    protected array $relationFields = [];
+    const array VALIDATION_RULES_MAP = [
+        FieldTypeEnum::Timestamp->value => 'date',
+        FieldTypeEnum::Float->value => 'numeric',
+        FieldTypeEnum::Json->value => 'array',
+    ];
 
     public function generate(): void
     {
@@ -24,15 +30,11 @@ class RequestsGenerator extends EntityGenerator
 
         $this->createNamespace('requests');
 
-        $this->relationFields = array_map(function ($field) {
-            return Str::snake($field) . '_id';
-        }, $this->relations->belongsTo);
-
         if (in_array('R', $this->crudOptions)) {
             $this->createRequest(
                 self::GET_METHOD,
                 true,
-                $this->getGetValidationParameters(),
+                $this->getDetailsValidationParameters(),
             );
             $this->createRequest(
                 self::SEARCH_METHOD,
@@ -78,7 +80,7 @@ class RequestsGenerator extends EntityGenerator
             'namespace' => $this->generateNamespace($this->paths['requests']),
             'servicesNamespace' => $this->generateNamespace($this->paths['services']),
             'entityNamespace' => $this->getModelClass($this->model),
-            'needToValidateWith' => !is_null(Arr::first($parameters, fn ($parameter) => $parameter['name'] === 'with.*')),
+            'needToValidateWith' => Arr::has($parameters, 'with.*'),
             'availableRelations' => $this->getAvailableRelations(),
         ]);
 
@@ -89,124 +91,75 @@ class RequestsGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Request: {$method}{$modelName}Request"));
     }
 
-    protected function getGetValidationParameters(): array
+    protected function getDetailsValidationParameters(): array
     {
-        $parameters['array'] = ['with'];
-
-        $parameters['string-required'] = ['with.*'];
-
-        return $this->getValidationParameters($parameters, true);
+        return [
+            'with' => ['array'],
+            'with.*' => ['required', 'string', 'in:'],
+        ];
     }
 
     protected function getCreateValidationParameters(): array
     {
-        $parameters = Arr::except($this->fields, 'boolean-required');
+        return $this->fields->toNamedMap(function (Field $field) {
+            $rules = $this->getRuleByFieldType($field->type);
 
-        if (!empty($this->fields['boolean-required'])) {
-            $parameters['boolean-present'] = $this->fields['boolean-required'];
-        }
+            if ($field->isKeyField()) {
+                $this->addKeyFieldRules($field->name, $rules);
+            }
 
-        return $this->getValidationParameters($parameters, true);
+            if ($field->isRequired()) {
+                $rule = ($field->isBoolean()) ? 'present' : 'required';
+
+                array_unshift($rules, $rule);
+            }
+
+            return $rules;
+        });
     }
 
     protected function getUpdateValidationParameters(): array
     {
-        $parameters = Arr::except($this->fields, 'boolean-required');
+        return $this->fields->toNamedMap(function (Field $field) {
+            $rules = $this->getRuleByFieldType($field->type);
 
-        if (!empty($this->fields['boolean-required'])) {
-            $parameters['boolean'] = array_merge($parameters['boolean'], $this->fields['boolean-required']);
-        }
+            if ($field->isKeyField()) {
+                $this->addKeyFieldRules($field->name, $rules);
+            }
 
-        return $this->getValidationParameters($parameters, false);
+            if ($field->isRequired() && !$field->isBoolean()) {
+                array_unshift($rules, 'filled');
+            }
+
+            return $rules;
+        });
     }
 
     protected function getSearchValidationParameters(): array
     {
-        $parameters = Arr::except($this->fields, [
-            'timestamp', 'timestamp-required', 'string-required', 'integer-required', 'boolean-required',
-        ]);
-
-        $parameters['boolean'] = array_merge($this->fields['boolean-required'], [
-            'desc',
-            'all',
-        ]);
-
-        $parameters['integer'] = array_merge($this->fields['integer'], [
-            'page',
-            'per_page',
-        ]);
-
-        $parameters['string'] = ['order_by'];
-
-        $parameters['string-nullable'] = ['query'];
-
-        $parameters['array'] = ['with'];
-
-        $parameters['string-required'] = ['with.*'];
-
-        return $this->getValidationParameters($parameters, true);
-    }
-
-    public function getValidationParameters($parameters, $requiredAvailable): array
-    {
-        $result = [];
-
-        foreach ($parameters as $type => $parameterNames) {
-            $isRequired = Str::contains($type, 'required');
-            $isNullable = Str::contains($type, 'nullable');
-            $isPresent = Str::contains($type, 'present');
-            $type = head(explode('-', $type));
-
-            foreach ($parameterNames as $name) {
-                $required = $isRequired && $requiredAvailable;
-
-                $result[] = $this->getRules($name, $type, $required, $isNullable, $isPresent);
-            }
-        }
-
-        return $result;
-    }
-
-    protected function getRules($name, $type, $required, $nullable, $present): array
-    {
-        $replaces = [
-            'timestamp' => 'date',
-            'float' => 'numeric',
-            'json' => 'array',
-        ];
-
-        $rules = [
-            Arr::get($replaces, $type, $type),
-        ];
-
-        if (in_array($name, $this->relationFields)) {
-            $tableName = str_replace('_id', '', $name);
-
-            $rules[] = "exists:{$this->getTableName($tableName)},id";
-
-            $required = true;
-        }
-
-        if ($required) {
-            array_unshift($rules, 'required');
-        }
-
-        if ($nullable) {
-            $rules[] = 'nullable';
-        }
-
-        if ($present) {
-            $rules[] = 'present';
-        }
-
-        if (in_array($name, ['order_by', 'with.*'])) {
-            $rules[] = 'in:';
-        }
-
         return [
-            'name' => $name,
-            'rules' => $rules,
+            'page' => ['integer'],
+            'per_page' => ['integer'],
+            'desc' => ['boolean'],
+            'all' => ['boolean'],
+            'order_by' => ['string', 'in:'],
+            'query' => ['string', 'nullable'],
+            ...$this->getDetailsValidationParameters(),
         ];
+    }
+
+    protected function getRuleByFieldType(FieldTypeEnum $fieldType): array
+    {
+        return [
+            Arr::get(self::VALIDATION_RULES_MAP, $fieldType->value, $fieldType->value),
+        ];
+    }
+
+    protected function addKeyFieldRules(string $fieldName, array &$rules): void
+    {
+        $tableName = str_replace('_id', '', $fieldName);
+
+        $rules[] = "exists:{$this->getTableName($tableName)},id";
     }
 
     protected function getAvailableRelations(): array

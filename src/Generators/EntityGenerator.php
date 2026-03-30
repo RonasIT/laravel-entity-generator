@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Filesystem\Filesystem;
@@ -9,11 +9,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use ReflectionClass;
 use ReflectionMethod;
-use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\IncorrectClassPathException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
+use RonasIT\EntityGenerator\DTO\RelationsDTO;
+use RonasIT\EntityGenerator\Enums\FieldModifierEnum;
+use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\IncorrectClassPathException;
+use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\EntityGenerator\Exceptions\ResourceNotExistsException;
+use RonasIT\EntityGenerator\Support\Fields\Field;
+use RonasIT\EntityGenerator\Support\Fields\FieldsCollection;
 use Throwable;
 
 /**
@@ -21,12 +25,7 @@ use Throwable;
  */
 abstract class EntityGenerator
 {
-    const AVAILABLE_FIELDS = [
-        'integer', 'integer-required', 'string-required', 'string', 'float-required', 'float',
-        'boolean-required', 'boolean', 'timestamp-required', 'timestamp', 'json',
-    ];
-
-    const LOVER_CASE_DIRECTORIES_MAP = [
+    const LOWER_CASE_DIRECTORIES_MAP = [
         'migrations' => 'database/migrations',
         'factories' => 'database/factories',
         'seeders' => 'database/seeders',
@@ -42,6 +41,13 @@ abstract class EntityGenerator
     protected $fields;
     protected $relations = [];
     protected $crudOptions;
+
+    public function __construct()
+    {
+        $this->paths = config('entity-generator.paths');
+
+        $this->checkConfigHasCorrectPaths();
+    }
 
     public function setCrudOptions(array $crudOptions): self
     {
@@ -64,7 +70,7 @@ abstract class EntityGenerator
         return $this;
     }
 
-    public function setFields(array $fields): self
+    public function setFields(FieldsCollection $fields): self
     {
         $this->fields = $fields;
 
@@ -75,22 +81,9 @@ abstract class EntityGenerator
     {
         $this->relations = $relations;
 
-        foreach ($relations->belongsTo as $field) {
-            $relatedModel = Str::afterLast($field, '/');
-
-            $name = Str::snake($relatedModel) . '_id';
-
-            $this->fields['integer-required'][] = $name;
-        }
+        $this->addForeignKeyFields();
 
         return $this;
-    }
-
-    public function __construct()
-    {
-        $this->paths = config('entity-generator.paths');
-
-        $this->checkConfigHasCorrectPaths();
     }
 
     protected function generateNamespace(string $path, ?string $additionalSubFolder = null): string
@@ -131,7 +124,7 @@ abstract class EntityGenerator
 
     protected function isFolderHasCorrectCase(string $folder, string $configPath): bool
     {
-        $directory = Arr::get(self::LOVER_CASE_DIRECTORIES_MAP, $configPath);
+        $directory = Arr::get(self::LOWER_CASE_DIRECTORIES_MAP, $configPath);
 
         $firstFolderChar = substr($folder, 0, 1);
 
@@ -349,5 +342,16 @@ abstract class EntityGenerator
     protected function isPluralRelation(string $relation): bool
     {
         return in_array($relation, ['hasMany', 'belongsToMany']);
+    }
+
+    protected function addForeignKeyFields(): void
+    {
+        foreach ($this->relations->belongsTo as $relation) {
+            $this->fields->add(new Field(
+                name: Str::snake(Str::afterLast($relation, '/')) . '_id',
+                type: FieldTypeEnum::Integer,
+                modifiers: FieldModifierEnum::Required,
+            ));
+        }
     }
 }

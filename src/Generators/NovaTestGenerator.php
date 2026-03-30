@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Generator;
 use Illuminate\Support\Arr;
@@ -9,10 +9,10 @@ use Laravel\Nova\Http\Requests\NovaRequest;
 use Laravel\Nova\NovaServiceProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Exceptions\ResourceNotExistsException;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
@@ -129,7 +129,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             $actionClass = class_basename($action);
 
             return [
-                'className' => $actionClass,
+                'className' => $action,
                 'fixture' => Str::snake($actionClass),
             ];
         }, $actions);

@@ -1,0 +1,25 @@
+{
+    "boolean": [
+        "is_published:required",
+        "is_draft"
+    ],
+    "integer": [
+        "priority",
+        "media_id:required"
+    ],
+    "float": [
+        "seo_score",
+        "rating:required"
+    ],
+    "string": [
+        "description",
+        "title:required"
+    ],
+    "timestamp": [
+        "reviewed_at",
+        "published_at:required"
+    ],
+    "json": [
+        "meta"
+    ]
+}
