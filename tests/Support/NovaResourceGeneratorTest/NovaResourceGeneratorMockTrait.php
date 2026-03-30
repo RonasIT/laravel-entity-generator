@@ -1,9 +1,9 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\NovaResourceGeneratorTest;
+namespace RonasIT\EntityGenerator\Tests\Support\NovaResourceGeneratorTest;
 
-use RonasIT\Support\Tests\Support\FileSystemMock;
-use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\EntityGenerator\Tests\Support\FileSystemMock;
+use RonasIT\EntityGenerator\Tests\Support\GeneratorMockTrait;
 
 trait NovaResourceGeneratorMockTrait
 {

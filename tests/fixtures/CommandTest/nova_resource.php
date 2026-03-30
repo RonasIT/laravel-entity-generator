@@ -2,7 +2,7 @@
 
 namespace App\Nova;
 
-use RonasIT\Support\Tests\Support\Command\Models\Post;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\Post;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Text;

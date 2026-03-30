@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Events;
+namespace RonasIT\EntityGenerator\Events;
 
 use Illuminate\Queue\SerializesModels;
 

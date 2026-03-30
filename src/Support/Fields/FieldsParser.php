@@ -1,11 +1,11 @@
 <?php
 
-namespace RonasIT\Support\Support\Fields;
+namespace RonasIT\EntityGenerator\Support\Fields;
 
 use Illuminate\Support\Arr;
-use RonasIT\Support\Enums\FieldModifierEnum;
-use RonasIT\Support\Enums\FieldTypeEnum;
-use RonasIT\Support\Exceptions\UnknownFieldModifierException;
+use RonasIT\EntityGenerator\Enums\FieldModifierEnum;
+use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Exceptions\UnknownFieldModifierException;
 
 final class FieldsParser
 {

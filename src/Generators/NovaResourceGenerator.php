@@ -1,15 +1,15 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Schema\Column;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
-use RonasIT\Support\Enums\FieldTypeEnum;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Support\Fields\Field;
+use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Support\Fields\Field;
 
 class NovaResourceGenerator extends EntityGenerator
 {

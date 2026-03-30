@@ -1,12 +1,12 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
-use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Generators\SeederGenerator;
-use RonasIT\Support\Tests\Support\Seeder\SeederGeneratorMockTrait;
+use RonasIT\EntityGenerator\DTO\RelationsDTO;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\EntityGenerator\Generators\SeederGenerator;
+use RonasIT\EntityGenerator\Tests\Support\Seeder\SeederGeneratorMockTrait;
 
 class SeederGeneratorTest extends TestCase
 {

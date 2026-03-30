@@ -1,10 +1,10 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Factory;
+namespace RonasIT\EntityGenerator\Tests\Support\Factory;
 
-use RonasIT\Support\Generators\FactoryGenerator;
-use RonasIT\Support\Tests\Support\FileSystemMock;
-use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\EntityGenerator\Generators\FactoryGenerator;
+use RonasIT\EntityGenerator\Tests\Support\FileSystemMock;
+use RonasIT\EntityGenerator\Tests\Support\GeneratorMockTrait;
 
 trait FactoryMockTrait
 {
