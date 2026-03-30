@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
 /**
  * @property Collection<User> $users
  */
-class Post extends Model
+final class Post extends Model
 {
     use ModelTrait;
 
