@@ -1,9 +1,9 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Model;
+namespace RonasIT\EntityGenerator\Tests\Support\Model;
 
-use RonasIT\Support\Tests\Support\FileSystemMock;
-use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\EntityGenerator\Tests\Support\FileSystemMock;
+use RonasIT\EntityGenerator\Tests\Support\GeneratorMockTrait;
 
 trait ModelMockTrait
 {

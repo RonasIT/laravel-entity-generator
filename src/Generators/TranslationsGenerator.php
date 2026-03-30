@@ -1,9 +1,9 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Illuminate\Support\Arr;
-use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 use Winter\LaravelConfigWriter\ArrayFile;
 
 class TranslationsGenerator extends EntityGenerator

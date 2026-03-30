@@ -1,14 +1,14 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Generators\RequestsGenerator;
-use RonasIT\Support\Tests\Support\Repository\RepositoryMockTrait;
+use RonasIT\EntityGenerator\DTO\RelationsDTO;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\EntityGenerator\Generators\RequestsGenerator;
+use RonasIT\EntityGenerator\Tests\Support\Repository\RepositoryMockTrait;
 
 class RequestGeneratorTest extends TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support;
+namespace RonasIT\EntityGenerator\Tests\Support;
 
 use Illuminate\Support\Arr;
 use org\bovigo\vfs\vfsStream;

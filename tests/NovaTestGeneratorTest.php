@@ -1,20 +1,20 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
 use App\Nova\AdminResource;
 use Illuminate\Support\Carbon;
 use Laravel\Nova\NovaServiceProvider;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\EntityGenerator\Exceptions\ResourceNotExistsException;
+use RonasIT\EntityGenerator\Generators\NovaTestGenerator;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\User;
+use RonasIT\EntityGenerator\Tests\Support\Models\WelcomeBonus;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
 use RonasIT\Support\Exceptions\EntityCreateException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Tests\Support\Command\Models\User;
-use RonasIT\Support\Tests\Support\Models\WelcomeBonus;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
 
 class NovaTestGeneratorTest extends TestCase
 {
@@ -93,7 +93,7 @@ class NovaTestGeneratorTest extends TestCase
     public function testNovaTestStubNotExist()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+            'entity-generator.paths.models' => 'RonasIT/EntityGenerator/Tests/Support/Models',
             'entity-generator.stubs.nova_test' => 'incorrect_stub',
         ]);
 
@@ -135,7 +135,7 @@ class NovaTestGeneratorTest extends TestCase
         $this->mockNovaRequestClassCall();
 
         config([
-            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+            'entity-generator.paths.models' => 'RonasIT/EntityGenerator/Tests/Support/Models',
             'entity-generator.stubs.dump' => 'incorrect_stub',
         ]);
 
@@ -164,7 +164,7 @@ class NovaTestGeneratorTest extends TestCase
     public function testSuccess()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT/Support/Tests/Support/Models',
+            'entity-generator.paths.models' => 'RonasIT/EntityGenerator/Tests/Support/Models',
         ]);
 
         $this->mockDBTransactionStartRollback();
@@ -196,8 +196,8 @@ class NovaTestGeneratorTest extends TestCase
     public function testCallCommandCreateNovaTestsWithResource()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Command\Factories',
         ]);
 
         $this->mockDBTransactionStartRollback();
@@ -225,8 +225,8 @@ class NovaTestGeneratorTest extends TestCase
     public function testCallCommandCreateNovaTestsWithResourceNotFound()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Command\Factories',
         ]);
 
         Carbon::setTestNow('2016-10-20 11:05:00');
