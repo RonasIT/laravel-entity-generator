@@ -181,6 +181,38 @@ class CommandTest extends TestCase
         $this->assertFileDoesNotExist('tests/fixtures/NovaPostTest/update_post_request.json');
     }
 
+    public function testMakeOnlyApi()
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Command\Factories',
+        ]);
+
+        Carbon::setTestNow('2016-10-20 11:05:00');
+
+        $this->mockFilesystemForOnlyApi();
+
+        $this
+            ->artisan('make:entity Post --only-api')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('create_request.php', 'app/Http/Requests/Post/CreatePostRequest.php');
+        $this->assertGeneratedFileEquals('get_request.php', 'app/Http/Requests/Post/GetPostRequest.php');
+        $this->assertGeneratedFileEquals('search_request.php', 'app/Http/Requests/Post/SearchPostsRequest.php');
+        $this->assertGeneratedFileEquals('update_request.php', 'app/Http/Requests/Post/UpdatePostRequest.php');
+        $this->assertGeneratedFileEquals('delete_request.php', 'app/Http/Requests/Post/DeletePostRequest.php');
+        $this->assertGeneratedFileEquals('controller.php', 'app/Http/Controllers/PostController.php');
+        $this->assertGeneratedFileEquals('resource.php', 'app/Http/Resources/Post/PostResource.php');
+        $this->assertGeneratedFileEquals('resource_collection.php', 'app/Http/Resources/Post/PostsCollectionResource.php');
+        $this->assertGeneratedFileEquals('routes.php', 'routes/api.php');
+        $this->assertGeneratedFileEquals('factory.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Factories/PostFactory.php');
+        $this->assertGeneratedFileEquals('test.php', 'tests/PostTest.php');
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/PostTest/dump.sql');
+        $this->assertGeneratedFileEquals('create_request.json', 'tests/fixtures/PostTest/create_post_request.json');
+        $this->assertGeneratedFileEquals('create_response.json', 'tests/fixtures/PostTest/create_post_response.json');
+        $this->assertGeneratedFileEquals('update_request.json', 'tests/fixtures/PostTest/update_post_request.json');
+    }
+
     public function testCallCommandCombineOnlyOptions()
     {
         config([
