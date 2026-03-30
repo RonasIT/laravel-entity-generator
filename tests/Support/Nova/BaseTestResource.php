@@ -3,11 +3,11 @@
 namespace App\Nova;
 
 use Laravel\Nova\Http\Requests\NovaRequest;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\DateField;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\PublishPostAction;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\TextField;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\DateField;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\PublishPostAction;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\TextField;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
 
 class BaseTestResource
 {

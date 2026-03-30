@@ -3,7 +3,7 @@
 namespace App\Http\Resources\Post;
 
 use RonasIT\Support\Http\BaseResource;
-use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\Forum\Post;
 
 /**
  * @property Post $resource

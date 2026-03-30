@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\Command\Models;
+namespace RonasIT\EntityGenerator\Tests\Support\Command\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;

@@ -1,4 +1,4 @@
-@inject('requestsGenerator', 'RonasIT\Support\Generators\RequestsGenerator')
+@inject('requestsGenerator', 'RonasIT\EntityGenerator\Generators\RequestsGenerator')
 namespace {{ $namespace }}\{{ $requestsFolder }};
 
 use {{ $namespace }}\Request;

@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Post;
 
 use App\Http\Requests\Request;
-use RonasIT\Support\Tests\Support\Command\Models\Forum\Post;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\Forum\Post;
 
 final class SearchPostsRequest extends Request
 {

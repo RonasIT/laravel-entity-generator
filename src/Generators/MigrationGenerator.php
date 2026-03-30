@@ -1,10 +1,10 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Carbon\Carbon;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Support\Fields\Field;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Support\Fields\Field;
 
 class MigrationGenerator extends EntityGenerator
 {
