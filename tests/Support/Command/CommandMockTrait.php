@@ -31,12 +31,12 @@ trait CommandMockTrait
         $fileSystemMock->setStructure();
 
         $structure = [];
-        $structure['RonasIT']['Support']['Tests']['Support']['Command']['Models']['Post.php'] = $this->mockPhpFileContent();
+        $structure['RonasIT']['EntityGenerator']['Tests']['Support']['Command']['Models']['Post.php'] = $this->mockPhpFileContent();
 
         vfsStream::create($structure);
 
         $this->mockNativeGeneratorFunctions(
-            $this->nativeClassExistsMethodCall(['RonasIT\Support\Tests\Support\Command\Models\Post', true]),
+            $this->nativeClassExistsMethodCall(['RonasIT\EntityGenerator\Tests\Support\Command\Models\Post', true]),
         );
     }
 

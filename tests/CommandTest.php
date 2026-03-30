@@ -184,8 +184,8 @@ class CommandTest extends TestCase
     public function testMakeOnlyApi()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Command\Factories',
         ]);
 
         Carbon::setTestNow('2016-10-20 11:05:00');
@@ -205,7 +205,7 @@ class CommandTest extends TestCase
         $this->assertGeneratedFileEquals('resource.php', 'app/Http/Resources/Post/PostResource.php');
         $this->assertGeneratedFileEquals('resource_collection.php', 'app/Http/Resources/Post/PostsCollectionResource.php');
         $this->assertGeneratedFileEquals('routes.php', 'routes/api.php');
-        $this->assertGeneratedFileEquals('factory.php', 'RonasIT/Support/Tests/Support/Command/Factories/PostFactory.php');
+        $this->assertGeneratedFileEquals('factory.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Factories/PostFactory.php');
         $this->assertGeneratedFileEquals('test.php', 'tests/PostTest.php');
         $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/PostTest/dump.sql');
         $this->assertGeneratedFileEquals('create_request.json', 'tests/fixtures/PostTest/create_post_request.json');
