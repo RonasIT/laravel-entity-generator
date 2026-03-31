@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-use RonasIT\Support\Tests\Support\Command\Models\Post;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\Post;
 use RonasIT\Support\Repositories\BaseRepository;
 
 /**

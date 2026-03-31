@@ -1,8 +1,8 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
-use RonasIT\Support\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 
 class RepositoryGenerator extends EntityGenerator
 {
