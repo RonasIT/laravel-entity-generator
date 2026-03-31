@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Enums;
+namespace RonasIT\EntityGenerator\Enums;
 
 use RonasIT\Support\Traits\EnumTrait;
 

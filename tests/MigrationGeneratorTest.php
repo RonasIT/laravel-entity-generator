@@ -1,10 +1,10 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
-use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Generators\MigrationGenerator;
+use RonasIT\EntityGenerator\DTO\RelationsDTO;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Generators\MigrationGenerator;
 
 class MigrationGeneratorTest extends TestCase
 {

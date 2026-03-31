@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Tests\Support\NovaResourceGeneratorTest;
+namespace RonasIT\EntityGenerator\Tests\Support\NovaResourceGeneratorTest;
 
 class Post
 {
