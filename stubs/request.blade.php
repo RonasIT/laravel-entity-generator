@@ -22,7 +22,7 @@ class {{ $method }}{{ $entity }}Request extends Request
 @endif
         return [
 @foreach($parameters as $name => $rules)
-            '{{ $name }}' => '{!! implode('|', $rules) !!}'@if ($name === 'order_by') . $this->getOrderableFields({{ Str::singular($entity) }}::class)@elseif($name === 'with.*'){{ ' . $availableRelations' }}@endif,
+            '{{ $name }}' => '{!! implode('|', $rules) !!}'@if(!empty($dynamicRules) && Arr::exists($dynamicRules, $name)) . {!! $dynamicRules[$name] !!}@endif,
 @endforeach
         ];
 @else
