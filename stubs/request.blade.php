@@ -24,6 +24,7 @@ class {{ $method }}{{ $entity }}Request extends Request
 @foreach($parameters as $name => $rules)
 @php
     $modelClass = Illuminate\Support\Str::singular($entity) . '::class';
+
     $expression = '';
 
     if ($name === 'with.*') {
