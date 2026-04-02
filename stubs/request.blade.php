@@ -10,7 +10,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use {{ $entityNamespace }};
 @endif
 
-class {{ $method }}{{ $entity }}Request extends Request
+final class {{ $method }}{{ $entity }}Request extends Request
 {
 @if($method !== $requestsGenerator::DELETE_METHOD)
     public function rules(): array

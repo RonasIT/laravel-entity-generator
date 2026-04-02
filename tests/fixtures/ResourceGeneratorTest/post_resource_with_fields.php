@@ -8,7 +8,7 @@ use App\Models\Post;
 /**
  * @property Post $resource
  */
-class PostResource extends BaseResource
+final class PostResource extends BaseResource
 {
     public function toArray($request): array
     {

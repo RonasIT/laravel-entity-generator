@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Collection;
  * @property string $title
  * @property Collection<Author> $authors
  */
-class Post extends Model
+final class Post extends Model
 {
     use ModelTrait;
 

@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Collection;
 /**
  */
 @endif
-class {{ $entity }} extends Model
+final class {{ $entity }} extends Model
 {
     use ModelTrait;
 
