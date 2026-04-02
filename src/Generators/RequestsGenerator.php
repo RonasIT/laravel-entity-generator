@@ -82,7 +82,6 @@ class RequestsGenerator extends EntityGenerator
             'entityNamespace' => $this->getModelClass($this->model),
             'needToValidateWith' => Arr::has($parameters, 'with.*'),
             'availableRelations' => $this->getAvailableRelations(),
-            'dynamicRules' => $this->getDynamicRules($parameters, $method),
         ]);
 
         $this->saveClass('requests', "{$method}{$modelName}Request",
@@ -169,34 +168,6 @@ class RequestsGenerator extends EntityGenerator
         $tableName = str_replace('_id', '', $fieldName);
 
         $rules[] = "exists:{$this->getTableName($tableName)},id";
-    }
-
-    protected function getDynamicRules(array $rules, $method): array
-    {
-        $dynamicRules = [];
-
-        if (Arr::exists($rules, 'order_by')) {
-            $dynamicRules['order_by'] = '$this->getOrderableFields(' . "{$this->model}::class)";
-        }
-
-        if (Arr::exists($rules, 'with.*')) {
-            $dynamicRules['with.*'] = '$availableRelations';
-        }
-
-        if ($method === self::UPDATE_METHOD) {
-            $uniqueFields = Arr::where(
-                array: $rules,
-                callback: fn (array $fieldRules) => !is_null(Arr::first($fieldRules, fn ($rule) => Str::contains($rule, 'unique:'))),
-            );
-
-            if (!empty($uniqueFields)) {
-                foreach ($uniqueFields as $field => $rules) {
-                    $dynamicRules[$field] = '$this->route(\'id\')';
-                }
-            }
-        }
-
-        return $dynamicRules;
     }
 
     protected function getAvailableRelations(): array

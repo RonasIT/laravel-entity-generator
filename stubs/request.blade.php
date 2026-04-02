@@ -22,7 +22,19 @@ class {{ $method }}{{ $entity }}Request extends Request
 @endif
         return [
 @foreach($parameters as $name => $rules)
-            '{{ $name }}' => '{!! implode('|', $rules) !!}'@if(!empty($dynamicRules) && Arr::exists($dynamicRules, $name)) . {!! $dynamicRules[$name] !!}@endif,
+@php
+    $modelClass = Illuminate\Support\Str::singular($entity) . '::class';
+    $expression = '';
+
+    if ($name === 'with.*') {
+        $expression = ' . $availableRelations';
+    } elseif ($name === 'order_by') {
+        $expression = " . \$this->getOrderableFields({$modelClass})";
+    } elseif ($requestsGenerator::UPDATE_METHOD === $method && collect($rules)->contains(fn ($rule) => Illuminate\Support\Str::startsWith($rule, 'unique:'))) {
+        $expression = " . \$this->route('id')";
+    }
+@endphp
+            '{{ $name }}' => '{!! implode('|', $rules) !!}'{!! $expression !!},
 @endforeach
         ];
 @else
