@@ -13,14 +13,15 @@ class {{ $entity }}Resource extends BaseResource
 @endif
     public function toArray($request): array
     {
-    @if (!empty($fields))
-    return [
-    @foreach($fields as $field)
-        '{{ $field }}' => $this->resource->{{ $field }},
-    @endforeach
-    ];
-    @else
-    return parent::toArray($request);
-    @endif
-}
+@if (!empty($fields))
+        return [
+            'id' => $this->resource->id,
+@foreach($fields as $field)
+            '{{ $field }}' => $this->resource->{{ $field }},
+@endforeach
+        ];
+@else
+        return parent::toArray($request);
+@endif
+    }
 }
