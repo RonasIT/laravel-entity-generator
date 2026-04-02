@@ -60,10 +60,13 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $this->createFixtureFolder();
 
         $dumpName = $this->getDumpName();
+        $fixturePath = $this->getFixturesPath($dumpName);
 
         $this->checkResourceExists('tests', $dumpName, "fixtures/{$this->getTestClassName()}");
 
-        file_put_contents($this->getFixturesPath($dumpName), $content);
+        file_put_contents($fixturePath, $content);
+
+        $this->setPermissions($fixturePath);
 
         event(new SuccessCreateMessage('Created a new Test dump on path: '
             . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$dumpName}"));
@@ -213,6 +216,8 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $fixtureRelativePath = "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$fixtureName}";
 
         file_put_contents($fixturePath, $content);
+
+        $this->setPermissions($fixturePath);
 
         event(new SuccessCreateMessage("Created a new Test fixture on path: {$fixtureRelativePath}"));
     }

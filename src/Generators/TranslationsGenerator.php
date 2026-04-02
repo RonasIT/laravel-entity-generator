@@ -40,6 +40,8 @@ class TranslationsGenerator extends EntityGenerator
 
         file_put_contents($this->translationPath, $content);
 
+        $this->setPermissions($this->translationPath);
+
         $createMessage = "Created a new Translations dump on path: {$this->translationPath}";
 
         event(new SuccessCreateMessage($createMessage));
