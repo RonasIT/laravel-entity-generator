@@ -42,11 +42,9 @@ class MigrationGenerator extends EntityGenerator
 
     protected function generateCommonFieldDefinition(Field $field): string
     {
-        $nullablePart = (!$field->isRequired() || ($field->isTimestamp() && $this->generateForMySQL()))
-            ? '->nullable()'
-            : '';
+        $columnModifiers = $this->getColumnModifiers($field);
 
-        return "\$table->{$field->type->value}('{$field->name}'){$nullablePart};";
+        return "\$table->{$field->type->value}('{$field->name}'){$columnModifiers};";
     }
 
     protected function prepareFields(): array
@@ -60,5 +58,20 @@ class MigrationGenerator extends EntityGenerator
     protected function generateForMySQL(): bool
     {
         return env('DB_CONNECTION') === 'mysql';
+    }
+
+    protected function getColumnModifiers(Field $field): string
+    {
+        $result = '';
+
+        if (!$field->isRequired() || ($field->isTimestamp() && $this->generateForMySQL())) {
+            $result .= '->nullable()';
+        }
+
+        if ($field->isUnique()) {
+            $result .= '->unique()';
+        }
+
+        return $result;
     }
 }

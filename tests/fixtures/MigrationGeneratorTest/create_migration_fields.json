@@ -4,7 +4,7 @@
         "user_id:required"
     ],
     "string": [
-        "title",
+        "title:u",
         "body"
     ],
     "json": [

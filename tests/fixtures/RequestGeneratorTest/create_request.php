@@ -16,7 +16,7 @@ class CreatePostRequest extends Request
             'seo_score' => 'numeric',
             'rating' => 'required|numeric',
             'description' => 'string',
-            'title' => 'required|string',
+            'title' => 'required|string|unique:posts,title',
             'reviewed_at' => 'date',
             'published_at' => 'required|date',
             'meta' => 'array',
