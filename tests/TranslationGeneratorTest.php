@@ -1,13 +1,13 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Lang;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Generators\TranslationsGenerator;
-use RonasIT\Support\Tests\Support\Translation\TranslationMockTrait;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Generators\TranslationsGenerator;
+use RonasIT\EntityGenerator\Tests\Support\Translation\TranslationMockTrait;
 
 class TranslationGeneratorTest extends TestCase
 {

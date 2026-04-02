@@ -2,13 +2,13 @@
 
 namespace App\Tests;
 
-use RonasIT\Support\Tests\Support\Command\Models\User;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\User;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 use App\Nova\AdminResource;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\PublishPostAction;
-use RonasIT\Support\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\PublishPostAction;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
 
 class NovaAdminResourceTest extends TestCase
 {
@@ -244,7 +244,7 @@ class NovaAdminResourceTest extends TestCase
             ],
             [
                 'request' => [
-                    'RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
+                    'RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
                 'fixture' => 'filter_admin_resource_by_created_at_filter',
             ],

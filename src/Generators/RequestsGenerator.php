@@ -1,12 +1,12 @@
 <?php
 
-namespace RonasIT\Support\Generators;
+namespace RonasIT\EntityGenerator\Generators;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use RonasIT\Support\Enums\FieldTypeEnum;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Support\Fields\Field;
+use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Support\Fields\Field;
 
 class RequestsGenerator extends EntityGenerator
 {
@@ -22,8 +22,6 @@ class RequestsGenerator extends EntityGenerator
         FieldTypeEnum::Json->value => 'array',
     ];
 
-    protected array $relationFields = [];
-
     public function generate(): void
     {
         if (!$this->isStubExists('request')) {
@@ -31,10 +29,6 @@ class RequestsGenerator extends EntityGenerator
         }
 
         $this->createNamespace('requests');
-
-        $this->relationFields = array_map(function ($field) {
-            return Str::snake($field) . '_id';
-        }, $this->relations->belongsTo);
 
         if (in_array('R', $this->crudOptions)) {
             $this->createRequest(
@@ -107,12 +101,10 @@ class RequestsGenerator extends EntityGenerator
 
     protected function getCreateValidationParameters(): array
     {
-        $result = [];
-
-        foreach ($this->fields as $field) {
+        return $this->fields->toNamedMap(function (Field $field) {
             $rules = $this->getRuleByFieldType($field->type);
 
-            if ($this->isKeyField($field)) {
+            if ($field->isKeyField()) {
                 $this->addKeyFieldRules($field->name, $rules);
             }
 
@@ -122,20 +114,16 @@ class RequestsGenerator extends EntityGenerator
                 array_unshift($rules, $rule);
             }
 
-            $result[$field->name] = $rules;
-        }
-
-        return $result;
+            return $rules;
+        });
     }
 
     protected function getUpdateValidationParameters(): array
     {
-        $result = [];
-
-        foreach ($this->fields as $field) {
+        return $this->fields->toNamedMap(function (Field $field) {
             $rules = $this->getRuleByFieldType($field->type);
 
-            if ($this->isKeyField($field)) {
+            if ($field->isKeyField()) {
                 $this->addKeyFieldRules($field->name, $rules);
             }
 
@@ -143,10 +131,8 @@ class RequestsGenerator extends EntityGenerator
                 array_unshift($rules, 'filled');
             }
 
-            $result[$field->name] = $rules;
-        }
-
-        return $result;
+            return $rules;
+        });
     }
 
     protected function getSearchValidationParameters(): array
@@ -167,11 +153,6 @@ class RequestsGenerator extends EntityGenerator
         return [
             Arr::get(self::VALIDATION_RULES_MAP, $fieldType->value, $fieldType->value),
         ];
-    }
-
-    protected function isKeyField(Field $field): bool
-    {
-        return $field->isKeyField() || in_array($field->name, $this->relationFields);
     }
 
     protected function addKeyFieldRules(string $fieldName, array &$rules): void

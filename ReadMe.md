@@ -15,7 +15,7 @@ composer require ronasit/laravel-entity-generator --dev
 Publish package's resources.
 
 ```bash
-php artisan vendor:publish --provider="RonasIT\Support\EntityGeneratorServiceProvider"
+php artisan vendor:publish --provider="RonasIT\EntityGenerator\EntityGeneratorServiceProvider"
 ```
 
 ## Usage
@@ -40,7 +40,7 @@ php artisan make:entity Forum/Blog/Post
 The `make:entity` provides an ability to set the entity's fields, which will be used in all created classes (e.g. Model, Create/Update requests, Test fixtures, etc.)
 
 ```bash
-php artisan make:entity Post -s title:required -s text:required -t published_at
+php artisan make:entity Post -s title -s text -t published_at
 ```
 
 The following field types are available to use:
@@ -54,11 +54,19 @@ The following field types are available to use:
 | `datetime`| `-t`   | `--timestamp` |
 | `json`    | `-j`   | `--json`      |
 
-To use field modifiers specify them after field name definition in the following format: `fieldName:modifier1,modifier2,...`. Available field modifiers:
+#### Fields modifiers
 
-| Modifier   | Short Option | Description           |
-|------------|--------------|-----------------------|
-| `required` | `-r`         | `make field required` |
+To set a special behavior for the field use the modifiers syntax. Modifiers may be passed using a `:` symbol in the field definition.
+
+```bash
+php artisan make:entity Post -s title:required -s text -t published_at:required
+```
+
+Each modifier has full and short syntax. The list of available modifiers defined in the table:
+
+| Modifier   | Short syntax | Description           |
+|------------|-------------|-----------------------|
+| `required` | `r`         | Disallow to set `null` as a field value. Add required validation rule for creation, `filled` validation for the update, and not null in migration |
 
 #### Relations definitions options
 

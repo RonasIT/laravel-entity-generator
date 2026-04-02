@@ -1,27 +1,20 @@
 <?php
 
-namespace RonasIT\Support\Support\Fields;
+namespace RonasIT\EntityGenerator\Support\Fields;
 
-use Illuminate\Support\Arr;
-use RonasIT\Support\Enums\FieldModifierEnum;
-use RonasIT\Support\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Enums\FieldModifierEnum;
+use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
 
 final readonly class Field
 {
+    public array $modifiers;
+
     public function __construct(
         public string $name,
         public FieldTypeEnum $type,
-        public array $modifiers = [],
+        FieldModifierEnum ...$modifiers,
     ) {
-    }
-
-    public function removeModifier(FieldModifierEnum $removeModifier): self
-    {
-        return new self(
-            name: $this->name,
-            type: $this->type,
-            modifiers: Arr::reject($this->modifiers, fn ($modifier) => $removeModifier === $modifier),
-        );
+        $this->modifiers = $modifiers;
     }
 
     public function isRequired(): bool

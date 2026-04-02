@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Enums;
+namespace RonasIT\EntityGenerator\Enums;
 
 use RonasIT\Support\Traits\EnumTrait;
 
@@ -14,5 +14,4 @@ enum FieldTypeEnum: string
     case Boolean = 'boolean';
     case Json = 'json';
     case Timestamp = 'timestamp';
-    case Array = 'array';
 }

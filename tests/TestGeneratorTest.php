@@ -1,15 +1,15 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
 use Illuminate\Support\Facades\Event;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\EntityGenerator\Exceptions\ResourceNotExistsException;
+use RonasIT\EntityGenerator\Generators\TestsGenerator;
+use RonasIT\EntityGenerator\Tests\Support\Test\TestMockTrait;
 use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Generators\TestsGenerator;
-use RonasIT\Support\Tests\Support\Test\TestMockTrait;
 
 class TestGeneratorTest extends TestCase
 {
@@ -44,8 +44,8 @@ class TestGeneratorTest extends TestCase
         $this->mockDBTransactionStartRollback(5);
 
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Test\Factories',
         ]);
 
         $this->mockClass(TestsGenerator::class, [
@@ -92,8 +92,8 @@ class TestGeneratorTest extends TestCase
         $this->mockDBTransactionStartRollback(5);
 
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Test\Factories',
         ]);
 
         $this->mockClass(TestsGenerator::class, [
@@ -129,8 +129,8 @@ class TestGeneratorTest extends TestCase
     public function testCreateTestsDumpStubNotExist()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Test\Factories',
             'entity-generator.stubs.dump' => 'incorrect_stub',
         ]);
 
@@ -170,8 +170,8 @@ class TestGeneratorTest extends TestCase
     public function testCreateTestsTestStubNotExist()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Test\Factories',
             'entity-generator.stubs.test' => 'incorrect_stub',
         ]);
 
@@ -229,7 +229,7 @@ class TestGeneratorTest extends TestCase
         $this->mockDBTransactionStartRollback(3);
 
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Test\Models',
         ]);
 
         $this->mockClass(TestsGenerator::class, [
@@ -270,8 +270,8 @@ class TestGeneratorTest extends TestCase
         $this->mockDBTransactionStartRollback(5);
 
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Test\Factories',
         ]);
 
         $this->mockClass(TestsGenerator::class, [
@@ -302,8 +302,8 @@ class TestGeneratorTest extends TestCase
         $this->mockDBTransactionStartRollback(5);
 
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Test\Factories',
         ]);
 
         $this->mockClass(TestsGenerator::class, [
@@ -337,8 +337,8 @@ class TestGeneratorTest extends TestCase
         $this->mockDBTransactionStartRollback(5);
 
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Test\Factories',
         ]);
 
         $this->mockClass(TestsGenerator::class, [
@@ -373,8 +373,8 @@ class TestGeneratorTest extends TestCase
         $this->mockDBTransactionStartRollback(5);
 
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Test\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Test\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Test\Factories',
         ]);
 
         $this->mockClass(TestsGenerator::class, [

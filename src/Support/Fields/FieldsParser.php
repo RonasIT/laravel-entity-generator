@@ -1,36 +1,32 @@
 <?php
 
-namespace RonasIT\Support\Support\Fields;
+namespace RonasIT\EntityGenerator\Support\Fields;
 
 use Illuminate\Support\Arr;
-use RonasIT\Support\Enums\FieldModifierEnum;
-use RonasIT\Support\Enums\FieldTypeEnum;
-use RonasIT\Support\Exceptions\UnknownFieldModifierException;
+use RonasIT\EntityGenerator\Enums\FieldModifierEnum;
+use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Exceptions\UnknownFieldModifierException;
 
 final class FieldsParser
 {
     public function parse(array $options): FieldsCollection
     {
-        $result = [];
+        $result = new FieldsCollection();
 
         foreach ($options as $type => $fields) {
             foreach ($fields as $field) {
-                $result[] = $this->createField($field, $type);
+                $result->add($this->createField($field, $type));
             }
         }
 
-        return new FieldsCollection(...$result);
+        return $result;
     }
 
     protected function createField(string $field, string $type): Field
     {
         list($name, $modifiers) = $this->splitField($field);
 
-        return new Field(
-            name: $name,
-            type: FieldTypeEnum::from($type),
-            modifiers: $this->prepareModifiers($modifiers, $name),
-        );
+        return new Field($name, FieldTypeEnum::from($type), ...$this->prepareModifiers($modifiers, $name));
     }
 
     protected function splitField(string $field): array
