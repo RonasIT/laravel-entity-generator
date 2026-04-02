@@ -38,11 +38,6 @@ final class FieldsCollection
         return Arr::pluck($this->fields, 'name');
     }
 
-    public function hasTimestamps(): bool
-    {
-        return !empty($this->filterByType(FieldTypeEnum::Timestamp));
-    }
-
     public function isEmpty(): bool
     {
         return empty($this->fields);
