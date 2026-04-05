@@ -12,17 +12,11 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 @endif
 
-@if(!empty($annotationProperties))
 /**
 @foreach($annotationProperties as $key => $value)
  * @property {!! $value !!} ${{ $key }}
 @endforeach
  */
-@else
-//TODO: add @property annotation for each model's field
-/**
- */
-@endif
 class {{ $entity }} extends Model
 {
     use ModelTrait;

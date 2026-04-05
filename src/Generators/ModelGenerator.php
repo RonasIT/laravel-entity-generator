@@ -188,7 +188,10 @@ class ModelGenerator extends EntityGenerator
             $result[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);
         }
 
-        return $result;
+        return array_merge(
+            ['id' => self::PROPERTY_TYPES_MAP[FieldTypeEnum::Integer->value]],
+            $result,
+        );
     }
 
     protected function getFieldType(Field $field): string
