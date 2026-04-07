@@ -2,11 +2,13 @@
 
 namespace App\Tests;
 
-use RonasIT\Support\Tests\Support\Command\Models\User;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\User;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 use App\Nova\AdminResource;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\PublishPostAction;
+use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\UnPublishPostAction;
 
 class NovaAdminResourceTest extends TestCase
 {
@@ -36,7 +38,7 @@ class NovaAdminResourceTest extends TestCase
         $this->assertEqualsFixture('create_admin_resource_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
-        self::$userState->assertChangesEqualsFixture('create_users_state', true);
+        self::$userState->assertChangesEqualsFixture('create_users', true);
     }
 
     public function testCreateNoAuth(): void
@@ -69,7 +71,7 @@ class NovaAdminResourceTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$userState->assertChangesEqualsFixture('update_users_state', true);
+        self::$userState->assertChangesEqualsFixture('update_users', true);
     }
 
     public function testUpdateNotExists(): void
@@ -115,7 +117,7 @@ class NovaAdminResourceTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        self::$userState->assertChangesEqualsFixture('delete_users_state', true);
+        self::$userState->assertChangesEqualsFixture('delete_users', true);
     }
 
     public function testDeleteNotExists(): void
@@ -181,14 +183,14 @@ class NovaAdminResourceTest extends TestCase
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_publish_post_action_state',
+                'state' => 'run_publish_post_action',
             ],
             [
                 'action' => UnPublishPostAction::class,
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_un_publish_post_action_state',
+                'state' => 'run_un_publish_post_action',
             ],
         ];
     }
@@ -242,7 +244,7 @@ class NovaAdminResourceTest extends TestCase
             ],
             [
                 'request' => [
-                    'RonasIT\Support\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
+                    'RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
                 ],
                 'fixture' => 'filter_admin_resource_by_created_at_filter',
             ],

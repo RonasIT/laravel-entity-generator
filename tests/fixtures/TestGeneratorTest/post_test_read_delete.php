@@ -3,8 +3,8 @@
 namespace App\Tests;
 
 use RonasIT\Support\Testing\ModelTestState;
-use RonasIT\Support\Tests\Support\Test\Models\Post;
-use RonasIT\Support\Tests\Support\Test\Models\User;
+use RonasIT\EntityGenerator\Tests\Support\Test\Models\Post;
+use RonasIT\EntityGenerator\Tests\Support\Test\Models\User;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class PostTest extends TestCase
@@ -29,7 +29,7 @@ class PostTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('delete_post_state', true);
+        self::$postState->assertChangesEqualsFixture('delete_post', true);
     }
 
     public function testDeleteNotExists()

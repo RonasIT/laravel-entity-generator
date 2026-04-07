@@ -2,12 +2,12 @@
 
 namespace App\Tests;
 
-use RonasIT\Support\Tests\Support\Command\Models\Post;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\Post;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RonasIT\Support\Testing\ModelTestState;
 use RonasIT\Support\Traits\NovaTestTrait;
 use App\Nova\PostResource;
-use RonasIT\Support\Tests\Support\Command\Models\User;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\User;
 
 class NovaPostResourceTest extends TestCase
 {
@@ -37,7 +37,7 @@ class NovaPostResourceTest extends TestCase
         $this->assertEqualsFixture('create_post_resource_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('create_posts_state', true);
+        self::$postState->assertChangesEqualsFixture('create_posts', true);
     }
 
     public function testCreateNoAuth(): void
@@ -70,7 +70,7 @@ class NovaPostResourceTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('update_posts_state', true);
+        self::$postState->assertChangesEqualsFixture('update_posts', true);
     }
 
     public function testUpdateNotExists(): void
@@ -116,7 +116,7 @@ class NovaPostResourceTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('delete_posts_state', true);
+        self::$postState->assertChangesEqualsFixture('delete_posts', true);
     }
 
     public function testDeleteNotExists(): void

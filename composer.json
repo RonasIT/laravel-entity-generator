@@ -13,7 +13,6 @@
     "php": "^8.4.1",
     "laravel/framework": ">=11.31.0",
     "ronasit/laravel-helpers": ">=3.5",
-    "laravel/legacy-factories": ">=1.4.0",
     "ext-json": "*",
     "doctrine/dbal": "^4.2",
     "winter/laravel-config-writer": ">=1.2.1"
@@ -30,13 +29,13 @@
   },
   "autoload": {
     "psr-4": {
-      "RonasIT\\Support\\": "src/"
+      "RonasIT\\EntityGenerator\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "RonasIT\\Support\\Tests\\": "tests/",
-      "RonasIT\\Support\\Tests\\Support\\": "tests/Support/",
+      "RonasIT\\EntityGenerator\\Tests\\": "tests/",
+      "RonasIT\\EntityGenerator\\Tests\\Support\\": "tests/Support/",
       "App\\Nova\\": "tests/Support/Nova/"
     },
     "files": [
@@ -47,7 +46,7 @@
   "extra": {
     "laravel": {
       "providers": [
-        "RonasIT\\Support\\EntityGeneratorServiceProvider"
+        "RonasIT\\EntityGenerator\\EntityGeneratorServiceProvider"
       ]
     }
   }

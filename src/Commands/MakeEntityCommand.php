@@ -1,6 +1,6 @@
 <?php
 
-namespace RonasIT\Support\Commands;
+namespace RonasIT\EntityGenerator\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
@@ -9,31 +9,36 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use InvalidArgumentException;
-use RonasIT\Support\DTO\RelationsDTO;
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
+use RonasIT\EntityGenerator\DTO\RelationsDTO;
+use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Generators\ControllerGenerator;
+use RonasIT\EntityGenerator\Generators\EntityGenerator;
+use RonasIT\EntityGenerator\Generators\FactoryGenerator;
+use RonasIT\EntityGenerator\Generators\MigrationGenerator;
+use RonasIT\EntityGenerator\Generators\ModelGenerator;
+use RonasIT\EntityGenerator\Generators\NovaResourceGenerator;
+use RonasIT\EntityGenerator\Generators\NovaTestGenerator;
+use RonasIT\EntityGenerator\Generators\RepositoryGenerator;
+use RonasIT\EntityGenerator\Generators\RequestsGenerator;
+use RonasIT\EntityGenerator\Generators\ResourceGenerator;
+use RonasIT\EntityGenerator\Generators\SeederGenerator;
+use RonasIT\EntityGenerator\Generators\ServiceGenerator;
+use RonasIT\EntityGenerator\Generators\TestsGenerator;
+use RonasIT\EntityGenerator\Generators\TranslationsGenerator;
+use RonasIT\EntityGenerator\Support\Fields\FieldsCollection;
+use RonasIT\EntityGenerator\Support\Fields\FieldsParser;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Generators\ControllerGenerator;
-use RonasIT\Support\Generators\EntityGenerator;
-use RonasIT\Support\Generators\FactoryGenerator;
-use RonasIT\Support\Generators\MigrationGenerator;
-use RonasIT\Support\Generators\ModelGenerator;
-use RonasIT\Support\Generators\NovaResourceGenerator;
-use RonasIT\Support\Generators\NovaTestGenerator;
-use RonasIT\Support\Generators\RepositoryGenerator;
-use RonasIT\Support\Generators\RequestsGenerator;
-use RonasIT\Support\Generators\ResourceGenerator;
-use RonasIT\Support\Generators\SeederGenerator;
-use RonasIT\Support\Generators\ServiceGenerator;
-use RonasIT\Support\Generators\TestsGenerator;
-use RonasIT\Support\Generators\TranslationsGenerator;
 use UnexpectedValueException;
 
 class MakeEntityCommand extends Command
 {
+    protected FieldsParser $fieldsParser;
     private string $entityName;
     private string $entityNamespace;
     private RelationsDTO $relations;
+    private FieldsCollection $fields;
 
     const CRUD_OPTIONS = [
         'C', 'R', 'U', 'D',
@@ -65,15 +70,10 @@ class MakeEntityCommand extends Command
         {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
 
         {--i|integer=* : Add integer field to entity.}
-        {--I|integer-required=* : Add required integer field to entity. If you want to specify default value you have to do it manually.}
         {--f|float=* : Add float field to entity.}
-        {--F|float-required=* : Add required float field to entity. If you want to specify default value you have to do it manually.}
         {--s|string=* : Add string field to entity. Default type is VARCHAR(255) but you can change it manually in migration.}
-        {--S|string-required=* : Add required string field to entity. If you want to specify default value ir size you have to do it manually.}
         {--b|boolean=* : Add boolean field to entity.}
-        {--B|boolean-required=* : Add boolean field to entity. If you want to specify default value you have to do it manually.}
         {--t|timestamp=* : Add timestamp field to entity.}
-        {--T|timestamp-required=* : Add timestamp field to entity. If you want to specify default value you have to do it manually.}
         {--j|json=* : Add json field to entity.}
         
         {--a|has-one=* : Set hasOne relations between you entity and existed entity.}
@@ -88,6 +88,13 @@ class MakeEntityCommand extends Command
      */
     protected $description = 'Make entity with Model, Repository, Service, Migration, Controller, Resource and Nova Resource.';
 
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->fieldsParser = app(FieldsParser::class);
+    }
+
     /**
      * Execute the console command.
      */
@@ -96,6 +103,7 @@ class MakeEntityCommand extends Command
         $this->validateInput();
         $this->checkConfigs();
         $this->listenEvents();
+        $this->parseFields();
         $this->parseRelations();
         $this->entityName = $this->convertToPascalCase($this->entityName);
 
@@ -237,7 +245,7 @@ class MakeEntityCommand extends Command
         $generator
             ->setModel($this->entityName)
             ->setModelSubFolder($this->entityNamespace)
-            ->setFields($this->getFields())
+            ->setFields($this->fields)
             ->setRelations($this->relations)
             ->setCrudOptions($this->getCrudOptions())
             ->generate();
@@ -267,9 +275,11 @@ class MakeEntityCommand extends Command
         }, $relations);
     }
 
-    protected function getFields(): array
+    protected function parseFields(): void
     {
-        return Arr::only($this->options(), EntityGenerator::AVAILABLE_FIELDS);
+        $rawFields = Arr::only($this->options(), FieldTypeEnum::values());
+
+        $this->fields = $this->fieldsParser->parse($rawFields);
     }
 
     protected function validateEntityName(): void

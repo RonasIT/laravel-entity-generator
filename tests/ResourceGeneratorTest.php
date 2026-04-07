@@ -1,12 +1,12 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
-use RonasIT\Support\Events\SuccessCreateMessage;
-use RonasIT\Support\Events\WarningEvent;
-use RonasIT\Support\Exceptions\ResourceAlreadyExistsException;
-use RonasIT\Support\Generators\ResourceGenerator;
-use RonasIT\Support\Tests\Support\GeneratorMockTrait;
+use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
+use RonasIT\EntityGenerator\Generators\ResourceGenerator;
+use RonasIT\EntityGenerator\Tests\Support\GeneratorMockTrait;
 
 class ResourceGeneratorTest extends TestCase
 {
@@ -73,19 +73,7 @@ class ResourceGeneratorTest extends TestCase
     {
         app(ResourceGenerator::class)
             ->setModel('Post')
-            ->setFields([
-                'integer' => ['priority'],
-                'integer-required' => ['media_id'],
-                'float' => ['seo_score'],
-                'float-required' => ['rating'],
-                'string' => ['description'],
-                'string-required' => ['title'],
-                'boolean' => ['is_reviewed'],
-                'boolean-required' => ['is_published'],
-                'timestamp' => ['reviewed_at', 'created_at', 'updated_at'],
-                'timestamp-required' => ['published_at'],
-                'json' => ['meta'],
-            ])
+            ->setFields($this->getFieldsDTO($this->getJsonFixture('create_resource_fields')))
             ->generate();
 
         $this->assertGeneratedFileEquals('post_resource_with_fields.php', 'app/Http/Resources/Post/PostResource.php');

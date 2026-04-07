@@ -8,6 +8,9 @@ use {{ $resource_namespace }};
 @if(!($entity === 'User' && $entity_namespace === $models_namespace))
 use {{ $models_namespace }}\User;
 @endif
+@foreach($actions as $action)
+use {{ $action['className'] }};
+@endforeach
 
 class Nova{{ $resource_name }}Test extends TestCase
 {
@@ -37,7 +40,7 @@ class Nova{{ $resource_name }}Test extends TestCase
         $this->assertEqualsFixture('create_{{ $snake_resource }}_response', $response->json());
 
         // TODO: Need to remove last argument after first successful start
-        self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('create_{{ $lower_entities }}_state', true);
+        self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('create_{{ $lower_entities }}', true);
     }
 
     public function testCreateNoAuth(): void
@@ -70,7 +73,7 @@ class Nova{{ $resource_name }}Test extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('update_{{ $lower_entities }}_state', true);
+        self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('update_{{ $lower_entities }}', true);
     }
 
     public function testUpdateNotExists(): void
@@ -116,7 +119,7 @@ class Nova{{ $resource_name }}Test extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
-        self::${{$dromedary_entity}}State->assertChangesEqualsFixture('delete_{{ $lower_entities }}_state', true);
+        self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('delete_{{ $lower_entities }}', true);
     }
 
     public function testDeleteNotExists(): void
@@ -179,11 +182,11 @@ class Nova{{ $resource_name }}Test extends TestCase
         return [
 @foreach($actions as $action)
             [
-                'action' => {{ $action['className'] }}::class,
+                'action' => {{ class_basename($action['className']) }}::class,
                 'request' => [
                     'resources' => '1,2',
                 ],
-                'state' => 'run_{{ $action['fixture'] }}_state',
+                'state' => 'run_{{ $action['fixture'] }}',
             ],
 @endforeach
         ];

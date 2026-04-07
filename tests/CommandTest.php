@@ -1,13 +1,14 @@
 <?php
 
-namespace RonasIT\Support\Tests;
+namespace RonasIT\EntityGenerator\Tests;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
+use RonasIT\EntityGenerator\Exceptions\UnknownFieldModifierException;
+use RonasIT\EntityGenerator\Tests\Support\Command\CommandMockTrait;
+use RonasIT\EntityGenerator\Tests\Support\Command\Models\Post;
 use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Tests\Support\Command\CommandMockTrait;
-use RonasIT\Support\Tests\Support\Command\Models\Post;
 use UnexpectedValueException;
 
 class CommandTest extends TestCase
@@ -54,8 +55,8 @@ class CommandTest extends TestCase
     public function testCallCommand()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Command\Factories',
         ]);
 
         Carbon::setTestNow('2016-10-20 11:05:00');
@@ -69,9 +70,9 @@ class CommandTest extends TestCase
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('migration.php', 'database/migrations/2016_10_20_110500_posts_create_table.php');
-        $this->assertGeneratedFileEquals('factory.php', 'RonasIT/Support/Tests/Support/Command/Factories/PostFactory.php');
+        $this->assertGeneratedFileEquals('factory.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Factories/PostFactory.php');
         $this->assertGeneratedFileEquals('seeder.php', 'database/seeders/PostSeeder.php');
-        $this->assertGeneratedFileEquals('model.php', 'RonasIT/Support/Tests/Support/Command/Models/Post.php');
+        $this->assertGeneratedFileEquals('model.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Models/Post.php');
         $this->assertGeneratedFileEquals('repository.php', 'app/Repositories/PostRepository.php');
         $this->assertGeneratedFileEquals('service.php', 'app/Services/PostService.php');
         $this->assertGeneratedFileEquals('create_request.php', 'app/Http/Requests/Post/CreatePostRequest.php');
@@ -100,8 +101,8 @@ class CommandTest extends TestCase
     public function testCallCommandSubFoldersModel()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Command\Factories',
         ]);
 
         Carbon::setTestNow('2016-10-20 11:05:00');
@@ -114,8 +115,8 @@ class CommandTest extends TestCase
             ->artisan('make:entity Forum/Post --methods=CRUD')
             ->assertSuccessful();
 
-        $this->assertGeneratedFileEquals('subfolder/model.php', 'RonasIT/Support/Tests/Support/Command/Models/Forum/Post.php');
-        $this->assertGeneratedFileEquals('subfolder/factory.php', 'RonasIT/Support/Tests/Support/Command/Factories/PostFactory.php');
+        $this->assertGeneratedFileEquals('subfolder/model.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Models/Forum/Post.php');
+        $this->assertGeneratedFileEquals('subfolder/factory.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Factories/PostFactory.php');
         $this->assertGeneratedFileEquals('subfolder/repository.php', 'app/Repositories/PostRepository.php');
         $this->assertGeneratedFileEquals('subfolder/resource.php', 'app/Http/Resources/Post/PostResource.php');
         $this->assertGeneratedFileEquals('subfolder/test.php', 'tests/PostTest.php');
@@ -183,8 +184,8 @@ class CommandTest extends TestCase
     public function testCallCommandCombineOnlyOptions()
     {
         config([
-            'entity-generator.paths.models' => 'RonasIT\Support\Tests\Support\Command\Models',
-            'entity-generator.paths.factories' => 'RonasIT\Support\Tests\Support\Command\Factories',
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Command\Factories',
         ]);
 
         Carbon::setTestNow('2016-10-20 11:05:00');
@@ -194,9 +195,9 @@ class CommandTest extends TestCase
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('migration.php', 'database/migrations/2016_10_20_110500_posts_create_table.php');
-        $this->assertGeneratedFileEquals('factory.php', 'RonasIT/Support/Tests/Support/Command/Factories/PostFactory.php');
+        $this->assertGeneratedFileEquals('factory.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Factories/PostFactory.php');
         $this->assertGeneratedFileEquals('seeder.php', 'database/seeders/PostSeeder.php');
-        $this->assertGeneratedFileEquals('model.php', 'RonasIT/Support/Tests/Support/Command/Models/Post.php');
+        $this->assertGeneratedFileEquals('model.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Models/Post.php');
         $this->assertGeneratedFileEquals('repository.php', 'app/Repositories/PostRepository.php');
         $this->assertGeneratedFileEquals('service.php', 'app/Services/PostService.php');
 
@@ -233,5 +234,15 @@ class CommandTest extends TestCase
         $this->assertFileExists($configPath);
 
         $this->assertEqualsFixture('changed_config', $updated);
+    }
+
+    public function testUnknownModifierExceptionThrown()
+    {
+        $this->assertExceptionThrew(
+            className: UnknownFieldModifierException::class,
+            message: "Unknown field modifier 'unknownModifier' for field title",
+        );
+
+        $this->artisan('make:entity Post -s title:required,unknownModifier -i owner_id:required');
     }
 }
