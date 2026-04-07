@@ -68,6 +68,17 @@ Each modifier has full and short syntax. The list of available modifiers defined
 |------------|-------------|-----------------------|
 | `required` | `r`         | Disallow to set `null` as a field value. Add required validation rule for creation, `filled` validation for the update, and not null in migration |
 
+#### Reserved field names
+
+The following field names are reserved and **cannot be passed as input fields** because they are managed automatically by Laravel and the generator:
+
+| Field        | Reason                                      |
+|--------------|---------------------------------------------|
+| `id`         | Primary key, added by Laravel automatically |
+| `created_at` | Timestamp, managed by Eloquent              |
+| `updated_at` | Timestamp, managed by Eloquent              |
+
+
 #### Relations definitions options
 
 Command also provides an ability to set relations, which will be added to the model

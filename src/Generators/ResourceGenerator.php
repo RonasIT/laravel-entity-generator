@@ -2,6 +2,7 @@
 
 namespace RonasIT\EntityGenerator\Generators;
 
+use RonasIT\EntityGenerator\Enums\ReservedFieldEnum;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 
 class ResourceGenerator extends EntityGenerator
@@ -44,11 +45,24 @@ class ResourceGenerator extends EntityGenerator
             'entity' => $this->model,
             'namespace' => $this->generateNamespace($this->paths['resources']),
             'model_namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
-            'fields' => when($this->fields, fn () => $this->fields->getNames()),
+            'fields' => $this->getResourceFields(),
         ]);
 
         $this->saveClass('resources', "{$this->model}Resource", $resourceContent, $this->model);
 
         event(new SuccessCreateMessage("Created a new Resource: {$this->model}Resource"));
+    }
+
+    protected function getResourceFields(): ?array
+    {
+        $fields = when($this->fields, fn () => $this->fields->getNames());
+
+        if (empty($fields)) {
+            return $fields;
+        }
+
+        $reservedFields = array_map(fn (ReservedFieldEnum $f) => $f->value, ReservedFieldEnum::resourceAutoFields());
+
+        return array_merge($reservedFields, $fields);
     }
 }

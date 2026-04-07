@@ -4,9 +4,9 @@ namespace App\Nova;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Boolean;
 use Laravel\Nova\Fields\Text;
-use Laravel\Nova\Fields\ID;
 
 class PostResource extends Resource
 {
@@ -26,6 +26,8 @@ class PostResource extends Resource
     public function fields(Request $request): array
     {
         return [
+            ID::make('Id')
+                ->sortable(),
             Boolean::make('Is Published')
                 ->sortable(),
             Text::make('Title')
@@ -33,8 +35,6 @@ class PostResource extends Resource
                 ->sortable(),
             Text::make('Body')
                 ->required()
-                ->sortable(),
-            ID::make('Id')
                 ->sortable(),
         ];
     }

@@ -5,6 +5,7 @@ namespace RonasIT\EntityGenerator\Tests;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
+use RonasIT\EntityGenerator\Exceptions\ReservedFieldException;
 use RonasIT\EntityGenerator\Exceptions\UnknownFieldModifierException;
 use RonasIT\EntityGenerator\Tests\Support\Command\CommandMockTrait;
 use RonasIT\EntityGenerator\Tests\Support\Command\Models\Post;
@@ -244,5 +245,25 @@ class CommandTest extends TestCase
         );
 
         $this->artisan('make:entity Post -s title:required,unknownModifier -i owner_id:required');
+    }
+
+    public function testCallWithReservedField()
+    {
+        $this->assertExceptionThrew(
+            className: ReservedFieldException::class,
+            message: "Field 'id' is reserved and cannot be set manually. See: https://github.com/RonasIT/laravel-entity-generator#reserved-field-names",
+        );
+
+        $this->artisan('make:entity Post -i id');
+    }
+
+    public function testCallWithReservedTimestampFields()
+    {
+        $this->assertExceptionThrew(
+            className: ReservedFieldException::class,
+            message: "Field 'created_at' is reserved and cannot be set manually. See: https://github.com/RonasIT/laravel-entity-generator#reserved-field-names",
+        );
+
+        $this->artisan('make:entity Post -t created_at -t updated_at');
     }
 }

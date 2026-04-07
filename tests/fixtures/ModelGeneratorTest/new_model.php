@@ -10,6 +10,9 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
+ * @property int $id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property int|null $priority
  * @property int $media_id
  * @property float|null $seo_score
@@ -19,8 +22,8 @@ use Illuminate\Database\Eloquent\Collection;
  * @property bool|null $is_reviewed
  * @property bool $is_published
  * @property Carbon|null $reviewed_at
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property Carbon|null $started_at
+ * @property Carbon|null $finished_at
  * @property Carbon $published_at
  * @property array $meta
  * @property Comment|null $comment
@@ -40,10 +43,12 @@ class Post extends Model
         'is_reviewed',
         'is_published',
         'reviewed_at',
-        'created_at',
-        'updated_at',
+        'started_at',
+        'finished_at',
         'published_at',
         'meta',
+        'created_at',
+        'updated_at',
     ];
 
     protected $hidden = ['pivot'];
@@ -52,10 +57,12 @@ class Post extends Model
         'is_reviewed' => 'boolean',
         'is_published' => 'boolean',
         'reviewed_at' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'started_at' => 'datetime',
+        'finished_at' => 'datetime',
         'published_at' => 'datetime',
         'meta' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function comment(): HasOne

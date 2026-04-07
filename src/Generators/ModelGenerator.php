@@ -5,6 +5,7 @@ namespace RonasIT\EntityGenerator\Generators;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Enums\ReservedFieldEnum;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 use RonasIT\EntityGenerator\Support\Fields\Field;
 
@@ -52,15 +53,34 @@ class ModelGenerator extends EntityGenerator
 
         return $this->getStub('model', [
             'entity' => $this->model,
-            'fields' => $this->fields->getNames(),
+            'fields' => array_merge($this->fields->getNames(), $this->getReservedFieldNames()),
             'relations' => $relations,
-            'casts' => $this->getCasts(),
+            'casts' => array_merge($this->getCasts(), $this->getReservedFieldCasts()),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
-            'annotationProperties' => $this->generateAnnotationProperties($relations),
-            'hasCarbonField' => $this->fields->hasTimestamps(),
+            'annotationProperties' => array_merge($this->getReservedFieldAnnotations(), $this->generateAnnotationProperties($relations)),
+            'hasCarbonField' => true,
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
+    }
+
+    protected function getReservedFieldNames(): array
+    {
+        return array_map(fn (ReservedFieldEnum $f) => $f->value, ReservedFieldEnum::modelAutoFields());
+    }
+
+    protected function getReservedFieldCasts(): array
+    {
+        return collect(ReservedFieldEnum::modelAutoFields())
+            ->mapWithKeys(fn (ReservedFieldEnum $f) => [$f->value => $f->cast()])
+            ->toArray();
+    }
+
+    protected function getReservedFieldAnnotations(): array
+    {
+        return collect(ReservedFieldEnum::modelAutoAnnotations())
+            ->mapWithKeys(fn (ReservedFieldEnum $f) => [$f->value => $f->annotation()])
+            ->toArray();
     }
 
     public function prepareRelatedModels(): void

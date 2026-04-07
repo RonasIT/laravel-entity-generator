@@ -5,6 +5,8 @@ namespace RonasIT\EntityGenerator\Support\Fields;
 use Illuminate\Support\Arr;
 use RonasIT\EntityGenerator\Enums\FieldModifierEnum;
 use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Enums\ReservedFieldEnum;
+use RonasIT\EntityGenerator\Exceptions\ReservedFieldException;
 use RonasIT\EntityGenerator\Exceptions\UnknownFieldModifierException;
 
 final class FieldsParser
@@ -25,6 +27,10 @@ final class FieldsParser
     protected function createField(string $field, string $type): Field
     {
         list($name, $modifiers) = $this->splitField($field);
+
+        if (ReservedFieldEnum::tryFrom($name) !== null) {
+            throw new ReservedFieldException($name);
+        }
 
         return new Field($name, FieldTypeEnum::from($type), ...$this->prepareModifiers($modifiers, $name));
     }
