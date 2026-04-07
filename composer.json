@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "php": "^8.4.1",
+    "php": "^8.3",
     "laravel/framework": ">=11.31.0",
     "ronasit/laravel-helpers": ">=3.5",
     "ext-json": "*",
@@ -20,9 +20,9 @@
   "require-dev": {
     "fakerphp/faker": "^1.24.0",
     "mockery/mockery": "^1.6.12",
-    "phpunit/phpunit": "^13",
+    "phpunit/phpunit": ">=11",
     "php-coveralls/php-coveralls": "^2.7",
-    "orchestra/testbench": "^10",
+    "orchestra/testbench": ">=9.5.1",
     "mikey179/vfsstream": "^1.6.12",
     "php-mock/php-mock": "^2.5",
     "laravel/pint": "^1.27"
