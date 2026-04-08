@@ -29,7 +29,7 @@ class PostTest extends TestCase
         $this->assertEqualsFixture('create_post_response', $response->json(), true);
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('create_post_state', true);
+        self::$postState->assertChangesEqualsFixture('create_post', true);
     }
 
     public function testUpdate()
@@ -41,7 +41,7 @@ class PostTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('update_post_state', true);
+        self::$postState->assertChangesEqualsFixture('update_post', true);
     }
 
     public function testUpdateNotExists()
@@ -66,7 +66,7 @@ class PostTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('delete_post_state', true);
+        self::$postState->assertChangesEqualsFixture('delete_post', true);
     }
 
     public function testDeleteNotExists()

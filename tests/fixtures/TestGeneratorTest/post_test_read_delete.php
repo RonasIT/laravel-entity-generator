@@ -29,7 +29,7 @@ class PostTest extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('delete_post_state', true);
+        self::$postState->assertChangesEqualsFixture('delete_post', true);
     }
 
     public function testDeleteNotExists()
