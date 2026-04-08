@@ -1,3 +1,4 @@
+@use('Illuminate\Support\Str')
 @inject('requestsGenerator', 'RonasIT\EntityGenerator\Generators\RequestsGenerator')
 namespace {{ $namespace }}\{{ $requestsFolder }};
 
@@ -23,7 +24,7 @@ class {{ $method }}{{ $entity }}Request extends Request
         return [
 @foreach($parameters as $name => $rules)
 @php
-    $modelClass = Illuminate\Support\Str::singular($entity) . '::class';
+    $modelClass = Str::singular($entity) . '::class';
 
     $expression = '';
 
@@ -31,7 +32,7 @@ class {{ $method }}{{ $entity }}Request extends Request
         $expression = ' . $availableRelations';
     } elseif ($name === 'order_by') {
         $expression = " . \$this->getOrderableFields({$modelClass})";
-    } elseif ($requestsGenerator::UPDATE_METHOD === $method && collect($rules)->contains(fn ($rule) => Illuminate\Support\Str::startsWith($rule, 'unique:'))) {
+    } elseif ($requestsGenerator::UPDATE_METHOD === $method && collect($rules)->contains(fn ($rule) => Str::startsWith($rule, 'unique:'))) {
         $expression = " . \$this->route('id')";
     }
 @endphp
