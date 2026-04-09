@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('title')->nullable();
             $table->string('body')->nullable();
             $table->jsonb('meta')->default("{}");
-            $table->timestamp('created_at')->nullable();
+            $table->timestamp('published_at');
             $table->timestamps();
         });
     }

@@ -4,8 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
+use Carbon\Carbon;
 
 /**
+ * @property int $id
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property int|null $priority
  * @property int $media_id
  * @property float|null $seo_score
@@ -30,6 +34,8 @@ class Post extends Model
         'is_reviewed',
         'is_published',
         'meta',
+        'created_at',
+        'updated_at',
     ];
 
     protected $hidden = ['pivot'];
@@ -38,5 +44,7 @@ class Post extends Model
         'is_reviewed' => 'boolean',
         'is_published' => 'boolean',
         'meta' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 }

@@ -13,6 +13,9 @@ class PostResource extends BaseResource
     public function toArray($request): array
     {
         return [
+            'id' => $this->resource->id,
+            'created_at' => $this->resource->created_at,
+            'updated_at' => $this->resource->updated_at,
             'priority' => $this->resource->priority,
             'media_id' => $this->resource->media_id,
             'seo_score' => $this->resource->seo_score,
@@ -22,8 +25,6 @@ class PostResource extends BaseResource
             'is_reviewed' => $this->resource->is_reviewed,
             'is_published' => $this->resource->is_published,
             'reviewed_at' => $this->resource->reviewed_at,
-            'created_at' => $this->resource->created_at,
-            'updated_at' => $this->resource->updated_at,
             'published_at' => $this->resource->published_at,
             'meta' => $this->resource->meta,
         ];
