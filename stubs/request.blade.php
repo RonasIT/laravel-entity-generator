@@ -23,20 +23,13 @@ class {{ $method }}{{ $entity }}Request extends Request
 @endif
         return [
 @foreach($parameters as $name => $rules)
-@php
-    $modelClass = Str::singular($entity) . '::class';
-
-    $expression = '';
-
-    if ($name === 'with.*') {
-        $expression = ' . $availableRelations';
-    } elseif ($name === 'order_by') {
-        $expression = " . \$this->getOrderableFields({$modelClass})";
-    } elseif ($requestsGenerator::UPDATE_METHOD === $method && collect($rules)->contains(fn ($rule) => Str::startsWith($rule, 'unique:'))) {
-        $expression = " . \$this->route('id')";
-    }
-@endphp
-            '{{ $name }}' => '{!! implode('|', $rules) !!}'{!! $expression !!},
+            '{{ $name }}' => {!!
+                Str::of($rulesString = implode('|', $rules))
+                    ->wrap("'")
+                    ->when($name === 'with.*', fn ($string) => $string->append(' . $availableRelations'))
+                    ->when($name === 'order_by', fn ($string) => $string->append(" . \$this->getOrderableFields(" . Str::singular($entity)."::class)"))
+                    ->when($method === $requestsGenerator::UPDATE_METHOD && Str::contains($rulesString, 'unique:'), fn ($string) => $string->append(" . \$this->route('id')"))
+            !!},
 @endforeach
         ];
 @else
