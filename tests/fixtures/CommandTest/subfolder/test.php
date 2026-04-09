@@ -141,5 +141,4 @@ class PostTest extends TestCase
 
         $this->assertEqualsFixture($fixture, $response->json());
     }
-
 }
