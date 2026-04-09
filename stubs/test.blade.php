@@ -95,6 +95,10 @@ class {{ $entity }}Test extends TestCase
 
         $response->assertNotFound();
 
+        $response->assertJson([
+            'error' => '{{$entity}} does not exist',
+        ]);
+
         self::${{ \Illuminate\Support\Str::camel($entity) }}State->assertNotChanged();
     }
 
@@ -137,6 +141,10 @@ class {{ $entity }}Test extends TestCase
 
         $response->assertNotFound();
 
+        $response->assertJson([
+            'error' => '{{$entity}} does not exist',
+        ]);
+
         self::${{ \Illuminate\Support\Str::camel($entity) }}State->assertNotChanged();
     }
 
@@ -176,6 +184,10 @@ class {{ $entity }}Test extends TestCase
 @endif
 
         $response->assertNotFound();
+
+        $response->assertJson([
+            'error' => '{{$entity}} does not exist',
+        ]);
     }
 @if ($withAuth)
 
@@ -223,8 +235,8 @@ class {{ $entity }}Test extends TestCase
 
         $this->assertEqualsFixture($fixture, $response->json());
     }
-
 @if ($withAuth)
+
     public function testSearchNoAuth()
     {
         $response = $this->json('get', '/{{ $entities }}');
