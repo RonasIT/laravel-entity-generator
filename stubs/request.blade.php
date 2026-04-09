@@ -27,7 +27,7 @@ class {{ $method }}{{ $entity }}Request extends Request
                 Str::of($rulesString = implode('|', $rules))
                     ->wrap("'")
                     ->when($name === 'with.*', fn ($string) => $string->append(' . $availableRelations'))
-                    ->when($name === 'order_by', fn ($string) => $string->append(" . \$this->getOrderableFields(" . Str::singular($entity)."::class)"))
+                    ->when($name === 'order_by', fn ($string) => $string->append(' . $this->getOrderableFields(' . Str::singular($entity) . '::class)'))
                     ->when($method === $requestsGenerator::UPDATE_METHOD && Str::contains($rulesString, 'unique:'), fn ($string) => $string->append(" . \$this->route('id')"))
             !!},
 @endforeach
