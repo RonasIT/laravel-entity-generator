@@ -124,7 +124,9 @@ class NovaAdminResourceTest extends TestCase
     {
         $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(AdminResource::class, [0]);
 
-        $response->assertNotFound();
+        $response->assertOk();
+
+        self::$userState->assertNotChanged();
     }
 
     public function testDeleteNoAuth(): void
