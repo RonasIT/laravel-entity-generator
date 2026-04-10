@@ -67,7 +67,7 @@ class NovaPostResourceTest extends TestCase
 
         $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(PostResource::class, 1, $data);
 
-        $response->assertNoContent();
+        $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
         self::$postState->assertChangesEqualsFixture('update_posts', true);
