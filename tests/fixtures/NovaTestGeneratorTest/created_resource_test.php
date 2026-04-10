@@ -239,14 +239,14 @@ class NovaWelcomeBonusResourceTest extends TestCase
         return [
             [
                 'request' => [
-                    'filters' => ['TextField:description_field' => 'filter value'],
+                    'filters' => [['TextField:description_field' => 'filter value']],
                     'search' => 'search term',
                 ],
                 'fixture' => 'filter_welcome_bonus_resource_by_text_field',
             ],
             [
                 'request' => [
-                    'filters' => ['RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => 'filter value'],
+                    'filters' => [['RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => 'filter value']],
                     'search' => 'search term',
                 ],
                 'fixture' => 'filter_welcome_bonus_resource_by_created_at_filter',
@@ -259,10 +259,9 @@ class NovaWelcomeBonusResourceTest extends TestCase
     {
         $preparedRequest = $this->novaSearchParams($request['filters'], $request['search']);
 
-        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(
-            resourceClass: WelcomeBonusResource::class,
-            request: $preparedRequest,
-        );
+        $response = $this
+            ->novaActingAs(self::$user)
+            ->novaSearchResourceAPICall(WelcomeBonusResource::class, $preparedRequest);
 
         $response->assertOk();
 

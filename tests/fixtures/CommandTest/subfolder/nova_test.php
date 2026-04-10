@@ -221,10 +221,9 @@ class NovaPostResourceTest extends TestCase
     {
         $preparedRequest = $this->novaSearchParams($request['filters'], $request['search']);
 
-        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(
-            resourceClass: PostResource::class,
-            request: $preparedRequest,
-        );
+        $response = $this
+            ->novaActingAs(self::$user)
+            ->novaSearchResourceAPICall(PostResource::class, $preparedRequest);
 
         $response->assertOk();
 
