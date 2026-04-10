@@ -239,15 +239,15 @@ class NovaWelcomeBonusResourceTest extends TestCase
         return [
             [
                 'request' => [
-                    'filters' => ['TextField:description_field' => ''],
-                    'search' => 'search terms',
+                    'filters' => ['TextField:description_field' => 'filter value'],
+                    'search' => 'search term',
                 ],
                 'fixture' => 'filter_welcome_bonus_resource_by_text_field',
             ],
             [
                 'request' => [
-                    'filters' => ['RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => ''],
-                    'search' => 'search terms',
+                    'filters' => ['RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => 'filter value'],
+                    'search' => 'search term',
                 ],
                 'fixture' => 'filter_welcome_bonus_resource_by_created_at_filter',
             ],
