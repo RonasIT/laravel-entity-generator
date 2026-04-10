@@ -234,7 +234,7 @@ class Nova{{ $resource_name }}Test extends TestCase
 @foreach($filters as $filter)
             [
                 'request' => [
-                    'filters' = ['{{ $filter['name'] }}' => ''],
+                    'filters' => ['{{ $filter['name'] }}' => ''],
                     'search' => 'search terms',
                 ],
                 'fixture' => 'filter_{{ $snake_resource }}_by_{{ $filter['fixture_name'] }}',

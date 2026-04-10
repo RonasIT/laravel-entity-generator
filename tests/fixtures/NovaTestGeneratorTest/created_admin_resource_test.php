@@ -238,14 +238,14 @@ class NovaAdminResourceTest extends TestCase
         return [
             [
                 'request' => [
-                    'filters' = ['TextField:description_field' => ''],
+                    'filters' => ['TextField:description_field' => ''],
                     'search' => 'search terms',
                 ],
                 'fixture' => 'filter_admin_resource_by_text_field',
             ],
             [
                 'request' => [
-                    'filters' = ['RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => ''],
+                    'filters' => ['RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => ''],
                     'search' => 'search terms',
                 ],
                 'fixture' => 'filter_admin_resource_by_created_at_filter',
