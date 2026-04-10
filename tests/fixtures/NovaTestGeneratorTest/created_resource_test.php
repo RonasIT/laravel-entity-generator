@@ -125,7 +125,9 @@ class NovaWelcomeBonusResourceTest extends TestCase
     {
         $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(WelcomeBonusResource::class, [0]);
 
-        $response->assertNotFound();
+        $response->assertOk();
+
+        self::$welcomeBonusState->assertNotChanged();
     }
 
     public function testDeleteNoAuth(): void

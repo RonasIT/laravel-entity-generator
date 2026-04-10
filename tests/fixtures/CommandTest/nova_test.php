@@ -123,7 +123,9 @@ class NovaPostResourceTest extends TestCase
     {
         $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(PostResource::class, [0]);
 
-        $response->assertNotFound();
+        $response->assertOk();
+
+        self::$postState->assertNotChanged();
     }
 
     public function testDeleteNoAuth(): void

@@ -126,7 +126,9 @@ class Nova{{ $resource_name }}Test extends TestCase
     {
         $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall({{ $resource_name }}::class, [0]);
 
-        $response->assertNotFound();
+        $response->assertOk();
+
+        self::${{ $dromedary_entity }}State->assertNotChanged();
     }
 
     public function testDeleteNoAuth(): void
