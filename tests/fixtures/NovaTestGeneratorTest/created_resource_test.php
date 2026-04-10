@@ -69,7 +69,7 @@ class NovaWelcomeBonusResourceTest extends TestCase
 
         $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonusResource::class, 1, $data);
 
-        $response->assertNoContent();
+        $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
         self::$welcomeBonusState->assertChangesEqualsFixture('update_welcome_bonuses', true);
