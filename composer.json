@@ -21,7 +21,7 @@
     "fakerphp/faker": "^1.24.0",
     "mockery/mockery": "^1.6.12",
     "phpunit/phpunit": ">=11",
-    "orchestra/testbench": ">=9.5.1",
+    "orchestra/testbench": ">=9",
     "mikey179/vfsstream": "^1.6.12",
     "php-mock/php-mock": "^2.5",
     "laravel/pint": "^1.27"
