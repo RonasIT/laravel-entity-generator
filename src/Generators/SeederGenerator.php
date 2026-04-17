@@ -45,6 +45,8 @@ class SeederGenerator extends EntityGenerator
 
         file_put_contents($this->databaseSeederPath, $content);
 
+        $this->setPermissions($this->databaseSeederPath);
+
         $createMessage = "Created a new DatabaseSeeder.php on path: {$this->databaseSeederPath}";
 
         event(new SuccessCreateMessage($createMessage));
@@ -63,6 +65,8 @@ class SeederGenerator extends EntityGenerator
 
         file_put_contents($seederPath, $content);
 
+        $this->setPermissions($seederPath);
+
         $createMessage = "Created a new Seeder on path: {$seederPath}";
 
         event(new SuccessCreateMessage($createMessage));
@@ -77,5 +81,7 @@ class SeederGenerator extends EntityGenerator
         $fixedContent = preg_replace('/\}\s*\}\s*\z/', $insertContent, $content);
 
         file_put_contents($this->databaseSeederPath, $fixedContent);
+
+        $this->setPermissions($this->databaseSeederPath);
     }
 }
