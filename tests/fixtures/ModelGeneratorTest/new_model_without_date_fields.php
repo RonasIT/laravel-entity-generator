@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
 /**
+ * @property int $id
  * @property int|null $priority
  * @property int $media_id
  * @property float|null $seo_score
@@ -15,6 +17,8 @@ use RonasIT\Support\Traits\ModelTrait;
  * @property bool|null $is_reviewed
  * @property bool $is_published
  * @property array $meta
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
 class Post extends Model
 {
