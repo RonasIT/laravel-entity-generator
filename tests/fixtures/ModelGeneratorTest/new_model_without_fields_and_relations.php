@@ -8,7 +8,7 @@ use RonasIT\Support\Traits\ModelTrait;
 //TODO: add @property annotation for each model's field
 /**
  */
-class Post extends Model
+final class Post extends Model
 {
     use ModelTrait;
 

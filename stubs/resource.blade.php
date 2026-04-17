@@ -6,7 +6,7 @@ use {{ $model_namespace }}\{{ $entity }};
 /**
  * @property {{ $entity }} $resource
  */
-class {{ $entity }}Resource extends BaseResource
+final class {{ $entity }}Resource extends BaseResource
 {
 @if (empty($fields))
     //TODO implement custom serialization logic or remove method redefining
