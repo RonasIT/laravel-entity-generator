@@ -1,3 +1,4 @@
+@use('Illuminate\Support\Str')
 @inject('requestsGenerator', 'RonasIT\EntityGenerator\Generators\RequestsGenerator')
 namespace {{ $namespace }}\{{ $requestsFolder }};
 
@@ -22,7 +23,13 @@ class {{ $method }}{{ $entity }}Request extends Request
 @endif
         return [
 @foreach($parameters as $name => $rules)
-            '{{ $name }}' => '{!! implode('|', $rules) !!}'@if ($name === 'order_by') . $this->getOrderableFields({{ Str::singular($entity) }}::class)@elseif($name === 'with.*'){{ ' . $availableRelations' }}@endif,
+            '{{ $name }}' => {!!
+                Str::of($rulesString = implode('|', $rules))
+                    ->wrap("'")
+                    ->when($name === 'with.*', fn ($string) => $string->append(' . $availableRelations'))
+                    ->when($name === 'order_by', fn ($string) => $string->append(' . $this->getOrderableFields(' . Str::singular($entity) . '::class)'))
+                    ->when($method === $requestsGenerator::UPDATE_METHOD && Str::contains($rulesString, 'unique:'), fn ($string) => $string->append(" . \$this->route('id')"))
+            !!},
 @endforeach
         ];
 @else

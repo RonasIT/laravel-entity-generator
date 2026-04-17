@@ -114,6 +114,10 @@ class RequestsGenerator extends EntityGenerator
                 array_unshift($rules, $rule);
             }
 
+            if ($field->isUnique()) {
+                $rules[] = "unique:{$this->getTableName($this->model)},{$field->name}";
+            }
+
             return $rules;
         });
     }
@@ -129,6 +133,10 @@ class RequestsGenerator extends EntityGenerator
 
             if ($field->isRequired() && !$field->isBoolean()) {
                 array_unshift($rules, 'filled');
+            }
+
+            if ($field->isUnique()) {
+                $rules[] = "unique:{$this->getTableName($this->model)},{$field->name},";
             }
 
             return $rules;
