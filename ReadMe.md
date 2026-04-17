@@ -130,6 +130,7 @@ For this task, there are two mutually exclusive options:
 - `routes`
 - `controller`
 - `requests`
+- `resources`
 - `tests`
 
 #### Methods setting options
