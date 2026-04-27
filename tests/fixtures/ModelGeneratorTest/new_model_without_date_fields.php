@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
 /**
+ * @property int $id
  * @property int|null $priority
  * @property int $media_id
  * @property float|null $seo_score
