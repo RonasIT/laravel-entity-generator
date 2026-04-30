@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Collection;
 //TODO: add @property annotation for each model's field
 @endif
 /**
- * @property int $id
 @foreach($annotationProperties as $key => $value)
  * @property {!! $value !!} ${{ $key }}
 @endforeach
