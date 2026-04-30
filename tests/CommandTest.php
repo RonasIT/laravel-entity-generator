@@ -46,8 +46,7 @@ class CommandTest extends TestCase
     {
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
-            message: 'Cannot create API cause PostService does not exist.'
-                    . "\nCreate PostService",
+            message: "Cannot create API cause PostService does not exist.\nCreate PostService",
         );
 
         $this->artisan('make:entity Post --only-api');
