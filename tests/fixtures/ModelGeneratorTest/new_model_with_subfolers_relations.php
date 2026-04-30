@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
+ * @property int $id
  * @property string $title
  * @property Collection<Author> $authors
  */
