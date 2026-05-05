@@ -70,7 +70,7 @@ class Nova{{ $resource_name }}Test extends TestCase
 
         $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall({{ $resource_name }}::class, 1, $data);
 
-        $response->assertNoContent();
+        $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
         self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('update_{{ $lower_entities }}', true);

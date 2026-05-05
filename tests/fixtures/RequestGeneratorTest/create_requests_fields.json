@@ -13,7 +13,7 @@
     ],
     "string": [
         "description",
-        "title:required"
+        "title:required,unique"
     ],
     "timestamp": [
         "reviewed_at",
