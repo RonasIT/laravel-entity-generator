@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
+ * @property int $id
  * @property Collection<User> $users
  */
 class Post extends Model
