@@ -5,8 +5,8 @@ namespace RonasIT\EntityGenerator\Tests\Support\Command\Models;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 
-//TODO: add @property annotation for each model's field
 /**
+ * @property int $id
  */
 class Post extends Model
 {
