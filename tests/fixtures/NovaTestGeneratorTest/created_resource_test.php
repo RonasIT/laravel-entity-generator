@@ -120,7 +120,7 @@ class NovaWelcomeBonusResourceTest extends TestCase
 
         $response->assertOk();
 
-        $this->assertEquals($response->getContent(), '');
+        $this->assertEmpty($response->getContent());
 
         // TODO: Need to remove last argument after first successful start
         self::$welcomeBonusState->assertChangesEqualsFixture('delete_welcome_bonuses', true);
@@ -132,7 +132,7 @@ class NovaWelcomeBonusResourceTest extends TestCase
 
         $response->assertOk();
 
-        $this->assertEquals($response->getContent(), '');
+        $this->assertEmpty($response->getContent());
 
         self::$welcomeBonusState->assertNotChanged();
     }

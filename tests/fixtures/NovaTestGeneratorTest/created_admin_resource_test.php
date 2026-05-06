@@ -119,7 +119,7 @@ class NovaAdminResourceTest extends TestCase
 
         $response->assertOk();
 
-        $this->assertEquals($response->getContent(), '');
+        $this->assertEmpty($response->getContent());
 
         // TODO: Need to remove last argument after first successful start
         self::$userState->assertChangesEqualsFixture('delete_users', true);
@@ -131,7 +131,7 @@ class NovaAdminResourceTest extends TestCase
 
         $response->assertOk();
 
-        $this->assertEquals($response->getContent(), '');
+        $this->assertEmpty($response->getContent());
 
         self::$userState->assertNotChanged();
     }
