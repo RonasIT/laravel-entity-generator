@@ -121,7 +121,7 @@ class Nova{{ $resource_name }}Test extends TestCase
 
         $response->assertOk();
 
-        $this->assertEquals($response->getContent(), '');
+        $this->assertEmpty($response->getContent());
 
         // TODO: Need to remove last argument after first successful start
         self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('delete_{{ $lower_entities }}', true);
@@ -133,7 +133,7 @@ class Nova{{ $resource_name }}Test extends TestCase
 
         $response->assertOk();
 
-        $this->assertEquals($response->getContent(), '');
+        $this->assertEmpty($response->getContent());
 
         self::${{ $dromedary_entity }}State->assertNotChanged();
     }
