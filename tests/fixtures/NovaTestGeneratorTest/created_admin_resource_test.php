@@ -71,6 +71,9 @@ class NovaAdminResourceTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
+        $this->assertEqualsFixture('update_admin_resource_response', $response->json(), true);
+
+        // TODO: Need to remove last argument after first successful start
         self::$userState->assertChangesEqualsFixture('update_users', true);
     }
 
@@ -116,6 +119,8 @@ class NovaAdminResourceTest extends TestCase
 
         $response->assertOk();
 
+        $this->assertEquals($response->getContent(), '');
+
         // TODO: Need to remove last argument after first successful start
         self::$userState->assertChangesEqualsFixture('delete_users', true);
     }
@@ -125,6 +130,8 @@ class NovaAdminResourceTest extends TestCase
         $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(AdminResource::class, [0]);
 
         $response->assertOk();
+
+        $this->assertEquals($response->getContent(), '');
 
         self::$userState->assertNotChanged();
     }
