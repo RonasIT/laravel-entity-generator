@@ -22,6 +22,11 @@ final readonly class Field
         return in_array(FieldModifierEnum::Required, $this->modifiers);
     }
 
+    public function isUnique(): bool
+    {
+        return in_array(FieldModifierEnum::Unique, $this->modifiers);
+    }
+
     public function isJSON(): bool
     {
         return $this->type === FieldTypeEnum::Json;
