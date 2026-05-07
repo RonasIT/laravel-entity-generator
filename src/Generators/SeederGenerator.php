@@ -4,6 +4,7 @@ namespace RonasIT\EntityGenerator\Generators;
 
 use Illuminate\Support\Arr;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\Larabuilder\Builders\PHPFileBuilder;
 
 class SeederGenerator extends EntityGenerator
 {
@@ -70,12 +71,10 @@ class SeederGenerator extends EntityGenerator
 
     protected function appendSeederToList(): void
     {
-        $content = file_get_contents($this->databaseSeederPath);
+        $insertContent = '$this->call(' . $this->model . 'Seeder::class);';
 
-        $insertContent = "    \$this->call({$this->model}Seeder::class);\n    }\n}\n";
-
-        $fixedContent = preg_replace('/\}\s*\}\s*\z/', $insertContent, $content);
-
-        file_put_contents($this->databaseSeederPath, $fixedContent);
+        new PHPFileBuilder($this->databaseSeederPath)
+            ->insertCodeToMethod('run', $insertContent)
+            ->save();
     }
 }
