@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('media_id');
             $table->integer('user_id');
-            $table->string('title')->nullable();
+            $table->string('title')->nullable()->unique();
             $table->string('body')->nullable();
             $table->jsonb('meta')->default("{}");
             $table->timestamp('created_at')->nullable();
