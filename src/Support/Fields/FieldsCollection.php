@@ -47,4 +47,9 @@ final class FieldsCollection
     {
         return empty($this->fields);
     }
+
+    public function getNullableNames(): array
+    {
+        return Arr::pluck(Arr::where($this->fields, fn (Field $field) => !$field->isRequired()), 'name');
+    }
 }

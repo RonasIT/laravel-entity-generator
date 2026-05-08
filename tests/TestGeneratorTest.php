@@ -249,6 +249,70 @@ class TestGeneratorTest extends TestCase
         Event::assertNothingDispatched();
     }
 
+    public function testCreateTestsWithNullableFields()
+    {
+        $this->mockDBTransactionStartRollback(5);
+
+        config([
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Test\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Test\Factories',
+        ]);
+
+        $this->mockClass(TestsGenerator::class, [
+            $this->classExistsMethodCall(['tests', 'PostTest'], false),
+            $this->classExistsMethodCall(['models', 'User']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'CommentFactory'], false),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'RoleFactory']),
+            $this->classExistsMethodCall(['factories', 'UserFactory']),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['factories', 'PostFactory']),
+            $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'create_post_null_request.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'create_post_response.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'create_post_null_response.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'update_post_request.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'update_post_null_request.json', 'fixtures/PostTest'], false),
+        ]);
+
+        app(TestsGenerator::class)
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->setModel('Post')
+            ->setFields($this->getFieldsDTO([
+                'string' => ['title:required', 'body'],
+                'boolean' => ['drafted:required'],
+                'json' => ['data:required'],
+                'integer' => ['user_id:required'],
+                'timestamp' => ['posted_at'],
+            ]))
+            ->generate();
+
+        $this->assertGeneratedFileEquals('dump.sql', 'tests/fixtures/PostTest/dump.sql');
+        $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/PostTest/create_post_request.json');
+        $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/PostTest/create_post_response.json');
+        $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/PostTest/update_post_request.json');
+        $this->assertGeneratedFileEquals('create_post_null_request.json', 'tests/fixtures/PostTest/create_post_null_request.json');
+        $this->assertGeneratedFileEquals('create_post_null_response.json', 'tests/fixtures/PostTest/create_post_null_response.json');
+        $this->assertGeneratedFileEquals('update_post_null_request.json', 'tests/fixtures/PostTest/update_post_null_request.json');
+        $this->assertGeneratedFileEquals('post_test_with_nullable_fields.php', 'tests/PostTest.php');
+
+        $this->assertEventPushedChain([
+            SuccessCreateMessage::class => [
+                'Created a new Test dump on path: tests/fixtures/PostTest/dump.sql',
+                'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_request.json',
+                'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_null_request.json',
+                'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_response.json',
+                'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_null_response.json',
+                'Created a new Test fixture on path: tests/fixtures/PostTest/update_post_request.json',
+                'Created a new Test fixture on path: tests/fixtures/PostTest/update_post_null_request.json',
+                'Created a new Test: PostTest',
+            ],
+        ]);
+    }
+
     public function testTestAlreadyExists()
     {
         $this->mockClass(TestsGenerator::class, [
