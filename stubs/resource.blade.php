@@ -1,5 +1,6 @@
 namespace {{ $namespace }}\{{ $entity }};
 
+use Illuminate\Http\Request;
 use RonasIT\Support\Http\BaseResource;
 use {{ $model_namespace }}\{{ $entity }};
 
@@ -11,7 +12,7 @@ class {{ $entity }}Resource extends BaseResource
 @if (empty($fields))
     //TODO implement custom serialization logic or remove method redefining
 @endif
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
     @if (!empty($fields))
     return [

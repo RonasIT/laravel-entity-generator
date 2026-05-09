@@ -25,6 +25,7 @@ class ServiceGenerator extends EntityGenerator
             'fields' => $this->getFields(),
             'namespace' => $this->generateNamespace($this->paths['services']),
             'repositoriesNamespace' => $this->generateNamespace($this->paths['repositories']),
+            'options' => $this->crudOptions,
         ]);
 
         $this->saveClass('services', "{$this->model}Service", $serviceContent);

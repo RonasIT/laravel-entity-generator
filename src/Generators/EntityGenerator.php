@@ -35,15 +35,19 @@ abstract class EntityGenerator
         'translations' => 'lang/en',
     ];
 
-    protected $paths = [];
-    protected $model;
-    protected $modelSubFolder = '';
-    protected $fields;
-    protected $relations = [];
-    protected $crudOptions;
+    protected array $paths = [];
+    protected string $model;
+    protected string $modelSubFolder = '';
+    protected ?FieldsCollection $fields = null;
+    protected RelationsDTO $relations;
+    protected array $crudOptions = [];
+
+    abstract public function generate(): void;
 
     public function __construct()
     {
+        $this->relations = new RelationsDTO();
+
         $this->paths = config('entity-generator.paths');
 
         $this->checkConfigHasCorrectPaths();
@@ -130,8 +134,6 @@ abstract class EntityGenerator
 
         return $folder === 'app' || (ucfirst($firstFolderChar) === $firstFolderChar) || Str::contains($directory, $folder);
     }
-
-    abstract public function generate(): void;
 
     protected function classExists(string $path, string $name, ?string $subFolder = null): bool
     {

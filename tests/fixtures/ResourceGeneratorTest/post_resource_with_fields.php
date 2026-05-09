@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Post;
 
+use Illuminate\Http\Request;
 use RonasIT\Support\Http\BaseResource;
 use App\Models\Post;
 
@@ -10,7 +11,7 @@ use App\Models\Post;
  */
 class PostResource extends BaseResource
 {
-    public function toArray($request): array
+    public function toArray(Request $request): array
     {
         return [
             'priority' => $this->resource->priority,
