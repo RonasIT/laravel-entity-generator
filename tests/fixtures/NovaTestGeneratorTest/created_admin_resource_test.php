@@ -238,13 +238,15 @@ class NovaAdminResourceTest extends TestCase
         return [
             [
                 'request' => [
-                    'TextField:description_field' => $this->novaSearchParams(['search term']),
+                    'filters' => [['TextField:description_field' => 'filter value']],
+                    'search' => 'search term',
                 ],
                 'fixture' => 'filter_admin_resource_by_text_field',
             ],
             [
                 'request' => [
-                    'RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
+                    'filters' => [['RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => 'filter value']],
+                    'search' => 'search term',
                 ],
                 'fixture' => 'filter_admin_resource_by_created_at_filter',
             ],
@@ -254,7 +256,11 @@ class NovaAdminResourceTest extends TestCase
     #[DataProvider('getAdminResourceFiltersData')]
     public function testFilterAdminResource(array $request, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(AdminResource::class, $request);
+        $preparedRequest = $this->novaSearchParams($request['filters'], $request['search']);
+
+        $response = $this
+            ->novaActingAs(self::$user)
+            ->novaSearchResourceAPICall(AdminResource::class, $preparedRequest);
 
         $response->assertOk();
 

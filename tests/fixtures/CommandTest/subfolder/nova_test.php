@@ -219,7 +219,11 @@ class NovaPostResourceTest extends TestCase
     #[DataProvider('getPostResourceFiltersData')]
     public function testFilterPostResource(array $request, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(PostResource::class, $request);
+        $preparedRequest = $this->novaSearchParams($request['filters'], $request['search']);
+
+        $response = $this
+            ->novaActingAs(self::$user)
+            ->novaSearchResourceAPICall(PostResource::class, $preparedRequest);
 
         $response->assertOk();
 
