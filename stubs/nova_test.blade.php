@@ -243,7 +243,8 @@ class Nova{{ $resource_name }}Test extends TestCase
 @foreach($filters as $filter)
             [
                 'request' => [
-                    '{{ $filter['name'] }}' => $this->novaSearchParams(['search term']),
+                    'filters' => [['{{ $filter['name'] }}' => 'filter value']],
+                    'search' => 'search term',
                 ],
                 'fixture' => 'filter_{{ $snake_resource }}_by_{{ $filter['fixture_name'] }}',
             ],
@@ -254,7 +255,11 @@ class Nova{{ $resource_name }}Test extends TestCase
     #[DataProvider('get{{ $resource_name }}FiltersData')]
     public function testFilter{{ $resource_name }}(array $request, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall({{ $resource_name }}::class, $request);
+        $preparedRequest = $this->novaSearchParams($request['filters'], $request['search']);
+
+        $response = $this
+            ->novaActingAs(self::$user)
+            ->novaSearchResourceAPICall({{ $resource_name }}::class, $preparedRequest);
 
         $response->assertOk();
 
