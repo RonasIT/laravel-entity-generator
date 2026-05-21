@@ -73,6 +73,9 @@ class Nova{{ $resource_name }}Test extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
+        $this->assertEqualsFixture('update_{{ $snake_resource }}_response', $response->json(), true);
+
+        // TODO: Need to remove last argument after first successful start
         self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('update_{{ $lower_entities }}', true);
     }
 
@@ -118,6 +121,8 @@ class Nova{{ $resource_name }}Test extends TestCase
 
         $response->assertOk();
 
+        $this->assertEmpty($response->getContent());
+
         // TODO: Need to remove last argument after first successful start
         self::${{ $dromedary_entity }}State->assertChangesEqualsFixture('delete_{{ $lower_entities }}', true);
     }
@@ -126,7 +131,11 @@ class Nova{{ $resource_name }}Test extends TestCase
     {
         $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall({{ $resource_name }}::class, [0]);
 
-        $response->assertNotFound();
+        $response->assertOk();
+
+        $this->assertEmpty($response->getContent());
+
+        self::${{ $dromedary_entity }}State->assertNotChanged();
     }
 
     public function testDeleteNoAuth(): void

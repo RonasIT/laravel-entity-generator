@@ -70,6 +70,9 @@ class NovaPostResourceTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
+        $this->assertEqualsFixture('update_post_resource_response', $response->json(), true);
+
+        // TODO: Need to remove last argument after first successful start
         self::$postState->assertChangesEqualsFixture('update_posts', true);
     }
 
@@ -115,6 +118,8 @@ class NovaPostResourceTest extends TestCase
 
         $response->assertOk();
 
+        $this->assertEmpty($response->getContent());
+
         // TODO: Need to remove last argument after first successful start
         self::$postState->assertChangesEqualsFixture('delete_posts', true);
     }
@@ -123,7 +128,11 @@ class NovaPostResourceTest extends TestCase
     {
         $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(PostResource::class, [0]);
 
-        $response->assertNotFound();
+        $response->assertOk();
+
+        $this->assertEmpty($response->getContent());
+
+        self::$postState->assertNotChanged();
     }
 
     public function testDeleteNoAuth(): void

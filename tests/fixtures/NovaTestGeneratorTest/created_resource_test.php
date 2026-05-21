@@ -72,6 +72,9 @@ class NovaWelcomeBonusResourceTest extends TestCase
         $response->assertOk();
 
         // TODO: Need to remove last argument after first successful start
+        $this->assertEqualsFixture('update_welcome_bonus_resource_response', $response->json(), true);
+
+        // TODO: Need to remove last argument after first successful start
         self::$welcomeBonusState->assertChangesEqualsFixture('update_welcome_bonuses', true);
     }
 
@@ -117,6 +120,8 @@ class NovaWelcomeBonusResourceTest extends TestCase
 
         $response->assertOk();
 
+        $this->assertEmpty($response->getContent());
+
         // TODO: Need to remove last argument after first successful start
         self::$welcomeBonusState->assertChangesEqualsFixture('delete_welcome_bonuses', true);
     }
@@ -125,7 +130,11 @@ class NovaWelcomeBonusResourceTest extends TestCase
     {
         $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(WelcomeBonusResource::class, [0]);
 
-        $response->assertNotFound();
+        $response->assertOk();
+
+        $this->assertEmpty($response->getContent());
+
+        self::$welcomeBonusState->assertNotChanged();
     }
 
     public function testDeleteNoAuth(): void
