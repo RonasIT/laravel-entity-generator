@@ -13,6 +13,7 @@ use RonasIT\EntityGenerator\DTO\RelationsDTO;
 use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\ClassNotExistsException;
 use RonasIT\EntityGenerator\Generators\ControllerGenerator;
 use RonasIT\EntityGenerator\Generators\EntityGenerator;
 use RonasIT\EntityGenerator\Generators\FactoryGenerator;
@@ -29,7 +30,6 @@ use RonasIT\EntityGenerator\Generators\TestsGenerator;
 use RonasIT\EntityGenerator\Generators\TranslationsGenerator;
 use RonasIT\EntityGenerator\Support\Fields\FieldsCollection;
 use RonasIT\EntityGenerator\Support\Fields\FieldsParser;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 use UnexpectedValueException;
 
 class MakeEntityCommand extends Command
@@ -312,7 +312,7 @@ class MakeEntityCommand extends Command
         if ($this->option('only-api')) {
             $modelName = Str::studly($this->argument('name'));
             if (!$this->classExists('services', "{$modelName}Service")) {
-                throw new ClassNotExistsException('Cannot create API without entity.');
+                throw new ClassNotExistsException('API', "{$modelName}Service");
             }
         }
     }
