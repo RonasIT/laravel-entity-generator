@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Collection;
  * @property {!! $value !!} ${{ $key }}
 @endforeach
  */
-class {{ $entity }} extends Model
+final class {{ $entity }} extends Model
 {
     use ModelTrait;
 
