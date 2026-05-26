@@ -17,7 +17,7 @@ use RonasIT\Support\Traits\ModelTrait;
  * @property bool $is_published
  * @property array $meta
  */
-class Post extends Model
+final class Post extends Model
 {
     use ModelTrait;
 

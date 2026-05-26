@@ -8,7 +8,7 @@ use RonasIT\Support\Traits\ModelTrait;
 /**
  * @property int $id
  */
-class Post extends Model
+final class Post extends Model
 {
     use ModelTrait;
 
