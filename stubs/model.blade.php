@@ -20,7 +20,7 @@ use Illuminate\Database\Eloquent\Collection;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-class {{ $entity }} extends Model
+final class {{ $entity }} extends Model
 {
     use ModelTrait;
 

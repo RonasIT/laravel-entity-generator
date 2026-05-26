@@ -20,7 +20,7 @@ use RonasIT\Support\Traits\ModelTrait;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-class Post extends Model
+final class Post extends Model
 {
     use ModelTrait;
 

@@ -5,10 +5,10 @@ namespace RonasIT\EntityGenerator\Tests;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Config;
 use InvalidArgumentException;
+use RonasIT\EntityGenerator\Exceptions\ClassNotExistsException;
 use RonasIT\EntityGenerator\Exceptions\UnknownFieldModifierException;
 use RonasIT\EntityGenerator\Tests\Support\Command\CommandMockTrait;
 use RonasIT\EntityGenerator\Tests\Support\Command\Models\Post;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
 use UnexpectedValueException;
 
 class CommandTest extends TestCase
@@ -46,7 +46,8 @@ class CommandTest extends TestCase
     {
         $this->assertExceptionThrew(
             className: ClassNotExistsException::class,
-            message: 'Cannot create API without entity.',
+            message: 'Cannot create API cause PostService does not exist.'
+                    . "\nCreate PostService",
         );
 
         $this->artisan('make:entity Post --only-api');
