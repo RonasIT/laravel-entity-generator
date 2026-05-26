@@ -21,7 +21,7 @@ use {{ $servicesNamespace }}\{{ $entity }}Service;
 use Symfony\Component\HttpFoundation\Response;
 @endif
 
-class {{ $entity }}Controller extends Controller
+final class {{ $entity }}Controller extends Controller
 {
 @if (in_array('C', $options))
     public function create(Create{{ $entity }}Request $request, {{ $entity }}Service $service): {{ $entity }}Resource

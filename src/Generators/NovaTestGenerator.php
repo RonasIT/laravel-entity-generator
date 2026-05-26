@@ -10,9 +10,9 @@ use Laravel\Nova\NovaServiceProvider;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
+use RonasIT\EntityGenerator\Exceptions\ClassNotExistsException;
+use RonasIT\EntityGenerator\Exceptions\EntityCreateException;
 use RonasIT\EntityGenerator\Exceptions\ResourceNotExistsException;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Exceptions\EntityCreateException;
 
 class NovaTestGenerator extends AbstractTestsGenerator
 {
@@ -35,11 +35,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
             if (!isset($this->novaResourceClassName)) {
                 $this->novaResourceClassName = $this->findNovaResource();
             } elseif (!class_exists($this->novaResourceClassName)) {
-                $this->throwFailureException(
-                    exceptionClass: ClassNotExistsException::class,
-                    failureMessage: "Cannot create {$this->getTestClassName()} cause {$this->novaResourceClassName} does not exist.",
-                    recommendedMessage: "Create {$this->novaResourceClassName}.",
-                );
+                throw new ClassNotExistsException($this->getTestClassName(), $this->novaResourceClassName);
             }
 
             $this->checkResourceExists('nova', $this->getTestClassName());
