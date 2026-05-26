@@ -10,18 +10,19 @@
     }
   ],
   "require": {
-    "php": "^8.3",
-    "laravel/framework": ">=11",
-    "ronasit/laravel-helpers": ">=3.5",
+    "php": "^8.4",
+    "laravel/framework": ">=12.28",
+    "ronasit/laravel-helpers": ">=3.5.8",
     "ext-json": "*",
     "doctrine/dbal": "^4.2",
-    "winter/laravel-config-writer": ">=1.2.1"
+    "winter/laravel-config-writer": ">=1.2.1",
+    "ronasit/larabuilder": ">=0.0.7"
   },
   "require-dev": {
     "fakerphp/faker": "^1.24.0",
     "mockery/mockery": "^1.6.12",
-    "phpunit/phpunit": ">=11",
-    "orchestra/testbench": ">=9",
+    "phpunit/phpunit": ">=11.5.5",
+    "orchestra/testbench": ">=9.5.1",
     "mikey179/vfsstream": "^1.6.12",
     "php-mock/php-mock": "^2.5",
     "laravel/pint": "^1.27"
