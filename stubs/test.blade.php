@@ -139,7 +139,7 @@ class {{ $entity }}Test extends TestCase
 @if ($hasNullableFields)
     public function testUpdateWithNull()
     {
-        $data = $this->getJsonFixture('update_{{ \Illuminate\Support\Str::snake($entity) }}_null_request');
+        $data = $this->getJsonFixture('update_{{ \Illuminate\Support\Str::snake($entity) }}_with_nulls_request');
 
 @if (!$withAuth)
         $response = $this->json('put', '/{{ $entities }}/1', $data);
