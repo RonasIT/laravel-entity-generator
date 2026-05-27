@@ -99,7 +99,7 @@ class PostTest extends TestCase
         self::$postState->assertNotChanged();
     }
 
-    public function testUpdateWithNull()
+    public function testUpdateWithNulls()
     {
         $data = $this->getJsonFixture('update_post_null_request');
 
