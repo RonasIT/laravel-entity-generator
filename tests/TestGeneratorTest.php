@@ -303,11 +303,11 @@ class TestGeneratorTest extends TestCase
             SuccessCreateMessage::class => [
                 'Created a new Test dump on path: tests/fixtures/PostTest/dump.sql',
                 'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_request.json',
-                'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_null_request.json',
+                'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_with_nulls_request.json',
                 'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_response.json',
-                'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_null_response.json',
+                'Created a new Test fixture on path: tests/fixtures/PostTest/create_post_with_nulls_response.json',
                 'Created a new Test fixture on path: tests/fixtures/PostTest/update_post_request.json',
-                'Created a new Test fixture on path: tests/fixtures/PostTest/update_post_null_request.json',
+                'Created a new Test fixture on path: tests/fixtures/PostTest/update_post_with_nulls_request.json',
                 'Created a new Test: PostTest',
             ],
         ]);
