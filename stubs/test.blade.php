@@ -137,7 +137,7 @@ class {{ $entity }}Test extends TestCase
 
 @endif
 @if ($hasNullableFields)
-    public function testUpdateWithNull()
+    public function testUpdateWithNulls()
     {
         $data = $this->getJsonFixture('update_{{ \Illuminate\Support\Str::snake($entity) }}_with_nulls_request');
 
