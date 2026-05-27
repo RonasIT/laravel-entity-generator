@@ -4,8 +4,6 @@ namespace App\Services;
 
 use App\Repositories\PostRepository;
 use RonasIT\Support\Services\EntityService;
-use Illuminate\Support\Arr;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * @mixin PostRepository
@@ -16,13 +14,5 @@ class PostService extends EntityService
     public function __construct()
     {
         $this->setRepository(PostRepository::class);
-    }
-
-    public function search(array $filters = []): LengthAwarePaginator
-    {
-        return $this
-            ->searchQuery($filters)
-            ->filterByQuery(['title', 'body'])
-            ->getSearchResults();
     }
 }

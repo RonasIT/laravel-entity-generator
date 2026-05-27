@@ -1,21 +1,23 @@
 namespace {{ $namespace }};
 
 @inject('str', 'Illuminate\Support\Str')
-use {{ $resourcesNamespace }}\{{ $entity }}\{{ $str::plural($entity) }}CollectionResource;
 @if (in_array('C', $options))
 use {{ $requestsNamespace }}\{{ $requestsFolder }}\Create{{ $entity }}Request;
 @endif
 @if (in_array('D', $options))
 use {{ $requestsNamespace }}\{{ $requestsFolder }}\Delete{{ $entity }}Request;
 @endif
-use {{ $requestsNamespace }}\{{ $requestsFolder}}\Get{{ $entity }}Request;
-@if (in_array('R', $options))
-use {{ $requestsNamespace }}\{{ $requestsFolder }}\Search{{ $str::plural($entity) }}Request;
-@endif
 @if (in_array('U', $options))
 use {{ $requestsNamespace }}\{{ $requestsFolder }}\Update{{ $entity }}Request;
 @endif
+@if (in_array('R', $options))
+use {{ $requestsNamespace }}\{{ $requestsFolder}}\Get{{ $entity }}Request;
+use {{ $requestsNamespace }}\{{ $requestsFolder }}\Search{{ $str::plural($entity) }}Request;
+use {{ $resourcesNamespace }}\{{ $entity }}\{{ $str::plural($entity) }}CollectionResource;
+@endif
+@if (in_array('C', $options) || in_array('R', $options))
 use {{ $resourcesNamespace }}\{{ $entity }}\{{ $entity }}Resource;
+@endif
 use {{ $servicesNamespace }}\{{ $entity }}Service;
 @if (in_array('D', $options) || in_array('U', $options))
 use Symfony\Component\HttpFoundation\Response;

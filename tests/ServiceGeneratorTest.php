@@ -56,9 +56,35 @@ class ServiceGeneratorTest extends TestCase
                     belongsTo: ['User'],
                 ))
             ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
 
         $this->assertGeneratedFileEquals('service.php', 'app/Services/PostService.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Service: PostService',
+        );
+    }
+
+    public function testCreateWithoutSearch()
+    {
+        $this->mockClass(ServiceGenerator::class, [
+            $this->classExistsMethodCall(['repositories', 'PostRepository']),
+            $this->classExistsMethodCall(['services', 'PostService'], false),
+        ]);
+
+        app(ServiceGenerator::class)
+            ->setFields($this->getFieldsDTO([
+                'string' => [
+                    'title',
+                ],
+            ]))
+            ->setModel('Post')
+            ->setCrudOptions(['C', 'U', 'D'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('service_without_search.php', 'app/Services/PostService.php');
 
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
