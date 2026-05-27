@@ -271,7 +271,7 @@ class TestGeneratorTest extends TestCase
             $this->classExistsMethodCall(['tests', 'dump.sql', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['factories', 'PostFactory']),
             $this->classExistsMethodCall(['tests', 'create_post_request.json', 'fixtures/PostTest'], false),
-            $this->classExistsMethodCall(['tests', 'create_post_null_request.json', 'fixtures/PostTest'], false),
+            $this->classExistsMethodCall(['tests', 'create_post_with_nulls_request.json', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['tests', 'create_post_response.json', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['tests', 'create_post_null_response.json', 'fixtures/PostTest'], false),
             $this->classExistsMethodCall(['tests', 'update_post_request.json', 'fixtures/PostTest'], false),
