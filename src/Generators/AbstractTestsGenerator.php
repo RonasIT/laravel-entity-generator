@@ -195,7 +195,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
         $nullableNames = $this->fields?->getNullableNames();
 
-        $nullableObject = !empty($nullableNames) ? array_merge($object, array_fill_keys($nullableNames, null)) : null;
+        $nullableObject = (!empty($nullableNames)) ? array_merge($object, array_fill_keys($nullableNames, null)) : null;
 
         foreach (self::FIXTURE_TYPES as $type => $modifications) {
             if ($this->isFixtureNeeded($type)) {
