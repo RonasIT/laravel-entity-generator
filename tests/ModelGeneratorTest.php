@@ -129,7 +129,7 @@ class ModelGeneratorTest extends TestCase
     public function testCreateModelByCommand()
     {
         $this
-            ->artisan('make:entity Post -i priority -i media_id:required -f seo_score -f rating:required -s description -s title:required -b is_reviewed -b is_published:required -t reviewed_at -t created_at -t updated_at -t published_at:required -j meta -a Comment -A User --only-model')
+            ->artisan('make:entity Post -i priority -i media_id:required -f seo_score -f rating:required -s description -s title:required -b is_reviewed -b is_published:required -t reviewed_at -t started_at -t finished_at -t published_at:required -j meta -a Comment -A User --only-model')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_model.php', 'app/Models/Post.php');
@@ -160,7 +160,7 @@ class ModelGeneratorTest extends TestCase
     public function testCreateSubFoldersModel()
     {
         $this
-            ->artisan('make:entity Forum/Post -i priority -i media_id:required -f seo_score -f rating:required -s description -s title:required -b is_reviewed -b is_published:required -t reviewed_at -t created_at -t updated_at -t published_at:required -j meta -a Comment -A User')
+            ->artisan('make:entity Forum/Post -i priority -i media_id:required -f seo_score -f rating:required -s description -s title:required -b is_reviewed -b is_published:required -t reviewed_at -t started_at -t finished_at -t published_at:required -j meta -a Comment -A User')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('new_subfolders_model.php', 'app/Models/Forum/Post.php');

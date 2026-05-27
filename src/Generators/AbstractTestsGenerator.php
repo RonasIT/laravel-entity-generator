@@ -6,7 +6,7 @@ use DateTime;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
-use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
+use RonasIT\EntityGenerator\Exceptions\CircularRelationsFoundedException;
 
 abstract class AbstractTestsGenerator extends EntityGenerator
 {
@@ -238,11 +238,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
             }
 
             if (in_array($model, $relationsWithFactories)) {
-                $this->throwFailureException(
-                    CircularRelationsFoundedException::class,
-                    'Circular relations found.',
-                    'Please resolve your relations in models, factories and database.',
-                );
+                throw new CircularRelationsFoundedException();
             }
 
             $relatedModels = $this->buildRelationsTree($relationsWithFactories);

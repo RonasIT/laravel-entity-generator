@@ -56,10 +56,10 @@ The following field types are available to use:
 
 #### Fields modifiers
 
-To set a special behavior for the field use the modifiers syntax. Modifiers may be passed using a `:` symbol in the field definition.
+To set a special behavior for the field use the modifiers syntax. Modifiers may be passed using a `:` symbol in the field definition. Multiple modifiers can be combined with a comma.
 
 ```bash
-php artisan make:entity Post -s title:required -s text -t published_at:required
+php artisan make:entity Post -s title:required,unique -s text -t published_at:required
 ```
 
 Each modifier has full and short syntax. The list of available modifiers defined in the table:
@@ -67,6 +67,7 @@ Each modifier has full and short syntax. The list of available modifiers defined
 | Modifier   | Short syntax | Description           |
 |------------|-------------|-----------------------|
 | `required` | `r`         | Disallow to set `null` as a field value. Add required validation rule for creation, `filled` validation for the update, and not null in migration |
+| `unique`   | `u`         | Add a unique index in migration and unique validation rule for creation and update |
 
 #### Relations definitions options
 

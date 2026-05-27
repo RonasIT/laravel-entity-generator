@@ -5,11 +5,11 @@ namespace RonasIT\EntityGenerator\Tests;
 use Illuminate\Support\Facades\Event;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\CircularRelationsFoundedException;
 use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\EntityGenerator\Exceptions\ResourceNotExistsException;
 use RonasIT\EntityGenerator\Generators\TestsGenerator;
 use RonasIT\EntityGenerator\Tests\Support\Test\TestMockTrait;
-use RonasIT\Support\Exceptions\CircularRelationsFoundedException;
 
 class TestGeneratorTest extends TestCase
 {
