@@ -48,17 +48,17 @@ class PostTest extends TestCase
 
     public function testCreateWithNulls()
     {
-        $data = $this->getJsonFixture('create_post_null_request');
+        $data = $this->getJsonFixture('create_post_with_nulls_request');
 
         $response = $this->actingAs(self::$user)->json('post', '/posts', $data);
 
         $response->assertCreated();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('create_post_null_response', $response->json(), true);
+        $this->assertEqualsFixture('create_post_with_nulls_response', $response->json(), true);
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('create_post_null', true);
+        self::$postState->assertChangesEqualsFixture('create_post_with_nulls', true);
     }
 
     public function testUpdate()
