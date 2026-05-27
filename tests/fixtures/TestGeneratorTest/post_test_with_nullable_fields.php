@@ -101,14 +101,14 @@ class PostTest extends TestCase
 
     public function testUpdateWithNulls()
     {
-        $data = $this->getJsonFixture('update_post_null_request');
+        $data = $this->getJsonFixture('update_post_with_nulls_request');
 
         $response = $this->actingAs(self::$user)->json('put', '/posts/1', $data);
 
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::$postState->assertChangesEqualsFixture('update_post_null', true);
+        self::$postState->assertChangesEqualsFixture('update_post_with_nulls', true);
     }
 
     public function testDelete()
