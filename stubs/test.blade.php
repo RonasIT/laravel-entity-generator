@@ -79,7 +79,7 @@ class {{ $entity }}Test extends TestCase
         $response->assertCreated();
 
         // TODO: Need to remove last argument after first successful start
-        $this->assertEqualsFixture('create_{{ \Illuminate\Support\Str::snake($entity) }}_null_response', $response->json(), true);
+        $this->assertEqualsFixture('create_{{ \Illuminate\Support\Str::snake($entity) }}_with_nulls_response', $response->json(), true);
 
         // TODO: Need to remove last argument after first successful start
         self::${{ \Illuminate\Support\Str::camel($entity) }}State->assertChangesEqualsFixture('create_{{ \Illuminate\Support\Str::snake($entity) }}_null', true);
