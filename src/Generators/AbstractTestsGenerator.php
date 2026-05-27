@@ -207,9 +207,9 @@ abstract class AbstractTestsGenerator extends EntityGenerator
                     $this->generateFixture("{$type}_{$entity}_{$modification}.json", Arr::except($object, $excepts));
 
                     if (!empty($nullableObject)) {
-                        $this->checkResourceExists('tests', "{$type}_{$entity}_null_{$modification}.json", "fixtures/{$this->getTestClassName()}");
+                        $this->checkResourceExists('tests', "{$type}_{$entity}_with_nulls_{$modification}.json", "fixtures/{$this->getTestClassName()}");
 
-                        $this->generateFixture("{$type}_{$entity}_null_{$modification}.json", Arr::except($nullableObject, $excepts));
+                        $this->generateFixture("{$type}_{$entity}_with_nulls_{$modification}.json", Arr::except($nullableObject, $excepts));
                     }
                 }
             }
