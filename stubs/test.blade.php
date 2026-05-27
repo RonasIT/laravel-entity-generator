@@ -150,7 +150,7 @@ class {{ $entity }}Test extends TestCase
         $response->assertNoContent();
 
         // TODO: Need to remove last argument after first successful start
-        self::${{ \Illuminate\Support\Str::camel($entity) }}State->assertChangesEqualsFixture('update_{{ \Illuminate\Support\Str::snake($entity) }}_null', true);
+        self::${{ \Illuminate\Support\Str::camel($entity) }}State->assertChangesEqualsFixture('update_{{ \Illuminate\Support\Str::snake($entity) }}_with_nulls', true);
     }
 
 @endif
