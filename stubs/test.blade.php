@@ -68,7 +68,7 @@ class {{ $entity }}Test extends TestCase
 @if ($hasNullableFields)
     public function testCreateWithNull()
     {
-        $data = $this->getJsonFixture('create_{{ \Illuminate\Support\Str::snake($entity) }}_null_request');
+        $data = $this->getJsonFixture('create_{{ \Illuminate\Support\Str::snake($entity) }}_with_nulls_request');
 
 @if (!$withAuth)
         $response = $this->json('post', '/{{ $entities }}', $data);
