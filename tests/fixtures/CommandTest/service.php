@@ -21,8 +21,6 @@ class PostService extends EntityService
     public function search(array $filters = []): LengthAwarePaginator
     {
         return $this
-            ->with(Arr::get($filters, 'with', []))
-            ->withCount(Arr::get($filters, 'with_count', []))
             ->searchQuery($filters)
             ->getSearchResults();
     }
