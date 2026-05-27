@@ -8,11 +8,12 @@ use App\Models\Post;
 /**
  * @property Post $resource
  */
-class PostResource extends BaseResource
+final class PostResource extends BaseResource
 {
     public function toArray($request): array
     {
         return [
+            'id' => $this->resource->id,
             'priority' => $this->resource->priority,
             'media_id' => $this->resource->media_id,
             'seo_score' => $this->resource->seo_score,
