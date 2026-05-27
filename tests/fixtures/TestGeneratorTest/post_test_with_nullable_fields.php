@@ -46,7 +46,7 @@ class PostTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    public function testCreateWithNull()
+    public function testCreateWithNulls()
     {
         $data = $this->getJsonFixture('create_post_null_request');
 
