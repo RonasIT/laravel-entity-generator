@@ -28,7 +28,7 @@ final class FieldsParser
     {
         list($name, $modifiers) = $this->splitField($field);
 
-        if (ReservedFieldEnum::tryFrom($name) !== null) {
+        if (ReservedFieldEnum::isReserved($name)) {
             throw new ReservedFieldException($name);
         }
 
@@ -39,7 +39,7 @@ final class FieldsParser
     {
         $parts = explode(':', $field);
 
-        $fieldName = strtolower(trim(array_shift($parts)));
+        $fieldName = array_shift($parts);
 
         return [$fieldName, Arr::first($parts)];
     }

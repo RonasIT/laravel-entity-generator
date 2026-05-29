@@ -62,4 +62,9 @@ enum ReservedFieldEnum: string
     {
         return [self::Id];
     }
+
+    public static function isReserved(string $name): bool
+    {
+        return in_array(strtolower(trim($name)), array_column(self::cases(), 'value'));
+    }
 }
