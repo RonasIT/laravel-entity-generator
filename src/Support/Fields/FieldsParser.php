@@ -39,7 +39,7 @@ final class FieldsParser
     {
         $parts = explode(':', $field);
 
-        $fieldName = array_shift($parts);
+        $fieldName = strtolower(trim(array_shift($parts)));
 
         return [$fieldName, Arr::first($parts)];
     }
