@@ -4,7 +4,7 @@ namespace App\Http\Requests\Post;
 
 use App\Http\Requests\Request;
 
-class CreatePostRequest extends Request
+final class CreatePostRequest extends Request
 {
     public function rules(): array
     {
@@ -16,7 +16,7 @@ class CreatePostRequest extends Request
             'seo_score' => 'numeric',
             'rating' => 'required|numeric',
             'description' => 'string',
-            'title' => 'required|string',
+            'title' => 'required|string|unique:posts,title',
             'reviewed_at' => 'date',
             'published_at' => 'required|date',
             'meta' => 'array',

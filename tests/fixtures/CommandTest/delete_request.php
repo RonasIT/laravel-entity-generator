@@ -6,7 +6,7 @@ use App\Http\Requests\Request;
 use App\Services\PostService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class DeletePostRequest extends Request
+final class DeletePostRequest extends Request
 {
     public function validateResolved(): void
     {

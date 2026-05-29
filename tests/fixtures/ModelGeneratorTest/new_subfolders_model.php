@@ -2,19 +2,17 @@
 
 namespace App\Models\Forum;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @property int $id
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
  * @property int|null $priority
  * @property int $media_id
  * @property float|null $seo_score
@@ -30,8 +28,10 @@ use Illuminate\Database\Eloquent\Collection;
  * @property array $meta
  * @property Comment|null $comment
  * @property Collection<User> $users
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
-class Post extends Model
+final class Post extends Model
 {
     use ModelTrait;
 

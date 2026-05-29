@@ -69,7 +69,10 @@ class NovaWelcomeBonusResourceTest extends TestCase
 
         $response = $this->novaActingAs(self::$user)->novaUpdateResourceAPICall(WelcomeBonusResource::class, 1, $data);
 
-        $response->assertNoContent();
+        $response->assertOk();
+
+        // TODO: Need to remove last argument after first successful start
+        $this->assertEqualsFixture('update_welcome_bonus_resource_response', $response->json(), true);
 
         // TODO: Need to remove last argument after first successful start
         self::$welcomeBonusState->assertChangesEqualsFixture('update_welcome_bonuses', true);
@@ -117,6 +120,8 @@ class NovaWelcomeBonusResourceTest extends TestCase
 
         $response->assertOk();
 
+        $this->assertEmpty($response->getContent());
+
         // TODO: Need to remove last argument after first successful start
         self::$welcomeBonusState->assertChangesEqualsFixture('delete_welcome_bonuses', true);
     }
@@ -125,7 +130,11 @@ class NovaWelcomeBonusResourceTest extends TestCase
     {
         $response = $this->novaActingAs(self::$user)->novaDeleteResourceAPICall(WelcomeBonusResource::class, [0]);
 
-        $response->assertNotFound();
+        $response->assertOk();
+
+        $this->assertEmpty($response->getContent());
+
+        self::$welcomeBonusState->assertNotChanged();
     }
 
     public function testDeleteNoAuth(): void
@@ -239,13 +248,15 @@ class NovaWelcomeBonusResourceTest extends TestCase
         return [
             [
                 'request' => [
-                    'TextField:description_field' => $this->novaSearchParams(['search term']),
+                    'filters' => [['TextField:description_field' => 'filter value']],
+                    'search' => 'search term',
                 ],
                 'fixture' => 'filter_welcome_bonus_resource_by_text_field',
             ],
             [
                 'request' => [
-                    'RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => $this->novaSearchParams(['search term']),
+                    'filters' => [['RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\CreatedAtFilter' => 'filter value']],
+                    'search' => 'search term',
                 ],
                 'fixture' => 'filter_welcome_bonus_resource_by_created_at_filter',
             ],
@@ -255,7 +266,11 @@ class NovaWelcomeBonusResourceTest extends TestCase
     #[DataProvider('getWelcomeBonusResourceFiltersData')]
     public function testFilterWelcomeBonusResource(array $request, string $fixture): void
     {
-        $response = $this->novaActingAs(self::$user)->novaSearchResourceAPICall(WelcomeBonusResource::class, $request);
+        $preparedRequest = $this->novaSearchParams($request['filters'], $request['search']);
+
+        $response = $this
+            ->novaActingAs(self::$user)
+            ->novaSearchResourceAPICall(WelcomeBonusResource::class, $preparedRequest);
 
         $response->assertOk();
 

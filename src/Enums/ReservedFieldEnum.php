@@ -44,11 +44,16 @@ enum ReservedFieldEnum: string
         ];
     }
 
-    public static function modelAutoAnnotations(): array
+    public static function modelLeadingAnnotations(): array
+    {
+        return [self::Id];
+    }
+
+    public static function modelTrailingAnnotations(): array
     {
         return [
-            self::Id,
-            ...self::modelAutoFields(),
+            self::CreatedAt,
+            self::UpdatedAt,
         ];
     }
 

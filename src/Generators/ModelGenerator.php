@@ -58,8 +58,11 @@ class ModelGenerator extends EntityGenerator
             'casts' => array_merge($this->getCasts(), $this->getReservedFieldCasts()),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
-            'annotationProperties' => array_merge($this->getReservedFieldAnnotations(), $this->generateAnnotationProperties($relations)),
-            'hasCarbonField' => true,
+            'annotationProperties' => array_merge(
+                $this->buildAnnotations(ReservedFieldEnum::modelLeadingAnnotations()),
+                $this->generateAnnotationProperties($relations),
+                $this->buildAnnotations(ReservedFieldEnum::modelTrailingAnnotations()),
+            ),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
     }
@@ -76,9 +79,9 @@ class ModelGenerator extends EntityGenerator
             ->toArray();
     }
 
-    protected function getReservedFieldAnnotations(): array
+    protected function buildAnnotations(array $fields): array
     {
-        return collect(ReservedFieldEnum::modelAutoAnnotations())
+        return collect($fields)
             ->mapWithKeys(fn (ReservedFieldEnum $f) => [$f->value => $f->annotation()])
             ->toArray();
     }

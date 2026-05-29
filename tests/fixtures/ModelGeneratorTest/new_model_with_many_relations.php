@@ -2,21 +2,21 @@
 
 namespace App\Models\Forum;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
  * @property int $id
+ * @property Collection<User> $users
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property Collection<User> $users
  */
-class Post extends Model
+final class Post extends Model
 {
     use ModelTrait;
 

@@ -6,7 +6,7 @@ use App\Http\Requests\Request;
 use App\Services\PostService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class UpdatePostRequest extends Request
+final class UpdatePostRequest extends Request
 {
     public function rules(): array
     {
@@ -18,7 +18,7 @@ class UpdatePostRequest extends Request
             'seo_score' => 'numeric',
             'rating' => 'filled|numeric',
             'description' => 'string',
-            'title' => 'filled|string',
+            'title' => 'filled|string|unique:posts,title,' . $this->route('id'),
             'reviewed_at' => 'date',
             'published_at' => 'filled|date',
             'meta' => 'array',

@@ -66,6 +66,10 @@ class PostTest extends TestCase
 
         $response->assertNotFound();
 
+        $response->assertJson([
+            'error' => 'Post does not exist',
+        ]);
+
         self::$postState->assertNotChanged();
     }
 
@@ -96,6 +100,10 @@ class PostTest extends TestCase
 
         $response->assertNotFound();
 
+        $response->assertJson([
+            'error' => 'Post does not exist',
+        ]);
+
         self::$postState->assertNotChanged();
     }
 
@@ -123,6 +131,10 @@ class PostTest extends TestCase
         $response = $this->actingAs(self::$user)->json('get', '/posts/0');
 
         $response->assertNotFound();
+
+        $response->assertJson([
+            'error' => 'Post does not exist',
+        ]);
     }
 
     public function testGetNoAuth()
