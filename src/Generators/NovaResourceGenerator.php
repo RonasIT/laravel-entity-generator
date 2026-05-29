@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Enums\ReservedFieldEnum;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 use RonasIT\EntityGenerator\Support\Fields\Field;
 
@@ -79,9 +80,14 @@ class NovaResourceGenerator extends EntityGenerator
     protected function prepareFields(): array
     {
         if (!$this->fields->isEmpty()) {
-            return $this
-                ->fields
-                ->toNamedMap(fn (Field $field) => $this->getCommandFieldData($field));
+            $autoFields = collect(ReservedFieldEnum::novaAutoFields())
+                ->mapWithKeys(fn (ReservedFieldEnum $f) => [$f->value => $f->novaField()])
+                ->toArray();
+
+            return array_merge(
+                $autoFields,
+                $this->fields->toNamedMap(fn (Field $field) => $this->getCommandFieldData($field)),
+            );
         }
 
         return $this->getFieldsFromDatabase();

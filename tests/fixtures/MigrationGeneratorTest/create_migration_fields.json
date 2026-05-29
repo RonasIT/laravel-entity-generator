@@ -11,6 +11,6 @@
         "meta"
     ],
     "timestamp": [
-        "created_at"
+        "published_at:required"
     ]
 }

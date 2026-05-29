@@ -5,6 +5,7 @@ namespace RonasIT\EntityGenerator\Generators;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Enums\ReservedFieldEnum;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 use RonasIT\EntityGenerator\Support\Fields\Field;
 
@@ -57,9 +58,20 @@ class ModelGenerator extends EntityGenerator
             'casts' => $this->getCasts(),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
-            'annotationProperties' => $this->generateAnnotationProperties($relations),
+            'annotationProperties' => array_merge(
+                $this->buildAnnotations(ReservedFieldEnum::modelLeadingAnnotations()),
+                $this->generateAnnotationProperties($relations),
+                $this->buildAnnotations(ReservedFieldEnum::modelTrailingAnnotations()),
+            ),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
+    }
+
+    protected function buildAnnotations(array $fields): array
+    {
+        return collect($fields)
+            ->mapWithKeys(fn (ReservedFieldEnum $f) => [$f->value => $f->annotation()])
+            ->toArray();
     }
 
     public function prepareRelatedModels(): void
@@ -187,7 +199,7 @@ class ModelGenerator extends EntityGenerator
             $result[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);
         }
 
-        return Arr::prepend($result, $this->getProperty(FieldTypeEnum::Integer), 'id');
+        return $result;
     }
 
     protected function getFieldType(Field $field): string
