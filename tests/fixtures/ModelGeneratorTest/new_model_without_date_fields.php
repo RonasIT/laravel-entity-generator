@@ -34,8 +34,6 @@ final class Post extends Model
         'is_reviewed',
         'is_published',
         'meta',
-        'created_at',
-        'updated_at',
     ];
 
     protected $hidden = ['pivot'];
@@ -44,7 +42,5 @@ final class Post extends Model
         'is_reviewed' => 'boolean',
         'is_published' => 'boolean',
         'meta' => 'array',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 }

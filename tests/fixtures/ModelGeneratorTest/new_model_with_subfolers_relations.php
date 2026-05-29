@@ -22,16 +22,9 @@ final class Post extends Model
 
     protected $fillable = [
         'title',
-        'created_at',
-        'updated_at',
     ];
 
     protected $hidden = ['pivot'];
-
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
 
     public function authors(): HasMany
     {

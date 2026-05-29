@@ -21,16 +21,9 @@ final class Post extends Model
     use ModelTrait;
 
     protected $fillable = [
-        'created_at',
-        'updated_at',
     ];
 
     protected $hidden = ['pivot'];
-
-    protected $casts = [
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
-    ];
 
     public function users(): HasMany
     {

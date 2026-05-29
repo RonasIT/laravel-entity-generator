@@ -49,8 +49,6 @@ final class Post extends Model
         'finished_at',
         'published_at',
         'meta',
-        'created_at',
-        'updated_at',
     ];
 
     protected $hidden = ['pivot'];
@@ -63,8 +61,6 @@ final class Post extends Model
         'finished_at' => 'datetime',
         'published_at' => 'datetime',
         'meta' => 'array',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
     ];
 
     public function comment(): HasOne

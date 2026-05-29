@@ -36,14 +36,6 @@ enum ReservedFieldEnum: string
         };
     }
 
-    public static function modelAutoFields(): array
-    {
-        return [
-            self::CreatedAt,
-            self::UpdatedAt,
-        ];
-    }
-
     public static function modelLeadingAnnotations(): array
     {
         return [self::Id];
@@ -61,7 +53,8 @@ enum ReservedFieldEnum: string
     {
         return [
             self::Id,
-            ...self::modelAutoFields(),
+            self::CreatedAt,
+            self::UpdatedAt,
         ];
     }
 

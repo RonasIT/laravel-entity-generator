@@ -53,9 +53,9 @@ class ModelGenerator extends EntityGenerator
 
         return $this->getStub('model', [
             'entity' => $this->model,
-            'fields' => array_merge($this->fields->getNames(), $this->getReservedFieldNames()),
+            'fields' => $this->fields->getNames(),
             'relations' => $relations,
-            'casts' => array_merge($this->getCasts(), $this->getReservedFieldCasts()),
+            'casts' => $this->getCasts(),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
             'annotationProperties' => array_merge(
@@ -65,18 +65,6 @@ class ModelGenerator extends EntityGenerator
             ),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
-    }
-
-    protected function getReservedFieldNames(): array
-    {
-        return array_map(fn (ReservedFieldEnum $f) => $f->value, ReservedFieldEnum::modelAutoFields());
-    }
-
-    protected function getReservedFieldCasts(): array
-    {
-        return collect(ReservedFieldEnum::modelAutoFields())
-            ->mapWithKeys(fn (ReservedFieldEnum $f) => [$f->value => $f->cast()])
-            ->toArray();
     }
 
     protected function buildAnnotations(array $fields): array
