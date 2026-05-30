@@ -32,7 +32,7 @@ class TestsGenerator extends AbstractTestsGenerator
         $fixtureRelativePath = "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$fixtureName}";
         $createMessage = "Created a new Test fixture on path: {$fixtureRelativePath}";
 
-        file_put_contents($fixturePath, $content);
+        $this->generateFile($fixturePath, $content);
 
         event(new SuccessCreateMessage($createMessage));
     }

@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Laravel\Nova\NovaServiceProvider;
 use Mockery;
+use phpmock\integration\MockDelegateFunctionBuilder;
 use RonasIT\Support\Traits\MockTrait;
 
 trait GeneratorMockTrait
@@ -48,6 +49,14 @@ trait GeneratorMockTrait
             'arguments' => $arguments,
             'result' => $result,
         ];
+    }
+
+    public function mockChmod(): void
+    {
+        $this
+            ->getFunctionMock('\RonasIT\EntityGenerator\Generators', 'chmod')
+            ->method(MockDelegateFunctionBuilder::METHOD)
+            ->willReturn(true);
     }
 
     public function mockPhpFileContent(): string
