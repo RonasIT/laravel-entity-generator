@@ -360,9 +360,9 @@ abstract class EntityGenerator
         }
     }
 
-    protected function generateFile(string $filePath, string $content, int $flags = 0): void
+    protected function generateFile(string $filePath, string $content): void
     {
-        file_put_contents($filePath, $content, $flags);
+        file_put_contents($filePath, $content);
 
         $this->setPermissions($filePath);
     }
