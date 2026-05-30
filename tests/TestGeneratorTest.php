@@ -294,9 +294,9 @@ class TestGeneratorTest extends TestCase
         $this->assertGeneratedFileEquals('create_post_request.json', 'tests/fixtures/PostTest/create_post_request.json');
         $this->assertGeneratedFileEquals('create_post_response.json', 'tests/fixtures/PostTest/create_post_response.json');
         $this->assertGeneratedFileEquals('update_post_request.json', 'tests/fixtures/PostTest/update_post_request.json');
-        $this->assertGeneratedFileEquals('create_post_with_nulls_request.json', 'tests/fixtures/PostTest/create_post_null_request.json');
-        $this->assertGeneratedFileEquals('create_post_with_nulls_response.json', 'tests/fixtures/PostTest/create_post_null_response.json');
-        $this->assertGeneratedFileEquals('update_post_with_nulls_request.json', 'tests/fixtures/PostTest/update_post_null_request.json');
+        $this->assertGeneratedFileEquals('create_post_with_nulls_request.json', 'tests/fixtures/PostTest/create_post_with_nulls_request.json');
+        $this->assertGeneratedFileEquals('create_post_with_nulls_response.json', 'tests/fixtures/PostTest/create_post_with_nulls_response.json');
+        $this->assertGeneratedFileEquals('update_post_with_nulls_request.json', 'tests/fixtures/PostTest/update_post_with_nulls_request.json');
         $this->assertGeneratedFileEquals('post_test_with_nullable_fields.php', 'tests/PostTest.php');
 
         $this->assertEventPushedChain([
