@@ -108,11 +108,13 @@ class RequestsGenerator extends EntityGenerator
                 $this->addKeyFieldRules($field->name, $rules);
             }
 
-            if ($field->isRequired()) {
-                $rule = ($field->isBoolean()) ? 'present' : 'required';
+            $rule = match (true) {
+                !$field->isRequired() => 'nullable',
+                $field->isBoolean() => 'present',
+                default => 'required',
+            };
 
-                array_unshift($rules, $rule);
-            }
+            array_unshift($rules, $rule);
 
             if ($field->isUnique()) {
                 $rules[] = "unique:{$this->getTableName($this->model)},{$field->name}";
@@ -131,8 +133,14 @@ class RequestsGenerator extends EntityGenerator
                 $this->addKeyFieldRules($field->name, $rules);
             }
 
-            if ($field->isRequired() && !$field->isBoolean()) {
-                array_unshift($rules, 'filled');
+            $rule = match (true) {
+                !$field->isRequired() => 'nullable',
+                !$field->isBoolean() => 'filled',
+                default => null,
+            };
+
+            if (!empty($rule)) {
+                array_unshift($rules, $rule);
             }
 
             if ($field->isUnique()) {
