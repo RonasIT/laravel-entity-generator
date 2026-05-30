@@ -78,9 +78,7 @@ class ControllerGenerator extends EntityGenerator
             }
         }
 
-        file_put_contents($routesPath, "\n\n{$routesContent}", FILE_APPEND);
-
-        $this->setPermissions($routesPath);
+        $this->generateFile($routesPath, "\n\n{$routesContent}", FILE_APPEND);
     }
 
     protected function addUseController(string $routesPath): void

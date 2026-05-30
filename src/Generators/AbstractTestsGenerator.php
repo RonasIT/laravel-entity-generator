@@ -64,9 +64,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
 
         $this->checkResourceExists('tests', $dumpName, "fixtures/{$this->getTestClassName()}");
 
-        file_put_contents($fixturePath, $content);
-
-        $this->setPermissions($fixturePath);
+        $this->generateFile($fixturePath, $content);
 
         event(new SuccessCreateMessage('Created a new Test dump on path: '
             . "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$dumpName}"));
@@ -215,9 +213,7 @@ abstract class AbstractTestsGenerator extends EntityGenerator
         $content = json_encode($data, JSON_PRETTY_PRINT);
         $fixtureRelativePath = "{$this->paths['tests']}/fixtures/{$this->getTestClassName()}/{$fixtureName}";
 
-        file_put_contents($fixturePath, $content);
-
-        $this->setPermissions($fixturePath);
+        $this->generateFile($fixturePath, $content);
 
         event(new SuccessCreateMessage("Created a new Test fixture on path: {$fixtureRelativePath}"));
     }

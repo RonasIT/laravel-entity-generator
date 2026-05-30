@@ -174,9 +174,7 @@ abstract class EntityGenerator
             mkdir($entitiesPath, 0777, true);
         }
 
-        file_put_contents($classPath, $content);
-
-        $this->setPermissions($classPath);
+        $this->generateFile($classPath, $content);
     }
 
     protected function setPermissions(string $filename, int $permissions = 0777): void
@@ -360,5 +358,12 @@ abstract class EntityGenerator
                 modifiers: FieldModifierEnum::Required,
             ));
         }
+    }
+
+    protected function generateFile(string $filePath, string $content, int $flags = 0): void
+    {
+        file_put_contents($filePath, $content, $flags);
+
+        $this->setPermissions($filePath);
     }
 }
