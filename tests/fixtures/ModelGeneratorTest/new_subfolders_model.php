@@ -2,13 +2,13 @@
 
 namespace App\Models\Forum;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use RonasIT\Support\Traits\ModelTrait;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 
 /**
@@ -22,14 +22,16 @@ use Illuminate\Database\Eloquent\Collection;
  * @property bool|null $is_reviewed
  * @property bool $is_published
  * @property Carbon|null $reviewed_at
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
+ * @property Carbon|null $started_at
+ * @property Carbon|null $finished_at
  * @property Carbon $published_at
  * @property array $meta
  * @property Comment|null $comment
  * @property Collection<User> $users
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  */
-class Post extends Model
+final class Post extends Model
 {
     use ModelTrait;
 
@@ -43,8 +45,8 @@ class Post extends Model
         'is_reviewed',
         'is_published',
         'reviewed_at',
-        'created_at',
-        'updated_at',
+        'started_at',
+        'finished_at',
         'published_at',
         'meta',
     ];
@@ -55,8 +57,8 @@ class Post extends Model
         'is_reviewed' => 'boolean',
         'is_published' => 'boolean',
         'reviewed_at' => 'datetime',
-        'created_at' => 'datetime',
-        'updated_at' => 'datetime',
+        'started_at' => 'datetime',
+        'finished_at' => 'datetime',
         'published_at' => 'datetime',
         'meta' => 'array',
     ];

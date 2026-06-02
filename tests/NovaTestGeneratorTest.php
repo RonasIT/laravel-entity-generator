@@ -7,14 +7,14 @@ use Illuminate\Support\Carbon;
 use Laravel\Nova\NovaServiceProvider;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 use RonasIT\EntityGenerator\Events\WarningEvent;
+use RonasIT\EntityGenerator\Exceptions\ClassNotExistsException;
+use RonasIT\EntityGenerator\Exceptions\EntityCreateException;
 use RonasIT\EntityGenerator\Exceptions\ResourceAlreadyExistsException;
 use RonasIT\EntityGenerator\Exceptions\ResourceNotExistsException;
 use RonasIT\EntityGenerator\Generators\NovaTestGenerator;
 use RonasIT\EntityGenerator\Tests\Support\Command\Models\User;
 use RonasIT\EntityGenerator\Tests\Support\Models\WelcomeBonus;
 use RonasIT\EntityGenerator\Tests\Support\NovaTestGeneratorTest\NovaTestGeneratorMockTrait;
-use RonasIT\Support\Exceptions\ClassNotExistsException;
-use RonasIT\Support\Exceptions\EntityCreateException;
 
 class NovaTestGeneratorTest extends TestCase
 {

@@ -8,7 +8,7 @@ use App\Models\Post;
 /**
  * @property Post $resource
  */
-class PostResource extends BaseResource
+final class PostResource extends BaseResource
 {
     //TODO implement custom serialization logic or remove method redefining
     public function toArray($request): array
