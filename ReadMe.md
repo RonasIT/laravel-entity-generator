@@ -126,6 +126,8 @@ For this task, there are two mutually exclusive options:
 - `model`
 - `service`
 - `repository`
+- `factory`
+- `seeder`
 
 2. `--only-api`, generate stack of classes to implement API part to work with already existed entity:
 - `routes`
