@@ -76,9 +76,7 @@ class ServiceGeneratorTest extends TestCase
 
         app(ServiceGenerator::class)
             ->setFields($this->getFieldsDTO([
-                'string' => [
-                    'title',
-                ],
+                'string' => ['title'],
             ]))
             ->setModel('Post')
             ->setCrudOptions(['C', 'U', 'D'])

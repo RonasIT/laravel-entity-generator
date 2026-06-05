@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Repositories\PostRepository;
 use RonasIT\Support\Services\EntityService;
-use Illuminate\Support\Arr;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 /**

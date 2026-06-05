@@ -3,7 +3,6 @@ namespace {{ $namespace }};
 use {{ $repositoriesNamespace }}\{{ $entity }}Repository;
 use RonasIT\Support\Services\EntityService;
 @if (in_array('R', $options))
-use Illuminate\Support\Arr;
 use Illuminate\Pagination\LengthAwarePaginator;
 @endif
 {{--
