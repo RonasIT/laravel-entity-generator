@@ -5,7 +5,7 @@ namespace App\Http\Requests\Post;
 use App\Http\Requests\Request;
 use App\Models\Post;
 
-class SearchPostsRequest extends Request
+final class SearchPostsRequest extends Request
 {
     public function rules(): array
     {
