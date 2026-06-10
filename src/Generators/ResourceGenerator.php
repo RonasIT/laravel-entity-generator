@@ -4,7 +4,6 @@ namespace RonasIT\EntityGenerator\Generators;
 
 use RonasIT\EntityGenerator\Enums\ReservedFieldEnum;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
-use RonasIT\EntityGenerator\Support\Fields\Field;
 
 class ResourceGenerator extends EntityGenerator
 {
@@ -56,18 +55,10 @@ class ResourceGenerator extends EntityGenerator
 
     protected function getResourceFields(): ?array
     {
-        $fields = when($this->fields, fn () => $this->fields->getNames());
-
-        if (empty($fields)) {
-            return $fields;
+        if ($this->fields->isEmpty()) {
+            return null;
         }
 
-        $reservedFields = array_map(fn (Field $f) => $f->name, [
-            ReservedFieldEnum::Id->toField(),
-            ReservedFieldEnum::CreatedAt->toField(),
-            ReservedFieldEnum::UpdatedAt->toField(),
-        ]);
-
-        return array_merge($reservedFields, $fields);
+        return array_merge([ReservedFieldEnum::Id->value], $this->fields->getNames());
     }
 }
