@@ -79,7 +79,6 @@ The following field names are reserved and **cannot be passed as input fields** 
 | `created_at` | Timestamp, managed by Eloquent              |
 | `updated_at` | Timestamp, managed by Eloquent              |
 
-
 #### Relations definitions options
 
 Command also provides an ability to set relations, which will be added to the model
