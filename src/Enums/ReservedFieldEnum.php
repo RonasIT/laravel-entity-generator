@@ -13,7 +13,7 @@ enum ReservedFieldEnum: string
     public function toField(): Field
     {
         return match ($this) {
-            self::Id => new Field('id', FieldTypeEnum::Integer),
+            self::Id => new Field('id', FieldTypeEnum::Integer, FieldModifierEnum::Required),
             self::CreatedAt => new Field('created_at', FieldTypeEnum::Timestamp),
             self::UpdatedAt => new Field('updated_at', FieldTypeEnum::Timestamp),
         };

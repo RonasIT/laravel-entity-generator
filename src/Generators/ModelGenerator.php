@@ -63,12 +63,6 @@ class ModelGenerator extends EntityGenerator
         ]);
     }
 
-    protected function buildFieldAnnotations(array $fields): array
-    {
-        return collect($fields)
-            ->mapWithKeys(fn (Field $f) => [$f->name => $this->getProperty($f->type, $f->isTimestamp())])
-            ->toArray();
-    }
 
     public function prepareRelatedModels(): void
     {
@@ -187,17 +181,25 @@ class ModelGenerator extends EntityGenerator
 
     protected function generateAnnotationProperties(array $relations): array
     {
-        $userFields = $this->fields->toNamedMap(fn (Field $field) => $this->getFieldType($field));
+        $result = collect($this->annotationFields())
+            ->mapWithKeys(fn (Field $field) => [$field->name => $this->getFieldType($field)])
+            ->toArray();
 
         foreach ($relations as $relation) {
-            $userFields[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);
+            $result[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);
         }
 
-        return array_merge(
-            $this->buildFieldAnnotations([ReservedFieldEnum::Id->toField()]),
-            $userFields,
-            $this->buildFieldAnnotations([ReservedFieldEnum::CreatedAt->toField(), ReservedFieldEnum::UpdatedAt->toField()]),
-        );
+        return $result;
+    }
+
+    private function annotationFields(): array
+    {
+        return [
+            ReservedFieldEnum::Id->toField(),
+            ...$this->fields->toArray(),
+            ReservedFieldEnum::CreatedAt->toField(),
+            ReservedFieldEnum::UpdatedAt->toField(),
+        ];
     }
 
     protected function getFieldType(Field $field): string

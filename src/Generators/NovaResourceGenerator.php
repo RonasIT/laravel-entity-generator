@@ -80,12 +80,11 @@ class NovaResourceGenerator extends EntityGenerator
     protected function prepareFields(): array
     {
         if (!$this->fields->isEmpty()) {
-            $autoFields = collect([ReservedFieldEnum::Id->toField()])
-                ->mapWithKeys(fn (Field $f) => [$f->name => $this->getCommandFieldData($f)])
-                ->toArray();
+            $idField = ReservedFieldEnum::Id->toField();
+            $idData = array_merge($this->getCommandFieldData($idField), ['is_required' => false]);
 
             return array_merge(
-                $autoFields,
+                [$idField->name => $idData],
                 $this->fields->toNamedMap(fn (Field $field) => $this->getCommandFieldData($field)),
             );
         }
