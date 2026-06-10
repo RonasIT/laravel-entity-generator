@@ -62,7 +62,11 @@ class ResourceGenerator extends EntityGenerator
             return $fields;
         }
 
-        $reservedFields = array_map(fn (Field $f) => $f->name, ReservedFieldEnum::resourceAutoFields());
+        $reservedFields = array_map(fn (Field $f) => $f->name, [
+            ReservedFieldEnum::Id->toField(),
+            ReservedFieldEnum::CreatedAt->toField(),
+            ReservedFieldEnum::UpdatedAt->toField(),
+        ]);
 
         return array_merge($reservedFields, $fields);
     }

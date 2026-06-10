@@ -19,30 +19,6 @@ enum ReservedFieldEnum: string
         };
     }
 
-    public static function modelLeadingFields(): array
-    {
-        return [self::Id->toField()];
-    }
-
-    public static function modelTrailingFields(): array
-    {
-        return [self::CreatedAt->toField(), self::UpdatedAt->toField()];
-    }
-
-    public static function resourceAutoFields(): array
-    {
-        return [
-            self::Id->toField(),
-            self::CreatedAt->toField(),
-            self::UpdatedAt->toField(),
-        ];
-    }
-
-    public static function novaAutoFields(): array
-    {
-        return [self::Id->toField()];
-    }
-
     public static function isReserved(string $name): bool
     {
         return in_array(strtolower(trim($name)), array_column(self::cases(), 'value'));
