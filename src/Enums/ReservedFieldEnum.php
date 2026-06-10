@@ -21,5 +21,4 @@ enum ReservedFieldEnum: string
             self::UpdatedAt => new Field('updated_at', FieldTypeEnum::Timestamp),
         };
     }
-
 }
