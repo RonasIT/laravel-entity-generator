@@ -58,11 +58,7 @@ class ModelGenerator extends EntityGenerator
             'casts' => $this->getCasts(),
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
-            'annotationProperties' => array_merge(
-                $this->buildFieldAnnotations([ReservedFieldEnum::Id->toField()]),
-                $this->generateAnnotationProperties($relations),
-                $this->buildFieldAnnotations([ReservedFieldEnum::CreatedAt->toField(), ReservedFieldEnum::UpdatedAt->toField()]),
-            ),
+            'annotationProperties' => $this->generateAnnotationProperties($relations),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
     }
@@ -191,15 +187,17 @@ class ModelGenerator extends EntityGenerator
 
     protected function generateAnnotationProperties(array $relations): array
     {
-        $result = $this
-            ->fields
-            ->toNamedMap(fn (Field $field) => $this->getFieldType($field));
+        $userFields = $this->fields->toNamedMap(fn (Field $field) => $this->getFieldType($field));
 
         foreach ($relations as $relation) {
-            $result[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);
+            $userFields[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);
         }
 
-        return $result;
+        return array_merge(
+            $this->buildFieldAnnotations([ReservedFieldEnum::Id->toField()]),
+            $userFields,
+            $this->buildFieldAnnotations([ReservedFieldEnum::CreatedAt->toField(), ReservedFieldEnum::UpdatedAt->toField()]),
+        );
     }
 
     protected function getFieldType(Field $field): string
