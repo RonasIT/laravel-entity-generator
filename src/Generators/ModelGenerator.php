@@ -59,18 +59,18 @@ class ModelGenerator extends EntityGenerator
             'namespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'importRelations' => $this->getImportedRelations(),
             'annotationProperties' => array_merge(
-                $this->buildAnnotations(ReservedFieldEnum::modelLeadingAnnotations()),
+                $this->buildFieldAnnotations(ReservedFieldEnum::modelLeadingFields()),
                 $this->generateAnnotationProperties($relations),
-                $this->buildAnnotations(ReservedFieldEnum::modelTrailingAnnotations()),
+                $this->buildFieldAnnotations(ReservedFieldEnum::modelTrailingFields()),
             ),
             'hasCollectionType' => !empty($this->relations->hasMany) || !empty($this->relations->belongsToMany),
         ]);
     }
 
-    protected function buildAnnotations(array $fields): array
+    protected function buildFieldAnnotations(array $fields): array
     {
         return collect($fields)
-            ->mapWithKeys(fn (ReservedFieldEnum $f) => [$f->value => $f->annotation()])
+            ->mapWithKeys(fn (Field $f) => [$f->name => $this->getProperty($f->type, $f->isTimestamp())])
             ->toArray();
     }
 

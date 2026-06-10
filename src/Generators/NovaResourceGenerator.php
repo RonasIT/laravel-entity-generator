@@ -81,7 +81,7 @@ class NovaResourceGenerator extends EntityGenerator
     {
         if (!$this->fields->isEmpty()) {
             $autoFields = collect(ReservedFieldEnum::novaAutoFields())
-                ->mapWithKeys(fn (ReservedFieldEnum $f) => [$f->value => $f->novaField()])
+                ->mapWithKeys(fn (Field $f) => [$f->name => $this->getCommandFieldData($f)])
                 ->toArray();
 
             return array_merge(

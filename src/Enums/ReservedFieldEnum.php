@@ -2,65 +2,45 @@
 
 namespace RonasIT\EntityGenerator\Enums;
 
+use RonasIT\EntityGenerator\Support\Fields\Field;
+
 enum ReservedFieldEnum: string
 {
     case Id = 'id';
     case CreatedAt = 'created_at';
     case UpdatedAt = 'updated_at';
 
-    public function cast(): string
+    public function toField(): Field
     {
         return match ($this) {
-            self::CreatedAt,
-            self::UpdatedAt => 'datetime',
-            self::Id => 'integer',
+            self::Id => new Field('id', FieldTypeEnum::Integer),
+            self::CreatedAt => new Field('created_at', FieldTypeEnum::Timestamp),
+            self::UpdatedAt => new Field('updated_at', FieldTypeEnum::Timestamp),
         };
     }
 
-    public function annotation(): string
+    public static function modelLeadingFields(): array
     {
-        return match ($this) {
-            self::CreatedAt,
-            self::UpdatedAt => 'Carbon|null',
-            self::Id => 'int',
-        };
+        return [self::Id->toField()];
     }
 
-    public function novaField(): array
+    public static function modelTrailingFields(): array
     {
-        return match ($this) {
-            self::Id => [
-                'type' => 'ID',
-                'is_required' => false,
-            ],
-        };
-    }
-
-    public static function modelLeadingAnnotations(): array
-    {
-        return [self::Id];
-    }
-
-    public static function modelTrailingAnnotations(): array
-    {
-        return [
-            self::CreatedAt,
-            self::UpdatedAt,
-        ];
+        return [self::CreatedAt->toField(), self::UpdatedAt->toField()];
     }
 
     public static function resourceAutoFields(): array
     {
         return [
-            self::Id,
-            self::CreatedAt,
-            self::UpdatedAt,
+            self::Id->toField(),
+            self::CreatedAt->toField(),
+            self::UpdatedAt->toField(),
         ];
     }
 
     public static function novaAutoFields(): array
     {
-        return [self::Id];
+        return [self::Id->toField()];
     }
 
     public static function isReserved(string $name): bool
