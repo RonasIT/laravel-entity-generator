@@ -5,6 +5,7 @@ namespace RonasIT\EntityGenerator\Generators;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Enums\ReservedFieldEnum;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 use RonasIT\EntityGenerator\Support\Fields\Field;
 
@@ -179,15 +180,25 @@ class ModelGenerator extends EntityGenerator
 
     protected function generateAnnotationProperties(array $relations): array
     {
-        $result = $this
-            ->fields
-            ->toNamedMap(fn (Field $field) => $this->getFieldType($field));
+        $result = collect($this->annotationFields())
+            ->mapWithKeys(fn (Field $field) => [$field->name => $this->getFieldType($field)])
+            ->toArray();
 
         foreach ($relations as $relation) {
             $result[$relation['name']] = $this->getRelationType($relation['entity'], $relation['type']);
         }
 
-        return Arr::prepend($result, $this->getProperty(FieldTypeEnum::Integer), 'id');
+        return $result;
+    }
+
+    private function annotationFields(): array
+    {
+        return [
+            ReservedFieldEnum::Id->toField(),
+            ...$this->fields->toArray(),
+            ReservedFieldEnum::CreatedAt->toField(),
+            ReservedFieldEnum::UpdatedAt->toField(),
+        ];
     }
 
     protected function getFieldType(Field $field): string
