@@ -3,9 +3,12 @@
 namespace RonasIT\EntityGenerator\Enums;
 
 use RonasIT\EntityGenerator\Support\Fields\Field;
+use RonasIT\Support\Traits\EnumTrait;
 
 enum ReservedFieldEnum: string
 {
+    use EnumTrait;
+
     case Id = 'id';
     case CreatedAt = 'created_at';
     case UpdatedAt = 'updated_at';
@@ -19,8 +22,4 @@ enum ReservedFieldEnum: string
         };
     }
 
-    public static function isReserved(string $name): bool
-    {
-        return in_array(strtolower(trim($name)), array_column(self::cases(), 'value'));
-    }
 }

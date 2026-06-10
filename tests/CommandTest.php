@@ -284,7 +284,7 @@ class CommandTest extends TestCase
     {
         $this->assertExceptionThrew(
             className: ReservedFieldException::class,
-            message: "Field 'id' is reserved and cannot be set manually. See: https://github.com/RonasIT/laravel-entity-generator#reserved-field-names",
+            message: "Fields 'id' are reserved and cannot be set manually. See: https://github.com/RonasIT/laravel-entity-generator#reserved-field-names",
         );
 
         $this->artisan('make:entity Post -i id');
@@ -294,7 +294,7 @@ class CommandTest extends TestCase
     {
         $this->assertExceptionThrew(
             className: ReservedFieldException::class,
-            message: "Field 'created_at' is reserved and cannot be set manually. See: https://github.com/RonasIT/laravel-entity-generator#reserved-field-names",
+            message: "Fields 'created_at, updated_at' are reserved and cannot be set manually. See: https://github.com/RonasIT/laravel-entity-generator#reserved-field-names",
         );
 
         $this->artisan('make:entity Post -t created_at -t updated_at');

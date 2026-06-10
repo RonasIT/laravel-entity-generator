@@ -63,7 +63,6 @@ class ModelGenerator extends EntityGenerator
         ]);
     }
 
-
     public function prepareRelatedModels(): void
     {
         $types = [
