@@ -59,6 +59,24 @@ class ModelGeneratorTest extends TestCase
             ->generate();
     }
 
+    public function testGeneratedFilesHaveCorrectPermissions(): void
+    {
+        $this->mockClass(ModelGenerator::class, [
+            $this->functionCall('setPermissions', ["{$this->generatedFileBasePath}/app/Models/Comment.php", 0777]),
+            $this->functionCall('setPermissions', ["{$this->generatedFileBasePath}/app/Models/User.php", 0777]),
+            $this->functionCall('setPermissions', ["{$this->generatedFileBasePath}/app/Models/Post.php", 0777]),
+        ]);
+
+        app(ModelGenerator::class)
+            ->setModel('Post')
+            ->setFields($this->getFieldsDTO($this->getJsonFixture('create_model_fields')))
+            ->setRelations(new RelationsDTO(
+                hasOne: ['Comment'],
+                hasMany: ['User'],
+            ))
+            ->generate();
+    }
+
     public function testCreateModel()
     {
         app(ModelGenerator::class)
