@@ -100,11 +100,11 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
         $foundResources = implode("\n", $formattedResources);
 
-        $foundResources = addslashes($foundResources);
+        $escapedResources = addslashes($foundResources);
 
         $this->throwFailureException(
             exceptionClass: EntityCreateException::class,
-            failureMessage: "Cannot create Nova{$this->model}ResourceTest because multiple suitable resources were found:\n{$foundResources}",
+            failureMessage: "Cannot create Nova{$this->model}ResourceTest because multiple suitable resources were found:\n{$escapedResources}",
             recommendedMessage: 'Please run command again with setting nova resource using --nova-resource-name option to select one of the command parameter above.',
         );
     }
