@@ -178,11 +178,6 @@ abstract class EntityGenerator
         $this->generateFile($classPath, $content);
     }
 
-    protected function setPermissions(string $filename, int $permissions = 0777): void
-    {
-        chmod($filename, $permissions);
-    }
-
     protected function getStub($stub, $data = []): string
     {
         $stubPath = config("entity-generator.stubs.{$stub}");
@@ -361,10 +356,17 @@ abstract class EntityGenerator
         }
     }
 
-    protected function generateFile(string $filePath, string $content): void
+    protected function generateFile(string $filePath, string $content, bool $needAppend = false): void
     {
-        file_put_contents($filePath, $content);
+        $flags = ($needAppend) ? FILE_APPEND : 0;
+
+        file_put_contents($filePath, $content, $flags);
 
         $this->setPermissions($filePath);
+    }
+
+    protected function setPermissions(string $filename, int $permissions = 0777): void
+    {
+        chmod($filename, $permissions);
     }
 }
