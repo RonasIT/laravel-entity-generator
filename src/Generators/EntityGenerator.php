@@ -38,13 +38,14 @@ abstract class EntityGenerator
     protected $paths = [];
     protected $model;
     protected $modelSubFolder = '';
-    protected $fields;
+    protected FieldsCollection $fields;
     protected $relations = [];
     protected $crudOptions;
 
     public function __construct()
     {
         $this->paths = config('entity-generator.paths');
+        $this->fields = new FieldsCollection();
 
         $this->checkConfigHasCorrectPaths();
     }
