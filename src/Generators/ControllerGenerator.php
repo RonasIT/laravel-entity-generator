@@ -58,7 +58,7 @@ class ControllerGenerator extends EntityGenerator
         }
     }
 
-    protected function addRoutes($routesPath): string
+    protected function addRoutes($routesPath): void
     {
         $routesContent = $this->getStub('routes', [
             'entity' => $this->model,
@@ -78,7 +78,7 @@ class ControllerGenerator extends EntityGenerator
             }
         }
 
-        return file_put_contents($routesPath, "\n\n{$routesContent}", FILE_APPEND);
+        $this->generateFile($routesPath, "\n\n{$routesContent}", true);
     }
 
     protected function addUseController(string $routesPath): void
@@ -92,6 +92,6 @@ class ControllerGenerator extends EntityGenerator
 
         $routesFileContent = preg_replace('/\<\?php[^A-Za-z]*/', "<?php\n\n{$stub}", $routesFileContent);
 
-        file_put_contents($routesPath, $routesFileContent);
+        $this->generateFile($routesPath, $routesFileContent);
     }
 }

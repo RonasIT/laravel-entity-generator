@@ -43,7 +43,7 @@ class SeederGenerator extends EntityGenerator
             'namespace' => $this->generateNamespace($this->paths['seeders']),
         ]);
 
-        file_put_contents($this->databaseSeederPath, $content);
+        $this->generateFile($this->databaseSeederPath, $content);
 
         $createMessage = "Created a new DatabaseSeeder.php on path: {$this->databaseSeederPath}";
 
@@ -61,7 +61,7 @@ class SeederGenerator extends EntityGenerator
 
         $seederPath = "{$this->seedsPath}/{$this->model}Seeder.php";
 
-        file_put_contents($seederPath, $content);
+        $this->generateFile($seederPath, $content);
 
         $createMessage = "Created a new Seeder on path: {$seederPath}";
 
@@ -76,6 +76,6 @@ class SeederGenerator extends EntityGenerator
 
         $fixedContent = preg_replace('/\}\s*\}\s*\z/', $insertContent, $content);
 
-        file_put_contents($this->databaseSeederPath, $fixedContent);
+        $this->generateFile($this->databaseSeederPath, $fixedContent);
     }
 }

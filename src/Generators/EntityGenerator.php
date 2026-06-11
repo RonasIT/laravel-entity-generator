@@ -152,7 +152,7 @@ abstract class EntityGenerator
         return "{$path}/{$name}{$extension}";
     }
 
-    protected function saveClass($path, $name, $content, ?string $entityFolder = null): string
+    protected function saveClass($path, $name, $content, ?string $entityFolder = null): void
     {
         $entitiesPath = base_path($this->paths[$path]);
 
@@ -175,7 +175,7 @@ abstract class EntityGenerator
             mkdir($entitiesPath, 0777, true);
         }
 
-        return file_put_contents($classPath, $content);
+        $this->generateFile($classPath, $content);
     }
 
     protected function getStub($stub, $data = []): string
@@ -354,5 +354,19 @@ abstract class EntityGenerator
                 modifiers: FieldModifierEnum::Required,
             ));
         }
+    }
+
+    protected function generateFile(string $filePath, string $content, bool $needAppend = false): void
+    {
+        $flags = ($needAppend) ? FILE_APPEND : 0;
+
+        file_put_contents($filePath, $content, $flags);
+
+        $this->setPermissions($filePath);
+    }
+
+    protected function setPermissions(string $filename, int $permissions = 0777): void
+    {
+        chmod($filename, $permissions);
     }
 }
