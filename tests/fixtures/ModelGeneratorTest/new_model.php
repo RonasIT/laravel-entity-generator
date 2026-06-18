@@ -24,10 +24,10 @@ use Illuminate\Database\Eloquent\Collection;
  * @property Carbon|null $finished_at
  * @property Carbon $published_at
  * @property array $meta
- * @property Comment|null $comment
- * @property Collection<User> $users
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Comment|null $comment
+ * @property Collection<User> $users
  */
 final class Post extends Model
 {

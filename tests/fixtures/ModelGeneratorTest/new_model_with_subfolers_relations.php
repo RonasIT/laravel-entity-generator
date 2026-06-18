@@ -12,9 +12,9 @@ use Illuminate\Database\Eloquent\Collection;
 /**
  * @property int $id
  * @property string $title
- * @property Collection<Author> $authors
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property Collection<Author> $authors
  */
 final class Post extends Model
 {

@@ -6,9 +6,6 @@
     "title:required",
     "body:required"
   ],
-  "integer": [
-    "id"
-  ],
   "json": [],
   "timestamp": []
 }

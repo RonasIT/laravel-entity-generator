@@ -15,7 +15,6 @@ final class {{ $entity }}Resource extends BaseResource
     {
 @if (!empty($fields))
         return [
-            'id' => $this->resource->id,
 @foreach($fields as $field)
             '{{ $field }}' => $this->resource->{{ $field }},
 @endforeach
