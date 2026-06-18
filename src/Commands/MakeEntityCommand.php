@@ -11,9 +11,11 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use RonasIT\EntityGenerator\DTO\RelationsDTO;
 use RonasIT\EntityGenerator\Enums\FieldTypeEnum;
+use RonasIT\EntityGenerator\Enums\ReservedFieldEnum;
 use RonasIT\EntityGenerator\Events\SuccessCreateMessage;
 use RonasIT\EntityGenerator\Events\WarningEvent;
 use RonasIT\EntityGenerator\Exceptions\ClassNotExistsException;
+use RonasIT\EntityGenerator\Exceptions\ReservedFieldException;
 use RonasIT\EntityGenerator\Generators\ControllerGenerator;
 use RonasIT\EntityGenerator\Generators\EntityGenerator;
 use RonasIT\EntityGenerator\Generators\FactoryGenerator;
@@ -100,10 +102,10 @@ class MakeEntityCommand extends Command
      */
     public function handle(): void
     {
+        $this->parseFields();
         $this->validateInput();
         $this->checkConfigs();
         $this->listenEvents();
-        $this->parseFields();
         $this->parseRelations();
         $this->entityName = $this->convertToPascalCase($this->entityName);
 
@@ -182,6 +184,16 @@ class MakeEntityCommand extends Command
         $this->extractEntityNameAndPath();
         $this->validateOnlyApiOption();
         $this->validateCrudOptions();
+        $this->validateFields();
+    }
+
+    protected function validateFields(): void
+    {
+        $conflicting = array_intersect($this->fields->getNames(), ReservedFieldEnum::values());
+
+        if (!empty($conflicting)) {
+            throw new ReservedFieldException($conflicting);
+        }
     }
 
     protected function generate(): void

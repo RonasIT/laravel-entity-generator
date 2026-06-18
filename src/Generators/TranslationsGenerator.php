@@ -38,7 +38,7 @@ class TranslationsGenerator extends EntityGenerator
 
         $content = "<?php\n\n" . view($stubPath)->render();
 
-        file_put_contents($this->translationPath, $content);
+        $this->generateFile($this->translationPath, $content);
 
         $createMessage = "Created a new Translations dump on path: {$this->translationPath}";
 

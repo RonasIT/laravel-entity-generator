@@ -38,6 +38,11 @@ final class FieldsCollection
         return Arr::pluck($this->fields, 'name');
     }
 
+    public function toArray(): array
+    {
+        return $this->fields;
+    }
+
     public function isEmpty(): bool
     {
         return empty($this->fields);
