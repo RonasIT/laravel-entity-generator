@@ -17,8 +17,6 @@ use Illuminate\Database\Eloquent\Collection;
 @foreach($annotationProperties as $key => $value)
  * @property {!! $value !!} ${{ $key }}
 @endforeach
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
  */
 final class {{ $entity }} extends Model
 {
