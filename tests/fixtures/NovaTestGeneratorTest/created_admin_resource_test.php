@@ -25,6 +25,8 @@ class NovaAdminResourceTest extends TestCase
         self::$userState ??= new ModelTestState(User::class);
 
         $this->skipDocumentationCollecting();
+
+        $this->withoutAPIVersion();
     }
 
     public function testCreate(): void

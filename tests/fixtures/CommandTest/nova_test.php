@@ -24,6 +24,8 @@ class NovaPostResourceTest extends TestCase
         self::$postState ??= new ModelTestState(Post::class);
 
         $this->skipDocumentationCollecting();
+
+        $this->withoutAPIVersion();
     }
 
     public function testCreate(): void
