@@ -90,22 +90,18 @@ class NovaTestGenerator extends AbstractTestsGenerator
 
     protected function throwFoundManyResourcesException(array $novaResources): void
     {
-        $formattedResources = Arr::map($novaResources, function ($resource) {
-            $relativeClass = Str::after($resource, $this->pathToNamespace($this->paths['nova']));
+        $novaNamespace = $this->pathToNamespace($this->paths['nova']);
 
-            $relativeClass = ltrim($relativeClass, '\\');
+        $options = Arr::map($novaResources, function (string $resource) use ($novaNamespace) {
+            $relativeClass = ltrim(Str::after($resource, $novaNamespace), '\\');
 
-            return "- {$relativeClass}";
+            return "  --nova-resource-name=\"{$relativeClass}\"";
         });
-
-        $foundResources = implode("\n", $formattedResources);
-
-        $escapedResources = addslashes($foundResources);
 
         $this->throwFailureException(
             exceptionClass: EntityCreateException::class,
-            failureMessage: "Cannot create Nova{$this->model}ResourceTest because multiple suitable resources were found:\n{$escapedResources}",
-            recommendedMessage: 'Please run command again with setting nova resource using --nova-resource-name option to select one of the command parameter above.',
+            failureMessage: "Cannot create Nova{$this->model}ResourceTest because multiple suitable Nova resources were found.",
+            recommendedMessage: "Run the command again with one of these options to pick a concrete resource:\n\n" . implode("\n", $options),
         );
     }
 
