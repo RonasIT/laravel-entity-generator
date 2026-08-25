@@ -78,13 +78,7 @@ class NovaTestGenerator extends AbstractTestsGenerator
         $novaResources = $this->getCommonNovaResources();
 
         if (count($novaResources) > 1) {
-            $foundResources = implode("\n", $novaResources);
-
-            $this->throwFailureException(
-                exceptionClass: EntityCreateException::class,
-                failureMessage: "Cannot create Nova{$this->model}ResourceTest cause was found a lot of suitable resources:\n{$foundResources}.",
-                recommendedMessage: 'You may use --nova-resource-name option to specify a concrete resource.',
-            );
+            $this->throwFoundManyResourcesException($novaResources);
         }
 
         if (empty($novaResources)) {
@@ -92,6 +86,23 @@ class NovaTestGenerator extends AbstractTestsGenerator
         }
 
         return Arr::first($novaResources);
+    }
+
+    protected function throwFoundManyResourcesException(array $novaResources): void
+    {
+        $novaNamespace = $this->pathToNamespace($this->paths['nova']);
+
+        $options = Arr::map($novaResources, function (string $resource) use ($novaNamespace) {
+            $relativeClass = ltrim(Str::after($resource, $novaNamespace), '\\');
+
+            return "  --nova-resource-name=\"{$relativeClass}\"";
+        });
+
+        $this->throwFailureException(
+            exceptionClass: EntityCreateException::class,
+            failureMessage: "Cannot create Nova{$this->model}ResourceTest because multiple suitable Nova resources were found.",
+            recommendedMessage: "Run the command again with one of these options to pick a concrete resource:\n\n" . implode("\n", $options),
+        );
     }
 
     protected function getCommonNovaResources(): array
