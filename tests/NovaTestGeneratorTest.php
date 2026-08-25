@@ -51,17 +51,20 @@ class NovaTestGeneratorTest extends TestCase
 
         $this->mockClass(NovaTestGenerator::class, [
             $this->getCommonNovaResourcesMock([
-                'BasePostResource',
-                'PublishPostResource',
+                'App\Nova\Resources\SubFolder\SomeResource',
+                '\App\Nova\Resources\SubFolder\SomeOtherResource',
+                'App\Nova\PostResource',
             ]),
         ]);
 
         $this->assertExceptionThrew(
             className: EntityCreateException::class,
-            message: 'Cannot create NovaPostResourceTest cause was found a lot of suitable resources:'
-            . "\nBasePostResource"
-            . "\nPublishPostResource."
-            . "\nYou may use --nova-resource-name option to specify a concrete resource.",
+            message: 'Cannot create NovaPostResourceTest because multiple suitable Nova resources were found.'
+            . "\nRun the command again with one of these options to pick a concrete resource:"
+            . "\n"
+            . "\n" . '  --nova-resource-name="Resources\SubFolder\SomeResource"'
+            . "\n" . '  --nova-resource-name="Resources\SubFolder\SomeOtherResource"'
+            . "\n" . '  --nova-resource-name="PostResource"',
         );
 
         app(NovaTestGenerator::class)
