@@ -99,7 +99,7 @@ class ResourceGeneratorTest extends TestCase
             ->generate();
 
         $this->assertGeneratedFileEquals('post_resource.php', 'app/Http/Resources/Post/PostResource.php');
-        $this->assertFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
 
         $this->assertEventPushed(
             className: SuccessCreateMessage::class,
@@ -114,8 +114,8 @@ class ResourceGeneratorTest extends TestCase
             ->setCrudOptions(['U', 'D'])
             ->generate();
 
-        $this->assertFileDoesNotExist('app/Http/Resources/Post/PostResource.php');
-        $this->assertFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
     }
 
     public function testCreateResourcesResourceStubNotExist()
@@ -124,10 +124,11 @@ class ResourceGeneratorTest extends TestCase
 
         app(ResourceGenerator::class)
             ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
 
-        $this->assertFileDoesNotExist('app/Http/Resources/Post/PostResource.php');
-        $this->assertFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
 
         $this->assertEventPushed(
             className: WarningEvent::class,
@@ -145,7 +146,7 @@ class ResourceGeneratorTest extends TestCase
             ->generate();
 
         $this->assertGeneratedFileEquals('post_resource.php', 'app/Http/Resources/Post/PostResource.php');
-        $this->assertFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
 
         $this->assertEventPushedChain([
             SuccessCreateMessage::class => ['Created a new Resource: PostResource'],

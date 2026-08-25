@@ -215,6 +215,33 @@ class CommandTest extends TestCase
         $this->assertGeneratedFileEquals('update_request.json', 'tests/fixtures/PostTest/update_post_request.json');
     }
 
+    public function testCallCommandWithoutReadMethods()
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Command\Factories',
+        ]);
+
+        Carbon::setTestNow('2016-10-20 11:05:00');
+
+        $this->mockGenerator();
+        $this->mockGettingModelInstance(new Post());
+        $this->mockDBTransactionStartRollback(2);
+
+        $this
+            ->artisan('make:entity Post --methods=UD')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('service_without_search.php', 'app/Services/PostService.php');
+        $this->assertGeneratedFileEquals('controller_without_read.php', 'app/Http/Controllers/PostController.php');
+        $this->assertGeneratedFileEquals('routes_without_read.php', 'routes/api.php');
+
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Requests/Post/GetPostRequest.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Requests/Post/SearchPostsRequest.php');
+    }
+
     public function testMakeOnlyEntity()
     {
         config([
