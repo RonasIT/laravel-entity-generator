@@ -16,5 +16,4 @@ final class PostController extends Controller
 
         return PostResource::make($result);
     }
-
 }

@@ -34,7 +34,9 @@ final class {{ $entity }}Controller extends Controller
 
         return {{ $entity }}Resource::make($result);
     }
+@if (!empty(array_intersect(['R', 'U', 'D'], $options)))
 
+@endif
 @endif
 @if (in_array('R', $options))
     public function get(Get{{ $entity }}Request $request, {{ $entity }}Service $service, $id): {{ $entity }}Resource
@@ -53,7 +55,9 @@ final class {{ $entity }}Controller extends Controller
 
         return {{ $str::plural($entity) }}CollectionResource::make($result);
     }
+@if (!empty(array_intersect(['U', 'D'], $options)))
 
+@endif
 @endif
 @if (in_array('U', $options))
     public function update(Update{{ $entity }}Request $request, {{ $entity }}Service $service, $id): Response
@@ -62,7 +66,9 @@ final class {{ $entity }}Controller extends Controller
 
         return response()->noContent();
     }
+@if (in_array('D', $options))
 
+@endif
 @endif
 @if (in_array('D', $options))
     public function delete(Delete{{ $entity }}Request $request, {{ $entity }}Service $service, $id): Response
