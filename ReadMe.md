@@ -136,12 +136,15 @@ For this task, there are two mutually exclusive options:
 - `model`
 - `service`
 - `repository`
+- `factory`
+- `seeder`
 
 2. `--only-api`, generate stack of classes to implement API part to work with already existed entity:
 - `routes`
 - `controller`
 - `requests`
 - `resources`
+- `factory`
 - `tests`
 
 #### Methods setting options
@@ -164,6 +167,19 @@ Feel free to use any combinations of actions in any order. Each action has its o
 - `U` update
 - `D` delete
 - `R` read (search and get by id)
+
+The option affects not only the generated methods, but the set of generated classes as well:
+
+| Character | What is generated |
+|---|---|
+| `C` | `create` route, method and test, `Create{Entity}Request`, `{Entity}Resource` |
+| `R` | `get` and `search` routes, methods and tests, `Get{Entity}Request` and `Search{Entities}Request`, `{Entity}Resource` and `{Entities}CollectionResource`, `search` method in the service |
+| `U` | `update` route, method and test, `Update{Entity}Request` |
+| `D` | `delete` route, method and test, `Delete{Entity}Request` |
+
+So the classes listed for `--only-api` above are generated only when the corresponding characters are present. For
+example, `--methods=UD` generates neither `{Entity}Resource` nor `{Entities}CollectionResource`, and the service is
+generated without the `search` method.
 
 #### Special class-related options
 
