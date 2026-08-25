@@ -65,6 +65,27 @@ class {{ $entity }}Test extends TestCase
     }
 
 @endif
+@if ($hasNullableFields)
+    public function testCreateWithNulls()
+    {
+        $data = $this->getJsonFixture('create_{{ \Illuminate\Support\Str::snake($entity) }}_with_nulls_request');
+
+@if (!$withAuth)
+        $response = $this->json('post', '/{{ $entities }}', $data);
+@else
+        $response = $this->actingAs(self::$user)->json('post', '/{{ $entities }}', $data);
+@endif
+
+        $response->assertCreated();
+
+        // TODO: Need to remove last argument after first successful start
+        $this->assertEqualsFixture('create_{{ \Illuminate\Support\Str::snake($entity) }}_with_nulls_response', $response->json(), true);
+
+        // TODO: Need to remove last argument after first successful start
+        self::${{ \Illuminate\Support\Str::camel($entity) }}State->assertChangesEqualsFixture('create_{{ \Illuminate\Support\Str::snake($entity) }}_with_nulls', true);
+    }
+
+@endif
 @endif
 @if (in_array('U', $options))
     public function testUpdate()
@@ -112,6 +133,24 @@ class {{ $entity }}Test extends TestCase
         $response->assertUnauthorized();
 
         self::${{ \Illuminate\Support\Str::camel($entity) }}State->assertNotChanged();
+    }
+
+@endif
+@if ($hasNullableFields)
+    public function testUpdateWithNulls()
+    {
+        $data = $this->getJsonFixture('update_{{ \Illuminate\Support\Str::snake($entity) }}_with_nulls_request');
+
+@if (!$withAuth)
+        $response = $this->json('put', '/{{ $entities }}/1', $data);
+@else
+        $response = $this->actingAs(self::$user)->json('put', '/{{ $entities }}/1', $data);
+@endif
+
+        $response->assertNoContent();
+
+        // TODO: Need to remove last argument after first successful start
+        self::${{ \Illuminate\Support\Str::camel($entity) }}State->assertChangesEqualsFixture('update_{{ \Illuminate\Support\Str::snake($entity) }}_with_nulls', true);
     }
 
 @endif

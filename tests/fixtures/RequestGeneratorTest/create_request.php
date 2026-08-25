@@ -10,16 +10,16 @@ final class CreatePostRequest extends Request
     {
         return [
             'is_published' => 'present|boolean',
-            'is_draft' => 'boolean',
-            'priority' => 'integer',
+            'is_draft' => 'nullable|boolean',
+            'priority' => 'nullable|integer',
             'media_id' => 'required|integer|exists:media,id',
-            'seo_score' => 'numeric',
+            'seo_score' => 'nullable|numeric',
             'rating' => 'required|numeric',
-            'description' => 'string',
+            'description' => 'nullable|string',
             'title' => 'required|string|unique:posts,title',
-            'reviewed_at' => 'date',
+            'reviewed_at' => 'nullable|date',
             'published_at' => 'required|date',
-            'meta' => 'array',
+            'meta' => 'nullable|array',
             'user_id' => 'required|integer|exists:users,id',
         ];
     }
