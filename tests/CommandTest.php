@@ -260,6 +260,29 @@ class CommandTest extends TestCase
         $this->assertGeneratedFileEquals('migration.php', 'database/migrations/2016_10_20_110500_posts_create_table.php');
         $this->assertGeneratedFileEquals('model.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Models/Post.php');
         $this->assertGeneratedFileEquals('repository.php', 'app/Repositories/PostRepository.php');
+        $this->assertGeneratedFileEquals('service_without_search.php', 'app/Services/PostService.php');
+        $this->assertGeneratedFileEquals('factory.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Factories/PostFactory.php');
+        $this->assertGeneratedFileEquals('seeder.php', 'database/seeders/PostSeeder.php');
+    }
+
+    public function testMakeOnlyEntityWithExplicitMethods()
+    {
+        config([
+            'entity-generator.paths.models' => 'RonasIT\EntityGenerator\Tests\Support\Command\Models',
+            'entity-generator.paths.factories' => 'RonasIT\EntityGenerator\Tests\Support\Command\Factories',
+        ]);
+
+        Carbon::setTestNow('2016-10-20 11:05:00');
+
+        $this->mockFilesystem();
+
+        $this
+            ->artisan('make:entity Post --only-entity --methods=R')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileEquals('migration.php', 'database/migrations/2016_10_20_110500_posts_create_table.php');
+        $this->assertGeneratedFileEquals('model.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Models/Post.php');
+        $this->assertGeneratedFileEquals('repository.php', 'app/Repositories/PostRepository.php');
         $this->assertGeneratedFileEquals('service.php', 'app/Services/PostService.php');
         $this->assertGeneratedFileEquals('factory.php', 'RonasIT/EntityGenerator/Tests/Support/Command/Factories/PostFactory.php');
         $this->assertGeneratedFileEquals('seeder.php', 'database/seeders/PostSeeder.php');
@@ -297,7 +320,7 @@ class CommandTest extends TestCase
         Carbon::setTestNow('2016-10-20 11:05:00');
 
         $this
-            ->artisan('make:entity Post --only-entity --only-controller --only-resource --only-service')
+            ->artisan('make:entity Post --only-entity --only-controller --only-resource --only-service --methods=CRUD')
             ->assertSuccessful();
 
         $this->assertGeneratedFileEquals('migration.php', 'database/migrations/2016_10_20_110500_posts_create_table.php');

@@ -181,6 +181,9 @@ So the classes listed for `--only-api` above are generated only when the corresp
 example, `--methods=UD` generates neither `{Entity}Resource` nor `{Entities}CollectionResource`, and the service is
 generated without the `search` method.
 
+The default `CRUD` value is not applied when `--only-entity` is used.  
+Pass `--methods` explicitly to override it, e.g. `--only-entity --methods=R`.
+
 #### Special class-related options
 
 - `--nova-resource-name` - Specifies the Nova resource name for the Nova tests generation. By default script will try to find the common resource class based on the entity name.
