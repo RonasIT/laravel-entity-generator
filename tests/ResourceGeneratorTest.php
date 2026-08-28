@@ -185,6 +185,49 @@ class ResourceGeneratorTest extends TestCase
         );
     }
 
+    public function testCreateResourcesWithSelfRelations(): void
+    {
+        app(ResourceGenerator::class)
+            ->setModel('Category')
+            ->setFields($this->getFieldsDTO([
+                'string' => [
+                    'title:required',
+                ],
+            ]))
+            ->setRelations(new RelationsDTO(
+                hasMany: ['Category'],
+                belongsTo: ['Category'],
+            ))
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('category_resource_with_self_relations.php', 'app/Http/Resources/Category/CategoryResource.php');
+        $this->assertGeneratedFileEquals('category_collection_resource.php', 'app/Http/Resources/Category/CategoriesCollectionResource.php');
+
+        $this->assertEventPushedChain([
+            SuccessCreateMessage::class => [
+                'Created a new Resource: CategoryResource',
+                'Created a new CollectionResource: CategoriesCollectionResource',
+            ],
+        ]);
+    }
+
+    public function testSelfCollectionRelationResourceNotExists(): void
+    {
+        $this->assertExceptionThrew(
+            className: ResourceNotExistsException::class,
+            message: 'Cannot create CategoryResource cause CategoriesCollectionResource does not exist. Create app/Http/Resources/Category/CategoriesCollectionResource.php and run command again.',
+        );
+
+        app(ResourceGenerator::class)
+            ->setModel('Category')
+            ->setRelations(new RelationsDTO(
+                hasMany: ['Category'],
+            ))
+            ->setCrudOptions(['C'])
+            ->generate();
+    }
+
     public function testRelationResourceNotExists(): void
     {
         $this->mockClass(ResourceGenerator::class, [

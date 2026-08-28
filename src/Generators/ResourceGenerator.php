@@ -88,13 +88,34 @@ class ResourceGenerator extends EntityGenerator
 
     protected function checkRelationResourcesExist(array $relations): void
     {
+        $generatedResources = $this->getGeneratedResourceNames();
+
         foreach ($relations as $relation) {
+            $requiredResource = "{$relation['entity']}/{$relation['resource']}";
+
+            if (in_array($requiredResource, $generatedResources)) {
+                continue;
+            }
+
             $this->checkResourceNotExists(
                 path: 'resources',
                 creatableResource: "{$this->model}Resource",
-                requiredResource: "{$relation['entity']}/{$relation['resource']}",
+                requiredResource: $requiredResource,
             );
         }
+    }
+
+    protected function getGeneratedResourceNames(): array
+    {
+        $names = ["{$this->model}/{$this->model}Resource"];
+
+        if (in_array('R', $this->crudOptions)) {
+            $pluralName = $this->getPluralName($this->model);
+
+            $names[] = "{$this->model}/{$pluralName}CollectionResource";
+        }
+
+        return $names;
     }
 
     protected function getRelationImports(array $relations): array

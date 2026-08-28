@@ -122,6 +122,10 @@ before the generation:
 | Has one, Belongs to | `App\Http\Resources\{Relation}\{Relation}Resource` |
 | Has many, Belongs to many | `App\Http\Resources\{Relation}\{Relations}CollectionResource` |
 
+A relation to the entity being generated is the only exception: its resource is created by the same run, so it is
+neither required upfront nor imported. Note that a self `hasMany` / `belongsToMany` relation needs the collection
+resource, which is generated only when `--methods` contains `R`.
+
 If the required resource is missing, the command reports it and generates nothing:
 
 ```
