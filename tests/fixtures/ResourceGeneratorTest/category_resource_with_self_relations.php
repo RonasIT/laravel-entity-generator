@@ -16,8 +16,8 @@ final class CategoryResource extends BaseResource
         return [
             'id' => $this->resource->id,
             'title' => $this->resource->title,
-            'categories' => CategoriesCollectionResource::make($this->resource->categories),
-            'category' => CategoryResource::make($this->resource->category),
+            'categories' => CategoriesCollectionResource::make($this->whenLoaded('categories')),
+            'category' => CategoryResource::make($this->whenLoaded('category')),
         ];
     }
 }

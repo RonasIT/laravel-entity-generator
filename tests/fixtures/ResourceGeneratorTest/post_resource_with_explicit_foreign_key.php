@@ -17,7 +17,7 @@ final class PostResource extends BaseResource
         return [
             'id' => $this->resource->id,
             'title' => $this->resource->title,
-            'user' => UserResource::make($this->resource->user),
+            'user' => UserResource::make($this->whenLoaded('user')),
         ];
     }
 }

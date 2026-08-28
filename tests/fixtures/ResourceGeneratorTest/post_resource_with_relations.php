@@ -19,10 +19,10 @@ final class PostResource extends BaseResource
     {
         return [
             'id' => $this->resource->id,
-            'comment' => CommentResource::make($this->resource->comment),
-            'roles' => RolesCollectionResource::make($this->resource->roles),
-            'user' => UserResource::make($this->resource->user),
-            'tags' => TagsCollectionResource::make($this->resource->tags),
+            'comment' => CommentResource::make($this->whenLoaded('comment')),
+            'roles' => RolesCollectionResource::make($this->whenLoaded('roles')),
+            'user' => UserResource::make($this->whenLoaded('user')),
+            'tags' => TagsCollectionResource::make($this->whenLoaded('tags')),
         ];
     }
 }

@@ -23,7 +23,7 @@ final class {{ $entity }}Resource extends BaseResource
             '{{ $field }}' => $this->resource->{{ $field }},
 @endforeach
 @foreach($relations as $relation)
-            '{{ $relation['name'] }}' => {{ $relation['resource'] }}::make($this->resource->{{ $relation['name'] }}),
+            '{{ $relation['name'] }}' => {{ $relation['resource'] }}::make($this->whenLoaded('{{ $relation['name'] }}')),
 @endforeach
         ];
 @else

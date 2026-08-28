@@ -27,7 +27,7 @@ final class PostResource extends BaseResource
             'reviewed_at' => $this->resource->reviewed_at,
             'published_at' => $this->resource->published_at,
             'meta' => $this->resource->meta,
-            'user' => UserResource::make($this->resource->user),
+            'user' => UserResource::make($this->whenLoaded('user')),
         ];
     }
 }

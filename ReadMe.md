@@ -106,8 +106,8 @@ Every declared relation is also added to the generated API resource as a nested 
 of a `belongsTo` relation is never exposed as a plain field:
 
 ```php
-'user' => UserResource::make($this->resource->user),
-'comments' => CommentsCollectionResource::make($this->resource->comments),
+'user' => UserResource::make($this->whenLoaded('user')),
+'comments' => CommentsCollectionResource::make($this->whenLoaded('comments')),
 ```
 
 The foreign key column is derived from the `belongsTo` relation automatically, so it must not be passed as a field
