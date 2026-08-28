@@ -351,11 +351,16 @@ abstract class EntityGenerator
     {
         foreach ($this->relations->belongsTo as $relation) {
             $this->fields->add(new Field(
-                name: Str::snake(Str::afterLast($relation, '/')) . '_id',
+                name: $this->getForeignKeyName($relation),
                 type: FieldTypeEnum::Integer,
                 modifiers: FieldModifierEnum::Required,
             ));
         }
+    }
+
+    protected function getForeignKeyName(string $relation): string
+    {
+        return Str::snake(Str::afterLast($relation, '/')) . '_id';
     }
 
     protected function generateFile(string $filePath, string $content, bool $needAppend = false): void

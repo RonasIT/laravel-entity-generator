@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Http\Resources\Post;
+
+use Illuminate\Http\Request;
+use RonasIT\Support\Http\BaseResource;
+use App\Models\Post;
+use App\Http\Resources\User\UserResource;
+
+/**
+ * @property Post $resource
+ */
+final class PostResource extends BaseResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->resource->id,
+            'priority' => $this->resource->priority,
+            'media_id' => $this->resource->media_id,
+            'seo_score' => $this->resource->seo_score,
+            'rating' => $this->resource->rating,
+            'description' => $this->resource->description,
+            'title' => $this->resource->title,
+            'is_reviewed' => $this->resource->is_reviewed,
+            'is_published' => $this->resource->is_published,
+            'reviewed_at' => $this->resource->reviewed_at,
+            'published_at' => $this->resource->published_at,
+            'meta' => $this->resource->meta,
+            'user' => UserResource::make($this->resource->user),
+        ];
+    }
+}

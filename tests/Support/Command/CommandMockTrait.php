@@ -40,6 +40,16 @@ trait CommandMockTrait
         );
     }
 
+    public function mockFilesystemForOnlyApiWithoutRelationResource(): void
+    {
+        $fileSystemMock = new FileSystemMock();
+
+        $fileSystemMock->services = ['PostService.php' => $this->mockPhpFileContent()];
+        $fileSystemMock->config = ['entity-generator.php' => ''];
+
+        $fileSystemMock->setStructure();
+    }
+
     public function mockFilesystem(): void
     {
         $fileSystemMock = new FileSystemMock();
