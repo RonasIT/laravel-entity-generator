@@ -265,7 +265,14 @@ class MakeEntityCommand extends Command
 
     protected function getCrudOptions(): array
     {
-        return str_split($this->option('methods'));
+        return ($this->option('only-entity') && !$this->isMethodsOptionProvided())
+            ? []
+            : str_split($this->option('methods'));
+    }
+
+    protected function isMethodsOptionProvided(): bool
+    {
+        return $this->input->hasParameterOption('--methods', true);
     }
 
     protected function parseRelations(): void
