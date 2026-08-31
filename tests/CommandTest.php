@@ -215,6 +215,20 @@ class CommandTest extends TestCase
         $this->assertGeneratedFileEquals('update_request.json', 'tests/fixtures/PostTest/update_post_request.json');
     }
 
+    public function testMakeOnlyApiWithMissingRelationResource(): void
+    {
+        $this->mockFilesystemForOnlyApiWithoutRelationResource();
+
+        $this
+            ->artisan('make:entity Post --only-api --belongs-to=User')
+            ->expectsOutput('Cannot create PostResource cause UserResource does not exist. Create app/Http/Resources/User/UserResource.php and run command again.')
+            ->assertSuccessful();
+
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Controllers/PostController.php');
+    }
+
     public function testCallCommandWithoutReadMethods()
     {
         config([
