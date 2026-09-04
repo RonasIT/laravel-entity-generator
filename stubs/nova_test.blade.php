@@ -27,6 +27,8 @@ class Nova{{ $resource_name }}Test extends TestCase
         self::${{ $dromedary_entity }}State ??= new ModelTestState({{ $entity }}::class);
 
         $this->skipDocumentationCollecting();
+
+        $this->withoutAPIVersion();
     }
 
     public function testCreate(): void

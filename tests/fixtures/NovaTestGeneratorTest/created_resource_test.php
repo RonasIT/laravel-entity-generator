@@ -26,6 +26,8 @@ class NovaWelcomeBonusResourceTest extends TestCase
         self::$welcomeBonusState ??= new ModelTestState(WelcomeBonus::class);
 
         $this->skipDocumentationCollecting();
+
+        $this->withoutAPIVersion();
     }
 
     public function testCreate(): void
