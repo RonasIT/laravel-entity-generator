@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\Post\PostsCollectionResource;
 use App\Http\Requests\Post\CreatePostRequest;
 use App\Http\Requests\Post\DeletePostRequest;
+use App\Http\Requests\Post\UpdatePostRequest;
 use App\Http\Requests\Post\GetPostRequest;
 use App\Http\Requests\Post\SearchPostsRequest;
-use App\Http\Requests\Post\UpdatePostRequest;
+use App\Http\Resources\Post\PostsCollectionResource;
 use App\Http\Resources\Post\PostResource;
 use App\Services\PostService;
 use Symfony\Component\HttpFoundation\Response;

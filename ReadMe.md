@@ -136,12 +136,15 @@ For this task, there are two mutually exclusive options:
 - `model`
 - `service`
 - `repository`
+- `factory`
+- `seeder`
 
 2. `--only-api`, generate stack of classes to implement API part to work with already existed entity:
 - `routes`
 - `controller`
 - `requests`
 - `resources`
+- `factory`
 - `tests`
 
 #### Methods setting options
@@ -165,28 +168,31 @@ Feel free to use any combinations of actions in any order. Each action has its o
 - `D` delete
 - `R` read (search and get by id)
 
+The option affects not only the generated methods, but the set of generated classes as well:
+
+| Character | What is generated                                                                                                                                                                                          |
+|---|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `C` | `create` route, controller's method and test case, `Create{Entity}Request`, `{Entity}Resource`                                                                                                             |
+| `R` | `get` and `search` routes, controllers's methods and test cases, `Get{Entity}Request` and `Search{Entities}Request`, `{Entity}Resource` and `{Entities}CollectionResource`, `search` method in the service |
+| `U` | `update` route, controller's method and test case, `Update{Entity}Request`                                                                                                                                 |
+| `D` | `delete` route, controller's method and test case, `Delete{Entity}Request`                                                                                                                                 |
+
+So the classes listed for `--only-api` above are generated only when the corresponding characters are present. For
+example, `--methods=UD` generates neither `{Entity}Resource` nor `{Entities}CollectionResource`, and the service is
+generated without the `search` method.
+
+The default `CRUD` value is not applied when `--only-entity` is used, so the service is generated without the
+`search` method. Pass `--methods` explicitly to override it, e.g. `--only-entity --methods=R`.
+
+This affects the whole command run, not just the entity classes: when `--only-entity` is combined with other
+`--only-*` options, their generators receive the same empty set of methods. For example,
+`--only-entity --only-controller --only-resource` generates a controller without any methods and no resource
+classes at all. Pass `--methods` explicitly for such combinations:
+
+```bash
+php artisan make:entity Post --only-entity --only-controller --only-resource --methods=CRUD
+```
+
 #### Special class-related options
 
 - `--nova-resource-name` - Specifies the Nova resource name for the Nova tests generation. By default script will try to find the common resource class based on the entity name.
-
-## Release notes
-
-### 1.3
-
-Since 1.3 version you need to add to your config/entity-generator.php following data:
-
-```php
-    'paths' => [
-        ... // your old data
-        'database_seeder' => 'database/seeds/DatabaseSeeder.php',
-        'translations' => 'lang/en/validation.php'
-    ],
-    'stubs' => [
-        ... // your old data
-        'empty_factory' => 'entity-generator::empty_factory',
-        'translation_not_found' => 'entity-generator::translation_not_found',
-        'validation' => 'entity-generator::validation',
-        'seeder' => 'entity-generator::seeder',
-        'database_empty_seeder' => 'entity-generator::database_empty_seeder'
-    ]
-``` 
