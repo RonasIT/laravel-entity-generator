@@ -17,9 +17,12 @@ class RequestsGenerator extends EntityGenerator
     const GET_METHOD = 'Get';
 
     const array VALIDATION_RULES_MAP = [
-        FieldTypeEnum::Timestamp->value => 'date',
-        FieldTypeEnum::Float->value => 'numeric',
-        FieldTypeEnum::Json->value => 'array',
+        FieldTypeEnum::Integer->value => ['integer', 'db_type_range:integer'],
+        FieldTypeEnum::Float->value => ['numeric', 'db_type_range:double'],
+        FieldTypeEnum::String->value => ['string', 'db_type_range:varchar'],
+        FieldTypeEnum::Boolean->value => ['boolean'],
+        FieldTypeEnum::Json->value => ['array'],
+        FieldTypeEnum::Timestamp->value => ['date'],
     ];
 
     public function generate(): void
@@ -102,7 +105,7 @@ class RequestsGenerator extends EntityGenerator
     protected function getCreateValidationParameters(): array
     {
         return $this->fields->toNamedMap(function (Field $field) {
-            $rules = $this->getRuleByFieldType($field->type);
+            $rules = $this->getRulesByFieldType($field->type);
 
             if ($field->isKeyField()) {
                 $this->addKeyFieldRules($field->name, $rules);
@@ -125,7 +128,7 @@ class RequestsGenerator extends EntityGenerator
     protected function getUpdateValidationParameters(): array
     {
         return $this->fields->toNamedMap(function (Field $field) {
-            $rules = $this->getRuleByFieldType($field->type);
+            $rules = $this->getRulesByFieldType($field->type);
 
             if ($field->isKeyField()) {
                 $this->addKeyFieldRules($field->name, $rules);
@@ -156,11 +159,9 @@ class RequestsGenerator extends EntityGenerator
         ];
     }
 
-    protected function getRuleByFieldType(FieldTypeEnum $fieldType): array
+    protected function getRulesByFieldType(FieldTypeEnum $fieldType): array
     {
-        return [
-            Arr::get(self::VALIDATION_RULES_MAP, $fieldType->value, $fieldType->value),
-        ];
+        return self::VALIDATION_RULES_MAP[$fieldType->value];
     }
 
     protected function addKeyFieldRules(string $fieldName, array &$rules): void
