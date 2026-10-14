@@ -51,6 +51,7 @@ class TestsGenerator extends AbstractTestsGenerator
             'entityNamespace' => $this->generateNamespace($this->paths['models'], $this->modelSubFolder),
             'userNamespace' => $this->generateNamespace($this->paths['models']),
             'hasModificationEndpoints' => !empty(array_intersect($this->crudOptions, ['C', 'U', 'D'])),
+            'hasNullableFields' => !empty($this->fields?->getNullableNames()),
         ]);
 
         $testName = $this->getTestClassName();

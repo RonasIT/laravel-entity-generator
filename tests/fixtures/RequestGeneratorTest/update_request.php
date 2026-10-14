@@ -12,16 +12,16 @@ final class UpdatePostRequest extends Request
     {
         return [
             'is_published' => 'boolean',
-            'is_draft' => 'boolean',
-            'priority' => 'integer',
+            'is_draft' => 'nullable|boolean',
+            'priority' => 'nullable|integer',
             'media_id' => 'filled|integer|exists:media,id',
-            'seo_score' => 'numeric',
+            'seo_score' => 'nullable|numeric',
             'rating' => 'filled|numeric',
-            'description' => 'string',
+            'description' => 'nullable|string',
             'title' => 'filled|string|unique:posts,title,' . $this->route('id'),
-            'reviewed_at' => 'date',
+            'reviewed_at' => 'nullable|date',
             'published_at' => 'filled|date',
-            'meta' => 'array',
+            'meta' => 'nullable|array',
             'user_id' => 'filled|integer|exists:users,id',
         ];
     }

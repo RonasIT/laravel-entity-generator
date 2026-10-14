@@ -31,13 +31,15 @@ class MigrationGenerator extends EntityGenerator
         event(new SuccessCreateMessage("Created a new Migration: {$entities}_create_table"));
     }
 
-    protected function generateJsonDefinition(string $fieldName): string
+    protected function generateJsonDefinition(Field $field): string
     {
+        $columnModifiers = $field->isRequired() ? '' : '->nullable()';
+
         if ($this->generateForMySQL()) {
-            return "\$table->json('{$fieldName}')->nullable();";
+            return "\$table->json('{$field->name}'){$columnModifiers};";
         }
 
-        return "\$table->jsonb('{$fieldName}')->default(\"{}\");";
+        return "\$table->jsonb('{$field->name}'){$columnModifiers};";
     }
 
     protected function generateCommonFieldDefinition(Field $field): string
@@ -50,7 +52,7 @@ class MigrationGenerator extends EntityGenerator
     protected function prepareFields(): array
     {
         return $this->fields->toNamedMap(fn (Field $field) => ($field->isJSON())
-                ? $this->generateJsonDefinition($field->name)
+                ? $this->generateJsonDefinition($field)
                 : $this->generateCommonFieldDefinition($field),
         );
     }

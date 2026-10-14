@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->string('title')->nullable()->unique();
             $table->string('body')->nullable();
-            $table->jsonb('meta')->default("{}");
+            $table->jsonb('meta')->nullable();
             $table->timestamp('published_at');
             $table->timestamps();
         });
