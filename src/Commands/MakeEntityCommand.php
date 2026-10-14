@@ -69,7 +69,7 @@ class MakeEntityCommand extends Command
         {--only-nova-tests : Set this flag if you want to create only nova resource tests.}
 
         {--nova-resource-name= : Override the default Nova resource name to generate a Nova test resource.}
-        {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, controller\'s methods and tests methods.} 
+        {--methods=CRUD : Set types of methods to create. Affect on routes, requests classes, resources, service methods, controller\'s methods and tests methods.} 
 
         {--i|integer=* : Add integer field to entity.}
         {--f|float=* : Add float field to entity.}
@@ -265,7 +265,14 @@ class MakeEntityCommand extends Command
 
     protected function getCrudOptions(): array
     {
-        return str_split($this->option('methods'));
+        return ($this->option('only-entity') && !$this->isMethodsOptionProvided())
+            ? []
+            : str_split($this->option('methods'));
+    }
+
+    protected function isMethodsOptionProvided(): bool
+    {
+        return $this->input->hasParameterOption('--methods', true);
     }
 
     protected function parseRelations(): void

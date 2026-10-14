@@ -9,12 +9,12 @@ class ResourceGenerator extends EntityGenerator
 {
     public function generate(): void
     {
-        if ($this->isStubExists('resource')) {
+        if (!empty(array_intersect(['C', 'R'], $this->crudOptions)) && $this->isStubExists('resource')) {
             $this->createNamespace('resources');
 
             $this->generateResource();
 
-            if ($this->isStubExists('collection_resource')) {
+            if (in_array('R', $this->crudOptions) && $this->isStubExists('collection_resource')) {
                 $this->generateCollectionResource();
             }
         }

@@ -93,6 +93,11 @@ class TestCase extends BaseTestCase
         $this->assertFileEquals($this->getFixturePath($fixtureName), $filePath);
     }
 
+    protected function assertGeneratedFileDoesNotExist(string $path): void
+    {
+        $this->assertFileDoesNotExist("{$this->generatedFileBasePath}/{$path}");
+    }
+
     protected function assertGenerateFileExists(string $path): void
     {
         $this->assertFileExists("{$this->generatedFileBasePath}/{$path}");

@@ -51,6 +51,20 @@ trait CommandMockTrait
         $fileSystemMock->setStructure();
     }
 
+    public function mockFilesystemForOnlyTests(): void
+    {
+        $fileSystemMock = new FileSystemMock();
+
+        $fileSystemMock->config = ['entity-generator.php' => ''];
+
+        $fileSystemMock->setStructure();
+
+        $structure = [];
+        $structure['RonasIT']['EntityGenerator']['Tests']['Support']['Command']['Factories']['PostFactory.php'] = $this->mockPhpFileContent();
+
+        vfsStream::create($structure);
+    }
+
     public function mockGenerator(): void
     {
         $this->mockClass(NovaTestGenerator::class, [

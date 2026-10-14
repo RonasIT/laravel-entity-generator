@@ -148,4 +148,22 @@ class ControllerGeneratorTest extends TestCase
             ],
         ]);
     }
+
+    public function testCreateWithOnlyC()
+    {
+        app(ControllerGenerator::class)
+            ->setModel('Post')
+            ->setCrudOptions(['C'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('created_controller_only_c.php', 'app/Http/Controllers/PostController.php');
+        $this->assertGeneratedFileEquals('api_only_c.php', 'routes/api.php');
+
+        $this->assertEventPushedChain([
+            SuccessCreateMessage::class => [
+                "Created a new Route: Route::post('posts', 'create');",
+                'Created a new Controller: PostController',
+            ],
+        ]);
+    }
 }

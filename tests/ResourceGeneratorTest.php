@@ -25,6 +25,7 @@ class ResourceGeneratorTest extends TestCase
 
         app(ResourceGenerator::class)
             ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
     }
 
@@ -42,6 +43,7 @@ class ResourceGeneratorTest extends TestCase
 
         app(ResourceGenerator::class)
             ->setModel('Post')
+            ->setCrudOptions(['R'])
             ->generate();
 
         $this->assertGeneratedFileEquals('post_resource.php', 'app/Http/Resources/Post/PostResource.php');
@@ -56,6 +58,7 @@ class ResourceGeneratorTest extends TestCase
     {
         app(ResourceGenerator::class)
             ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
 
         $this->assertGeneratedFileEquals('post_resource.php', 'app/Http/Resources/Post/PostResource.php');
@@ -74,6 +77,7 @@ class ResourceGeneratorTest extends TestCase
         app(ResourceGenerator::class)
             ->setModel('Post')
             ->setFields($this->getFieldsDTO($this->getJsonFixture('create_resource_fields')))
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
 
         $this->assertGeneratedFileEquals('post_resource_with_fields.php', 'app/Http/Resources/Post/PostResource.php');
@@ -87,16 +91,44 @@ class ResourceGeneratorTest extends TestCase
         ]);
     }
 
+    public function testCreateResourceWithoutCollection()
+    {
+        app(ResourceGenerator::class)
+            ->setModel('Post')
+            ->setCrudOptions(['C', 'U', 'D'])
+            ->generate();
+
+        $this->assertGeneratedFileEquals('post_resource.php', 'app/Http/Resources/Post/PostResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
+
+        $this->assertEventPushed(
+            className: SuccessCreateMessage::class,
+            message: 'Created a new Resource: PostResource',
+        );
+    }
+
+    public function testSkipResourceCreation()
+    {
+        app(ResourceGenerator::class)
+            ->setModel('Post')
+            ->setCrudOptions(['U', 'D'])
+            ->generate();
+
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
+    }
+
     public function testCreateResourcesResourceStubNotExist()
     {
         config(['entity-generator.stubs.resource' => 'incorrect_stub']);
 
         app(ResourceGenerator::class)
             ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
 
-        $this->assertFileDoesNotExist('app/Http/Resources/Post/PostResource.php');
-        $this->assertFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
 
         $this->assertEventPushed(
             className: WarningEvent::class,
@@ -110,10 +142,11 @@ class ResourceGeneratorTest extends TestCase
 
         app(ResourceGenerator::class)
             ->setModel('Post')
+            ->setCrudOptions(['C', 'R', 'U', 'D'])
             ->generate();
 
         $this->assertGeneratedFileEquals('post_resource.php', 'app/Http/Resources/Post/PostResource.php');
-        $this->assertFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
+        $this->assertGeneratedFileDoesNotExist('app/Http/Resources/Post/PostsCollectionResource.php');
 
         $this->assertEventPushedChain([
             SuccessCreateMessage::class => ['Created a new Resource: PostResource'],
